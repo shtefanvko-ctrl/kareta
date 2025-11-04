@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Политехнический колледж "Карета"</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="navbar">
+        <div>
+          <strong>ПК "Карета"</strong>
+        </div>
+        <nav>
+          <a href="#programs">Специальности</a>
+          <a href="#admissions">Поступление</a>
+          <a href="#campus">Жизнь колледжа</a>
+          <a href="#contact">Контакты</a>
+        </nav>
+      </div>
+      <div class="hero">
+        <h1>Современное образование для востребованных профессий</h1>
+        <p>
+          Политехнический колледж «Карета» готовит специалистов для промышленности,
+          IT, транспорта и сферы услуг. Обучение строится на практике и тесном
+          взаимодействии с работодателями региона.
+        </p>
+        <a class="btn" href="#contact">Записаться на консультацию</a>
+      </div>
+    </header>
+
+    <section id="programs">
+      <p class="section-title">Учебные программы</p>
+      <h2 class="section-heading">Выберите траекторию развития</h2>
+      <div class="grid grid-3" id="program-list">
+        <div class="card">
+          <h3>Загрузка...</h3>
+          <p>Мы собираем актуальные программы колледжа.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats" id="stats">
+      <p class="section-title">Цифры колледжа</p>
+      <div class="stats-grid" id="stats-grid">
+        <div class="stats-item">
+          <h3>—</h3>
+          <p>Студентов</p>
+        </div>
+        <div class="stats-item">
+          <h3>—</h3>
+          <p>Программ</p>
+        </div>
+        <div class="stats-item">
+          <h3>—</h3>
+          <p>Активных заявок</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="admissions">
+      <p class="section-title">Поступление</p>
+      <h2 class="section-heading">Простой путь к профессии мечты</h2>
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>1. Консультация</h3>
+          <p>Запишитесь на встречу с приёмной комиссией и получите персональный план обучения.</p>
+        </div>
+        <div class="card">
+          <h3>2. Подача документов</h3>
+          <p>Принесите оригиналы документов или загрузите их в личном кабинете.</p>
+        </div>
+        <div class="card">
+          <h3>3. Зачисление</h3>
+          <p>После решения комиссии вы получите уведомление и сможете приступить к занятиям.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="campus">
+      <p class="section-title">Жизнь колледжа</p>
+      <h2 class="section-heading">Учёба, практика и яркие события</h2>
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>Современные лаборатории</h3>
+          <p>Оборудование промышленного уровня и симуляторы позволяют получить реальный опыт.</p>
+        </div>
+        <div class="card">
+          <h3>Проектное обучение</h3>
+          <p>Студенты работают над кейсами от партнёров и представляют решения на защите.</p>
+        </div>
+        <div class="card">
+          <h3>Карьерный центр</h3>
+          <p>Команда центра помогает с трудоустройством и стажировками с первого курса.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <p class="section-title">Связаться с нами</p>
+      <h2 class="section-heading">Получите консультацию приёмной комиссии</h2>
+      <div class="contact-grid">
+        <div class="highlight">
+          <h3>Адрес</h3>
+          <p>г. Казань, ул. Инженерная, 12</p>
+          <h3>Телефон</h3>
+          <p><a href="tel:+78432000000">+7 (843) 200-00-00</a></p>
+          <h3>Эл. почта</h3>
+          <p><a href="mailto:admissions@kareta.ru">admissions@kareta.ru</a></p>
+          <h3>График</h3>
+          <p>Пн–Пт: 09:00–18:00, Сб: 10:00–15:00</p>
+        </div>
+        <form id="lead-form">
+          <div id="form-alert" hidden></div>
+          <label for="name">Имя</label>
+          <input id="name" name="name" type="text" required placeholder="Как к вам обращаться?" />
+
+          <label for="email">Эл. почта</label>
+          <input id="email" name="email" type="email" required placeholder="example@mail.ru" />
+
+          <label for="phone">Телефон</label>
+          <input id="phone" name="phone" type="tel" placeholder="+7 (999) 123-45-67" />
+
+          <label for="program">Направление</label>
+          <select id="program" name="program">
+            <option value="">Выберите программу</option>
+          </select>
+
+          <label for="notes">Комментарий</label>
+          <textarea id="notes" name="notes" placeholder="Расскажите о ваших целях"></textarea>
+
+          <button class="btn" type="submit">Отправить заявку</button>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <p>&copy; 2024 Политехнический колледж «Карета». Все права защищены.</p>
+    </footer>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>
