@@ -45,11 +45,16 @@ def list_students(db: Session) -> Iterable[models.Student]:
     return db.query(models.Student).order_by(models.Student.last_name).all()
 
 
-def create_student(db: Session, student_in: schemas.StudentCreate) -> models.Student:
+def create_student(
+    db: Session, student_in: schemas.StudentCreate, *, commit: bool = True
+) -> models.Student:
     student = models.Student(**student_in.dict())
     db.add(student)
-    db.commit()
-    db.refresh(student)
+    if commit:
+        db.commit()
+        db.refresh(student)
+    else:
+        db.flush()
     return student
 
 
@@ -130,10 +135,11 @@ def convert_lead_to_student(
     lead: models.Lead,
     student_in: schemas.StudentCreate,
 ) -> models.Student:
-    student = create_student(db, student_in)
+    student = create_student(db, student_in, commit=False)
     lead.status = "converted"
     lead.converted_student_id = student.id
     db.add(lead)
     db.commit()
+    db.refresh(student)
     db.refresh(lead)
     return student
