@@ -39,7 +39,12 @@
     pending.delete(id);
     window.clearTimeout(item.timer);
     if (data?.ok) item.resolve(data.data || {});
-    else item.reject(new Error(String(data?.error || "KARETA_NATIVE_ERROR")));
+    else {
+      const code = String(data?.error || "KARETA_NATIVE_ERROR");
+      const error = new Error(String(data?.message || code));
+      error.code = code;
+      item.reject(error);
+    }
   }
 
   function attach() {
@@ -73,10 +78,10 @@
     actionSheet: (title, actions) => call("actionSheet", { title, actions }, 60000),
     elmStatus: () => call("elmStatus"),
     elmDevices: () => call("elmDevices"),
-    elmConnect: address => call("elmConnect", { address }, 20000),
-    elmReconnectLast: () => call("elmReconnectLast", {}, 20000),
+    elmConnect: address => call("elmConnect", { address }, 30000),
+    elmReconnectLast: () => call("elmReconnectLast", {}, 30000),
     elmDisconnect: () => call("elmDisconnect"),
-    elmInit: () => call("elmInit", {}, 20000),
+    elmInit: () => call("elmInit", {}, 30000),
     elmCommand: (command, timeoutMs) => call("elmCommand", { command, timeoutMs: timeoutMs || 2500 }, Math.max(5000, (timeoutMs || 2500) + 3000)),
     elmSnapshot: () => call("elmSnapshot", {}, 30000),
     elmLiveSnapshot: () => call("elmLiveSnapshot", {}, 10000),
@@ -84,6 +89,7 @@
     offlineState: () => call("offlineState"),
     offlineEnqueue: payload => call("offlineEnqueue", { payload }),
     offlineDrain: () => call("offlineDrain"),
+    offlineAcknowledge: items => call("offlineAcknowledge", { items: Array.isArray(items) ? items : [] }),
     offlineRestore: items => call("offlineRestore", { items }),
     offlineClear: () => call("offlineClear"),
     share: text => call("share", { text }),
