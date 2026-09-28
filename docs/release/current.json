@@ -1,6 +1,6 @@
 {
   "schema": "kareta.release.current.v1",
-  "release": "188.5.5.6.84.147",
+  "release": "188.5.5.6.84.148",
   "sourceBranch": "import/kareta-current-84.142",
   "targetBranch": "main",
   "branchState": {
@@ -19,7 +19,7 @@
   "verification": {
     "ciWorkflow": ".github/workflows/verify.yml",
     "stagingWorkflow": ".github/workflows/staging-verify.yml",
-    "stagingStatus": "NOT_VERIFIED_AFTER_84_147"
+    "stagingStatus": "NOT_VERIFIED_AFTER_84_148"
   },
   "ui": {
     "notFound": "first_class_spa_route",
@@ -35,6 +35,13 @@
   "cache": {
     "staticAssets": "service-worker cache-first inside release-scoped cache namespace",
     "updateStrategy": "new release token creates a new cache namespace; HTML/version probes remain network-authoritative",
-    "missingStatic": "must return HTTP 404 and never SPA HTML"
+    "missingStatic": "must return HTTP 404 and never SPA HTML",
+    "content": {
+      "strategy": "stale-while-revalidate",
+      "persistentScope": "release-scoped sessionStorage for Services and Masters; Community remains server-authoritative memory cache",
+      "routeRevisit": "show cached content first; do not replace usable content with skeletons",
+      "refresh": "TTL, connectivity recovery, WebView/app resume, and relevant realtime events",
+      "domUpdate": "repaint only when the content signature changes"
+    }
   }
 }

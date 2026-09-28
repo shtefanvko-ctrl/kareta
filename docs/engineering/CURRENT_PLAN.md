@@ -1,6 +1,6 @@
 # KARETA.KZ — Current engineering plan
 
-Current web/runtime release: **188.5.5.6.84.147**  
+Current web/runtime release: **188.5.5.6.84.148**  
 Working branch: `import/kareta-current-84.142`  
 Merge target: `main`
 
@@ -42,6 +42,15 @@ Repository branch protection must require the `verification-gate` status before 
 Missing static files must return a real HTTP 404; they must never fall through to `index.php` as HTML because WebView will reject that response for CSS/JS and surface `route_*_load_failed`.
 
 This layer is intentionally separate from API/content caching. API reads keep their own freshness/revalidation contract so user data is not treated as immutable static content.
+
+
+### P1 — App-like content reuse / stale-while-revalidate
+
+84.148 separates **render freshness** from **network freshness**. Services, Masters and Community keep usable content on screen when the user revisits a route. Expired data is refreshed in the background; the DOM is repainted only when the returned content signature changes.
+
+Refresh triggers are TTL expiry, network recovery, app/WebView resume for mounted surfaces, and relevant `kareta:realtime:event` events. Services and Masters keep release-scoped `sessionStorage` snapshots, so same-tab WebView reloads do not immediately fall back to skeletons. Community remains server-authoritative and memory-only, but route revisits no longer blank its feed during revalidation.
+
+The cache is not an alternate database: server/API remains authoritative, mutations and realtime changes force revalidation, and a release bump changes cache namespaces.
 
 ### P1 — staging verification
 

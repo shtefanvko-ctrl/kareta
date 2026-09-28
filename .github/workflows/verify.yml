@@ -41,6 +41,10 @@ jobs:
           node --check js/next/route_registry.js
           node --check js/next/shell_nav.js
           node --check js/next/app_next.js
+          node --check js/next/catalog/catalog_state.js
+          node --check js/next/pages/masters.js
+          node --check js/next/community/community_state.js
+          node --check js/next/pages/community.js
           node --check js/next/pages/not_found.js
           node --check js/boot/runtime_identity_bundle.js
           node --check js/boot/runtime_shell_bundle.js
@@ -54,7 +58,7 @@ jobs:
         run: node tools/audit_legacy_role_authorization_current.js
 
       - name: Current release contract
-        run: node tools/test_current_release_84_147.js
+        run: node tools/test_current_release_84_148.js
 
       - name: Staging verifier syntax
         run: python3 -m py_compile tools/verify_staging_current.py
