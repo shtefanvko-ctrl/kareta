@@ -31,8 +31,9 @@ AddDefaultCharset UTF-8
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # SPA fallback for clean URLs.
-  RewriteRule ^ index.php [L]
+  # SPA fallback for clean URLs. Mark the internal fallback so index.php can
+  # return a real HTTP 404 while still rendering the application 404 surface.
+  RewriteRule ^ index.php?kareta_route_fallback=1 [QSA,L]
 </IfModule>
 
 <IfModule mod_expires.c>
