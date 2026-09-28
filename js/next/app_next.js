@@ -485,8 +485,11 @@
   }
 
   async function hydrateApiSnapshot(){
-    if(!state.user && !state.identity?.authenticated){
-      const skipped={ok:true,status:204,skipped:true,reason:state.runtimeDegraded?'runtime_degraded':'anonymous',payload:{}};
+    // Identity/context is authoritative for protected aggregate reads. A legacy
+    // PHP user can exist briefly while Identity is still anonymous/degraded; in
+    // that window /api/db.php?action=pull correctly returns 409. Do not issue it.
+    if(!state.identity?.authenticated){
+      const skipped={ok:true,status:204,skipped:true,reason:state.runtimeDegraded?'runtime_degraded':'identity_not_ready',payload:{}};
       state.apiSnapshot=skipped;
       window.dispatchEvent(new CustomEvent('kareta:api-snapshot-skipped',{detail:skipped}));
       return skipped;
@@ -509,7 +512,7 @@
   }
 
   function scheduleApiSnapshot(){
-    if(!state.user && !state.identity?.authenticated){
+    if(!state.identity?.authenticated){
       hydrateApiSnapshot();
       return false;
     }

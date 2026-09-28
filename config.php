@@ -83,6 +83,31 @@ if (!defined('KARETA_CONFIG_LOADED')) {
         dirname(KARETA_ROOT) . '/kareta-storage'
     )), '/\\');
     if ($kareta_storage_root === '') $kareta_storage_root = dirname(KARETA_ROOT) . '/kareta-storage';
+
+    /*
+     * Plesk/open_basedir compatibility.
+     * Some migrated installations still point storage_root at /var/lib/kareta,
+     * while PHP is restricted to DOCROOT + /tmp. Detect that configuration
+     * before any filesystem call so warnings cannot corrupt JSON responses.
+     * storage/.htaccess denies direct HTTP access to this fallback directory.
+     */
+    $kareta_open_basedir = trim((string) ini_get('open_basedir'));
+    if ($kareta_open_basedir !== '') {
+        $candidate = str_replace('\\', '/', $kareta_storage_root);
+        $allowed = false;
+        foreach (explode(PATH_SEPARATOR, $kareta_open_basedir) as $base) {
+            $base = rtrim(str_replace('\\', '/', trim($base)), '/');
+            if ($base === '') continue;
+            if ($candidate === $base || strpos($candidate . '/', $base . '/') === 0) {
+                $allowed = true;
+                break;
+            }
+        }
+        if (!$allowed) {
+            $kareta_storage_root = KARETA_ROOT . '/storage';
+        }
+    }
+
     define('KARETA_STORAGE_ROOT', $kareta_storage_root);
     define('KARETA_LOG_ROOT', KARETA_STORAGE_ROOT . '/logs');
 
