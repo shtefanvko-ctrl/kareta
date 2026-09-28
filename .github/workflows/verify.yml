@@ -45,9 +45,14 @@ jobs:
           node --check js/next/pages/masters.js
           node --check js/next/community/community_state.js
           node --check js/next/pages/community.js
+          node --check js/mobile_native_bridge.js
+          node --check js/next/pages/diagnostics.js
           node --check js/next/pages/not_found.js
           node --check js/boot/runtime_identity_bundle.js
           node --check js/boot/runtime_shell_bundle.js
+
+      - name: Android Native API 6 contract
+        run: node tools/test_android_native_api6_contract_84_148.js
 
       - name: Migration contract
         run: |

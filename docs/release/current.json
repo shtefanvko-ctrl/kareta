@@ -4,11 +4,11 @@
   "sourceBranch": "import/kareta-current-84.142",
   "targetBranch": "main",
   "branchState": {
-    "status": "diverged",
-    "aheadByAtAudit": 61,
-    "behindByAtAudit": 3,
-    "mergeBase": "1732058c6bda6a5b4e1e703c2b9d965e69449a61",
-    "note": "Counts are the 84.146 audit snapshot; later commits on this branch intentionally change ahead-by."
+    "status": "ahead",
+    "aheadByAtAudit": 88,
+    "behindByAtAudit": 0,
+    "mergeBase": "5d333d5e67857d91a44a653e725fb2924eef2004",
+    "note": "Android Native API 6 main delta reconciled by merge commit d0660fa1f9c562e826c5f8e81707f837368075cf; main is now an ancestor of the working branch."
   },
   "database": {
     "canonicalVersion": 129,
@@ -43,5 +43,15 @@
       "refresh": "TTL, connectivity recovery, WebView/app resume, and relevant realtime events",
       "domUpdate": "repaint only when the content signature changes"
     }
+  },
+  "androidNative": {
+    "apiVersion": 6,
+    "reconciledCommit": "d0660fa1f9c562e826c5f8e81707f837368075cf",
+    "preserved": [
+      "structured bridge errors",
+      "offlineAcknowledge",
+      "ECU-ready state",
+      "migration-owned OBD schema"
+    ]
   }
 }

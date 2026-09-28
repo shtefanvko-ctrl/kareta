@@ -6,9 +6,9 @@ Merge target: `main`
 
 ## Current branch reality
 
-The branches are diverged. At the current 84.148 planning point the working branch is **85 commits ahead** and **3 commits behind** `main`, with merge base `1732058c6bda6a5b4e1e703c2b9d965e69449a61`.
+The Native API reconciliation is now committed. The working branch is **88 commits ahead** and **0 behind** `main`; `main` head `5d333d5e67857d91a44a653e725fb2924eef2004` is an ancestor of the working branch.
 
-The commits present only on `main` include the newer Android/Native API integration. The working branch contains the later web UI/runtime hardening. Neither branch alone is currently the complete release source of truth. Reconciliation must preserve both lines before merge.
+Merge commit `d0660fa1f9c562e826c5f8e81707f837368075cf` reconciled the Android Native API 6 delta with the 84.148 web/runtime line. The three Native API files were unchanged on the web branch since the previous main merge, so the main versions were transplanted without dropping later web/runtime work.
 
 ## Priority state
 
@@ -89,7 +89,7 @@ This document is normative for the current Android WebView stabilization cycle. 
 ## Definition of Done for merge to main
 
 1. `verification-gate` passes.
-2. Working branch is reconciled with the 3 main-only commits without dropping Android Native API changes.
+2. Android Native API 6 reconciliation contract passes and `main` remains an ancestor of the working branch.
 3. Staging verifier passes against the intended KARETA staging host.
 4. No active migration exists outside canonical manifest 1..129 until the pending migration promotion is explicitly approved.
 5. 404, Client and Master routes retain the same outer desktop alignment at representative widths.

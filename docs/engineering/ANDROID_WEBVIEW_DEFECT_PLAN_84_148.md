@@ -11,7 +11,7 @@ This plan converts the defects observed during the Android WebView test into own
 
 ## Current branch/release constraint
 
-The web/runtime branch is currently 85 commits ahead and 3 commits behind `main`. The main-only Android Native API delta changes exactly these application files relative to the current web branch:
+The Android Native API 6 delta has been reconciled by merge commit `d0660fa1f9c562e826c5f8e81707f837368075cf`. The working branch is now 88 commits ahead and 0 behind `main`. The reconciled delta was limited to:
 
 - `api/obd.php`
 - `js/mobile_native_bridge.js`
@@ -55,6 +55,8 @@ The reconciliation must preserve the 84.148 WebView/runtime/cache work and the A
 5. Run `verification-gate` before targeting `main`.
 
 Important: do not copy all of `main` over the web branch and do not copy the old three web files over the Native API 6 versions. Reconciliation is semantic, file-by-file.
+
+Reconciliation evidence: all three web-branch blobs matched the prior merged-main blobs before the merge, proving no later 84.148 web edits existed in those files. The integration therefore used the exact Native API 6 blobs from `main` as a two-parent merge rather than overwriting unrelated runtime files.
 
 ## Phase B — staging route-asset integrity
 
