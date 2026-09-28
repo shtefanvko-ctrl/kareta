@@ -6,7 +6,7 @@ Merge target: `main`
 
 ## Current branch reality
 
-The branches are diverged. At the 84.146 audit point the working branch is **61 commits ahead** and **3 commits behind** `main`, with merge base `1732058c6bda6a5b4e1e703c2b9d965e69449a61`.
+The branches are diverged. At the current 84.148 planning point the working branch is **85 commits ahead** and **3 commits behind** `main`, with merge base `1732058c6bda6a5b4e1e703c2b9d965e69449a61`.
 
 The commits present only on `main` include the newer Android/Native API integration. The working branch contains the later web UI/runtime hardening. Neither branch alone is currently the complete release source of truth. Reconciliation must preserve both lines before merge.
 
@@ -60,7 +60,7 @@ Old release-numbered staging artifacts remain historical evidence only. Current 
 python3 tools/verify_staging_current.py --base-url https://s.kareta.kz
 ```
 
-84.146 is **not marked staging PASS until that deployed check succeeds**.
+84.148 is **not marked staging PASS until that deployed check succeeds**. The verifier now walks every lazy route CSS/JS asset and requires HTTP 200, correct MIME and the current release token.
 
 ### P4 — legacy authorization
 
@@ -77,6 +77,14 @@ This file and `docs/release/current.json` supersede the 84.109 release-master-pl
 - Unknown hashes render a first-class KARETA 404 surface and retain the invalid URL.
 - Master shell remains role-specific but follows the same geometry discipline as Client.
 - Route modules may control internal grids, but may not redefine the application's outer desktop frame.
+
+## Android WebView defect program
+
+The screenshot-driven defect inventory, technical ownership, remediation order and two-pass acceptance route are tracked in:
+
+`docs/engineering/ANDROID_WEBVIEW_DEFECT_PLAN_84_148.md`
+
+This document is normative for the current Android WebView stabilization cycle. In particular, raw route loader failures, empty API surfaces, repeated route skeletons and navigation/layout overlap are release blockers for the Android shell even when desktop/browser verification passes.
 
 ## Definition of Done for merge to main
 
