@@ -1,0 +1,264 @@
+/* R188.5.5.6.59 — Marketplace list windows + native product detail. Page-only; Shell Freeze 2 untouched. */
+.k-parts-native-section{padding:18px;border:1px solid rgba(15,23,42,.08);border-radius:24px;background:#fff;box-shadow:0 10px 30px rgba(15,23,42,.035)}
+.k-parts-native-section--new{background:linear-gradient(180deg,#fff,#f8fbff)}
+.k-parts-native-section--used{background:linear-gradient(180deg,#fff,#fafafa)}
+.k-parts-native-section--restored{background:linear-gradient(180deg,#fff,#f7fcfa)}
+.k-parts-native-section--exchange{background:linear-gradient(180deg,#fff,#fffaf3)}
+.k-parts-native-types{display:none!important}
+.k-parts-market-list-dialog{width:min(1600px,calc(100% - 32px));max-width:none}
+.k-parts-market-list-panel{min-height:min(72vh,760px)}
+.k-parts-market-list-panel>header p{margin:5px 0 0;color:#64748b}
+.k-parts-market-list-panel .k-parts-native-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+
+.k-part-native-detail{display:grid;gap:18px;max-width:2400px!important;width:100%}
+.k-part-native-detail .k-detail-back{justify-self:start;border:1px solid #dbe1e8;background:#fff;border-radius:14px;min-height:42px;padding:0 14px;font-weight:800;cursor:pointer}
+.k-part-detail-header{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;padding:24px;border:1px solid rgba(15,23,42,.08);border-radius:26px;background:#fff}
+.k-part-detail-header small{display:block;color:#ea580c;font-size:11px;font-weight:900;letter-spacing:.1em}
+.k-part-detail-header h1{margin:6px 0 10px;font-size:clamp(28px,4vw,48px);line-height:1.05}
+.k-part-detail-tags{display:flex;gap:7px;flex-wrap:wrap}.k-part-detail-tags span{padding:6px 9px;border:1px solid #e5e7eb;background:#f8fafc;border-radius:999px;font-size:11px;color:#475569}
+.k-part-detail-price{text-align:right;display:grid;gap:3px}.k-part-detail-price b{font-size:clamp(25px,3vw,38px)}.k-part-detail-price s{color:#94a3b8}.k-part-detail-price small{color:#64748b}
+.k-part-detail-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.k-part-detail-gallery>button{padding:0;border:0;border-radius:20px;overflow:hidden;background:#f8fafc;aspect-ratio:4/3;cursor:pointer}.k-part-detail-gallery img{width:100%;height:100%;object-fit:cover;display:block}.k-part-detail-gallery>button:first-child{grid-column:span 2;grid-row:span 2}
+.k-part-detail-no-image{min-height:320px;border-radius:24px;background:#f8fafc;border:1px solid #e5e7eb;display:grid;place-items:center;align-content:center;gap:6px;color:#ea580c;font-weight:950}.k-part-detail-no-image small{color:#64748b;font-weight:600}
+.k-part-detail-actions{display:flex;gap:9px;flex-wrap:wrap}.k-part-detail-actions .k-btn{min-height:46px}
+.k-part-detail-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);gap:18px;align-items:start}.k-part-detail-layout>main{display:grid;gap:16px}
+.k-part-detail-section,.k-part-detail-seller{border:1px solid rgba(15,23,42,.08);background:#fff;border-radius:22px;padding:20px}.k-part-detail-section>header small,.k-part-detail-seller>small{color:#ea580c;font-size:11px;font-weight:900;letter-spacing:.1em}.k-part-detail-section>header h2,.k-part-detail-seller h2{margin:4px 0 12px}.k-part-detail-section>p{color:#475569;line-height:1.6}
+.k-part-detail-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:14px}.k-part-detail-facts article{padding:12px;border-radius:15px;background:#f8fafc}.k-part-detail-facts span,.k-part-detail-facts b{display:block}.k-part-detail-facts span{color:#64748b;font-size:11px;margin-bottom:4px}
+.k-part-fitment-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.k-part-fitment-grid article,.k-part-fitment-card,.k-part-donor-card,.k-part-exchange-card{padding:14px;border:1px solid #e5e7eb;border-radius:16px;background:#f8fafc}.k-part-fitment-grid b,.k-part-fitment-card b,.k-part-donor-card b{display:block}.k-part-fitment-card p,.k-part-donor-card p,.k-part-exchange-card p{margin:6px 0 0;color:#64748b;line-height:1.5}.k-part-donor-card span{display:block;color:#475569;margin-top:5px}.k-part-exchange-card{background:#fff7ed;border-color:#fed7aa}.k-part-detail-note{color:#64748b;font-size:12px}
+.k-part-installation-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.k-part-installation-list a{display:grid;gap:4px;padding:14px;border:1px solid #e5e7eb;border-radius:16px;text-decoration:none;color:inherit}.k-part-installation-list small{color:#16a34a;font-size:10px;font-weight:900}.k-part-installation-list span,.k-part-installation-list time{color:#64748b;font-size:12px}
+.k-part-native-empty{padding:16px;border:1px dashed #dbe1e8;border-radius:16px;background:#f8fafc}.k-part-native-empty b{display:block}.k-part-native-empty p{margin:5px 0 0;color:#64748b;line-height:1.5}
+.k-part-detail-seller{position:sticky;top:92px;display:grid;gap:10px}.k-part-detail-seller>p{margin:0;color:#64748b;line-height:1.5}.k-part-detail-seller>div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid #eef2f7}.k-part-detail-seller>div span{color:#64748b}.k-part-detail-seller .k-btn{margin-top:3px}
+.k-part-review-summary{display:flex;align-items:end;gap:10px;margin-bottom:12px}.k-part-review-summary strong{font-size:34px}.k-part-review-summary span{color:#64748b;padding-bottom:4px}.k-part-review-form{display:grid;gap:10px;margin-top:14px}.k-part-rating-choice{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.k-part-rating-choice button{min-height:42px;border:1px solid #dbe1e8;background:#fff;border-radius:12px;font-weight:850;cursor:pointer}.k-part-rating-choice button.is-active{border-color:#fb923c;background:#fff7ed;color:#c2410c}.k-part-native-detail textarea{width:100%;box-sizing:border-box;border:1px solid #dbe1e8;border-radius:14px;padding:12px;font:inherit}
+.k-part-image-dialog{border:0;padding:44px 16px 16px;background:rgba(15,23,42,.96);width:100vw;height:100dvh;max-width:none;max-height:none}.k-part-image-dialog::backdrop{background:rgba(15,23,42,.96)}.k-part-image-dialog img{width:100%;height:calc(100dvh - 60px);object-fit:contain}.k-part-image-dialog>button{position:fixed;top:12px;right:14px;width:42px;height:42px;border:0;border-radius:14px;background:#fff;color:#111827;font-size:24px;z-index:2}
+
+@media(max-width:1500px){.k-parts-market-list-panel .k-parts-native-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.k-part-detail-gallery{grid-template-columns:repeat(3,minmax(0,1fr))}.k-part-fitment-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1000px){.k-parts-market-list-panel .k-parts-native-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.k-part-detail-layout{grid-template-columns:1fr}.k-part-detail-seller{position:static}.k-part-detail-facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){
+ .k-parts-native-section{padding:14px;border-radius:19px}.k-parts-native-section>header{display:grid;gap:10px}.k-parts-native-section>header button{justify-self:stretch;width:100%}
+ .k-parts-market-list-dialog{width:100%;height:100dvh;max-height:none;margin:0}.k-parts-market-list-panel{height:100dvh;max-height:none;border-radius:0;padding:14px}.k-parts-market-list-panel .k-parts-native-grid{grid-template-columns:1fr}
+ .k-part-native-detail{padding-inline:12px!important;gap:13px}.k-part-detail-header{display:grid;padding:17px;border-radius:19px}.k-part-detail-price{text-align:left}.k-part-detail-gallery{grid-template-columns:1fr}.k-part-detail-gallery>button,.k-part-detail-gallery>button:first-child{grid-column:auto;grid-row:auto;aspect-ratio:16/10}.k-part-detail-no-image{min-height:220px}.k-part-detail-actions{display:grid;grid-template-columns:1fr}.k-part-detail-section,.k-part-detail-seller{padding:15px;border-radius:18px}.k-part-detail-facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.k-part-fitment-grid,.k-part-installation-list{grid-template-columns:1fr}.k-part-rating-choice{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.k-part-rating-choice button{font-size:11px;padding:0 4px}.k-part-image-dialog{padding:54px 8px 8px}
+}
+.k-parts-section-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.k-parts-section-actions button{border:1px solid #dbe1e8;background:#fff;border-radius:13px;min-height:40px;padding:0 13px;font-weight:800;cursor:pointer}
+@media(max-width:700px){.k-parts-section-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}.k-parts-section-actions button{width:100%}}
+
+/* R188.5.5.6.84.47 — reference product detail, cart and filters */
+.k-parts-ref-detail{
+  --k-parts-accent:#ff3b0a;
+  --k-parts-line:#e3e5e9;
+  --k-parts-soft:#f7f7f8;
+  width:min(100%,1180px)!important;
+  max-width:1180px!important;
+  margin:0 auto;
+  padding:18px 20px 110px!important;
+  gap:14px;
+  background:#fff;
+}
+.k-parts-ref-detail>.k-detail-back{
+  min-height:44px;
+  padding:0 4px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:#202328;
+  font-size:14px;
+  font-weight:650;
+}
+.k-parts-ref-detail .k-part-detail-header{
+  align-items:flex-start;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+.k-parts-ref-detail .k-part-detail-header small{
+  color:#7b8088;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:0;
+}
+.k-parts-ref-detail .k-part-detail-header h1{
+  margin:5px 0 8px;
+  max-width:760px;
+  font-size:clamp(25px,3vw,38px);
+  line-height:1.12;
+  letter-spacing:-.025em;
+  font-weight:770;
+}
+.k-parts-ref-detail .k-part-detail-tags{gap:6px}
+.k-parts-ref-detail .k-part-detail-tags span{
+  padding:5px 8px;
+  border:0;
+  border-radius:9px;
+  background:#f1f2f4;
+  color:#5e646d;
+  font-size:10px;
+}
+.k-parts-ref-detail .k-part-detail-price{gap:4px;min-width:170px}
+.k-parts-ref-detail .k-part-detail-price b{font-size:27px;line-height:32px;font-weight:790}
+.k-parts-ref-detail .k-part-detail-price small{font-size:11px}
+.k-parts-ref-detail .k-part-detail-gallery{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+  padding:10px;
+  border:1px solid var(--k-parts-line);
+  border-radius:18px;
+  background:var(--k-parts-soft);
+}
+.k-parts-ref-detail .k-part-detail-gallery>button{
+  border-radius:13px;
+  background:#fff;
+}
+.k-parts-ref-detail .k-part-detail-gallery img{object-fit:contain;padding:10px;background:#fff}
+.k-parts-ref-detail.is-store .k-part-detail-gallery:has(>button:only-child){grid-template-columns:1fr;max-height:520px}
+.k-parts-ref-detail.is-store .k-part-detail-gallery:has(>button:only-child)>button{aspect-ratio:16/8.3;max-height:500px}
+.k-parts-ref-detail .k-part-detail-no-image{
+  min-height:320px;
+  border:1px solid var(--k-parts-line);
+  border-radius:18px;
+  background:var(--k-parts-soft);
+}
+.k-parts-ref-detail .k-parts-ref-detail-actions{
+  display:grid;
+  grid-template-columns:minmax(180px,1.5fr) repeat(2,minmax(130px,1fr));
+  gap:8px;
+}
+.k-parts-ref-detail .k-parts-ref-detail-actions .k-btn{
+  min-height:50px;
+  border-radius:13px;
+  font-size:14px;
+  font-weight:680;
+}
+.k-parts-ref-detail .k-parts-ref-detail-actions .k-btn-primary{background:var(--k-parts-accent);border-color:var(--k-parts-accent)}
+.k-parts-ref-detail .k-part-detail-layout{grid-template-columns:minmax(0,1fr) 320px;gap:14px}
+.k-parts-ref-detail .k-part-detail-layout>main{gap:12px}
+.k-parts-ref-detail .k-part-detail-section,
+.k-parts-ref-detail .k-part-detail-seller{
+  padding:17px;
+  border:1px solid var(--k-parts-line);
+  border-radius:16px;
+  box-shadow:none;
+}
+.k-parts-ref-detail .k-part-detail-section>header small,
+.k-parts-ref-detail .k-part-detail-seller>small{color:#7a8088;font-size:10px;letter-spacing:.06em}
+.k-parts-ref-detail .k-part-detail-section>header h2,
+.k-parts-ref-detail .k-part-detail-seller h2{margin:4px 0 11px;font-size:18px;line-height:24px}
+.k-parts-ref-detail .k-part-detail-facts{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.k-parts-ref-detail .k-part-detail-facts article{padding:10px;border-radius:11px;background:#f6f7f8}
+.k-parts-ref-detail .k-part-detail-facts span{font-size:10px}
+.k-parts-ref-detail .k-part-detail-facts b{font-size:12px;line-height:17px}
+.k-parts-ref-detail .k-part-detail-section>p{font-size:13px;line-height:1.55}
+.k-parts-ref-detail .k-part-detail-seller{top:78px;gap:7px}
+.k-parts-ref-detail .k-part-detail-seller>div{padding:8px 0;font-size:12px}
+.k-parts-ref-detail .k-part-detail-seller .k-btn{min-height:44px;border-radius:12px}
+
+.k-parts-ref-filter-dialog{
+  width:min(620px,calc(100% - 28px));
+  max-height:min(86vh,760px);
+}
+.k-parts-ref-filter-dialog .k-parts-native-dialog__panel{
+  padding:20px;
+  border-radius:22px;
+  box-shadow:0 22px 70px rgba(15,23,42,.2);
+}
+.k-parts-ref-filter-dialog header{margin-bottom:14px}
+.k-parts-ref-filter-dialog header small{color:#7c828b;letter-spacing:.06em}
+.k-parts-ref-filter-dialog header h2{font-size:22px;line-height:28px}
+.k-parts-ref-filter-dialog [data-parts-filter-body]{display:grid;gap:14px}
+.k-parts-ref-filter-dialog [data-parts-filter-body]>section,
+.k-parts-ref-filter-dialog [data-parts-filter-body]>label{margin:0;padding:14px;border:1px solid #e5e7ea;border-radius:15px;background:#fafafb}
+.k-parts-ref-filter-dialog [data-parts-filter-body]>section>span,
+.k-parts-ref-filter-dialog [data-parts-filter-body]>label>span{font-size:12px;font-weight:700;color:#373b41}
+.k-parts-ref-filter-dialog .k-parts-choice-grid,
+.k-parts-ref-filter-dialog .k-parts-filter-categories{margin-top:9px;gap:7px}
+.k-parts-ref-filter-dialog .k-parts-choice-grid button,
+.k-parts-ref-filter-dialog .k-parts-filter-categories button{
+  min-height:42px;
+  padding:8px 10px;
+  border-radius:11px;
+  background:#fff;
+  text-align:center;
+  font-size:12px;
+}
+.k-parts-ref-filter-dialog .k-parts-choice-grid button.is-active,
+.k-parts-ref-filter-dialog .k-parts-filter-categories button.is-active{
+  border-color:var(--k-parts-accent,#ff3b0a);
+  background:#fff4ef;
+  color:#e84a0a;
+}
+.k-parts-ref-filter-dialog input{height:46px;border-radius:11px;background:#fff}
+.k-parts-ref-filter-dialog .k-parts-native-dialog__panel>footer{
+  position:sticky;
+  bottom:-20px;
+  margin:16px -20px -20px;
+  padding:12px 20px calc(12px + env(safe-area-inset-bottom));
+  border-top:1px solid #eceef0;
+  background:#fff;
+  display:grid;
+  grid-template-columns:1fr 1.4fr;
+  gap:9px;
+}
+.k-parts-ref-filter-dialog .k-parts-native-dialog__panel>footer button{height:48px;border-radius:12px}
+.k-parts-ref-filter-dialog [data-parts-filter-apply]{background:#ff3b0a!important;border-color:#ff3b0a!important;color:#fff!important}
+
+.k-parts-ref-cart-dialog{
+  width:min(560px,calc(100% - 28px));
+  max-height:min(90vh,840px);
+  padding:20px;
+  border:0;
+  border-radius:22px;
+  background:#fff;
+  box-shadow:0 24px 80px rgba(15,23,42,.22);
+}
+.k-parts-ref-cart-dialog::backdrop{background:rgba(15,23,42,.58)}
+.k-parts-ref-cart-dialog .k-shop-cart-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.k-parts-ref-cart-dialog .k-shop-cart-head h2{margin:0;font-size:24px;line-height:30px}
+.k-parts-ref-cart-dialog .k-shop-cart-head p{margin:3px 0 0;color:#7a8088;font-size:12px}
+.k-parts-ref-cart-dialog .k-shop-cart-head>button{width:40px;height:40px;border:0;border-radius:12px;background:#f3f4f5;font-size:23px}
+.k-parts-ref-cart-dialog [data-shop-cart-items]{display:grid;gap:8px;max-height:280px;overflow:auto;padding-right:2px}
+.k-parts-ref-cart-dialog .k-shop-cart-total{margin:14px 0;padding:13px 14px;border-radius:13px;background:#f7f7f8;display:flex;align-items:center;justify-content:space-between}
+.k-parts-ref-cart-dialog .k-shop-cart-total span{color:#777d86;font-size:12px}
+.k-parts-ref-cart-dialog .k-shop-cart-total b{font-size:18px}
+.k-parts-ref-cart-dialog .k-shop-checkout{display:grid;gap:10px}
+.k-parts-ref-cart-dialog .k-shop-checkout label{display:grid;gap:5px;font-size:12px;font-weight:650}
+.k-parts-ref-cart-dialog .k-shop-checkout input{height:46px;padding:0 12px;border:1px solid #dfe2e6;border-radius:11px;font:inherit}
+.k-parts-ref-cart-dialog .k-shop-checkout>section{display:grid;gap:7px}
+.k-parts-ref-cart-dialog .k-parts-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.k-parts-ref-cart-dialog .k-parts-choice-grid button{min-height:44px;padding:7px;border-radius:11px;text-align:center;font-size:11px}
+.k-parts-ref-cart-dialog .k-shop-checkout>.k-btn-primary{height:52px;border-radius:13px;background:#ff3b0a;border-color:#ff3b0a;font-size:15px;font-weight:700}
+
+@media(max-width:700px){
+  .k-parts-ref-detail{padding:12px 14px 96px!important;gap:12px}
+  .k-parts-ref-detail>.k-detail-back{min-height:40px}
+  .k-parts-ref-detail .k-part-detail-header{display:grid;gap:8px}
+  .k-parts-ref-detail .k-part-detail-header h1{font-size:23px;line-height:29px}
+  .k-parts-ref-detail .k-part-detail-price{text-align:left;min-width:0}
+  .k-parts-ref-detail .k-part-detail-price b{font-size:24px}
+  .k-parts-ref-detail .k-part-detail-gallery{grid-template-columns:repeat(2,minmax(0,1fr));padding:7px;border-radius:15px}
+  .k-parts-ref-detail .k-part-detail-gallery>button:first-child{grid-column:span 2;grid-row:auto;aspect-ratio:1.35/1}
+  .k-parts-ref-detail.is-store .k-part-detail-gallery:has(>button:only-child)>button{grid-column:auto;aspect-ratio:1.25/1;max-height:none}
+  .k-parts-ref-detail .k-parts-ref-detail-actions{
+    position:sticky;
+    z-index:20;
+    bottom:76px;
+    grid-template-columns:1fr auto;
+    padding:10px;
+    margin:0 -2px;
+    border:1px solid #e6e8eb;
+    border-radius:15px;
+    background:rgba(255,255,255,.96);
+    backdrop-filter:blur(12px);
+    box-shadow:0 -8px 22px rgba(17,24,39,.06);
+  }
+  .k-parts-ref-detail .k-parts-ref-detail-actions .k-btn-primary{grid-column:1;min-width:0}
+  .k-parts-ref-detail .k-parts-ref-detail-actions .k-btn-secondary{grid-column:2;width:48px;overflow:hidden;white-space:nowrap;color:transparent;padding:0;font-size:0}
+  .k-parts-ref-detail .k-parts-ref-detail-actions .k-btn-secondary::before{content:"···";color:#33383e;font-size:20px}
+  .k-parts-ref-detail .k-part-detail-layout{grid-template-columns:1fr;gap:10px}
+  .k-parts-ref-detail .k-part-detail-section,.k-parts-ref-detail .k-part-detail-seller{padding:14px;border-radius:14px}
+  .k-parts-ref-detail .k-part-detail-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .k-parts-ref-filter-dialog{width:100%;height:auto;max-height:92dvh;margin:auto 0 0;max-width:none}
+  .k-parts-ref-filter-dialog .k-parts-native-dialog__panel{max-height:92dvh;border-radius:22px 22px 0 0;padding:16px}
+  .k-parts-ref-filter-dialog .k-parts-native-dialog__panel>footer{bottom:-16px;margin:14px -16px -16px;padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+  .k-parts-ref-filter-dialog .k-parts-filter-categories{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .k-parts-ref-cart-dialog{width:100%;max-width:none;max-height:92dvh;margin:auto 0 0;padding:16px;border-radius:22px 22px 0 0}
+  .k-parts-ref-cart-dialog [data-shop-cart-items]{max-height:220px}
+  .k-parts-ref-cart-dialog .k-parts-choice-grid{grid-template-columns:1fr 1fr}
+}

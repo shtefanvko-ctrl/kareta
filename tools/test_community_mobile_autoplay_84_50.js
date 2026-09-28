@@ -1,0 +1,23 @@
+'use strict';
+const fs=require('fs'),path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};
+const page=read('js/next/pages/community.js');
+const css=read('css/next/community.css');
+const surface=read('css/next/client_surface_layout.css');
+const asset=read('inc/asset_version.php');
+const sw=read('sw.js');
+const inherited=(surface.split('html[data-user-role="client"] #k-page-outlet > :is(')[1]||'').split(') {')[0]||'';
+expect(!/\.k-community-page\.k-flow-primary-page,/.test(inherited),'Community V2 must not inherit client outer gutter');
+for(const token of ['data-community-autoplay-video','muted playsinline loop preload="none"','setupVideoAutoplay','playCommunityVideo','stopCommunityVideos','syncPostReaction','visibilitychange','intersectionRatio','bestRatio>=.42'])expect(page.includes(token),`community mobile video missing ${token}`);
+expect(page.includes("visibleCount=window.matchMedia?.('(max-width: 767px)')?.matches?6:12"),'mobile initial feed batch must be 6');
+expect(page.includes("limit:window.matchMedia?.('(max-width: 767px)')?.matches?48:80"),'mobile API batch must be reduced');
+expect(page.includes('syncPostReaction(post);const r=await api.likePost'),'like must update locally before API');
+expect(page.includes('syncPostReaction(post);const r=await api.savePost'),'save must update locally before API');
+for(const token of ['R188.5.5.6.84.50 — Community mobile width + viewport video playback stabilization','overflow-x:clip','grid-template-columns:minmax(0,1fr) auto','padding-left:0!important;padding-right:0!important','max-width:100%!important'])expect(css.includes(token),`community mobile css missing ${token}`);
+const av=(asset.match(/KARETA_ASSET_VERSION\s*=\s*'188\.5\.5\.6\.84\.(\d+)'/)||[])[1],sv=(sw.match(/const RELEASE\s*=\s*'188\.5\.5\.6\.84\.(\d+)'/)||[])[1];
+expect(Number(av)>=50&&Number(sv)>=50,'asset/sw version mismatch');
+expect(asset.includes('r188568450-community-mobile-autoplay'),'release marker missing');
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}
+console.log('R188.5.5.6.84.50 Community mobile width + autoplay: OK');

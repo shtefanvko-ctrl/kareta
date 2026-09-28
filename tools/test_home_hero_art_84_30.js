@@ -1,0 +1,20 @@
+const fs=require('fs');
+const core=fs.readFileSync('js/next/pages/core.js','utf8');
+const css=fs.readFileSync('css/next/reference_client_pages.css','utf8');
+const registry=fs.readFileSync('inc/asset_registry.php','utf8');
+const version=fs.readFileSync('inc/asset_version.php','utf8');
+const sw=fs.readFileSync('sw.js','utf8');
+const fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};
+const art='media/kareta_create_request_vehicle_background_r188_5_5_6_84_31.png';
+expect(core.includes('<picture>'),'hero picture contract must remain');
+expect(core.includes('/'+art),'approved request vehicle artwork missing from Home');
+expect(registry.includes("'"+art+"'"),'approved request vehicle artwork must be registered');
+expect(core.includes('data-home-hero-art')&&core.includes('data-home-hero-image'),'hero diagnostics hooks missing');
+expect(core.includes("image.addEventListener('error',onError)")&&core.includes('image.src=HOME_HERO_MOBILE'),'hero fallback must remain fail-soft');
+expect(core.includes('aria-label="4 шага заявки"')&&core.includes('<span>4</span>'),'Home request preview must expose four steps');
+expect(css.includes('.k-home-ref-hero-art picture img')&&css.includes('object-fit:contain!important'),'reference art must remain visible without cover cropping');
+expect(css.includes('.k-home-ref-hero-art::before{display:none!important}'),'reference art overlay must stay disabled');
+expect(/188\.5\.5\.6\.84\.33/.test(version),'84.33 asset version missing');
+expect(sw.includes("const RELEASE = '188.5.5.6.84.33';"),'service worker release must match 84.31');
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}
+console.log('R188.5.5.6.84.33 reference Home hero: OK');

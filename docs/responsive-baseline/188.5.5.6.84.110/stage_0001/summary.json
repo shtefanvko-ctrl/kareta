@@ -1,0 +1,21 @@
+{
+  "stage": "AUTO_STAGE: 1/539",
+  "release": "188.5.5.6.84.110",
+  "baseUrl": "http://localhost/",
+  "browser": "Chrome/153.0.8010.53",
+  "roles": [
+    "client",
+    "master",
+    "sto",
+    "seller",
+    "admin",
+    "owner"
+  ],
+  "screenshots": 18,
+  "defects": 3,
+  "coverageNotes": 18,
+  "overflow": 0,
+  "routeMismatch": 3,
+  "emptyOutlet": 0,
+  "generatedAt": "2026-09-25T07:39:13.252Z"
+}

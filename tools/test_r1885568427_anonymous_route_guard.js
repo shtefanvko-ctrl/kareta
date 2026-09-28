@@ -1,0 +1,15 @@
+const fs=require('fs'),vm=require('vm'),path=require('path');
+const root=path.resolve(__dirname,'..');
+const code=fs.readFileSync(path.join(root,'js/next/role_access.js'),'utf8');
+const store=(seed={})=>{const m=new Map(Object.entries(seed));return {getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)};};
+const routes={home:{path:'#/home'},masterDashboard:{path:'#/master'},services:{path:'#/services'}};
+const registry={has:k=>!!routes[k],desktopKeys:Object.keys(routes),mobileKeys:Object.keys(routes)};
+const document={documentElement:{dataset:{identityMode:'anonymous'}}};
+const window={KaretaRouteRegistry:registry,KaretaIdentity:{snapshot:()=>({authenticated:false,mode:'anonymous'})},KaretaRuntimeDependencies:{missing:()=>[]},addEventListener:()=>{},dispatchEvent:()=>{},KaretaSessionResume:{hint:()=>({role:'master'})}};
+const context={window,document,localStorage:store({'kareta.auth.user':JSON.stringify({role:'master'})}),sessionStorage:store(),CustomEvent:function(){}};vm.createContext(context);vm.runInContext(code,context);
+const a=context.window.KaretaRoleAccess;
+if(a.currentRole()!=='client')throw new Error('anonymous stale role must resolve to client');
+if(a.resolve('masterDashboard')!=='home')throw new Error('anonymous protected master route must resolve home');
+document.documentElement.dataset.identityMode='resume-degraded';
+if(a.currentRole()!=='master')throw new Error('resume-degraded should preserve master resume hint');
+console.log('R188.5.5.6.84.27 anonymous route guard OK');

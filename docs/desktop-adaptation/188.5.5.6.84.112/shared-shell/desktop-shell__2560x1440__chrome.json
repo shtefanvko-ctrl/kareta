@@ -1,0 +1,71 @@
+{
+  "width": 2560,
+  "height": 1440,
+  "pass": true,
+  "state": {
+    "width": 2560,
+    "height": 1440,
+    "scrollWidth": 2560,
+    "overflowX": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "w": 2560,
+      "h": 77,
+      "display": "grid",
+      "position": "fixed"
+    },
+    "sidebar": {
+      "x": 0,
+      "y": 76,
+      "w": 248,
+      "h": 1364,
+      "display": "block",
+      "position": "fixed"
+    },
+    "desktopNav": {
+      "x": 14,
+      "y": 92,
+      "w": 219,
+      "h": 336,
+      "display": "flex",
+      "position": "static"
+    },
+    "mobileNav": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "display": "none",
+      "position": "fixed"
+    },
+    "outlet": {
+      "x": 684,
+      "y": 76,
+      "w": 1440,
+      "h": 356,
+      "display": "block",
+      "position": "static"
+    },
+    "fullLogo": {
+      "x": 24,
+      "y": 14,
+      "w": 176,
+      "h": 48,
+      "display": "block",
+      "position": "static"
+    },
+    "iconLogo": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "display": "none",
+      "position": "static"
+    },
+    "pageMax": "1440px",
+    "sidebarW": "248px",
+    "expected": 248,
+    "pass": true
+  }
+}

@@ -1,0 +1,32 @@
+'use strict';
+const fs=require('fs'),path=require('path'),crypto=require('crypto');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};
+const win=read('js/next/window_engine.js');
+const feed=read('js/next/pages/work_feed.js');
+const community=read('js/next/pages/community.js');
+const chats=read('js/next/pages/chats.js');
+const css=read('css/next/social_windows.css');
+const reg=read('inc/asset_registry.php');
+const asset=read('inc/asset_version.php');
+const sw=read('sw.js');
+const config=read('config.php');
+const manifest=JSON.parse(read('tools/shell_freeze_manifest_r1885603.json'));
+const dbv=Number((/KARETA_DB_VERSION',\s*(\d+)/.exec(config)||[])[1]||0);
+expect(dbv>=127,`R80 baseline requires DB 127 or newer (got ${dbv})`);
+expect(/version:'R188\.5\.5\.6\.(?:80|8[1-9]|9\d+)'/.test(win),'Window Engine must be R80 or newer');
+for(const marker of ["'workDetail'","/^#\\/works\\/item\\/[^/?]+/",'KaretaWorkFeedPages?.renderWorkDetail'])expect(win.includes(marker),`Window Engine missing R80 marker ${marker}`);
+for(const marker of ['data-work-detail-root',".k-entity-window [data-work-detail-root]",'k-work-detail-related-actions','Заказ-наряд','Автомобиль','comments'])expect(feed.includes(marker),`work detail missing ${marker}`);
+expect(!feed.includes("const root=document.querySelector('#k-page-outlet');if(!root)return;"),'work detail must not overwrite page outlet when opened as entity window');
+for(const marker of ['KaretaWindowEngine.openEntity(target)','authorRoute(x)','k-community-author-link','data-community-dialog'])expect(community.includes(marker),`community missing ${marker}`);
+expect(community.includes("x.type==='work'||x.type==='product'"),'work/product social entities must route through Window Engine');
+for(const marker of ['<dialog class="k-chat-contact-dialog"','dialog.showModal()','contactDialog?.addEventListener(\'cancel\'','Профиль','#/orders/item/'])expect(chats.includes(marker),`chats missing ${marker}`);
+expect(!chats.includes('k-chat-contact-backdrop'),'R80 new-chat UI must no longer use custom backdrop layer');
+for(const token of ['dialog.k-community-dialog','dialog.k-chat-contact-dialog','.k-work-detail-related-actions','.k-chat-head-actions'])expect(css.includes(token),`R80 CSS missing ${token}`);
+expect(reg.includes('css/next/social_windows.css'),'R80 CSS not registered');
+expect(asset.includes('r1885640-social-communication-window-flow')&&sw.includes('r1885640-social-communication-window-flow'),'R80 release suffix missing');
+expect(asset.includes('r1885639-client-account-window-flow'),'R79 must precede R80 in release chain');
+for(const [file,hash] of Object.entries(manifest.files)){const actual=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');expect(actual===hash,`SHELL FREEZE VIOLATION: ${file}`)}
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}
+console.log('R188.5.5.6.80 Social & Communication Window Flow: work/product entity windows + large social dialogs + native contact dialog + chat entity actions + Shell Freeze 2 OK');

@@ -1,0 +1,23 @@
+(() => {
+  'use strict';
+  const get=(api,options={})=>api.request('api/db.php?action=masterSchedule.get',{cacheTtlMs:15000,force:true,...options});
+  const post=(api,action,payload)=>api.request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...payload}),cacheTtlMs:0,dedupe:false});
+  const savePreferences=(api,payload)=>post(api,'masterSchedule.preferences.save',payload);
+  const saveDay=(api,payload)=>post(api,'masterSchedules.save',{schedule:payload});
+  const startWork=(api,payload)=>post(api,'workTimers.start',payload);
+  const stopWork=(api,payload)=>post(api,'workTimers.stop',payload);
+  const freeSlots=(api,payload)=>post(api,'masterSchedule.freeSlots',payload);
+  const proposeReschedule=(api,payload)=>post(api,'masterSchedule.reschedule.propose',payload);
+  const saveWeekly=(api,payload)=>post(api,'masterShift.weekly.save',payload);
+  const saveBlock=(api,payload)=>post(api,'masterSchedule.block.save',payload);
+  const deleteBlock=(api,payload)=>post(api,'masterSchedule.block.delete',payload);
+  const setArrival=(api,payload)=>post(api,'masterSchedule.arrival.set',payload);
+  const runRecovery=(api,payload={})=>post(api,'masterSchedule.recovery.run',payload);
+  const previewRecovery=(api,payload={})=>post(api,'masterSchedule.recovery.preview',payload);
+  const applyRecovery=(api,payload={})=>post(api,'masterSchedule.recovery.apply',payload);
+  const protectRecovery=(api,payload={})=>post(api,'masterSchedule.recovery.protect',payload);
+  const resendRecoveryNotification=(api,payload={})=>post(api,'masterSchedule.recovery.notifyResend',payload);
+  const saveExtension=(api,payload)=>post(api,'masterShift.extension.save',payload);
+  const deleteExtension=(api,payload)=>post(api,'masterShift.extension.delete',payload);
+  window.KaretaMasterScheduleApi=Object.freeze({get,savePreferences,saveDay,startWork,stopWork,freeSlots,proposeReschedule,saveWeekly,saveBlock,deleteBlock,setArrival,runRecovery,previewRecovery,applyRecovery,protectRecovery,resendRecoveryNotification,saveExtension,deleteExtension});
+})();

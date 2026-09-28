@@ -1,0 +1,40 @@
+{
+  "schema": "kareta.legacy-role-budget.v1",
+  "stage": 14,
+  "baseline": "R188.5.5.6.84.109",
+  "before": {
+    "total": 108,
+    "dbPhp": 90
+  },
+  "budget": {
+    "total": 68,
+    "dbPhp": 50
+  },
+  "after": {
+    "total": 68,
+    "dbPhp": 50
+  },
+  "migratedCallSites": 40,
+  "centralizedPolicy": "api/domains/capability_dispatch.php",
+  "capabilityAlias": {
+    "profile.edit_own": "profile.manage"
+  },
+  "remainingByFile": {
+    "api/db.php": 50,
+    "api/domains/identity_admin.php": 4,
+    "api/account_tariffs.php": 3,
+    "api/work_posts.php": 3,
+    "api/data_integrity.php": 2,
+    "api/domains/runtime_config.php": 2,
+    "api/messaging.php": 1,
+    "api/profile.php": 1,
+    "api/seller_shop.php": 1,
+    "api/identity/legacy_api_bridge.php": 1
+  },
+  "tests": {
+    "legacyRoleBudget": "PASS",
+    "dbMonolithNoGrowth": "PASS",
+    "apiContractSmoke": "PASS 10/10",
+    "releaseChecklist": "PASS 25/25"
+  }
+}

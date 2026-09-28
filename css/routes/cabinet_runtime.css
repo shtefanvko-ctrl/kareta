@@ -1,0 +1,538 @@
+/* KARETA.KZ R188.5.5.6.84.81 — route CSS bundle: cabinet_runtime.css.
+   Extracted from the previous eager bundle; historical source order preserved. */
+
+/* ===== SOURCE: css/next/client_account_native.css ===== */
+/* R188.5.5.6.48 — Client account refinement. Page-only layer; shell is frozen. */
+.k-client-account-native{
+  width:100%;
+  max-width:var(--k-page-max,2400px);
+  margin:0 auto;
+  padding:24px clamp(12px,2.2vw,32px) 120px;
+  display:grid;
+  gap:18px;
+  box-sizing:border-box;
+}
+.k-client-account-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:22px;
+  padding:24px;
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:24px;
+  background:#fff;
+}
+.k-client-account-head>div:first-child{min-width:0}
+.k-client-account-head span,.k-client-account-sections>header span,.k-account-vehicles-head span{
+  display:block;
+  color:#ff6b00;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.12em;
+}
+.k-client-account-head h1{margin:4px 0 7px;font-size:clamp(30px,3.8vw,52px);line-height:1.02;letter-spacing:-.045em;color:#111827}
+.k-client-account-head p{max-width:780px;margin:0;color:#667085;font-size:14px;line-height:1.5}
+.k-client-account-head__actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.k-client-account-profile{margin:0}
+.k-client-account-profile .k-social-profile-card{margin:0;box-shadow:none;border-color:rgba(15,23,42,.08)}
+.k-client-account-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.k-client-account-overview article{
+  min-width:0;
+  padding:18px;
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:20px;
+  background:#fff;
+  display:grid;
+  gap:4px;
+}
+.k-client-account-overview span{color:#737d8c;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.k-client-account-overview b{color:#111827;font-size:28px;line-height:1}
+.k-client-account-overview small{color:#7a8494;font-size:11px;line-height:1.3}
+.k-client-vehicles-host{min-width:0}
+.k-account-vehicles{
+  display:grid;
+  gap:14px;
+  padding:20px;
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:24px;
+  background:#fff;
+}
+.k-account-vehicles-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px}
+.k-account-vehicles-head h2{margin:4px 0 5px;color:#111827;font-size:22px;letter-spacing:-.025em}
+.k-account-vehicles-head p{max-width:760px;margin:0;color:#737d8c;font-size:12px;line-height:1.45}
+.k-account-vehicles-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;min-width:0}
+.k-account-vehicle-card{
+  min-width:0;
+  width:auto!important;
+  max-width:none!important;
+  margin:0!important;
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:20px;
+  background:#fbfcfe;
+  overflow:hidden;
+  display:grid;
+  grid-template-rows:94px 1fr;
+  box-shadow:none;
+}
+.k-account-vehicle-visual{position:relative;min-height:94px;background:linear-gradient(135deg,#f7f8fa,#eef1f5);overflow:hidden}
+.k-account-vehicle-brand{position:absolute;left:16px;top:14px;display:grid;place-items:center;width:46px;height:46px;border-radius:15px;background:#fff;color:#ff6b00;font-size:20px;font-weight:900;box-shadow:0 8px 20px rgba(15,23,42,.08)}
+.k-account-vehicle-road{position:absolute;left:0;right:0;bottom:17px;height:2px;background:rgba(15,23,42,.12)}
+.k-account-vehicle-road:after{content:"";position:absolute;left:12%;right:12%;top:-1px;border-top:2px dashed rgba(255,255,255,.95)}
+.k-account-vehicle-body{padding:15px;display:grid;gap:11px;min-width:0}
+.k-account-vehicle-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.k-account-vehicle-head span{display:block;color:#7a8494;font-size:10px;font-weight:800}
+.k-account-vehicle-head h3{margin:3px 0 0;color:#111827;font-size:18px;line-height:1.15;letter-spacing:-.02em}
+.k-account-vehicle-primary{flex:0 0 auto;padding:5px 8px;border-radius:999px;background:#fff1e7;color:#d85700;font-size:9px;text-transform:uppercase;letter-spacing:.05em}
+.k-account-vehicle-body>p{margin:0;color:#667085;font-size:11px}
+.k-account-vehicle-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.k-account-vehicle-stats span{min-width:0;padding:9px 6px;border-radius:12px;background:#fff;text-align:center;display:grid;gap:2px}
+.k-account-vehicle-stats b{color:#111827;font-size:15px}
+.k-account-vehicle-stats small{color:#7a8494;font-size:8px;line-height:1.2}
+.k-account-vehicle-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.k-account-vehicle-actions .k-btn{width:100%;justify-content:center;min-width:0;padding-inline:9px}
+.k-client-account-empty{padding:18px;border:1px dashed rgba(15,23,42,.15);border-radius:18px;background:#fbfcfe;display:grid;justify-items:start;gap:7px}
+.k-client-account-empty b{font-size:16px;color:#111827}.k-client-account-empty p{max-width:680px;margin:0 0 5px;color:#737d8c;font-size:12px;line-height:1.45}
+.k-client-account-sections{display:grid;gap:14px}
+.k-client-account-sections>header{padding:0 3px}
+.k-client-account-sections>header h2{margin:4px 0 4px;color:#111827;font-size:22px;letter-spacing:-.025em}
+.k-client-account-sections>header p{margin:0;color:#737d8c;font-size:12px}
+.k-client-account-native .k-client-cabinet-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.k-client-account-native .k-client-cabinet-card,.k-client-account-native .k-client-cabinet-card:first-child,.k-client-account-native .k-client-cabinet-card:nth-child(2){grid-column:auto;min-height:150px;padding:18px;border-radius:20px;gap:12px;box-shadow:none}
+.k-client-account-native .k-client-cabinet-card:hover{transform:none}
+.k-client-account-native .k-client-card-icon{width:42px;height:42px;border-radius:14px}
+.k-client-account-native .k-client-cabinet-card b{font-size:17px;margin-bottom:4px}
+.k-client-account-native .k-client-cabinet-card small{font-size:11px}
+@media(min-width:1800px){
+  .k-account-vehicles-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .k-client-account-native .k-client-cabinet-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:1100px){
+  .k-client-account-overview{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .k-account-vehicles-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .k-client-account-native .k-client-cabinet-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .k-client-account-native{padding:12px 10px 104px;gap:12px}
+  .k-client-account-head{display:grid;align-items:start;padding:16px;border-radius:20px}
+  .k-client-account-head h1{font-size:29px}.k-client-account-head p{font-size:12px}
+  .k-client-account-head__actions{display:grid;grid-template-columns:1fr 1fr;width:100%}.k-client-account-head__actions .k-btn{width:100%;justify-content:center;padding-inline:8px}
+  .k-client-account-profile .k-social-profile-card{border-radius:20px}
+  .k-client-account-overview{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .k-client-account-overview article{padding:13px;border-radius:16px}.k-client-account-overview b{font-size:23px}.k-client-account-overview small{font-size:9px}
+  .k-account-vehicles{padding:13px;border-radius:20px;gap:11px}.k-account-vehicles-head{display:grid;align-items:start}.k-account-vehicles-head h2{font-size:18px}.k-account-vehicles-head p{font-size:10px}.k-account-vehicles-head>.k-btn{width:100%;justify-content:center}
+  .k-account-vehicles-grid{grid-template-columns:1fr;gap:9px}
+  .k-account-vehicle-card{grid-template-rows:78px 1fr;border-radius:17px}.k-account-vehicle-visual{min-height:78px}.k-account-vehicle-brand{width:40px;height:40px;border-radius:13px;left:13px;top:12px;font-size:17px}.k-account-vehicle-body{padding:13px}.k-account-vehicle-head h3{font-size:17px}
+  .k-account-vehicle-actions{grid-template-columns:1fr 1fr}
+  .k-client-account-sections>header h2{font-size:18px}.k-client-account-sections>header p{font-size:10px}
+  .k-client-account-native .k-client-cabinet-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .k-client-account-native .k-client-cabinet-card,.k-client-account-native .k-client-cabinet-card:first-child,.k-client-account-native .k-client-cabinet-card:nth-child(2){min-height:138px;padding:13px;border-radius:17px;gap:9px}
+  .k-client-account-native .k-client-card-icon{width:38px;height:38px;border-radius:12px}.k-client-account-native .k-client-cabinet-card b{font-size:14px}.k-client-account-native .k-client-cabinet-card small{font-size:9px;line-height:1.35}
+}
+@media(max-width:360px){
+  .k-client-account-head__actions,.k-account-vehicle-actions{grid-template-columns:1fr}
+  .k-client-account-native .k-client-cabinet-grid{grid-template-columns:1fr}
+  .k-client-account-overview{grid-template-columns:1fr 1fr}
+}
+
+/* R188.5.5.6.84.94 — Garage mobile containment and compact cards. */
+@media(max-width:760px){
+  .k-garage-page-r77{overflow-x:clip!important}
+  .k-garage-head-r77{display:grid!important;grid-template-columns:minmax(0,1fr) 42px!important;width:100%!important;max-width:100%!important;gap:10px!important}
+  .k-garage-head-r77__copy{min-width:0!important;overflow:hidden}
+  .k-garage-add-r77{justify-self:end!important;flex:0 0 42px!important;max-width:42px!important;overflow:hidden!important}
+  
+  
+  
+  .k-garage-tools-grid-r77{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:100%!important;max-width:100%!important;overflow:visible!important;scroll-snap-type:none!important;padding:0!important}
+  .k-garage-tools-grid-r77 .k-garage-category{width:auto!important;max-width:100%!important;min-height:86px!important;flex:none!important;scroll-snap-align:none!important}
+  .k-garage-tools-grid-r77 .k-garage-category b,.k-garage-tools-grid-r77 .k-garage-category small{overflow-wrap:normal!important;word-break:normal!important;hyphens:none!important}
+}
+@media(max-width:340px){.k-garage-tools-grid-r77{grid-template-columns:1fr!important}}
+
+
+/* R188.5.5.6.84.173 — r84 migration for provider profile, garage cards and vehicle passport. */
+.k-r84-provider-profile{
+  --r84-orange:#ff4b0a;
+  --r84-text:#181b20;
+  --r84-muted:#747b84;
+  --r84-line:#e7e9ec;
+  --r84-soft:#f6f7f8;
+  width:min(100% - 28px,1180px)!important;
+  margin:0 auto!important;
+  padding:12px 0 28px!important;
+  background:transparent!important;
+}
+.k-r84-provider-hero{
+  display:grid!important;
+  grid-template-columns:116px minmax(0,1fr) 132px!important;
+  gap:18px!important;
+  align-items:center!important;
+  padding:18px!important;
+  border:1px solid var(--r84-line)!important;
+  border-radius:24px!important;
+  background:#fff!important;
+  box-shadow:0 12px 34px rgba(15,23,42,.07)!important;
+  overflow:hidden!important;
+  position:relative!important;
+}
+.k-r84-provider-hero::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0 auto 0 0!important;
+  width:4px!important;
+  background:var(--r84-orange)!important;
+}
+.k-r84-provider-avatar{
+  width:116px!important;
+  height:116px!important;
+  border-radius:22px!important;
+  overflow:hidden!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#f0f1f3!important;
+  color:#2c3137!important;
+  font-size:24px!important;
+  font-weight:900!important;
+}
+.k-r84-provider-avatar img{width:100%!important;height:100%!important;object-fit:cover!important}
+.k-r84-provider-copy{min-width:0!important}
+.k-r84-provider-copy .k-title{
+  margin:5px 0 6px!important;
+  font-size:clamp(24px,3vw,34px)!important;
+  line-height:1.08!important;
+  font-weight:900!important;
+  letter-spacing:-.025em!important;
+  color:var(--r84-text)!important;
+}
+.k-r84-provider-copy>p{
+  margin:0!important;
+  max-width:720px!important;
+  color:#5f6670!important;
+  font-size:13px!important;
+  line-height:1.48!important;
+}
+.k-r84-provider-status{
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  flex-wrap:wrap!important;
+}
+.k-r84-provider-status>span{
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:27px!important;
+  padding:0 10px!important;
+  border-radius:999px!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+.k-r84-provider-status>span.is-online{background:#e9f8ee!important;color:#15733a!important}
+.k-r84-provider-status>span.is-busy{background:#fff3d6!important;color:#996100!important}
+.k-r84-provider-status>span.is-offline{background:#fdeceb!important;color:#b33c34!important}
+.k-r84-provider-status>a{
+  color:#666d76!important;
+  text-decoration:none!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+.k-r84-provider-score{
+  display:grid!important;
+  place-items:center!important;
+  align-content:center!important;
+  min-height:100px!important;
+  padding:12px!important;
+  border-radius:18px!important;
+  background:#17191d!important;
+  color:#fff!important;
+  text-align:center!important;
+}
+.k-r84-provider-score strong{font-size:31px!important;line-height:1!important}
+.k-r84-provider-score span{margin-top:5px!important;font-size:10px!important;font-weight:800!important}
+.k-r84-provider-score small{margin-top:3px!important;color:#b8bec6!important;font-size:8.5px!important}
+.k-r84-provider-actions{
+  display:grid!important;
+  grid-template-columns:1.25fr 1fr 1fr!important;
+  gap:8px!important;
+  margin:10px 0!important;
+}
+.k-r84-provider-actions .k-btn{
+  min-height:46px!important;
+  border-radius:14px!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+.k-r84-provider-metrics{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:8px!important;
+  margin:0 0 12px!important;
+}
+.k-r84-provider-metrics article{
+  min-width:0!important;
+  min-height:76px!important;
+  padding:11px!important;
+  border:1px solid var(--r84-line)!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.k-r84-provider-metrics strong{
+  display:block!important;
+  color:var(--r84-text)!important;
+  font-size:16px!important;
+  line-height:20px!important;
+  font-weight:900!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.k-r84-provider-metrics span{
+  display:block!important;
+  margin-top:3px!important;
+  color:var(--r84-muted)!important;
+  font-size:9.5px!important;
+  line-height:12px!important;
+}
+.k-r84-provider-layout{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 280px!important;
+  gap:12px!important;
+  align-items:start!important;
+}
+.k-r84-provider-layout .k-detail-section,
+.k-r84-provider-aside>div{
+  border:1px solid var(--r84-line)!important;
+  border-radius:20px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.k-r84-provider-layout .k-detail-section{
+  padding:17px!important;
+  margin:0 0 10px!important;
+}
+.k-r84-provider-layout .k-provider-section-head h2{
+  margin:2px 0 0!important;
+  font-size:19px!important;
+  line-height:24px!important;
+  font-weight:900!important;
+}
+.k-r84-provider-layout .k-provider-section-head small{
+  color:#9a5a32!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+.k-r84-provider-service-card{
+  min-height:68px!important;
+  padding:11px 12px!important;
+  border:1px solid #eceef1!important;
+  border-radius:14px!important;
+  background:#fafafa!important;
+  box-shadow:none!important;
+}
+.k-r84-provider-service-card>div{display:flex!important;align-items:center!important;gap:9px!important;min-width:0!important}
+.k-r84-provider-service-card .k-provider-service-icon{
+  width:34px!important;
+  height:34px!important;
+  border-radius:10px!important;
+  background:#fff1ea!important;
+  color:#e44b0d!important;
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 34px!important;
+}
+.k-r84-provider-service-card strong{font-size:12px!important;font-weight:850!important}
+.k-r84-provider-service-card small{font-size:9px!important;color:#80868f!important}
+.k-r84-provider-service-card>b{font-size:12px!important;white-space:nowrap!important}
+.k-r84-provider-aside{position:sticky!important;top:82px!important}
+.k-r84-provider-contact{
+  padding:16px!important;
+  background:#181a1f!important;
+  color:#fff!important;
+  border-color:#181a1f!important;
+}
+.k-r84-provider-contact>small{color:#ff9e72!important;font-size:9px!important;font-weight:900!important}
+.k-r84-provider-contact h2{margin:5px 0 6px!important;font-size:19px!important;line-height:23px!important}
+.k-r84-provider-contact p{color:#c1c5cb!important;font-size:11px!important;line-height:16px!important}
+.k-r84-provider-contact .k-btn{width:100%!important;margin-top:7px!important;min-height:42px!important;border-radius:12px!important}
+.k-r84-provider-contact .k-btn-secondary{background:#fff!important;color:#20242a!important;border-color:#fff!important}
+
+/* Garage card migration */
+.k-garage-card-r84{
+  display:grid!important;
+  gap:12px!important;
+  padding:15px!important;
+  border:1px solid #e7e9ec!important;
+  border-radius:20px!important;
+  background:#fff!important;
+  box-shadow:0 8px 26px rgba(15,23,42,.055)!important;
+}
+.k-garage-card-r84__head{
+  display:grid!important;
+  grid-template-columns:54px minmax(0,1fr) auto!important;
+  gap:11px!important;
+  align-items:center!important;
+}
+.k-garage-card-r84__head .k-garage-vehicle-mark{
+  width:54px!important;
+  height:54px!important;
+  border-radius:16px!important;
+  background:#15171b!important;
+  display:grid!important;
+  place-items:center!important;
+}
+.k-garage-card-r84__head .k-garage-vehicle-brand-logo{
+  max-width:40px!important;
+  max-height:32px!important;
+  object-fit:contain!important;
+}
+.k-garage-card-r84__stats{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:0!important;
+  border:1px solid #eceef1!important;
+  border-radius:14px!important;
+  overflow:hidden!important;
+}
+.k-garage-card-r84__stats>span{
+  min-width:0!important;
+  padding:10px 7px!important;
+  border:0!important;
+  border-right:1px solid #eceef1!important;
+  background:#fafafa!important;
+  text-align:center!important;
+}
+.k-garage-card-r84__stats>span:last-child{border-right:0!important}
+.k-garage-card-r84__stats b{font-size:13px!important;font-weight:900!important}
+.k-garage-card-r84__stats small{font-size:8.5px!important;color:#818791!important}
+.k-garage-card-r84__actions{
+  display:grid!important;
+  grid-template-columns:1.25fr 1fr!important;
+  gap:8px!important;
+}
+.k-garage-card-r84__actions .k-btn{min-height:42px!important;border-radius:12px!important;font-size:10.5px!important}
+.k-garage-card-r84__manage{
+  display:flex!important;
+  gap:6px!important;
+  flex-wrap:wrap!important;
+  padding-top:1px!important;
+}
+.k-garage-card-r84__manage .k-btn{
+  min-height:32px!important;
+  padding:0 9px!important;
+  border-radius:9px!important;
+  background:#f6f7f8!important;
+  border-color:#e8eaed!important;
+  font-size:9px!important;
+}
+
+/* Vehicle page migration */
+.k-vehicle-r84-hero{
+  border:1px solid #e7e9ec!important;
+  border-radius:24px!important;
+  background:#fff!important;
+  box-shadow:0 11px 32px rgba(15,23,42,.06)!important;
+}
+.k-vehicle-r84-hero .k-vehicle-photo{
+  background:#f5f6f7!important;
+  border:1px solid #eceef1!important;
+}
+.k-vehicle-r84-status{
+  border:1px solid #eceef1!important;
+  background:#fafafa!important;
+}
+.k-vehicle-r84-primary .k-btn-primary{background:#ff4b0a!important;border-color:#ff4b0a!important}
+.k-vehicle-r84-nav{
+  border-color:#e8eaed!important;
+  box-shadow:0 8px 24px rgba(15,23,42,.045)!important;
+}
+.k-vehicle-r84-nav button{
+  border-radius:12px!important;
+  transition:background .16s ease,border-color .16s ease!important;
+}
+.k-vehicle-r84-nav button:hover{background:#fff4ee!important}
+.k-vehicle-r84-metrics article{
+  border:1px solid #e8eaed!important;
+  background:#fff!important;
+  border-radius:16px!important;
+}
+.k-vehicle-r84-actions .k-vehicle-action-tile{
+  border:1px solid #e8eaed!important;
+  background:#fff!important;
+  border-radius:16px!important;
+  box-shadow:none!important;
+}
+.k-vehicle-r84-actions .k-vehicle-action-tile>span{
+  background:#fff1ea!important;
+  color:#e44b0d!important;
+}
+.k-vehicle-r84-layout .k-vehicle-native-section{
+  border:1px solid #e8eaed!important;
+  border-radius:20px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.k-vehicle-r84-layout .k-vehicle-native-section__head h2{
+  font-size:18px!important;
+  font-weight:900!important;
+}
+.k-vehicle-r84-layout .k-vehicle-native-section__head small{
+  color:#9a5a32!important;
+  font-size:8.5px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+
+@media(max-width:900px){
+  .k-r84-provider-profile{width:min(100% - 20px,760px)!important}
+  .k-r84-provider-hero{grid-template-columns:92px minmax(0,1fr) 112px!important;padding:14px!important}
+  .k-r84-provider-avatar{width:92px!important;height:92px!important;border-radius:18px!important}
+  .k-r84-provider-metrics{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .k-r84-provider-layout{grid-template-columns:1fr!important}
+  .k-r84-provider-aside{position:static!important}
+}
+@media(max-width:620px){
+  .k-r84-provider-profile{width:100%!important;padding:6px 10px 18px!important}
+  .k-r84-provider-hero{
+    grid-template-columns:76px minmax(0,1fr)!important;
+    gap:11px!important;
+    border-radius:18px!important;
+    padding:12px!important;
+  }
+  .k-r84-provider-avatar{width:76px!important;height:76px!important;border-radius:16px!important}
+  .k-r84-provider-score{
+    grid-column:1/-1!important;
+    min-height:58px!important;
+    grid-template-columns:auto auto auto!important;
+    gap:8px!important;
+    justify-content:center!important;
+    border-radius:14px!important;
+  }
+  .k-r84-provider-score strong{font-size:22px!important}
+  .k-r84-provider-score span,.k-r84-provider-score small{margin:0!important}
+  .k-r84-provider-copy .k-title{font-size:21px!important}
+  .k-r84-provider-copy>p{font-size:11px!important;line-height:15px!important}
+  .k-r84-provider-copy .k-provider-profile-tags{display:none!important}
+  .k-r84-provider-actions{grid-template-columns:1fr 1fr 44px!important}
+  .k-r84-provider-actions .k-btn{min-width:0!important;padding:0 9px!important}
+  .k-r84-provider-actions .k-btn:last-child{font-size:0!important;padding:0!important}
+  .k-r84-provider-actions .k-btn:last-child::before{content:"★";font-size:17px!important}
+  .k-r84-provider-metrics{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .k-r84-provider-metrics article{min-height:64px!important;padding:9px!important}
+  .k-r84-provider-metrics strong{font-size:13px!important}
+  .k-r84-provider-metrics span{font-size:8px!important}
+  .k-r84-provider-layout .k-detail-section{padding:13px!important;border-radius:16px!important}
+  .k-r84-provider-service-card{min-height:60px!important}
+  .k-garage-card-r84{padding:12px!important;border-radius:17px!important}
+  .k-garage-card-r84__head{grid-template-columns:48px minmax(0,1fr) auto!important}
+  .k-garage-card-r84__head .k-garage-vehicle-mark{width:48px!important;height:48px!important;border-radius:14px!important}
+  .k-garage-card-r84__actions{grid-template-columns:1fr 1fr!important}
+  .k-vehicle-r84-hero{border-radius:18px!important}
+  .k-vehicle-r84-layout .k-vehicle-native-section{border-radius:16px!important}
+}
+@media(max-width:360px){
+  .k-r84-provider-actions{grid-template-columns:1fr 1fr!important}
+  .k-r84-provider-actions .k-btn:last-child{grid-column:1/-1!important;font-size:10px!important}
+  .k-r84-provider-actions .k-btn:last-child::before{content:none!important}
+  .k-garage-card-r84__actions{grid-template-columns:1fr!important}
+}

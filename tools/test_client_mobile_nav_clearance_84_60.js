@@ -1,0 +1,23 @@
+const fs=require('fs');
+const read=f=>fs.readFileSync(f,'utf8');
+const must=(v,m)=>{if(!v)throw new Error(m)};
+const geometry=read('css/next/client_mobile_geometry.css');
+const reference=read('css/next/reference_client_pages.css');
+const request=read('css/next/request_5_steps.css');
+const runtime=read('js/next/client_viewport_runtime.js');
+const audit=read('docs/audits/CLIENT_NEW_DESIGN_AUDIT_R188_5_5_6_84_60.md');
+const version=read('inc/asset_version.php');
+const sw=read('sw.js');
+
+must(geometry.includes('--k-mobile-nav-live-height')&&geometry.includes('--k-client-mobile-nav-clearance'),'live nav clearance vars missing');
+must(geometry.includes('background:var(--k-client-nav-active-soft)!important')&&geometry.includes('color:var(--k-client-nav-active)!important'),'client active nav contrast missing');
+must(geometry.includes('scroll-padding-bottom:calc(var(--k-client-mobile-nav-clearance) + 20px)!important'),'scroll clearance missing');
+must(reference.includes('background:#fff1ec!important')&&reference.includes('fill:none!important'),'reference active icon source fix missing');
+must(request.includes('var(--k-client-mobile-nav-space,var(--k-mobile-nav-h,72px))'),'request sticky CTA not bound to live nav space');
+must(runtime.includes('ResizeObserver')&&runtime.includes('MutationObserver'),'nav measurement runtime missing');
+must(runtime.includes('ensureFocusedVisible')&&runtime.includes('scrollIntoView'),'focus visibility recovery missing');
+must(audit.includes('#/notifications')&&audit.includes('#/services/item/...')&&audit.includes('#/profile'),'client design audit incomplete');
+const va=(version.match(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/)||[])[1];
+const vs=(sw.match(/const RELEASE = '([^']+)'/)||[])[1];
+must(/^188\.5\.5\.6\.84\.(?:6[0-9]|[7-9][0-9])$/.test(va)&&vs===va,'84.60+ version mismatch');
+console.log('R188.5.5.6.84.60 client mobile nav clearance + UI audit: OK');

@@ -1,0 +1,180 @@
+{
+  "schema": "kareta.browser-support-matrix.v1",
+  "release": "188.5.5.6.84.109",
+  "policy": "Functional minimums for the untranspiled runtime; current vendor-supported browser releases are recommended for security.",
+  "derivedFrom": [
+    {
+      "feature": "CSS :has()",
+      "reason": "Used in runtime CSS outside @supports for request selection, shell/layout state and route-specific UI.",
+      "floors": {
+        "chrome": 105,
+        "edge": 105,
+        "firefox": 121,
+        "safari": "15.4",
+        "ios": "15.4"
+      }
+    },
+    {
+      "feature": "HTML dialog/showModal()",
+      "reason": "Used without a universal polyfill in request/account/service/workflow dialogs.",
+      "floors": {
+        "chrome": 37,
+        "edge": 79,
+        "firefox": 98,
+        "safari": "15.4",
+        "ios": "15.4"
+      }
+    },
+    {
+      "feature": "Optional chaining / nullish coalescing",
+      "reason": "Used directly in boot bundles without transpilation.",
+      "floors": {
+        "chrome": 80,
+        "edge": 80,
+        "firefox": 74,
+        "safari": "13.1",
+        "ios": "13.4"
+      }
+    }
+  ],
+  "requiredSmoke": [
+    "boot_shell",
+    "auth_session",
+    "spa_routing",
+    "native_dialogs",
+    "request_flow",
+    "responsive_layout",
+    "asset_mime",
+    "pwa_runtime"
+  ],
+  "targets": [
+    {
+      "id": "chrome_desktop",
+      "label": "Chrome desktop",
+      "minimum": {
+        "browser": 105
+      },
+      "requiredSmoke": [
+        "boot_shell",
+        "auth_session",
+        "spa_routing",
+        "native_dialogs",
+        "request_flow",
+        "responsive_layout",
+        "asset_mime",
+        "pwa_runtime"
+      ]
+    },
+    {
+      "id": "edge_desktop",
+      "label": "Edge desktop",
+      "minimum": {
+        "browser": 105
+      },
+      "requiredSmoke": [
+        "boot_shell",
+        "auth_session",
+        "spa_routing",
+        "native_dialogs",
+        "request_flow",
+        "responsive_layout",
+        "asset_mime",
+        "pwa_runtime"
+      ]
+    },
+    {
+      "id": "safari_desktop",
+      "label": "Safari macOS",
+      "minimum": {
+        "browser": "15.4"
+      },
+      "requiredSmoke": [
+        "boot_shell",
+        "auth_session",
+        "spa_routing",
+        "native_dialogs",
+        "request_flow",
+        "responsive_layout",
+        "asset_mime",
+        "pwa_runtime"
+      ]
+    },
+    {
+      "id": "firefox_desktop",
+      "label": "Firefox desktop",
+      "minimum": {
+        "browser": 121
+      },
+      "requiredSmoke": [
+        "boot_shell",
+        "auth_session",
+        "spa_routing",
+        "native_dialogs",
+        "request_flow",
+        "responsive_layout",
+        "asset_mime",
+        "pwa_runtime"
+      ]
+    },
+    {
+      "id": "android_chrome",
+      "label": "Android / Chrome",
+      "minimum": {
+        "os": 10,
+        "browser": 105
+      },
+      "requiredSmoke": [
+        "boot_shell",
+        "auth_session",
+        "spa_routing",
+        "native_dialogs",
+        "request_flow",
+        "responsive_layout",
+        "asset_mime",
+        "pwa_runtime"
+      ],
+      "notes": "Android 10+ is the current Chrome-supported OS floor in 2026."
+    },
+    {
+      "id": "ios_safari",
+      "label": "iOS / Safari-WebKit",
+      "minimum": {
+        "os": "15.4",
+        "browser": "15.4"
+      },
+      "requiredSmoke": [
+        "boot_shell",
+        "auth_session",
+        "spa_routing",
+        "native_dialogs",
+        "request_flow",
+        "responsive_layout",
+        "asset_mime",
+        "pwa_runtime"
+      ]
+    }
+  ],
+  "platformNotes": {
+    "pwaInstall": "Install UI is platform-dependent; pwa_runtime means manifest/service-worker behavior, not identical install prompts on every browser.",
+    "ios": "Core app support is tied to WebKit capability; iOS 15.4 is the functional floor for :has() and dialog.",
+    "android": "Use an actively updated Chrome build on Android 10+; browser 105 is the functional CSS floor, not a security recommendation."
+  },
+  "evidenceSources": [
+    {
+      "name": "Can I use — CSS :has()",
+      "checked": "2026-09-25"
+    },
+    {
+      "name": "Can I use — Dialog element",
+      "checked": "2026-09-25"
+    },
+    {
+      "name": "Can I use — Optional chaining",
+      "checked": "2026-09-25"
+    },
+    {
+      "name": "Google Chrome Help — Android system requirements",
+      "checked": "2026-09-25"
+    }
+  ]
+}

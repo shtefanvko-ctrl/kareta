@@ -1,0 +1,166 @@
+/* KARETA.KZ MASTER UI FINAL — role/component foundation.
+   No route-specific business styling lives here. */
+html[data-user-role="master"]{
+  --k-master-bg:#f5f6f8;
+  --k-master-surface:#fff;
+  --k-master-surface-soft:#f8f9fb;
+  --k-master-line:#e4e7ec;
+  --k-master-text:#17191d;
+  --k-master-muted:#69717e;
+  --k-master-accent:#ff5a1f;
+  --k-master-accent-strong:#e84a12;
+  --k-master-success:#15803d;
+  --k-master-warning:#d97706;
+  --k-master-danger:#b42318;
+  --k-master-info:#175cd3;
+  --k-master-neutral:#667085;
+  --k-master-busy:#b54708;
+  --k-master-paused:#7a5af8;
+
+  --k-master-content-max:1420px;
+  --k-master-page-x:clamp(14px,2.2vw,34px);
+  --k-master-page-y:18px;
+  --k-master-section-gap:16px;
+  --k-master-control-radius:12px;
+  --k-master-small-card-radius:16px;
+  --k-master-card-radius:20px;
+  --k-master-dialog-radius:24px;
+  --k-master-control-h:42px;
+
+  --k-master-title:clamp(26px,3vw,38px);
+  --k-master-section-title:20px;
+  --k-master-card-title:15px;
+  --k-master-body:14px;
+  --k-master-caption:12px;
+  --k-master-eyebrow:10px;
+
+  /* Transitional aliases: one semantic source of truth for old Master modules. */
+  --k-border:var(--k-master-line);
+  --k-line:var(--k-master-line);
+  --line:var(--k-master-line);
+  --k-surface:var(--k-master-surface);
+  --surface:var(--k-master-surface);
+  --k-card:var(--k-master-surface);
+  --k-soft:var(--k-master-surface-soft);
+  --soft:var(--k-master-surface-soft);
+  --k-muted:var(--k-master-muted);
+  --muted:var(--k-master-muted);
+  --k-text:var(--k-master-text);
+  --text:var(--k-master-text);
+  --k-ink:var(--k-master-text);
+  --k-accent:var(--k-master-accent);
+  --accent:var(--k-master-accent);
+  --km-orange:var(--k-master-accent);
+  --km-accent:var(--k-master-accent);
+  --km-accent-strong:var(--k-master-accent-strong);
+  --km-text:var(--k-master-text);
+  --km-ink:var(--k-master-text);
+  --km-muted:var(--k-master-muted);
+  --km-border:var(--k-master-line);
+  --km-line:var(--k-master-line);
+  --km-soft:var(--k-master-bg);
+  --km-card:var(--k-master-surface);
+  --km-radius:var(--k-master-card-radius);
+}
+
+html[data-user-role="master"] body,
+html[data-user-role="master"] .k-app-shell{background:var(--k-master-bg);color:var(--k-master-text)}
+
+/* Typography scale. */
+html[data-user-role="master"] #k-page-outlet :is(.k-master-page-header,.k-workspace-head,.k-exchange-r71-head,.k-master-r81-schedule-toolbar) h1,
+html[data-user-role="master"] #k-page-outlet .k-title{
+  font-size:var(--k-master-title);line-height:1.06;letter-spacing:-.035em;color:var(--k-master-text)
+}
+html[data-user-role="master"] #k-page-outlet :is(.k-master-page-header,.k-workspace-head,.k-exchange-r71-head,.k-master-r81-schedule-toolbar) :is(small,span:first-child){font-size:var(--k-master-eyebrow)}
+html[data-user-role="master"] #k-page-outlet :is(.k-section-title,h2){line-height:1.18}
+html[data-user-role="master"] #k-page-outlet .k-section-title{font-size:var(--k-master-section-title)}
+html[data-user-role="master"] #k-page-outlet :is(p,.k-subtitle){font-size:var(--k-master-body)}
+html[data-user-role="master"] #k-page-outlet :is(small,.k-caption){font-size:var(--k-master-caption)}
+
+/* One Master button API. Legacy k-button names are compatibility aliases only. */
+html[data-user-role="master"] #k-page-outlet :is(.k-btn,.k-button),
+html[data-user-role="master"] .k-smart-action-hub[data-context-kind="master"] :is(.k-btn,.k-button,button){
+  min-height:var(--k-master-control-h);
+  padding:0 14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border:1px solid var(--k-master-line);
+  border-radius:var(--k-master-control-radius);
+  background:var(--k-master-surface);
+  color:var(--k-master-text);
+  font:inherit;
+  font-size:13px;
+  font-weight:800;
+  line-height:1;
+  text-decoration:none;
+  box-shadow:none;
+  cursor:pointer;
+  transition:background .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease,transform .16s ease;
+}
+html[data-user-role="master"] #k-page-outlet :is(.k-btn,.k-button):hover{border-color:#ffb99f;background:#fff9f6;color:#a93a12}
+html[data-user-role="master"] #k-page-outlet :is(.k-btn,.k-button):focus-visible{outline:3px solid rgba(255,90,31,.22);outline-offset:2px}
+html[data-user-role="master"] #k-page-outlet :is(.k-btn,.k-button):active{transform:translateY(1px)}
+html[data-user-role="master"] #k-page-outlet :is(.k-btn,.k-button):disabled,
+html[data-user-role="master"] #k-page-outlet :is(.k-btn,.k-button)[aria-disabled="true"]{opacity:.48;cursor:not-allowed;transform:none;box-shadow:none}
+html[data-user-role="master"] #k-page-outlet :is(.k-btn--primary,.k-btn-primary,.k-button-primary){background:var(--k-master-accent);border-color:var(--k-master-accent);color:#fff;box-shadow:0 7px 16px rgba(255,90,31,.18)}
+html[data-user-role="master"] #k-page-outlet :is(.k-btn--primary,.k-btn-primary,.k-button-primary):hover{background:var(--k-master-accent-strong);border-color:var(--k-master-accent-strong);color:#fff}
+html[data-user-role="master"] #k-page-outlet :is(.k-btn--secondary,.k-btn-secondary,.k-button-secondary){background:var(--k-master-surface);border-color:var(--k-master-line);color:var(--k-master-text)}
+html[data-user-role="master"] #k-page-outlet :is(.k-btn--ghost,.k-btn-ghost){background:transparent;border-color:transparent;box-shadow:none}
+html[data-user-role="master"] #k-page-outlet :is(.k-btn--danger,.k-btn-danger){background:#fff5f4;border-color:#fecdca;color:var(--k-master-danger)}
+html[data-user-role="master"] #k-page-outlet :is(.k-btn,.k-button) .k-ui-icon,
+html[data-user-role="master"] #k-page-outlet :is(.k-btn,.k-button) svg{width:18px;height:18px;flex:0 0 18px}
+
+/* One Master dialog geometry. Existing specialized dialogs inherit this shell. */
+html[data-user-role="master"] :is(.k-master-dialog,.k-master-owner-dialog,.k-master-review-reply-dialog,.k-master-r67-reschedule,.k-master-r69-block-dialog,.k-master-r81-window,.k-master-native-dialog,.k-master-wall-editor,.k-master-work-publish-dialog,.k-service-native-dialog){
+  border:0;
+  border-radius:var(--k-master-dialog-radius);
+  background:transparent;
+  color:var(--k-master-text);
+}
+html[data-user-role="master"] :is(.k-master-dialog,.k-master-owner-dialog,.k-master-review-reply-dialog,.k-master-r67-reschedule,.k-master-r69-block-dialog,.k-master-r81-window,.k-master-native-dialog,.k-master-wall-editor,.k-master-work-publish-dialog,.k-service-native-dialog)::backdrop{background:rgba(15,23,42,.52);backdrop-filter:blur(4px)}
+html[data-user-role="master"] :is(.k-master-dialog__shell,.k-master-owner-dialog__panel,.k-master-owner-dialog-panel,.k-master-review-reply-panel,.k-master-r67-reschedule__sheet,.k-master-r69-block-dialog__sheet,.k-master-r81-window__shell,.k-master-native-dialog__panel,.k-master-wall-editor__panel,.k-master-work-publish-dialog__panel,.k-service-native-dialog__panel,.k-master-wall-editor>form,.k-master-work-publish-dialog>form,.k-service-native-dialog>form){
+  overflow:hidden;
+  border:1px solid var(--k-master-line);
+  border-radius:var(--k-master-dialog-radius);
+  background:var(--k-master-surface);
+  box-shadow:0 24px 72px rgba(15,23,42,.22);
+}
+html[data-user-role="master"] :is(.k-master-dialog__header,.k-master-dialog__footer){padding:18px 20px}
+html[data-user-role="master"] :is(.k-master-dialog__body){padding:20px;overflow:auto}
+html[data-user-role="master"] :is(.k-master-dialog__close,[data-r81-schedule-close],[data-r81-day-close],[data-schedule-reschedule-close],[data-block-close],[data-review-close],[data-owner-close],[data-master-wall-close],[data-master-work-close],[data-service-dialog-close],.k-service-native-dialog [aria-label="Закрыть"]){
+  width:40px;height:40px;min-width:40px;padding:0;border:1px solid var(--k-master-line);border-radius:12px;background:var(--k-master-surface-soft);color:var(--k-master-text);display:grid;place-items:center
+}
+html[data-user-role="master"] :is(.k-master-dialog__close,[data-r81-schedule-close],[data-r81-day-close],[data-schedule-reschedule-close],[data-block-close],[data-review-close],[data-owner-close],[data-master-wall-close],[data-master-work-close],[data-service-dialog-close],.k-service-native-dialog [aria-label="Закрыть"]) svg{width:18px;height:18px}
+
+/* Shared states. */
+html[data-user-role="master"] #k-page-outlet :is(.k-state,.k-master-page .k-empty){
+  min-height:180px;padding:28px;display:grid;place-items:center;align-content:center;gap:8px;text-align:center;border:1px dashed var(--k-master-line);border-radius:var(--k-master-card-radius);background:var(--k-master-surface);color:var(--k-master-muted)
+}
+html[data-user-role="master"] #k-page-outlet :is(.k-state,.k-master-page .k-empty) :is(h1,h2,h3){margin:0;color:var(--k-master-text)}
+html[data-user-role="master"] #k-page-outlet :is(.k-state,.k-master-page .k-empty) p{margin:0;max-width:620px;color:var(--k-master-muted)}
+html[data-user-role="master"] .k-state--error{border-color:#fecdca;background:#fff8f7}
+html[data-user-role="master"] .k-state--offline{border-color:#fedf89;background:#fffcf5}
+
+/* Status colors are semantic, not page-local. */
+html[data-user-role="master"] .is-success,[data-master-status="success"]{--k-status-color:var(--k-master-success)}
+html[data-user-role="master"] .is-warning,[data-master-status="warning"]{--k-status-color:var(--k-master-warning)}
+html[data-user-role="master"] .is-danger,[data-master-status="danger"]{--k-status-color:var(--k-master-danger)}
+html[data-user-role="master"] .is-info,[data-master-status="info"]{--k-status-color:var(--k-master-info)}
+html[data-user-role="master"] .is-busy,[data-master-status="busy"]{--k-status-color:var(--k-master-busy)}
+html[data-user-role="master"] .is-paused,[data-master-status="paused"]{--k-status-color:var(--k-master-paused)}
+
+
+/* One mobile dialog behaviour for Master. */
+@media(max-width:700px){
+  html[data-user-role="master"] :is(.k-master-dialog,.k-master-owner-dialog,.k-master-review-reply-dialog,.k-master-r67-reschedule,.k-master-r69-block-dialog,.k-master-r81-window,.k-master-native-dialog,.k-master-wall-editor,.k-master-work-publish-dialog,.k-service-native-dialog){
+    width:100vw;max-width:none;height:100dvh;max-height:100dvh;margin:0;border-radius:0
+  }
+  html[data-user-role="master"] :is(.k-master-dialog__shell,.k-master-owner-dialog__panel,.k-master-owner-dialog-panel,.k-master-review-reply-panel,.k-master-r67-reschedule__sheet,.k-master-r69-block-dialog__sheet,.k-master-r81-window__shell,.k-master-native-dialog__panel,.k-master-wall-editor>form,.k-master-work-publish-dialog>form,.k-service-native-dialog>form){
+    display:grid;grid-template-rows:auto minmax(0,1fr) auto;width:100%;max-width:none;height:100dvh;max-height:100dvh;border:0;border-radius:0
+  }
+  html[data-user-role="master"] :is(.k-master-r81-window__body,.k-master-r67-reschedule__body,.k-master-r69-block-dialog__body,.k-service-dialog-body){overflow:auto;min-height:0;padding-bottom:max(18px,env(safe-area-inset-bottom,0px))}
+  html[data-user-role="master"] :is(.k-master-dialog__header,.k-master-owner-dialog header,.k-master-review-reply-panel>header,.k-master-r67-reschedule__sheet>header,.k-master-r69-block-dialog__sheet>header,.k-master-r81-window__shell>header,.k-master-native-dialog__panel>header,.k-master-wall-editor>form>header,.k-master-work-publish-dialog>form>header,.k-service-native-dialog>form>header){padding-top:max(14px,env(safe-area-inset-top,0px))}
+  html[data-user-role="master"] :is(.k-master-dialog__footer,.k-master-owner-dialog footer,.k-master-r67-reschedule__sheet>footer,.k-master-r69-block-dialog__sheet>footer,.k-master-r81-window__shell>footer,.k-master-native-dialog__panel>footer,.k-master-wall-editor>form>footer,.k-master-work-publish-dialog>form>footer,.k-service-native-dialog>form>footer){padding-bottom:max(14px,env(safe-area-inset-bottom,0px));background:var(--k-master-surface)}
+}

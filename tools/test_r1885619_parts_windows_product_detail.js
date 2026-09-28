@@ -1,0 +1,19 @@
+'use strict';
+const fs=require('fs'),path=require('path'),crypto=require('crypto');
+const root=path.resolve(__dirname,'..'),read=f=>fs.readFileSync(path.join(root,f),'utf8'),fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};
+const page=read('js/next/pages/parts.js'),details=read('js/next/pages/details.js'),used=read('api/used_market.php'),catalog=read('api/catalog_details.php'),db=read('api/db.php'),api=read('js/next/api_client.js'),interactions=read('api/booking_product_interactions.php'),css=read('css/next/parts_windows_product_detail.css'),registry=read('inc/asset_registry.php'),asset=read('inc/asset_version.php'),sw=read('sw.js'),config=read('config.php'),manifest=JSON.parse(read('tools/shell_freeze_manifest_r1885603.json'));
+for(const t of ['data-market-window','data-parts-market-list-dialog','data-market-list-body','data-market-category','data-compatible-window','Открыть список ·','Новые запчасти','БУ рядом','Восстановленные','Обменный фонд'])expect(page.includes(t),`parts window contract missing ${t}`);
+expect(!page.includes('data-parts-types'),'main /parts must not render type selector');expect(!page.includes('function typeGrid'),'main /parts must not keep type switch renderer');expect(!/<select\b/i.test(page),'parts page must not contain select');expect(!/swiper/i.test(page),'parts page must not contain Swiper');
+expect(page.includes('used:${item.id}')&&page.includes('#/parts/item/'),'used listing must navigate to unified product detail route');
+for(const t of ["token.startsWith('used:')",'getUsedMarketDetail','donorVehicle','realInstallations','sellerStats','data-review-rating','k-part-detail-gallery','k-part-detail-seller','Подтверждённых установок пока нет'])expect(details.includes(t),`native product detail missing ${t}`);
+expect(!/<select\b/i.test(details),'product detail must not contain select');expect(!/swiper/i.test(details),'product detail must not contain Swiper');
+for(const t of ['function kareta_used_market_detail','donorVehicle','sellerStats','realInstallations','verified_transaction_required'])expect(used.includes(t),`used detail backend missing ${t}`);
+expect(db.includes("$action === 'usedMarket.detail'"),'usedMarket.detail dispatch missing');expect(api.includes('function getUsedMarketDetail'),'getUsedMarketDetail API missing');
+for(const t of ['realInstallations','installationCount','work_order_part_reservations','work_posts','client_consent=1'])expect(catalog.includes(t),`catalog detail installations missing ${t}`);
+expect(interactions.includes('kareta_resolve_api_actor'),'product interactions must be Identity-aware');
+for(const t of ['.k-parts-market-list-dialog','.k-part-native-detail','.k-part-detail-layout','.k-part-detail-gallery','.k-part-rating-choice','grid-template-columns:1fr'])expect(css.includes(t),`R59 CSS missing ${t}`);
+expect(!css.includes('#k-mobile-nav')&&!css.includes('#k-desktop-nav')&&!css.includes('#k-menu-toggle'),'R59 CSS must not alter Shell');
+expect(registry.includes('css/next/parts_windows_product_detail.css'),'R59 CSS not registered');expect(asset.includes('r1885619-parts-window-lists-product-detail')&&sw.includes('r1885619-parts-window-lists-product-detail'),'R59 asset suffix missing');
+const dbv=Number((/KARETA_DB_VERSION',\s*(\d+)/.exec(config)||[])[1]||0),later=asset.includes('r1885620-used-market-listing-wizard');expect(later?dbv>=114:dbv===114,'R59 DB contract must remain 114 at R59 and allow later migrations');
+for(const [file,hash] of Object.entries(manifest.files)){const actual=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');expect(actual===hash,`SHELL FREEZE VIOLATION: ${file}`)}
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}console.log('R188.5.5.6.59 parts list windows + unified native product detail + Shell Freeze 2 OK');

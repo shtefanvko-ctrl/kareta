@@ -1,0 +1,268 @@
+{
+  "schema": "kareta.release-notes.v1",
+  "range": {
+    "from": "188.5.5.6.84.77",
+    "to": "188.5.5.6.84.109",
+    "count": 33
+  },
+  "baseline": "188.5.5.6.84.109",
+  "sourceCoverage": {
+    "standalonePatchDocs": 30,
+    "recoveryDocs": 1,
+    "queueEvidence": 1,
+    "documentationGaps": 1
+  },
+  "migrationPolicy": {
+    "manifest": "api/migration_manifest.php",
+    "version": 129,
+    "files": 129,
+    "releaseNumbersIndependentFromMigrationNumbers": true,
+    "runtimeMigrationFailClosed": true,
+    "maintenanceFlag": "KARETA_DB_RUNTIME_MIGRATION_WINDOW=1",
+    "messagingAutoSchemaDefault": false,
+    "messagingInstaller": "php tools/messaging_schema_install.php",
+    "privateConfigPackaged": false,
+    "genericDownMigrationContract": false,
+    "databaseRollback": "restore pre-deploy MySQL snapshot/backup"
+  },
+  "limitations": [
+    "Production commissioning OTP 0000 remains active by default until KARETA_OTP_TEMP_STATIC_ENABLED=0.",
+    "Telegram/WhatsApp require server-side provider credentials and webhook configuration.",
+    "Feature matrix contains BETA/INTERNAL/DISABLED modules; route presence does not imply READY.",
+    "External staging root currently returns HTTP 403 and must not be treated as a passed release environment.",
+    "Release 84.90 has no standalone patch/recovery documentation in the source baseline."
+  ],
+  "releases": [
+    {
+      "release": "188.5.5.6.84.77",
+      "n": 77,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_77.md",
+      "summary": "Client Tow Truck + Garage surface alignment"
+    },
+    {
+      "release": "188.5.5.6.84.78",
+      "n": 78,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_78.md",
+      "summary": "Vehicle passport/Garage detail and native Chats"
+    },
+    {
+      "release": "188.5.5.6.84.79",
+      "n": 79,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_79.md",
+      "summary": "Recovery merge: relogin/OTP/session/migration-gate hardening"
+    },
+    {
+      "release": "188.5.5.6.84.80",
+      "n": 80,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_80.md",
+      "summary": "Commissioning OTP runtime semantics"
+    },
+    {
+      "release": "188.5.5.6.84.81",
+      "n": 81,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_81.md",
+      "summary": "Critical CSS split / route visual runtime"
+    },
+    {
+      "release": "188.5.5.6.84.82",
+      "n": 82,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_82.md",
+      "summary": "Critical JS grouping + session bootstrap"
+    },
+    {
+      "release": "188.5.5.6.84.83",
+      "n": 83,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_83.md",
+      "summary": "Fast manifest hot path"
+    },
+    {
+      "release": "188.5.5.6.84.84",
+      "n": 84,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_84.md",
+      "summary": "First Paint waterfall cut"
+    },
+    {
+      "release": "188.5.5.6.84.85",
+      "n": 85,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_85.md",
+      "summary": "Boot profiler"
+    },
+    {
+      "release": "188.5.5.6.84.86",
+      "n": 86,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_86.md",
+      "summary": "Messaging Core Telegram + WhatsApp Stage 1"
+    },
+    {
+      "release": "188.5.5.6.84.87",
+      "n": 87,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_87.md",
+      "summary": "Telegram Live Actions Stage 2"
+    },
+    {
+      "release": "188.5.5.6.84.88",
+      "n": 88,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_88.md",
+      "summary": "Request urgency cleanup"
+    },
+    {
+      "release": "188.5.5.6.84.89",
+      "n": 89,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_89.md",
+      "summary": "Unified error codes/logging"
+    },
+    {
+      "release": "188.5.5.6.84.90",
+      "n": 90,
+      "type": "gap",
+      "source": null,
+      "summary": "No standalone patch/recovery document found; no inferred changes"
+    },
+    {
+      "release": "188.5.5.6.84.91",
+      "n": 91,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_91.md",
+      "summary": "Masters mobile shell/layout repair"
+    },
+    {
+      "release": "188.5.5.6.84.92",
+      "n": 92,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_92.md",
+      "summary": "Community mobile header/comments repair"
+    },
+    {
+      "release": "188.5.5.6.84.93",
+      "n": 93,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_93.md",
+      "summary": "Request step 4 repair"
+    },
+    {
+      "release": "188.5.5.6.84.94",
+      "n": 94,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_94.md",
+      "summary": "Garage mobile layout repair"
+    },
+    {
+      "release": "188.5.5.6.84.95",
+      "n": 95,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_95.md",
+      "summary": "Mobile floating actions/badges cleanup"
+    },
+    {
+      "release": "188.5.5.6.84.96",
+      "n": 96,
+      "type": "queue",
+      "source": "docs/KARETA_TASK_QUEUE_AFTER_R188_5_5_6_84_94.md",
+      "summary": "Parts mobile polish"
+    },
+    {
+      "release": "188.5.5.6.84.97",
+      "n": 97,
+      "type": "recovery",
+      "source": "docs/MASTER_RECOVERY_R188_5_5_6_84_97.md",
+      "summary": "Master onboarding/recovery baseline"
+    },
+    {
+      "release": "188.5.5.6.84.98",
+      "n": 98,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_98.md",
+      "summary": "Request booking-time fix + GET 429 backoff"
+    },
+    {
+      "release": "188.5.5.6.84.99",
+      "n": 99,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_99.md",
+      "summary": "Master UI cleanup"
+    },
+    {
+      "release": "188.5.5.6.84.100",
+      "n": 100,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_100.md",
+      "summary": "Master UI polish"
+    },
+    {
+      "release": "188.5.5.6.84.101",
+      "n": 101,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_101.md",
+      "summary": "Master contour/header/menu"
+    },
+    {
+      "release": "188.5.5.6.84.102",
+      "n": 102,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_102.md",
+      "summary": "Master UI consolidation"
+    },
+    {
+      "release": "188.5.5.6.84.103",
+      "n": 103,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_103.md",
+      "summary": "Context switcher cleanup"
+    },
+    {
+      "release": "188.5.5.6.84.104",
+      "n": 104,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_104.md",
+      "summary": "providers.detail 500 recovery"
+    },
+    {
+      "release": "188.5.5.6.84.105",
+      "n": 105,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_105.md",
+      "summary": "Context switcher visibility lock"
+    },
+    {
+      "release": "188.5.5.6.84.106",
+      "n": 106,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_106.md",
+      "summary": "MASTER UI FINAL"
+    },
+    {
+      "release": "188.5.5.6.84.107",
+      "n": 107,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_107.md",
+      "summary": "Master home structure"
+    },
+    {
+      "release": "188.5.5.6.84.108",
+      "n": 108,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_108.md",
+      "summary": "Master header contract"
+    },
+    {
+      "release": "188.5.5.6.84.109",
+      "n": 109,
+      "type": "patch",
+      "source": "PATCH_R188_5_5_6_84_109.md",
+      "summary": "Master exchange structure"
+    }
+  ]
+}

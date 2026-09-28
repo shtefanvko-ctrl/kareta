@@ -1,0 +1,15 @@
+'use strict';
+const fs=require('fs'),path=require('path'),crypto=require('crypto');
+const root=path.resolve(__dirname,'..'),read=f=>fs.readFileSync(path.join(root,f),'utf8'),fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};
+const config=read('config.php'),migration=read('api/migrations/115_used_market_listing_wizard.php'),page=read('js/next/pages/parts.js'),used=read('api/used_market.php'),details=read('js/next/pages/details.js'),css=read('css/next/used_market_listing_wizard.css'),registry=read('inc/asset_registry.php'),asset=read('inc/asset_version.php'),sw=read('sw.js'),manifest=JSON.parse(read('tools/shell_freeze_manifest_r1885603.json'));
+const dbv=Number((/KARETA_DB_VERSION',\s*(\d+)/.exec(config)||[])[1]||0);expect(dbv>=115,'DB version must be >=115');
+for(const t of ["'version' => 115",'price_negotiable','defects_text','donor_vehicle_json','delivery_modes_json','delivery_note','draft_step','published_at'])expect(migration.includes(t),`migration 115 missing ${t}`);
+for(const t of ['data-listing-step-label','data-listing-gallery','data-listing-camera','data-listing-draft','data-listing-publish','listingStepTitle','compressListingImage','addListingPhotos','saveListingWizard','loadMine','Автомобиль неизвестен / не применимо','Получение и доставка','Проверьте объявление'])expect(page.includes(t),`wizard missing ${t}`);
+expect(!/<select\b/i.test(page),'listing wizard must not contain select');expect(!/swiper/i.test(page),'listing wizard must not contain Swiper');
+for(const t of ['photo_required','delivery_required','defects_required','invalid_source_vehicle','price_negotiable','draft_step','publicationAction',"status=$publish?'active':'draft'",'user_id=? OR user_phone=?'])expect(used.includes(t),`server publish contract missing ${t}`);
+expect(used.includes("['jpeg','png','webp']")||used.includes('image/(jpeg|png|webp)'),'server must restrict image types');expect(used.includes('count($out)>=8'),'server must cap photos at 8');
+for(const t of ['p.priceNegotiable','p.defects','p.deliveryModes','Известные дефекты','Доставка и самовывоз'])expect(details.includes(t),`product detail extension missing ${t}`);
+for(const t of ['.k-parts-listing-wizard','.k-listing-photo-grid','.k-listing-preview','.k-listing-review-grid','height:100dvh'])expect(css.includes(t),`R60 CSS missing ${t}`);expect(!css.includes('#k-mobile-nav')&&!css.includes('#k-desktop-nav')&&!css.includes('#k-menu-toggle'),'R60 CSS must not alter Shell');
+expect(registry.includes('css/next/used_market_listing_wizard.css'),'R60 CSS registry missing');expect(asset.includes('r1885620-used-market-listing-wizard')&&sw.includes('r1885620-used-market-listing-wizard'),'R60 release suffix missing');
+for(const [file,hash] of Object.entries(manifest.files)){const actual=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');expect(actual===hash,`SHELL FREEZE VIOLATION: ${file}`)}
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}console.log('R188.5.5.6.60 native listing wizard + photos + drafts + donor ownership + delivery + Shell Freeze 2 OK');

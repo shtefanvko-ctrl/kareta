@@ -1,0 +1,14 @@
+/* R188.5.5.6.84.135 — one icon contract for KARETA.KZ. */
+:root{--k-icon-stroke:1.9;--k-icon-xs:16px;--k-icon-sm:18px;--k-icon-md:22px;--k-icon-lg:28px;--k-icon-touch:44px;--k-icon-ink:#0b0f16;--k-icon-muted:#667085;--k-icon-accent:var(--k-orange,#ff6b00)}
+.k-ui-icon,.k-smart-action-icon,.k-icon,.k-nav-icon{display:inline-grid;place-items:center;flex:0 0 auto;color:currentColor;line-height:0}
+:is(.k-ui-icon,.k-smart-action-icon,.k-icon,.k-nav-icon,.k-menu-link>span:first-child) svg{width:var(--k-icon-md);height:var(--k-icon-md);display:block;fill:none;stroke:currentColor;stroke-width:var(--k-icon-stroke);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.k-nav-icon svg{width:100%;height:100%;pointer-events:none}.k-menu-link>span:first-child svg{width:22px;height:22px;pointer-events:none}
+.k-ui-icon--xs svg{width:var(--k-icon-xs);height:var(--k-icon-xs)}.k-ui-icon--sm svg{width:var(--k-icon-sm);height:var(--k-icon-sm)}.k-ui-icon--lg svg{width:var(--k-icon-lg);height:var(--k-icon-lg)}
+.k-icon--ink{color:var(--k-icon-ink)!important}.k-icon--muted{color:var(--k-icon-muted)!important}.k-icon--accent{color:var(--k-icon-accent)!important}
+[data-icon="services"],[data-icon="diagnostics"],[data-icon="location"],[data-icon="oil"],[data-icon="battery"],[data-icon="brakes"],[data-icon="tires"],[data-icon="suspension"],[data-icon="paint"],[data-icon="airFilter"],[data-icon="sparkPlug"],[data-icon="serviceStation"]{--k-service-icon-accent:var(--k-icon-accent)}
+.k-icon-service-surface :is(.k-ui-icon,.k-icon),.k-home-ref-action__icon,.k-parts-ref-categories>div>button>span{color:var(--k-service-icon-accent,var(--k-icon-accent))}
+button .k-ui-icon,a .k-ui-icon{pointer-events:none}.k-icon-button{min-width:var(--k-icon-touch);min-height:var(--k-icon-touch);display:inline-grid;place-items:center;border:0;border-radius:12px;background:transparent;color:var(--k-icon-ink);cursor:pointer}
+.k-icon-button:hover{background:color-mix(in srgb,currentColor 8%,transparent)}.k-icon-button:focus-visible,.k-social-action:focus-visible,.k-smart-action-item:focus-visible{outline:2px solid var(--k-icon-accent);outline-offset:2px}
+.k-social-action{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;color:var(--k-icon-muted)}.k-social-action .k-ui-icon svg{width:20px;height:20px}.k-social-action.is-active,[aria-pressed="true"].k-social-action{color:var(--k-icon-accent)}
+.k-social-action.is-active [data-icon="heart"] svg,[aria-pressed="true"] [data-icon="heart"] svg{fill:currentColor}.k-smart-action-icon svg{width:24px;height:24px}.k-smart-action-item{min-width:0}.k-smart-action-item>span:first-child:not(.k-smart-action-icon){font-size:0}
+@media(prefers-reduced-motion:reduce){.k-ui-icon svg,.k-smart-action-icon svg,.k-nav-icon svg{transition:none!important}}

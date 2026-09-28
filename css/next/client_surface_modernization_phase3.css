@@ -1,0 +1,208 @@
+/* R188.5.5.6.84.63 — client surface modernization, phase 3.
+   More/account/garage/orders/vehicle overlays + unified mobile overlay and empty-state geometry. */
+:root{
+  --k-client-overlay-radius:22px;
+  --k-client-overlay-line:var(--k-ref-line,#e7e9ed);
+  --k-client-overlay-soft:var(--k-ref-soft,#f6f7f8);
+  --k-client-overlay-text:var(--k-ref-text,#17181b);
+  --k-client-overlay-muted:var(--k-ref-muted,#73767d);
+  --k-client-overlay-accent:var(--k-ref-orange,#ff3b0a);
+}
+
+/* ===== MORE: keep the KARETA honeycomb contract, but make it a real responsive app surface. ===== */
+.k-more-window-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 0 14px;padding:0 0 12px;border-bottom:1px solid var(--k-client-overlay-line)}
+.k-more-window-head>div{display:grid;gap:2px;min-width:0}.k-more-window-head small{color:var(--k-client-overlay-muted);font-size:9px;font-weight:850;letter-spacing:.11em}.k-more-window-head h1{margin:0;font-size:30px;line-height:1.05;letter-spacing:-.04em;color:var(--k-client-overlay-text)}
+.k-more-window-close{display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;padding:0;border:1px solid var(--k-client-overlay-line);border-radius:12px;background:#fff;color:#34363b;font:500 26px/1 Arial,sans-serif;cursor:pointer}.k-more-window-close:focus-visible{outline:3px solid rgba(255,59,10,.18);outline-offset:2px}
+.k-more-window-profile{box-shadow:none!important;border-color:var(--k-client-overlay-line)!important}.k-more-window-support{box-shadow:none!important;border-color:var(--k-client-overlay-line)!important}
+.k-more-window-action::before{background:#fff!important}.k-more-window-action:not(:disabled):active{transform:scale(.975)}
+html.k-smart-action-open{overflow:hidden!important}
+
+/* ===== ACCOUNT WINDOWS: compact desktop modal, VisualViewport-safe full mobile workspace. ===== */
+dialog.k-account-window-r79{width:min(980px,calc(100vw - 40px));height:min(780px,calc(100dvh - 40px))}
+.k-account-window-r79__surface{border-radius:20px;box-shadow:0 24px 70px rgba(15,23,42,.22)}
+.k-account-window-r79__head{padding:16px 18px}.k-account-window-r79__head h2{font-size:21px}.k-account-window-r79__head>button{width:40px;height:40px;border-radius:12px;font-size:25px}
+.k-account-window-r79__body{padding:18px}.k-account-window-form{max-width:820px}
+.k-account-field-grid{gap:10px}.k-account-field-grid label{gap:6px;font-size:12px}.k-account-field-grid input,.k-account-field-grid textarea{min-height:48px;border-radius:11px;padding:10px 12px;background:#fff}.k-account-field-grid textarea{min-height:92px;resize:vertical}
+.k-account-profile-editor{gap:14px;padding-bottom:16px;margin-bottom:16px}.k-account-profile-avatar{width:64px;height:64px;border-radius:18px}.k-account-profile-editor h3{font-size:22px}
+.k-account-window-form footer{bottom:-18px;margin-top:16px;padding:12px 0 0;background:linear-gradient(transparent,#fff 26%)}
+.k-account-choice{min-height:42px;margin:0 6px 6px 0;padding:8px 11px;border-radius:10px}.k-account-choice.is-selected{border-color:var(--k-client-overlay-accent);background:#fff4ef;color:#a83815;box-shadow:none}
+.k-account-setting-list{border-top-color:var(--k-client-overlay-line)}.k-account-setting-list>label{min-height:60px;padding:12px 2px;border-bottom-color:var(--k-client-overlay-line)}.k-account-setting-list>label b{font-size:13px}.k-account-setting-list>label small{font-size:11px;line-height:1.35}.k-account-setting-list input{width:20px;height:20px;accent-color:var(--k-client-overlay-accent)}
+.k-account-picker-block--fixed{padding:12px;border:1px solid var(--k-client-overlay-line);border-radius:14px;background:var(--k-client-overlay-soft)}
+.k-account-flat-row,.k-account-event-row{padding:12px 2px}.k-account-flat-row b,.k-account-event-row b{font-size:13px}.k-account-flat-row small,.k-account-event-row small{font-size:11px;line-height:1.4}
+.k-account-tariff-metrics{gap:8px}.k-account-tariff-metric{padding:10px;border-radius:12px;background:var(--k-client-overlay-soft)}
+
+/* ===== GARAGE OVERLAYS: use the actual visual viewport, not layout 100dvh. ===== */
+.k-garage-window{top:var(--k-visual-viewport-top,0px)!important;right:0!important;bottom:auto!important;left:0!important;width:100%!important;max-width:100%!important;height:var(--k-visual-viewport-height,100dvh)!important;max-height:var(--k-visual-viewport-height,100dvh)!important}
+.k-garage-window-bar{box-shadow:none!important;border-bottom:1px solid var(--k-client-overlay-line)!important}.k-garage-window-body{scroll-padding-bottom:24px}
+body.k-garage-modal-open #k-mobile-nav,body.k-garage-modal-open #k-mobile-fab-stack{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:translate3d(0,110%,0)!important}
+
+/* ===== ORDERS: dialog sheets no longer collide with navigation/browser bars. ===== */
+.k-client-orders-dialog{border-radius:var(--k-client-overlay-radius)!important}.k-client-orders-dialog__sheet{border-radius:inherit!important}.k-client-orders-dialog__sheet>header{box-shadow:none!important}.k-client-orders-dialog__body{scroll-padding-bottom:18px}
+.k-client-orders-dialog__actions{position:sticky;bottom:-1px;z-index:3;padding:10px 0 max(2px,env(safe-area-inset-bottom,0px));background:linear-gradient(transparent 0,#fff 24%)}
+.k-client-orders-choice,.k-client-orders-sort-choice{min-height:48px;border-radius:12px}.k-client-orders-choice.is-active,.k-client-orders-sort-choice.is-active{border-color:rgba(255,59,10,.4);background:#fff4ef;color:#9f3817}
+.k-client-orders-dialog-empty,.k-client-orders-empty{box-shadow:none!important}
+
+/* ===== VEHICLE ACTION WINDOWS: full sections and compact action sheets share one geometry. ===== */
+dialog.k-vehicle-modal{box-sizing:border-box!important;max-width:none!important;max-height:none!important;margin:0!important}
+.k-vehicle-modal__sheet{border-radius:20px;box-shadow:0 24px 72px rgba(15,23,42,.24)}.k-vehicle-modal__sheet>header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);box-shadow:none}.k-vehicle-modal__body{overscroll-behavior:contain;scroll-padding-bottom:20px}
+.k-vehicle-modal input,.k-vehicle-modal select,.k-vehicle-modal textarea{box-sizing:border-box;min-height:48px;border-radius:11px;padding:10px 12px}.k-vehicle-modal textarea{min-height:92px}.k-vehicle-choice-group span{min-height:48px;border-radius:12px;padding:10px}.k-vehicle-choice-group input:checked+span{border-color:var(--k-client-overlay-accent);background:#fff4ef;color:#9f3817}.k-vehicle-choice-group input:checked+span small{color:#9b624d}
+
+/* ===== EMPTY / ERROR / LOADING: one lighter client language. ===== */
+html[data-user-role="client"] :is(.k-client-orders-empty,.k-client-account-empty,.k-vehicle-loading,.k-empty-card,.k-client-orders-dialog-empty,.k-mobile-filter-empty){box-sizing:border-box;max-width:100%;border-color:var(--k-client-overlay-line)!important;background:#fff!important;box-shadow:none!important}
+html[data-user-role="client"] :is(.k-client-orders-empty,.k-client-account-empty,.k-vehicle-loading,.k-empty-card) h1,
+html[data-user-role="client"] :is(.k-client-orders-empty,.k-client-account-empty,.k-vehicle-loading,.k-empty-card) h2{letter-spacing:-.02em;color:var(--k-client-overlay-text)}
+html[data-user-role="client"] :is(.k-client-orders-empty,.k-client-account-empty,.k-vehicle-loading,.k-empty-card) p{color:var(--k-client-overlay-muted);line-height:1.45}
+
+/* ===== GLOBAL CLIENT FLOATING LAYERS: derive bottom from the live navigation height. ===== */
+@media(max-width:900px){
+  html[data-user-role="client"] #k-mobile-fab-stack,
+  html[data-user-role="client"] .k-mobile-filter-stack{bottom:calc(var(--k-client-active-bottom-space,72px) + 14px)!important}
+  html[data-user-role="client"] .k-mobile-quick-actions{bottom:calc(var(--k-client-active-bottom-space,72px) + 14px + var(--k-mobile-filter-stack-height,0px) + var(--k-mobile-filter-stack-gap,0px))!important}
+  html[data-user-role="client"] .k-mobile-filter-search-card{bottom:calc(var(--k-client-active-bottom-space,72px) + 14px)!important}
+  html[data-user-role="client"] body.k-client-keyboard-open :is(.k-mobile-filter-stack,.k-mobile-quick-actions,.k-mobile-filter-search-card){opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+
+  /* More lives between shell and the measured bottom nav. */
+  html[data-user-role="client"] #k-smart-action-hub{top:var(--k-shell-h,68px)!important;right:0!important;bottom:var(--k-client-active-bottom-space,72px)!important;left:0!important;width:100%!important;max-width:100%!important;overflow:hidden!important;background:#fff!important}
+  html[data-user-role="client"] #k-smart-action-hub .k-more-window{width:100%!important;max-width:none!important;min-width:0!important;height:100%!important;max-height:100%!important;margin:0!important;border-radius:0!important;overflow:auto!important;overscroll-behavior:contain!important}
+  html[data-user-role="client"] #k-smart-action-hub .k-more-window-main{width:100%!important;max-width:520px!important;min-width:0!important;margin:0 auto!important;padding:12px 12px max(18px,env(safe-area-inset-bottom,0px))!important}
+  html[data-user-role="client"] #k-smart-action-hub .k-more-window-hub{width:min(100%,360px)!important;max-width:100%!important;min-width:0!important}
+  html[data-user-role="client"] #k-smart-action-hub .k-more-window-profile{grid-template-columns:48px minmax(0,1fr) 22px!important;min-height:76px!important;padding:11px 12px!important;border-radius:13px!important}.k-more-window-avatar{width:48px!important;height:48px!important}
+  html[data-user-role="client"] #k-smart-action-hub .k-more-window-support{min-height:62px!important;margin-top:12px!important;border-radius:13px!important}
+  html[data-user-role="client"]:has(#k-shell-header.is-scroll-hidden) #k-smart-action-hub{top:0!important}
+
+  /* Account window owns the screen; don't leave a second navigation layer behind it. */
+  html[data-user-role="client"].k-account-window-open #k-mobile-nav,
+  html[data-user-role="client"].k-account-window-open #k-mobile-fab-stack{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:translate3d(0,110%,0)!important}
+  html[data-user-role="client"] dialog.k-account-window-r79{inset:var(--k-visual-viewport-top,0px) 0 auto 0!important;width:100%!important;height:var(--k-visual-viewport-height,100dvh)!important;max-width:100%!important;max-height:var(--k-visual-viewport-height,100dvh)!important;margin:0!important;border-radius:0!important}
+  html[data-user-role="client"] .k-account-window-r79__surface{height:100%!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+  html[data-user-role="client"] .k-account-window-r79__head{position:sticky!important;top:0!important;z-index:8!important;min-height:58px!important;padding:9px 12px!important;background:rgba(255,255,255,.97)!important;backdrop-filter:blur(12px)!important}
+  html[data-user-role="client"] .k-account-window-r79__head small{font-size:8px!important}.k-account-window-r79__head h2{font-size:19px!important}
+  html[data-user-role="client"] .k-account-window-r79__head>button{width:40px!important;height:40px!important;border-radius:11px!important}
+  html[data-user-role="client"] .k-account-window-r79__body{padding:12px 12px max(12px,env(safe-area-inset-bottom,0px))!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch}
+  html[data-user-role="client"] .k-account-window-form footer{bottom:calc(-12px + env(safe-area-inset-bottom,0px))!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important;margin-top:12px!important;padding:14px 0 max(8px,env(safe-area-inset-bottom,0px))!important}.k-account-window-form footer output{margin:0!important;align-self:center;font-size:11px}
+  html[data-user-role="client"] .k-account-window-form footer .k-btn{min-height:46px!important}
+  html[data-user-role="client"] .k-account-profile-editor{align-items:center!important}.k-account-profile-editor h3{font-size:19px!important}.k-account-profile-avatar{width:58px!important;height:58px!important;border-radius:16px!important}
+  html[data-user-role="client"] .k-account-field-grid{grid-template-columns:1fr!important}.k-account-field-grid label.is-wide{grid-column:auto!important}
+  html[data-user-role="client"] .k-account-window-toolbar{align-items:stretch!important}.k-account-window-toolbar .k-btn{min-height:42px!important}
+  html[data-user-role="client"] .k-account-flat-row,.k-account-event-row,.k-account-plan-list article{gap:9px!important;padding:12px 0!important}.k-account-flat-actions{width:100%!important}.k-account-flat-actions .k-btn{flex:1 1 auto!important;min-height:40px!important}
+  html[data-user-role="client"] .k-account-tariff-metrics,.k-account-security-rows{grid-template-columns:1fr!important}
+
+  /* Orders are modal bottom sheets; use current VisualViewport, not 94dvh. */
+  html[data-user-role="client"] dialog.k-client-orders-dialog{width:100%!important;max-width:100%!important;max-height:calc(var(--k-visual-viewport-height,100dvh) - 6px)!important;margin:auto 0 0!important;border-radius:22px 22px 0 0!important}
+  html[data-user-role="client"] .k-client-orders-dialog__sheet{max-height:calc(var(--k-visual-viewport-height,100dvh) - 6px)!important;border-radius:22px 22px 0 0!important;overscroll-behavior:contain!important}.k-client-orders-dialog__sheet>header{min-height:58px!important;padding:10px 12px!important}.k-client-orders-dialog__body{padding:12px 12px max(12px,env(safe-area-inset-bottom,0px))!important}
+
+  /* Vehicle detail/action windows: normal actions are sheets; full sections own the full viewport. */
+  html[data-user-role="client"] dialog.k-vehicle-modal{top:var(--k-visual-viewport-top,0px)!important;right:0!important;bottom:auto!important;left:0!important;width:100%!important;height:var(--k-visual-viewport-height,100dvh)!important;padding:0!important;place-items:end stretch!important;background:rgba(15,23,42,.42)!important}
+  html[data-user-role="client"] .k-vehicle-modal__sheet{width:100%!important;max-width:100%!important;max-height:min(82%,calc(var(--k-visual-viewport-height,100dvh) - 6px))!important;border-radius:22px 22px 0 0!important}.k-vehicle-modal.is-full .k-vehicle-modal__sheet{height:100%!important;max-height:100%!important;border-radius:0!important;box-shadow:none!important}
+  html[data-user-role="client"] .k-vehicle-modal__sheet>header{min-height:58px!important;padding:10px 12px!important}.k-vehicle-modal__sheet>header h2{font-size:19px!important}.k-vehicle-modal__sheet>header button{width:40px!important;height:40px!important;border-radius:11px!important}
+  html[data-user-role="client"] .k-vehicle-modal__body{padding:12px 12px max(14px,env(safe-area-inset-bottom,0px))!important}.k-vehicle-modal form>.k-btn:last-child{position:sticky!important;bottom:0!important;z-index:4!important;min-height:46px!important;box-shadow:0 -10px 20px #fff!important}
+
+  /* Garage embedded "windows" are full-screen states. */
+  html[data-user-role="client"] .k-garage-window-bar{min-height:58px!important;padding:8px 10px!important;grid-template-columns:40px minmax(0,1fr) 40px!important}.k-garage-window-bar b{font-size:14px!important}.k-garage-window-bar small{font-size:10px!important}.k-garage-window-icon,.k-garage-window-close{width:40px!important;height:40px!important;border-radius:11px!important}.k-garage-window-body{padding:12px 12px max(16px,env(safe-area-inset-bottom,0px))!important}
+
+  /* Filter sheet follows the same visible-height contract. */
+  html[data-user-role="client"] .k-mobile-filter-modal{top:var(--k-visual-viewport-top,0px)!important;bottom:auto!important;height:var(--k-visual-viewport-height,100dvh)!important;max-height:var(--k-visual-viewport-height,100dvh)!important}.k-mobile-filter-modal__sheet{max-height:min(72%,calc(var(--k-visual-viewport-height,100dvh) - 8px))!important}.k-mobile-filter-modal__body{max-height:calc(var(--k-visual-viewport-height,100dvh) - 70px)!important}
+}
+
+@media(max-width:430px){
+  html[data-user-role="client"] #k-smart-action-hub .k-more-window-hub{container-type:inline-size;--hex-w:clamp(88px,31cqw,112px);--hex-h:clamp(78px,27cqw,98px);--row:calc(var(--hex-h) + 2px);--side:clamp(28px,11.5cqw,42px);height:calc(var(--row)*3 + 2px)!important}
+  html[data-user-role="client"] #k-smart-action-hub .k-more-window-action__icon svg{width:25px!important;height:25px!important}.k-more-window-action__inside{gap:6px!important}.k-more-window-action__inside>span:last-child{font-size:11px!important;line-height:13px!important}.k-more-window-core{width:46px!important;height:40px!important}.k-more-window-core svg{width:22px!important;height:22px!important}
+  html[data-user-role="client"] .k-account-window-toolbar{flex-direction:column!important}.k-account-window-toolbar>button{width:100%!important}.k-account-window-form footer{grid-template-columns:1fr!important}.k-account-window-form footer .k-btn{width:100%!important}
+  html[data-user-role="client"] .k-client-orders-choice-grid{grid-template-columns:1fr!important}.k-client-orders-offers-summary{grid-template-columns:1fr!important}.k-client-orders-offers-summary>div:last-child{text-align:left!important}.k-client-orders-dialog__actions{grid-template-columns:1fr!important}
+  html[data-user-role="client"] .k-vehicle-choice-group,.k-vehicle-choice-group--three{grid-template-columns:1fr!important}
+}
+
+@media(max-width:350px){
+  html[data-user-role="client"] #k-smart-action-hub .k-more-window-main{padding-inline:8px!important}.k-more-window-head h1{font-size:27px!important}.k-more-window-profile{grid-template-columns:44px minmax(0,1fr) 20px!important}.k-more-window-avatar{width:44px!important;height:44px!important}.k-more-window-support{grid-template-columns:28px minmax(0,1fr)!important}.k-more-window-support>button{grid-column:2!important;justify-self:start!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .k-more-window-action,.k-account-window-r79__surface,.k-client-orders-dialog__sheet,.k-vehicle-modal__sheet,.k-garage-window{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+
+/* R188.5.5.6.84.126 — client desktop app-density contract.
+   Desktop pages must read as an application workspace, not stacked landing sections. */
+@media (min-width:1100px){
+  html[data-user-role="client"]{
+    --k-client-desktop-block-gap:12px;
+    --k-client-desktop-page-top:10px;
+    --k-client-desktop-page-bottom:20px;
+  }
+
+  html[data-user-role="client"] #k-page-outlet > :is(
+    .k-page-shell--workspace,
+    .k-masters-page.k-flow-primary-page,
+    .k-parts-native-page.k-flow-primary-page,
+    .k-work-feed-page,
+    .k-client-orders-native,
+    .k-client-cabinet,
+    .k-client-cabinet-page,
+    .k-chats-page,
+    .k-notifications-page,
+    .k-detail-page,
+    .k-profile-page,
+    .k-following-page
+  ){
+    margin-bottom:16px!important;
+    padding-top:var(--k-client-desktop-page-top)!important;
+    padding-bottom:var(--k-client-desktop-page-bottom)!important;
+  }
+
+  html[data-user-role="client"] #k-page-outlet > :is(
+    .k-page-shell--workspace,
+    .k-masters-page.k-flow-primary-page,
+    .k-parts-native-page.k-flow-primary-page,
+    .k-work-feed-page,
+    .k-client-orders-native,
+    .k-client-cabinet,
+    .k-client-cabinet-page,
+    .k-chats-page,
+    .k-notifications-page,
+    .k-detail-page,
+    .k-profile-page,
+    .k-following-page
+  ){
+    gap:var(--k-client-desktop-block-gap)!important;
+    row-gap:var(--k-client-desktop-block-gap)!important;
+  }
+
+  html[data-user-role="client"] #k-page-outlet :is(
+    .k-client-cabinet-head,
+    .k-client-subhead,
+    .k-r84-workspace-head,
+    .k-workspace-head,
+    .k-work-feed-hero
+  ){
+    margin-bottom:12px!important;
+  }
+
+  html[data-user-role="client"] #k-page-outlet :is(
+    .k-client-cabinet-grid,
+    .k-garage-grid,
+    .k-promo-grid,
+    .k-work-feed-grid,
+    .k-history-list,
+    .k-provider-grid,
+    .k-parts-native-grid
+  ){
+    gap:12px!important;
+  }
+
+  html[data-user-role="client"] #k-page-outlet .k-client-cabinet,
+  html[data-user-role="client"] #k-page-outlet .k-client-cabinet-page{
+    padding-block:12px 20px!important;
+  }
+
+  html[data-user-role="client"] #k-page-outlet .k-client-orders-native{
+    padding-block:10px 20px!important;
+    gap:12px!important;
+  }
+
+  html[data-user-role="client"] #k-page-outlet .k-detail-page{
+    gap:14px!important;
+  }
+
+  html[data-user-role="client"] #k-page-outlet .k-profile-page{
+    padding-block:12px 20px!important;
+  }
+}

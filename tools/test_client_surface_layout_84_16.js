@@ -1,0 +1,24 @@
+const fs=require('fs');
+const read=f=>fs.readFileSync(f,'utf8');
+const css=read('css/next/client_surface_layout.css');
+const nav=read('js/next/navigation_core.js');
+const navCss=read('css/next/client_mobile_navigation.css');
+const reg=read('inc/asset_registry.php');
+const ver=read('inc/asset_version.php');
+const errors=[]; const must=(x,m)=>{if(!x)errors.push(m)};
+must(css.includes('html[data-user-role="client"] #k-page-outlet'),'zero-padding outlet must be strictly CLIENT scoped');
+must(!css.includes('data-user-role="master"'),'CLIENT layout file must not target MASTER');
+must(/html\[data-user-role="client"\] #k-page-outlet\s*\{[\s\S]*?padding:\s*0\s*!important;/m.test(css),'CLIENT outlet must stay zero padding');
+must(css.includes('.k-community-page.k-flow-primary-page')&&css.includes('.k-masters-page.k-flow-primary-page')&&css.includes('.k-parts-native-page.k-flow-primary-page'),'primary CLIENT pages must own inner gutters');
+must(!css.includes('.k-home-reference'),'Home must retain its own exact geometry');
+must(!css.includes('.k-request-flow-r78'),'Request K-Flow must retain its own geometry');
+must(nav.includes("personal: Object.freeze(['home','services','works','masters','parts','__more__'])"),'CLIENT mobile menu must be Main/Services/Community/Masters/Parts/More');
+must(nav.includes("master: Object.freeze(['masterDashboard','masterExchange','serviceManagement','parts','cabinet','__more__'])"),'MASTER template must remain unchanged by CLIENT pass');
+must(navCss.includes('--k-mobile-nav-count: 6 !important')&&navCss.includes('repeat(6, minmax(0, 1fr))'),'CLIENT mobile nav must use six columns');
+const pos=reg.indexOf("'css/next/client_surface_layout.css'");
+const primary=reg.indexOf("'css/next/kflow_primary_pages.css'");
+const desktop=reg.indexOf("'css/next/desktop_full_width.css'");
+must(pos>primary&&pos>desktop,'CLIENT layout contract must load after shared K-Flow/desktop layers');
+must(/188\.5\.5\.6\.84\.(\d+)/.test(ver)&&Number(/188\.5\.5\.6\.84\.(\d+)/.exec(ver)[1])>=16,'asset version must be 84.16 or newer');
+if(errors.length){console.error(errors.map(x=>'FAIL: '+x).join('\n'));process.exit(1)}
+console.log('CLIENT surface layout 84.16 OK');

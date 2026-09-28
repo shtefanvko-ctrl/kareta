@@ -1,0 +1,329 @@
+{
+  "release": "188.5.5.6.84.118",
+  "url": "http://localhost/",
+  "browser": "Chrome/153.0.8010.53",
+  "fixture": "synthetic_master_identity_readonly_post_intercept",
+  "fixtureLimitations": [
+    "no_real_account",
+    "all_POST_api_calls_intercepted",
+    "profile/chat/order fixture data"
+  ],
+  "documentRequests": 1,
+  "pass": true,
+  "checks": [
+    {
+      "name": "initial_master_without_reload",
+      "pass": true,
+      "detail": {
+        "documentRequests": 1,
+        "route": "masterDashboard"
+      }
+    },
+    {
+      "name": "master_bottom_nav_exact",
+      "pass": true,
+      "detail": {
+        "mobileNav": [
+          {
+            "key": "masterDashboard",
+            "label": "Главная",
+            "disabled": false
+          },
+          {
+            "key": "masterExchange",
+            "label": "Биржа",
+            "disabled": false
+          },
+          {
+            "key": "serviceManagement",
+            "label": "Услуги",
+            "disabled": false
+          },
+          {
+            "key": "parts",
+            "label": "Запчасти",
+            "disabled": false
+          },
+          {
+            "key": "cabinet",
+            "label": "Аккаунт",
+            "disabled": false
+          },
+          {
+            "key": "__more__",
+            "label": "Ещё",
+            "disabled": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "master_more_all_six_present",
+      "pass": true,
+      "detail": {
+        "more": [
+          {
+            "key": "masterDashboard",
+            "label": "Рабочее место",
+            "disabled": false
+          },
+          {
+            "key": "masterSchedule",
+            "label": "Календарь",
+            "disabled": false
+          },
+          {
+            "key": "chats",
+            "label": "Чаты",
+            "disabled": false
+          },
+          {
+            "key": "orders",
+            "label": "Мои заказы",
+            "disabled": false
+          },
+          {
+            "key": "following",
+            "label": "Подписки",
+            "disabled": false
+          },
+          {
+            "key": "cabinetSettings",
+            "label": "Настройки",
+            "disabled": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "master_more_all_six_enabled",
+      "pass": true,
+      "detail": {
+        "more": [
+          {
+            "key": "masterDashboard",
+            "label": "Рабочее место",
+            "disabled": false
+          },
+          {
+            "key": "masterSchedule",
+            "label": "Календарь",
+            "disabled": false
+          },
+          {
+            "key": "chats",
+            "label": "Чаты",
+            "disabled": false
+          },
+          {
+            "key": "orders",
+            "label": "Мои заказы",
+            "disabled": false
+          },
+          {
+            "key": "following",
+            "label": "Подписки",
+            "disabled": false
+          },
+          {
+            "key": "cabinetSettings",
+            "label": "Настройки",
+            "disabled": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "master_profile_first_spa_load",
+      "pass": true,
+      "detail": {
+        "ownerState": {
+          "name": "Responsive Master",
+          "hasClientView": true,
+          "text": "RM\nПУБЛИЧНАЯ КАРТОЧКА МАСТЕРА\nResponsive Master\n\nАвтоэлектрик-диагност\n\nПрофиль виден клиентам\nПосмотреть как клиент\nМои услуги\nГОТОВНОСТЬ ПРОФИЛЯ\n100%\n\n5 из 5 ключевых блоков заполнено\n\nАктивные услуги\n2\nуправляются в прайсе\nОпубликованные"
+        },
+        "documentRequests": 1
+      }
+    },
+    {
+      "name": "view_as_client_without_f5",
+      "pass": true,
+      "detail": {
+        "publicName": "Responsive Master",
+        "hash": "#/masters/profile/master/910000",
+        "windowOpen": true,
+        "documentRequests": 1
+      }
+    },
+    {
+      "name": "chat_deeplink_opens_exact_chat",
+      "pass": true,
+      "detail": {
+        "route": "chats",
+        "hash": "#/chats",
+        "active": "chat_fixture_1",
+        "head": "КТ\nКлиент Тест\nToyota Camry · диагностика",
+        "message": "Добрый день, когда можно приехать?",
+        "workspaceHead": "",
+        "documentRequests": 1
+      }
+    },
+    {
+      "name": "chat_no_duplicate_workspace_head",
+      "pass": true,
+      "detail": {
+        "workspaceHead": ""
+      }
+    },
+    {
+      "name": "chat_desktop_app_surface",
+      "pass": true,
+      "detail": {
+        "overflow": false,
+        "workspaceHead": false,
+        "layout": true
+      }
+    },
+    {
+      "name": "master_booking_four_step_structure",
+      "pass": true,
+      "detail": {
+        "steps": 4,
+        "flowVersion": "9",
+        "offerHidden": true,
+        "cityField": false,
+        "visitField": false,
+        "workspaceHead": false
+      }
+    },
+    {
+      "name": "master_booking_skips_offer_and_location",
+      "pass": true,
+      "detail": {
+        "title": "Когда записать клиента?",
+        "caption": "Шаг 2 из 4Когда",
+        "cityField": false,
+        "visitField": false
+      }
+    },
+    {
+      "name": "master_booking_review_self_executor",
+      "pass": true,
+      "detail": {
+        "caption": "Шаг 4 из 4Готово",
+        "review": "АВТОМОБИЛЬToyota Camry 2020Клиент записан к вам\nИзменить\nКОГДАСегодняВ течение дня\nИзменить\nРАБОТЫДиагностика электрики и проверка зарядкиБез вложений\nИзменить\n Без фото",
+        "summary": "Автомобиль\nToyota Camry 2020\nИсполнитель\nВы\nДата\nСегодня\nРаботы\nСвоя проблема\nФайлы\n0",
+        "documentRequests": 1
+      }
+    },
+    {
+      "name": "entire_spa_flow_without_f5",
+      "pass": true,
+      "detail": {
+        "documentRequests": 1
+      }
+    },
+    {
+      "name": "no_serious_runtime_errors",
+      "pass": true,
+      "detail": {
+        "serious": [],
+        "events": []
+      }
+    }
+  ],
+  "events": [],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/db.php",
+      "action": "ping"
+    },
+    {
+      "method": "GET",
+      "path": "/api/identity_session.php",
+      "action": "current"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth_session.php",
+      "action": ""
+    },
+    {
+      "method": "GET",
+      "path": "/api/master_onboarding.php",
+      "action": "current"
+    },
+    {
+      "method": "GET",
+      "path": "/api/realtime.php",
+      "action": ""
+    },
+    {
+      "method": "GET",
+      "path": "/api/master_onboarding.php",
+      "action": "current"
+    },
+    {
+      "method": "GET",
+      "path": "/api/db.php",
+      "action": "ping"
+    },
+    {
+      "method": "GET",
+      "path": "/api/db.php",
+      "action": "masterWorkplace.get"
+    },
+    {
+      "method": "GET",
+      "path": "/api/identity_health.php",
+      "action": ""
+    },
+    {
+      "method": "GET",
+      "path": "/api/db.php",
+      "action": "pull"
+    },
+    {
+      "method": "POST",
+      "path": "/api/runtime_log.php",
+      "action": ""
+    },
+    {
+      "method": "GET",
+      "path": "/api/db.php",
+      "action": "masterProfile.get"
+    },
+    {
+      "method": "GET",
+      "path": "/api/db.php",
+      "action": "providers.detail"
+    },
+    {
+      "method": "POST",
+      "path": "/api/db.php",
+      "action": ""
+    },
+    {
+      "method": "POST",
+      "path": "/api/db.php",
+      "action": ""
+    },
+    {
+      "method": "POST",
+      "path": "/api/db.php",
+      "action": ""
+    },
+    {
+      "method": "GET",
+      "path": "/api/db.php",
+      "action": "serviceOffers.mine"
+    },
+    {
+      "method": "POST",
+      "path": "/api/runtime_log.php",
+      "action": ""
+    }
+  ],
+  "generatedAt": "2026-09-25T13:36:17.697Z"
+}

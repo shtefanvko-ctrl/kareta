@@ -1,0 +1,12 @@
+const fs=require('fs'),path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const must=(v,m)=>{if(!v){console.error('FAIL',m);process.exit(1)}};
+const js=read('js/next/pages/workflow.js'),css=read('css/next/workflow.css');
+must(js.includes('k-workflow-stage-icon'),'workflow stage icons missing');
+for(const key of ['new','waiting_responses','accepted','assigned','in_progress','completed','paid','closed']) must(js.includes(`${key}:'<svg`),`icon missing for ${key}`);
+must(css.includes('grid-template-columns:repeat(2,minmax(0,1fr))!important'),'mobile workflow is not two-column');
+must(css.includes('overflow:visible!important'),'mobile horizontal overflow still enabled');
+must(css.includes('scroll-snap-type:none!important'),'mobile workflow scroll snap still enabled');
+must(css.includes('.k-workflow-ticket>strong'),'mobile ticket design missing');
+console.log('OK R188.5.5.6.32 mobile workflow tiles');

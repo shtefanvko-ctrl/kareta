@@ -1,0 +1,28 @@
+const fs=require('fs');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+function must(c,m){if(!c){console.error('FAIL:',m);process.exit(1)}}
+const nav=read('js/next/navigation_state.js');
+const exchange=read('js/next/pages/work_feed.js');
+const work=read('js/next/pages/work_order.js');
+const workflow=read('js/next/pages/workflow.js');
+const asset=read('inc/asset_version.php');
+const sw=read('sw.js');
+must(nav.includes("const RELEASE = 'r1885590-full-page-session-state'"),'navigation state release present');
+must(nav.includes("const DOCUMENT_ID =")&&nav.includes('snapshot.documentId!==DOCUMENT_ID'),'cross-document restore gate exists');
+must(nav.includes('captureControls')&&nav.includes('isSensitive')&&nav.includes('one-time-code')&&nav.includes('cc-number'),'drafts persist with sensitive-field exclusions');
+must(nav.includes('captureDetails')&&nav.includes('restoreDetails'),'expanded details persist');
+must(nav.includes('captureExpanded')&&nav.includes('aria-controls'),'aria-expanded panels persist');
+must(nav.includes('captureScrollContainers')&&nav.includes('[data-state-scroll]'),'nested scroll positions persist');
+must(nav.includes('captureSafeModal')&&nav.includes('data-state-modal="safe"')&&nav.includes('registerModalRestorer'),'safe modal persistence exists');
+must(nav.includes('MutationObserver')&&nav.includes('ASYNC_RESTORE_WINDOW_MS'),'async pages receive deferred restore');
+must(nav.includes('restoreAfterAsync'),'async page explicit restore hook exposed');
+must(exchange.includes('data-state-key="exchange.search"')&&exchange.includes('data-state-key="exchange.priceMin"'),'exchange filters have stable state keys');
+must(exchange.includes('data-state-modal-key="master-exchange-response"'),'exchange response dialog marked safe');
+must(exchange.includes("const saved=window.KaretaNavigationState?.get?.(location.hash)")&&exchange.includes('exchangeState.tab=match[1]'),'exchange hydrates state before first load');
+must(work.includes('openSafeModal')&&work.includes('work-order:${kind}')&&work.includes('registerModalRestorer'),'work-order safe form modals can be rebuilt');
+must(work.includes('restoreAfterAsync?.(location.hash'),'work-order restores drafts after async server render');
+must(workflow.includes('data-state-scroll="workflow.board"'),'workflow board scroll persists');
+must(asset.includes('r1885590-full-page-session-state')&&sw.includes('r1885590-full-page-session-state'),'asset and service worker versions synchronized');
+console.log('OK R188.5.5.6.30 full page session state');

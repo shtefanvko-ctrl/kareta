@@ -1,0 +1,32 @@
+const fs=require('fs'),crypto=require('crypto'),path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};
+const workplace=read('js/next/pages/master_workplace.js');
+const cabinet=read('js/next/pages/cabinet.js');
+const exchange=read('js/next/pages/work_feed.js');
+const schedule=read('js/next/pages/master_schedule.js');
+const icons=read('js/next/ui_icons.js');
+const css=read('css/next/master_ui_exchange_schedule_flattening.css');
+const registry=read('inc/asset_registry.php');
+const asset=read('inc/asset_version.php');
+const sw=read('sw.js');
+expect(workplace.includes('k-master-r71-toolbar'),'R71 compact workplace toolbar missing');
+expect(!workplace.includes('k-master-native-states'),'obsolete k-master-native-states block still rendered');
+expect(!workplace.includes('k-master-native-head'),'obsolete workplace identity header still rendered');
+expect(!workplace.includes('РАБОЧЕЕ МЕСТО'),'obsolete РАБОЧЕЕ МЕСТО label still present in workplace runtime');
+expect(!cabinet.includes("['summary','Сводка смены'"),'removed shift summary still configurable');
+expect(exchange.includes('k-exchange-r71')&&exchange.includes('k-exchange-card--r71'),'R71 exchange surface/card contract missing');
+expect(exchange.includes("uiSvg('search')")&&exchange.includes("uiSvg('filter')")&&exchange.includes("uiSvg('refresh')"),'exchange does not use unified icons');
+expect(schedule.includes('График рабочего дня')&&schedule.includes('k-master-r71-day__list'),'R71 workday timeline missing');
+expect(schedule.includes('k-schedule-slot--r71'),'R71 flat schedule row missing');
+expect(icons.includes("exchange:'")&&icons.includes("masterExchange:'exchange'"),'unified exchange icon mapping missing');
+expect(css.includes('.k-exchange-card--r71')&&css.includes('.k-schedule-day--r71'),'R71 flattening CSS missing');
+for(const forbidden of ['#k-mobile-nav','#k-desktop-nav','#k-shell-header','.k-menu-drawer','.k-context-switch'])expect(!css.includes(forbidden),`R71 CSS targets frozen shell ${forbidden}`);
+expect(registry.includes('css/next/master_ui_exchange_schedule_flattening.css'),'R71 stylesheet missing from registry');
+expect(asset.includes('r1885631-master-ui-exchange-schedule-flattening'),'R71 asset version missing');
+expect(sw.includes('r1885631-master-ui-exchange-schedule-flattening'),'R71 service worker version missing');
+const manifest=JSON.parse(read('tools/shell_freeze_manifest_r1885603.json'));
+for(const [file,hash] of Object.entries(manifest.files)){const actual=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');expect(actual===hash,`Shell Freeze 2 hash changed: ${file}`)}
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}
+console.log('R188.5.5.6.71 master UI exchange + schedule flattening + unified icons + Shell Freeze 2 OK');

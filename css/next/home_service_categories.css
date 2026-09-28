@@ -1,0 +1,111 @@
+/* R188.5.5.6.14 — compact three-column service categories on the client home page. */
+.k-home-service-categories{
+  display:grid;
+  gap:14px;
+  width:100%;
+  min-width:0;
+  padding:14px;
+  border:1px solid rgba(15,23,42,.07);
+  border-radius:20px;
+  background:#fff;
+  box-shadow:0 6px 20px rgba(15,23,42,.045);
+  box-sizing:border-box;
+}
+.k-home-problem-block + .k-home-service-categories{margin-top:12px}
+.k-home-service-categories + .k-home-services-drilldown{margin-top:12px}
+.k-home-service-categories__head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.k-home-service-categories__head h2{margin:0;color:#111827;font-size:18px;line-height:1.18;letter-spacing:-.02em}
+.k-home-service-categories__head p{margin:3px 0 0;color:#748092;font-size:11px;line-height:1.35}
+.k-home-service-categories__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;min-width:0}
+.k-home-service-category{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  min-width:0;
+  min-height:94px;
+  padding:12px 8px;
+  border:1px solid rgba(255,107,0,.22);
+  border-radius:16px;
+  background:linear-gradient(145deg,#fff 0%,#fffaf5 100%);
+  color:#111827;
+  text-align:center;
+  text-decoration:none;
+  box-sizing:border-box;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.k-home-service-category:hover,
+.k-home-service-category:focus-visible{
+  border-color:#ff6b00;
+  background:#fff6ed;
+  box-shadow:0 8px 18px rgba(255,107,0,.10);
+  transform:translateY(-2px);
+  outline:none;
+}
+.k-home-service-category__icon{
+  display:grid;
+  place-items:center;
+  width:42px;
+  height:42px;
+  flex:0 0 42px;
+  border-radius:14px;
+  background:#ff6b00;
+  color:#fff;
+}
+.k-home-service-category__icon svg{
+  width:23px;
+  height:23px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.k-home-service-category__title{
+  display:block;
+  max-width:100%;
+  color:#111827;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.15;
+  overflow-wrap:anywhere;
+}
+.k-home-service-categories__more{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  min-height:44px;
+  padding:10px 16px;
+  border:1px solid rgba(255,107,0,.28);
+  border-radius:14px;
+  background:#fff1e7;
+  color:#e85f00;
+  font-size:14px;
+  font-weight:850;
+  line-height:1;
+  text-decoration:none;
+  box-sizing:border-box;
+  transition:background .18s ease,border-color .18s ease,transform .18s ease;
+}
+.k-home-service-categories__more:hover,
+.k-home-service-categories__more:focus-visible{background:#ffe5d2;border-color:#ff6b00;transform:translateY(-1px);outline:none}
+@media(max-width:420px){
+  .k-home-service-categories{padding:12px;border-radius:18px;gap:12px}
+  .k-home-service-categories__head h2{font-size:16px}
+  .k-home-service-categories__grid{gap:8px}
+  .k-home-service-category{min-height:82px;padding:9px 5px;border-radius:14px;gap:7px}
+  .k-home-service-category__icon{width:36px;height:36px;flex-basis:36px;border-radius:12px}
+  .k-home-service-category__icon svg{width:20px;height:20px}
+  .k-home-service-category__title{font-size:11px}
+  .k-home-service-categories__more{min-height:42px;font-size:13px}
+}
+@media(max-width:340px){
+  .k-home-service-categories__grid{gap:6px}
+  .k-home-service-category{min-height:78px;padding-inline:3px}
+  .k-home-service-category__title{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .k-home-service-category,.k-home-service-categories__more{transition:none}
+}

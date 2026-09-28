@@ -1,0 +1,57 @@
+{
+  "schema": "kareta.release-master-plan.stage-check.v1",
+  "stage": 9,
+  "totalStages": 2513,
+  "phase": "00 — BASELINE_TEST_HARNESS",
+  "sourceBaseline": "R188.5.5.6.84.109",
+  "task": "Убрать исторические release markers из runtime",
+  "local": {
+    "status": "PASS",
+    "currentRelease": "188.5.5.6.84.109",
+    "historicalMarkersInRuntime": 0,
+    "migratedHistory": {
+      "json": "docs/changelog/runtime_release_history_84_109.json",
+      "markdown": "docs/changelog/runtime_release_history_84_109.md",
+      "legacyMarkerChainChars": 3414,
+      "realtimeMarkerChainChars": 749
+    },
+    "regressions": {
+      "runtimeReleaseMetadata": "PASS",
+      "community8449": "PASS",
+      "community8450": "PASS",
+      "projectAudit": "PASS",
+      "pwaParity": "PASS",
+      "releaseChecklist": {
+        "status": "PASS",
+        "passed": 20,
+        "total": 20
+      }
+    }
+  },
+  "externalStaging": {
+    "checkedAtUtc": "2026-09-25T00:58:19.3338247Z",
+    "root": {
+      "url": "https://s.kareta.kz/",
+      "httpStatus": 403,
+      "statusDescription": "Forbidden"
+    },
+    "serviceWorker": {
+      "url": "https://s.kareta.kz/sw.js",
+      "httpStatus": 200,
+      "contentType": "application/javascript",
+      "currentReleasePresent": true,
+      "historicalMarkerPresent": true,
+      "status": "FAIL_OLD_RUNTIME_MARKERS_STILL_DEPLOYED"
+    },
+    "assetVersionPhp": {
+      "url": "https://s.kareta.kz/inc/asset_version.php",
+      "httpStatus": 200,
+      "responseLength": 0,
+      "note": "PHP executes server-side; source cannot be inspected over HTTP."
+    },
+    "status": "FAIL_STALE_SW_DEPLOYMENT"
+  },
+  "runtimeLogicChanged": false,
+  "stageComplete": false,
+  "stageBlocker": "External staging sw.js still contains historical release markers and must be redeployed."
+}

@@ -1,0 +1,40 @@
+/* R188.5.5.3 — atomic role surfaces, chat workflow and client master spacing. */
+
+html[data-navigation-context="personal"] .k-masters-page{
+  width:min(100%,1680px);
+  max-width:1680px;
+  margin-inline:auto;
+  padding-inline:clamp(14px,3vw,32px);
+  box-sizing:border-box;
+}
+
+.k-chat-filters{display:flex;gap:7px;padding:9px 14px 11px;border-bottom:1px solid #e5e7eb;background:#f8fafc}
+.k-chat-filters button{min-height:34px;padding:0 12px;border:1px solid #dbe3ed;border-radius:999px;background:#fff;color:#475569;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.k-chat-filters button.is-active{border-color:#111827;background:#111827;color:#fff}
+.k-chat-new .k-ui-icon{width:21px;height:21px}.k-chat-new .k-ui-icon svg{width:100%;height:100%}
+.k-chat-message{position:relative}.k-chat-message-actions{position:absolute;z-index:2;top:-10px;left:10px;display:flex;gap:4px;opacity:0;pointer-events:none;transform:translateY(3px);transition:.15s ease}
+.k-chat-message.is-own .k-chat-message-actions{right:10px;left:auto}.k-chat-message:hover .k-chat-message-actions,.k-chat-message:focus-within .k-chat-message-actions{opacity:1;pointer-events:auto;transform:none}
+.k-chat-message-actions button{width:30px;height:30px;display:grid;place-items:center;border:1px solid #dbe3ed;border-radius:10px;background:#fff;color:#334155;box-shadow:0 6px 18px rgba(15,23,42,.12);cursor:pointer}
+.k-chat-message-actions .k-ui-icon,.k-chat-message-actions svg{width:15px;height:15px}
+.k-chat-reply-quote{display:grid;width:100%;gap:2px;margin:5px 0 8px;padding:7px 9px;border:0;border-left:3px solid currentColor;border-radius:8px;background:rgba(148,163,184,.14);text-align:left;color:inherit;cursor:pointer}
+.k-chat-reply-quote strong,.k-chat-reply-quote span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.k-chat-reply-quote strong{font-size:11px}.k-chat-reply-quote span{font-size:12px;opacity:.72}
+.k-chat-composer{grid-template-columns:minmax(0,1fr) auto auto}.k-chat-composer-mode{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px;padding:9px 11px;border-left:3px solid #ff6b00;border-radius:10px;background:#fff7ed;color:#9a3412}
+.k-chat-composer-mode>div{display:grid;gap:2px;min-width:0}.k-chat-composer-mode strong,.k-chat-composer-mode span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.k-chat-composer-mode strong{font-size:12px}.k-chat-composer-mode span{font-size:12px;opacity:.8}
+.k-chat-composer-mode>button{width:30px;height:30px;display:grid;place-items:center;flex:0 0 auto;border:0;border-radius:50%;background:#fff;color:#9a3412;cursor:pointer}.k-chat-composer-mode .k-ui-icon,.k-chat-composer-mode svg{width:15px;height:15px}
+.k-chat-message-kind{display:inline-flex;margin-top:7px;padding:4px 8px;border-radius:999px;background:#fff7ed;color:#c2410c;font-size:10px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+.k-chat-edited{font-size:10px;opacity:.62}.k-chat-image{display:block!important;overflow:hidden;margin-top:8px!important;border-radius:12px}.k-chat-image img{display:block;width:min(100%,360px);max-height:320px;object-fit:cover}
+.k-chat-file{align-items:center;gap:6px}.k-chat-file .k-ui-icon,.k-chat-file svg{width:17px;height:17px;flex:0 0 auto}.k-chat-message.is-highlighted>div{animation:kR188553ChatHighlight 1.25s ease}
+@keyframes kR188553ChatHighlight{0%,100%{box-shadow:inherit}35%{box-shadow:0 0 0 4px rgba(255,107,0,.3)}}
+
+@media(max-width:760px){
+  html[data-navigation-context="personal"] .k-masters-page{width:100%;max-width:none;margin-inline:0;padding:10px 12px calc(var(--k-mobile-nav-height,76px) + env(safe-area-inset-bottom,0px) + 18px)}
+  html[data-navigation-context="personal"] .k-masters-page>.k-masters-hero,
+  html[data-navigation-context="personal"] .k-masters-page>.k-my-subscriptions,
+  html[data-navigation-context="personal"] .k-masters-page>.k-masters-toolbar,
+  html[data-navigation-context="personal"] .k-masters-page>.k-masters-directory{
+    width:100%;border-left:1px solid rgba(15,23,42,.08);border-right:1px solid rgba(15,23,42,.08);border-radius:20px;box-sizing:border-box;
+  }
+  html[data-navigation-context="personal"] .k-masters-page .k-social-provider-card{border-left:1px solid rgba(15,23,42,.08);border-right:1px solid rgba(15,23,42,.08);border-radius:20px;box-shadow:0 10px 28px rgba(15,23,42,.06)}
+  .k-chat-message-actions{position:static;justify-content:flex-start;margin:0 0 4px;opacity:1;pointer-events:auto;transform:none}.k-chat-message.is-own .k-chat-message-actions{justify-content:flex-end}
+  .k-chat-message-actions button{box-shadow:none}.k-chat-composer{grid-template-columns:minmax(0,1fr) auto}.k-chat-composer>.k-btn{grid-column:1/-1}
+}

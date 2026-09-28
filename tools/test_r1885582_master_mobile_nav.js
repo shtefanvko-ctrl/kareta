@@ -1,0 +1,22 @@
+const fs=require('fs');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+function must(cond,msg){if(!cond){console.error('FAIL:',msg);process.exit(1)}}
+const nav=read('js/next/navigation_core.js');
+const role=read('js/next/role_access.js');
+const shell=read('js/next/shell_nav.js');
+const routes=read('js/next/route_registry.js');
+const feed=read('js/next/pages/work_feed.js');
+const app=read('js/next/app_next.js');
+const css=read('css/next/master_mobile_nav.css');
+must(nav.includes("master: Object.freeze(['masterDashboard','masterExchange','serviceManagement','parts','cabinet','__more__'])"),'master template order');
+must(nav.includes("['personal','master','seller','admin','organization_store'].includes(kind) ? 6 : 5"),'master mobile limit 6');
+must(role.includes("mobile:['masterDashboard','masterExchange','serviceManagement','parts','cabinet','__more__']"),'legacy master order');
+must(shell.includes("masterExchange:'Биржа'")&&shell.includes("orders:'Заявки'")&&shell.includes("community:'Сообщество'"),'master labels');
+must(shell.includes("['workOrder','requestNew','workflow'].includes(key))key='orders'"),'order child active grouping');
+must(routes.includes("path:'#/master/exchange'")&&routes.includes("path:'#/community'"),'new routes');
+must(feed.includes("['client','master'].includes(role())")&&feed.includes('renderExchange,mountExchange'),'community/exchange split');
+must(app.includes("masterExchange:{global:'KaretaWorkFeedPages',render:'renderExchange',mount:'mountExchange'}")&&app.includes("community:{global:'KaretaCommunityPages',render:'renderCommunity',mount:'mountCommunity'}"),'app route renderers');
+must(css.includes('--k-mobile-nav-count:6!important')&&css.includes('repeat(6,minmax(0,1fr))'),'historical 6-column css missing');
+console.log('OK R188.5.5.6.22 master mobile nav');

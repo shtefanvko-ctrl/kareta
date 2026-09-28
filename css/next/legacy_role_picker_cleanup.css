@@ -1,0 +1,141 @@
+/* R188.5.5.2: legacy role picker and duplicate More-center removal. */
+.k-context-legacy > header {
+  display: grid;
+  gap: 3px;
+}
+
+.k-context-legacy > header > span {
+  color: #ff6b00;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.k-context-legacy > header > small,
+.k-context-legacy-footer > small {
+  color: #667085;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.k-context-legacy-roles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.k-context-role-choice {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 64px;
+  padding: 9px 9px 16px;
+  border: 1px solid #dbe3ee;
+  border-radius: 15px;
+  background: #fff;
+  color: #344054;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.k-context-role-choice:not(:disabled):hover,
+.k-context-role-choice:not(:disabled):focus-visible {
+  border-color: #ff6b00;
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, .1);
+  outline: 0;
+}
+
+.k-context-role-choice.is-active {
+  border-color: #111827;
+  background: #111827;
+  color: #fff;
+  cursor: default;
+}
+
+.k-context-role-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: rgba(255, 107, 0, .1);
+  color: #d85400;
+}
+
+.k-context-role-choice.is-active .k-context-role-icon {
+  background: rgba(255, 255, 255, .14);
+  color: #fff;
+}
+
+.k-context-role-icon svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.k-context-role-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.k-context-role-copy b,
+.k-context-role-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.k-context-role-copy b {
+  font-size: 12px;
+}
+
+.k-context-role-copy small {
+  color: #667085;
+  font-size: 9px;
+}
+
+.k-context-role-choice.is-active .k-context-role-copy small {
+  color: rgba(255, 255, 255, .72);
+}
+
+.k-context-role-state {
+  position: absolute;
+  right: 8px;
+  bottom: 5px;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 800;
+  opacity: .72;
+}
+
+.k-context-legacy-footer {
+  display: grid;
+  gap: 8px;
+}
+
+.k-context-legacy-footer .k-context-recover[aria-busy="true"] {
+  opacity: .6;
+  cursor: wait;
+}
+
+@media (max-width: 390px) {
+  .k-context-role-choice {
+    grid-template-columns: 30px minmax(0, 1fr);
+    padding-inline: 7px;
+  }
+
+  .k-context-role-icon {
+    width: 30px;
+    height: 30px;
+  }
+}

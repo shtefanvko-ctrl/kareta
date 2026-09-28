@@ -1,0 +1,20 @@
+'use strict';
+const fs=require('fs'),path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const expect=(v,m)=>{if(!v)throw new Error(m)};
+const index=read('index.php'),app=read('css/next/app_next.css'),width=read('css/next/desktop_full_width.css'),boot=read('css/runtime_boot_bundle.css'),postlude=read('css/routes/client_guard_postlude.css'),asset=read('inc/asset_version.php'),sw=read('sw.js');
+expect(index.includes('id="k-desktop-sidebar"'),'desktop sidebar missing');
+expect(index.indexOf('id="k-desktop-sidebar"')>index.indexOf('</header>'),'desktop sidebar must be outside header');
+expect(app.includes('--k-page-max:1440px'),'app page max is not 1440');
+expect(app.includes('--k-desktop-sidebar-w:84px'),'rail width missing');
+expect(app.includes('--k-desktop-sidebar-w:248px'),'sidebar width missing');
+expect(!width.includes('2400px'),'legacy width source still contains 2400px');
+expect(width.includes('--k-page-max: 1440px'),'bounded width source missing');
+const marker='/* ===== SOURCE: css/next/desktop_full_width.css ===== */';
+for(const [name,text] of [['boot',boot],['postlude',postlude]]){const a=text.indexOf(marker),b=text.indexOf('/* ===== SOURCE:',a+marker.length);expect(a>=0&&b>a,name+' desktop width block missing');const block=text.slice(a,b);expect(!block.includes('2400px'),name+' desktop width block contains 2400px');expect(block.includes('--k-page-max: 1440px'),name+' width block not synced');}
+const va=(asset.match(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/)||[])[1],vs=(sw.match(/const RELEASE = '([^']+)'/)||[])[1],rev=Number(String(va||'').split('.').pop()||0);
+expect(rev>=112,'desktop shell release revision too old');
+expect(va===vs,'asset/service-worker release mismatch');
+expect(boot.length<=850000,'critical CSS budget exceeded: '+boot.length);
+console.log('DESKTOP_SHELL_CONTRACT: PASS release='+va+' rail=84 sidebar=248 pageMax=1440');

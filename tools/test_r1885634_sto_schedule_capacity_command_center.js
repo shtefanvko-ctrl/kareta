@@ -1,0 +1,21 @@
+const fs=require('fs'),crypto=require('crypto'),path=require('path');
+const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8'),fail=[],expect=(v,m)=>{if(!v)fail.push(m)};
+const page=read('js/next/pages/sto_workplace.js'),apiClient=read('js/next/work_orders/sto_workplace_api.js'),backend=read('api/sto_workplace.php'),recovery=read('api/master_recovery_control.php'),db=read('api/db.php'),migration=read('api/migrations/127_sto_schedule_capacity_command_center.php'),css=read('css/next/sto_schedule_capacity_command_center.css'),registry=read('inc/asset_registry.php'),asset=read('inc/asset_version.php'),sw=read('sw.js'),config=read('config.php');
+const dbv=Number((/define\('KARETA_DB_VERSION',\s*(\d+)\)/.exec(config)||[])[1]||0);expect(dbv>=127,'R74 requires DB version at least 127');
+for(const table of ['sto_schedule_preferences','sto_capacity_incidents'])expect(migration.includes(table),`missing migration table ${table}`);
+for(const fn of ['kareta_sto_schedule_preferences_save','kareta_sto_schedule_command_data','kareta_sto_order_alternative_pairs','kareta_sto_assign_pair','kareta_sto_capacity_incident_preview','kareta_sto_capacity_incident_apply','kareta_sto_capacity_incident_resolve','kareta_sto_bay_incident_conflicts'])expect(backend.includes(`function ${fn}`),`missing backend ${fn}`);
+for(const route of ['stoSchedule.preferencesSave','stoCapacity.alternatives','stoCapacity.assignPair','stoCapacity.incidentPreview','stoCapacity.incidentApply','stoCapacity.incidentResolve'])expect(db.includes(route),`missing route ${route}`);
+for(const method of ['saveSchedulePreferences','alternatives','assignPair','incidentPreview','incidentApply','incidentResolve'])expect(apiClient.includes(method),`missing api client ${method}`);
+for(const marker of ['k-sto-r74-command','data-sto-command-range="month"','data-sto-incident-open','data-sto-alternative-open','data-sto-pair-master','data-sto-pref'])expect(page.includes(marker),`missing R74 UI marker ${marker}`);
+expect(!page.includes('<select'),'R74 active STO workplace renders select');
+const r82Override=page.includes("STO_WORKSPACE_R82_CONTRACT='R188.5.5.6.82'");expect(r82Override?page.includes('workspaceDialogs(d)'):page.includes('${scheduleCommand(d)}${recoveryControl(d)}'),r82Override?'R82 must preserve R74 command center inside workspace window':'R74 command center is not the primary rendered schedule surface');
+expect(!page.includes('${capacityBoard(d)}${recoveryControl(d)}${jointSchedule(d)}'),'old duplicate schedule composition is still active');
+expect(backend.includes("source='sto_command_pair'")&&backend.includes("status='planned'"),'atomic planned Master + bay assignment contract missing');
+expect(page.includes('apiModule.assignPair'),'alternative pair UI does not use atomic assignPair');
+expect(recovery.includes('kareta_sto_bay_incident_conflicts'),'master recovery ignores STO bay incidents');
+expect(css.includes('.k-sto-r74-command')&&css.includes('.k-sto-r74-lane')&&css.includes('.k-sto-r74-track'),'R74 command center CSS contract missing');
+expect(registry.includes('css/next/sto_schedule_capacity_command_center.css'),'R74 stylesheet missing from registry');
+expect(asset.includes('r1885634-sto-schedule-capacity-command-center'),'R74 asset tag missing');expect(sw.includes('r1885634-sto-schedule-capacity-command-center'),'R74 SW tag missing');
+expect(page.includes('const todayYmd='),'R74 local date helper missing');
+const manifest=JSON.parse(read('tools/shell_freeze_manifest_r1885603.json'));for(const [file,hash] of Object.entries(manifest.files)){const actual=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');expect(actual===hash,`Shell Freeze 2 hash changed: ${file}`)}
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}console.log('R188.5.5.6.74 STO schedule + capacity command center + atomic planned pair + Shell Freeze 2 OK');

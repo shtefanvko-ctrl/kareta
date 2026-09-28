@@ -1,0 +1,92 @@
+[
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "home__client__390x844__chrome__baseline.png",
+    "count": 5
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "home__client__768x1024__chrome__baseline.png",
+    "count": 4
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "home__client__1440x900__chrome__baseline.png",
+    "count": 5
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "masterDashboard__master__390x844__chrome__baseline.png",
+    "count": 4
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "masterDashboard__master__768x1024__chrome__baseline.png",
+    "count": 4
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "masterDashboard__master__1440x900__chrome__baseline.png",
+    "count": 4
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "stoDashboard__sto__390x844__chrome__baseline.png",
+    "count": 4
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "stoDashboard__sto__768x1024__chrome__baseline.png",
+    "count": 4
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "stoDashboard__sto__1440x900__chrome__baseline.png",
+    "count": 4
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "seller__seller__390x844__chrome__baseline.png",
+    "count": 4
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "seller__seller__768x1024__chrome__baseline.png",
+    "count": 4
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "seller__seller__1440x900__chrome__baseline.png",
+    "count": 4
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "adminMonitoring__admin__390x844__chrome__baseline.png",
+    "count": 5
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "adminMonitoring__admin__768x1024__chrome__baseline.png",
+    "count": 5
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "adminMonitoring__admin__1440x900__chrome__baseline.png",
+    "count": 5
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "home__owner__390x844__chrome__baseline.png",
+    "count": 3
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "home__owner__768x1024__chrome__baseline.png",
+    "count": 3
+  },
+  {
+    "type": "fixture_auth_boundary",
+    "screenshot": "home__owner__1440x900__chrome__baseline.png",
+    "count": 3
+  }
+]

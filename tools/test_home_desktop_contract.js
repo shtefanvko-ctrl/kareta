@@ -1,0 +1,33 @@
+'use strict';
+const fs=require('fs'),path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const expect=(v,m)=>{if(!v)throw new Error(m)};
+const core=read('js/next/pages/core.js');
+const home=read('css/next/home_simple.css');
+const ref=read('css/next/reference_client_pages.css');
+const boot=read('css/runtime_boot_bundle.css');
+const post=read('css/routes/client_guard_postlude.css');
+const asset=read('inc/asset_version.php');
+const sw=read('sw.js');
+expect(core.includes('data-home-section="nearby"'),'nearby hook missing');
+expect(core.includes('data-home-section="popular"'),'popular hook missing');
+expect(home.includes('R188.5.5.6.84.113 — Client Home desktop composition'),'desktop Home source marker missing');
+expect(home.includes('grid-template-columns:repeat(12,minmax(0,1fr))!important'),'Home 12-column desktop grid missing');
+expect(home.includes('grid-column:1/span 8'),'Home hero desktop span missing');
+expect(home.includes('grid-column:9/-1'),'Home actions desktop span missing');
+expect(home.includes('@media (min-width:1600px)'),'wide Home breakpoint missing');
+expect(ref.includes('@media(max-width:1023px){\n  .k-home-reference .k-home-feed-rail{display:flex!important'),'mobile/tablet feed slider is not scoped below desktop');
+expect(ref.includes('@media(min-width:1024px){\n  .k-home-reference .k-home-ref-hero{min-height:360px!important}'),'desktop Home hero height contract missing');
+expect(boot.includes('R188.5.5.6.84.113 — Client Home desktop composition'),'boot Home source not generated');
+for(const [name,text] of [['boot',boot],['postlude',post]]){
+  expect(text.includes('@media(max-width:1023px){\n  .k-home-reference .k-home-feed-rail{display:flex!important'),name+' mobile feed scope not generated');
+  expect(text.includes('@media(min-width:1024px){\n  .k-home-reference .k-home-ref-hero{min-height:360px!important}'),name+' desktop hero guard not generated');
+}
+const va=(asset.match(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/)||[])[1];
+const vs=(sw.match(/const RELEASE = '([^']+)'/)||[])[1];
+const rev=Number(String(va||'').split('.').pop()||0);
+expect(rev>=114,'Home desktop contract requires release >=84.114');
+expect(va===vs,'asset/service-worker release mismatch');
+expect(boot.length<=850000,'critical CSS budget exceeded: '+boot.length);
+console.log('HOME_DESKTOP_CONTRACT: PASS release='+va+' desktopGrid=12 feedDesktop=grid feedMobile=slider');

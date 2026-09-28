@@ -1,0 +1,55 @@
+/* R188.5.5.6.9 — account action in Smart Action Hub */
+.k-smart-action-hub[data-action-count="7"][data-layout="grid"] .k-smart-action-panel {
+  width: min(286px, calc(100vw - 24px));
+  min-height: 270px;
+}
+
+.k-smart-action-hub[data-action-count="7"][data-layout="grid"] .k-smart-action-items {
+  min-height: 230px;
+  grid-template-columns: repeat(3, 78px);
+  grid-template-rows: repeat(3, 70px);
+  gap: 10px;
+}
+
+.k-smart-action-hub[data-action-count="7"][data-layout="grid"] .k-smart-action-item:nth-child(7) {
+  grid-column: 2;
+}
+
+.k-smart-action-hub[data-action-count="7"][data-layout="arc"] .k-smart-action-panel {
+  width: 340px;
+  height: 305px;
+}
+
+.k-smart-action-hub[data-action-count="7"][data-layout="arc"] .k-smart-action-items {
+  width: 340px;
+  min-height: 270px;
+}
+
+.k-smart-action-hub[data-action-count="7"][data-layout="arc"] .k-smart-action-item:nth-child(7) {
+  right: 131px;
+  bottom: 0;
+}
+
+.k-smart-action-hub[data-action-count="7"][data-layout="hex"] .k-smart-action-item:nth-child(7) {
+  right: 121px;
+  bottom: 87px;
+  border-color: rgba(37, 99, 235, .34);
+  box-shadow: 0 18px 44px rgba(37, 99, 235, .22);
+}
+
+.k-smart-action-hub .k-smart-action-item[data-smart-action-route="cabinet"] {
+  border-color: rgba(37, 99, 235, .3);
+}
+
+@media (max-width: 390px) {
+  .k-smart-action-hub[data-action-count="7"][data-layout="grid"] .k-smart-action-items {
+    grid-template-columns: repeat(3, 70px);
+    grid-template-rows: repeat(3, 66px);
+    gap: 8px;
+  }
+
+  .k-smart-action-hub[data-action-count="7"][data-layout="grid"] .k-smart-action-panel {
+    width: min(242px, calc(100vw - 20px));
+    min-height: 246px;
+  }
+}

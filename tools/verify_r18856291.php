@@ -1,0 +1,2 @@
+<?php
+declare(strict_types=1);$root=dirname(__DIR__);$need=function($ok,$m){if(!$ok){fwrite(STDERR,"FAIL: $m\n");exit(1);}};$files=['api/migrations/123_tariff_admin_kareta_pro.php','css/next/tariff_admin_kareta_pro.css','docs/releases/changelog/CHANGELOG_R188_5_5_6_69_1.md','docs/releases/plans/PLAN_R188_5_5_6_69_1_TARIFF_ADMIN_KARETA_PRO.md'];foreach($files as $f)$need(is_file($root.'/'.$f),'missing '.$f);$need(str_contains(file_get_contents($root.'/config.php'),"KARETA_DB_VERSION', 123"),'db version');echo "R188.5.5.6.69.1 verifier OK\n";

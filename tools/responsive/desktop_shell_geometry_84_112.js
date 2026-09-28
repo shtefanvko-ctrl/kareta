@@ -1,0 +1,9 @@
+'use strict';
+const fs=require('fs'),path=require('path'),puppeteer=require('puppeteer');
+const sizes=[[1024,768],[1280,720],[1366,768],[1440,900],[1536,864],[1600,900],[1920,1080],[2560,1440]];
+const out='C:/Temp/KARETA_DESKTOP_SHELL_84_112'; fs.mkdirSync(out,{recursive:true});
+(async()=>{const browser=await puppeteer.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',args:['--no-sandbox','--disable-dev-shm-usage','--disable-gpu']});const results=[];
+try{const page=await browser.newPage();await page.setBypassServiceWorker(true);await page.setCacheEnabled(false);
+for(const [width,height] of sizes){await page.setViewport({width,height,deviceScaleFactor:1});await page.goto('http://localhost/tools/fixtures/desktop_shell_84_112.html?cb='+Date.now(),{waitUntil:'networkidle0',timeout:15000});await page.waitForFunction(()=>document.body?.dataset?.pass!==undefined,{timeout:5000});const state=await page.evaluate(()=>JSON.parse(document.getElementById('fixture-result').textContent));results.push({width,height,pass:state.pass,state});console.log(width+'x'+height+' '+(state.pass?'PASS':'FAIL'));}
+const evidence={release:'188.5.5.6.84.112',fixture:'/tools/fixtures/desktop_shell_84_112.html',browser:await browser.version(),generatedAt:new Date().toISOString(),pass:results.every(r=>r.pass),results};fs.writeFileSync(path.join(out,'evidence.json'),JSON.stringify(evidence,null,2));console.log('SUMMARY '+results.filter(r=>r.pass).length+'/'+results.length);if(!evidence.pass)process.exitCode=2;
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});

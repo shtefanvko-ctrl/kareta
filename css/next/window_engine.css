@@ -1,0 +1,47 @@
+/* R188.5.5.6.76 — UX Restructure Foundation
+   Contract: section = page; entity = one large window; max two overlay levels; no workspace hero/side-panel shell. */
+
+/* Workspace pages stop looking like marketing/site pages. */
+.k-page-shell--workspace{display:block;width:100%;min-width:0}
+.k-workspace-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding:10px 0 18px;margin:0 0 18px;border-bottom:1px solid var(--k-line,#e6e9ef);background:transparent}
+.k-workspace-head__copy{min-width:0}
+.k-workspace-head__copy>small{display:block;margin:0 0 5px;font-size:11px;font-weight:800;letter-spacing:.09em;color:var(--k-muted,#697386)}
+.k-workspace-head h1{margin:0;font-size:clamp(24px,3vw,38px);line-height:1.08;letter-spacing:-.035em}
+.k-workspace-head p{margin:7px 0 0;max-width:860px;color:var(--k-muted,#667085);font-size:14px;line-height:1.45}
+.k-workspace-head__actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+
+/* One entity = one large central window. */
+.k-entity-window{width:min(1440px,94vw);height:min(920px,92dvh);max-width:none;max-height:none;padding:0;border:0;border-radius:24px;background:transparent;box-shadow:0 30px 90px rgba(15,23,42,.28);overflow:hidden}
+.k-entity-window::backdrop{background:rgba(15,23,42,.52);backdrop-filter:blur(7px)}
+.k-entity-window__surface{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--k-surface,#fff);color:var(--k-text,#111827);overflow:hidden}
+.k-entity-window__head{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 18px;border-bottom:1px solid var(--k-line,#e5e7eb);background:color-mix(in srgb,var(--k-surface,#fff) 96%,transparent)}
+.k-entity-window__head small{display:block;font-size:10px;font-weight:850;letter-spacing:.11em;color:var(--k-muted,#667085)}
+.k-entity-window__head h2{margin:2px 0 0;font-size:18px;line-height:1.15}
+.k-entity-window__close{display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--k-line,#e5e7eb);border-radius:50%;background:transparent;color:inherit;font-size:26px;line-height:1;cursor:pointer}
+.k-entity-window__body{min-height:0;overflow:auto;overscroll-behavior:contain;padding:0 22px 28px}
+.k-entity-window__body>.k-page{width:100%;max-width:none;margin:0;padding-top:18px}
+.k-entity-window__body>.k-page>.k-page-hero,.k-entity-window__body>.k-page>.k-workspace-head{display:none!important}
+.k-entity-window__loading,.k-entity-window__error{min-height:320px;display:grid;place-items:center;align-content:center;text-align:center;gap:12px;padding:40px}
+.k-entity-window__loading span{width:36px;height:36px;border-radius:50%;border:3px solid var(--k-line,#e5e7eb);border-top-color:currentColor;animation:k-entity-spin .7s linear infinite}
+@keyframes k-entity-spin{to{transform:rotate(360deg)}}
+html.k-entity-window-open{overflow:hidden}
+
+/* Product/vehicle/provider/work-order pages become content surfaces inside the large window. */
+.k-entity-window .k-detail-page,.k-entity-window .k-provider-native-profile,.k-entity-window .k-vehicle-native-page,.k-entity-window .k-work-order{box-shadow:none!important;border:0!important}
+.k-entity-window .k-provider-native-layout,.k-entity-window .k-part-detail-layout{max-width:none}
+
+/* New-parts market and used-parts exchange are intentionally separate workspaces. */
+.k-parts-surface-switch{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.k-parts-surface-switch a{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border:1px solid var(--k-line,#e5e7eb);border-radius:999px;text-decoration:none;color:inherit;font-weight:750;background:var(--k-surface,#fff)}
+.k-parts-native-utility>.k-parts-utility-link{display:flex;flex-direction:column;justify-content:center;text-decoration:none;color:inherit}
+.k-parts-surface-switch a.is-active{background:var(--k-text,#111827);color:var(--k-surface,#fff);border-color:var(--k-text,#111827)}
+.k-parts-native-page[data-parts-surface="used"] .k-shop-cart-dialog,.k-parts-native-page[data-parts-surface="used"] [data-shop-cart-open]{display:none!important}
+
+@media(max-width:760px){
+  .k-workspace-head{align-items:flex-start;flex-direction:column;padding:4px 0 13px;margin-bottom:12px}
+  .k-workspace-head__actions{width:100%;justify-content:flex-start}
+  .k-entity-window{width:100vw;height:100dvh;border-radius:0;margin:0}
+  .k-entity-window__head{padding:11px 12px}
+  .k-entity-window__body{padding:0 12px 96px}
+  .k-entity-window__close{width:40px;height:40px}
+}

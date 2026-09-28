@@ -1,0 +1,75 @@
+{
+  "schema": "kareta.release-master-plan.stage-check.v1",
+  "stage": 12,
+  "totalStages": 2513,
+  "phase": "00 — BASELINE_TEST_HARNESS",
+  "sourceBaseline": "R188.5.5.6.84.109",
+  "task": "Начать декомпозицию api/db.php",
+  "local": {
+    "status": "PASS",
+    "dbMonolith": {
+      "beforeBytes": 687448,
+      "afterBytes": 675028,
+      "reductionBytes": 12420,
+      "beforeActions": 291,
+      "remainingActions": 281
+    },
+    "extractedActions": [
+      "auth.sendOtp",
+      "auth.verifyOtp",
+      "users.getAll",
+      "users.setRole",
+      "users.setActive",
+      "users.upsert",
+      "users.upsertAdmin",
+      "profile.updateMine",
+      "config.get",
+      "config.save"
+    ],
+    "domainFiles": [
+      "api/domains/identity_admin.php",
+      "api/domains/runtime_config.php"
+    ],
+    "contract": "tools/contracts/db_monolith_84_109.json",
+    "regression": "tools/test_db_monolith_decomposition_84_109.js",
+    "architectureDoc": "docs/architecture/API_DB_DECOMPOSITION_84_109.md",
+    "releaseChecklist": {
+      "status": "PASS",
+      "passed": 23,
+      "total": 23,
+      "failed": 0
+    },
+    "targetedRegressions": {
+      "commissioningOtp": "PASS",
+      "roleE2eRecovery": "PASS",
+      "roleContexts": "PASS",
+      "profileLegacyId": "PASS"
+    }
+  },
+  "externalStaging": {
+    "checkedAtUtc": "2026-09-25T01:55:08.4220228Z",
+    "root": {
+      "url": "https://s.kareta.kz/",
+      "httpStatus": 403,
+      "statusDescription": "Forbidden",
+      "contentType": "text/html; charset=UTF-8"
+    },
+    "apiPing": {
+      "url": "https://s.kareta.kz/api/db.php?action=ping",
+      "httpStatus": 200,
+      "ok": true,
+      "dbReady": false,
+      "databaseState": "configuration_missing",
+      "recoveryAction": "configure_private_database_settings",
+      "diagnosticCode": "84650804048629ff",
+      "assetVersion": "188.5.5.6.84.109"
+    },
+    "status": "BLOCKED_ENVIRONMENT"
+  },
+  "publicEndpointChanged": false,
+  "actionNamesChanged": false,
+  "dbSchemaChanged": false,
+  "frontendRoutesChanged": false,
+  "stageComplete": false,
+  "stageBlocker": "Staging root is HTTP 403 and staging DB reports configuration_missing, so end-to-end staging verification cannot pass."
+}

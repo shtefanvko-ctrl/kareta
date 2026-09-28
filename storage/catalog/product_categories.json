@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "source": "kareta-platform",
+  "groups": [
+    {"key":"audio","name":"Автозвук","sort":10},
+    {"key":"electronics","name":"Электроника","sort":20},
+    {"key":"parts","name":"Запчасти и расходники","sort":30},
+    {"key":"other","name":"Прочее","sort":90}
+  ],
+  "categories": [
+    {"key":"audio_speaker","name":"Динамики","icon":"🔊","group":"audio","sort":10,"active":true},
+    {"key":"audio_sub","name":"Сабвуферы","icon":"◉","group":"audio","sort":20,"active":true},
+    {"key":"audio_amp","name":"Усилители","icon":"⚡","group":"audio","sort":30,"active":true},
+    {"key":"audio_headunit","name":"Магнитолы","icon":"📻","group":"audio","sort":40,"active":true},
+    {"key":"audio_cable","name":"Кабели и проводка","icon":"〰","group":"audio","sort":50,"active":true},
+    {"key":"audio_box","name":"Короба и корпуса","icon":"▣","group":"audio","sort":60,"active":true},
+    {"key":"audio_accessory","name":"Аксессуары автозвука","icon":"🔌","group":"audio","sort":70,"active":true},
+    {"key":"soundproof","name":"Шумоизоляция","icon":"▧","group":"audio","sort":80,"active":true},
+    {"key":"camera","name":"Камеры и парковка","icon":"📷","group":"electronics","sort":110,"active":true},
+    {"key":"electrical","name":"Автоэлектрика","icon":"💡","group":"electronics","sort":120,"active":true},
+    {"key":"engine","name":"Двигатель","icon":"⚙","group":"parts","sort":210,"active":true},
+    {"key":"chassis","name":"Ходовая часть","icon":"◌","group":"parts","sort":220,"active":true},
+    {"key":"body","name":"Кузов","icon":"🚘","group":"parts","sort":230,"active":true},
+    {"key":"oils","name":"Масла и расходники","icon":"🛢","group":"parts","sort":240,"active":true},
+    {"key":"tires","name":"Шины и диски","icon":"◎","group":"parts","sort":250,"active":true},
+    {"key":"merch","name":"Мерч и сувениры","icon":"★","group":"other","sort":910,"active":true},
+    {"key":"other","name":"Другое","icon":"•••","group":"other","sort":990,"active":true}
+  ]
+}

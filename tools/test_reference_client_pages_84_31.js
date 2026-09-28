@@ -1,0 +1,33 @@
+'use strict';
+const fs=require('fs');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const exists=f=>fs.existsSync(path.join(root,f));
+const errors=[];const must=(v,m)=>{if(!v)errors.push(m);};
+const core=read('js/next/pages/core.js');
+const services=read('js/next/pages/services.js');
+const community=read('js/next/pages/community.js');
+const icons=read('js/next/ui_icons.js');
+const css=read('css/next/reference_client_pages.css');
+const registry=read('inc/asset_registry.php');
+const clientShell=read('js/next/reference_client_shell.js');
+const version=read('inc/asset_version.php');
+const art='media/kareta_create_request_vehicle_background_r188_5_5_6_84_31.png';
+
+must(exists(art),'approved Home request artwork file missing');
+must(core.includes('/'+art),'Home does not point to approved request artwork');
+must(core.includes('aria-label="4 шага заявки"'),'Home four-step preview missing');
+for(const x of ['Эвакуатор','Диагностика','Ремонт','Мой автомобиль'])must(core.includes(x),`Home quick action missing: ${x}`);
+for(const x of ['Выберите услугу','Все','Ремонт','Диагностика','Кузов','Двигатель','Подвеска','Электрика','Шиномонтаж','Своя цена','Создать заявку'])must(services.includes(x),`Services reference marker missing: ${x}`);
+for(const x of ['Все новости','Автосервисы','Клубы','Поделиться новостью','data-community-reference-tab'])must(community.includes(x),`Community reference marker missing: ${x}`);
+must(icons.includes("image:'<rect"),'shared media/image SVG icon missing');
+must(clientShell.includes("link.id='k-header-notifications'")&&clientShell.includes("link.href='#/notifications'"),'client header notification control missing');
+must(css.includes('html[data-user-role="client"] #k-mobile-nav'),'reference bottom navigation must be client-scoped');
+must(css.includes('html[data-user-role="client"] .k-header-notifications'),'reference notification visibility must be client-scoped');
+must(registry.includes("'css/next/reference_client_pages.css'"),'reference stylesheet is not registered');
+must(registry.includes("'js/next/reference_client_shell.js'"),'reference client shell enhancer is not registered');
+must(registry.includes("'"+art+"'"),'reference artwork is not registered');
+must(/188\.5\.5\.6\.84\.35/.test(version),'84.35 asset version missing');
+if(errors.length){console.error(errors.map(x=>'FAIL: '+x).join('\n'));process.exit(1);}
+console.log('R188.5.5.6.84.35 client reference pages: OK');

@@ -1,0 +1,37 @@
+'use strict';
+const fs=require('fs'),path=require('path'),crypto=require('crypto');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};
+const request=read('js/next/pages/request.js');
+const requestWindow=read('js/next/request_window.js');
+const cabinet=read('js/next/pages/cabinet.js');
+const vehicle=read('js/next/pages/vehicle.js');
+const css=read('css/next/client_request_garage.css');
+const registry=read('inc/asset_registry.php');
+const asset=read('inc/asset_version.php');
+const sw=read('sw.js');
+const config=read('config.php');
+const manifest=JSON.parse(read('tools/shell_freeze_manifest_r1885603.json'));
+const dbv=Number((/KARETA_DB_VERSION',\s*(\d+)/.exec(config)||[])[1]||0);
+expect(dbv>=127,`R78 baseline requires DB 127 or newer (got ${dbv})`);
+for(const marker of ['renderRequestWindow','k-request-flow-r78','data-request-panel="vehicle-services"','data-request-panel="problem"','data-request-panel="offer"','data-request-panel="location"','data-request-panel="review"','data-request-picker','data-request-open-picker="vehicle"','data-request-open-picker="services"','data-request-picker-slot'])expect(request.includes(marker),`missing R78 request marker ${marker}`);
+expect(!/<select\b/i.test(request),'R78 request flow must not contain active <select> controls');
+expect(request.includes("window.KaretaRequestWindow?.close?.({restore:false})")&&request.includes('KaretaWindowEngine?.openEntity?.(href)'),'created request must open Work Order through Window Engine');
+for(const marker of ["document.createElement('dialog')",'showModal','a[href^="#/orders/new"]','KaretaRequestWindow','kareta:request-window-open'])expect(requestWindow.includes(marker),`request Window Engine missing ${marker}`);
+expect(requestWindow.includes("currentRoute()==='requestNew'"),'direct request deep-link fallback must remain available');
+for(const marker of ['k-garage-dialog-r78','data-garage-add-vehicle','data-service-vehicle-pick','k-service-status-buttons','dialog.showModal()'])expect(cabinet.includes(marker),`garage flow missing ${marker}`);
+const garageSlice=(/function garageLayout\(d\)\{([\s\S]*?)\n\s*function bindGarageTabs/.exec(cabinet)||[])[1]||'';
+expect(Boolean(garageSlice),'garageLayout slice not found');
+expect(!garageSlice.includes('garageWindow('),'garageLayout must not preload legacy garageWindow panels');
+expect(!garageSlice.includes('hidden id="garage-window-'),'garageLayout must not preload hidden garage windows');
+expect(vehicle.includes('<dialog class="k-vehicle-modal k-vehicle-modal-r78 ')&&vehicle.includes('.showModal()'),'vehicle second-level actions must use native dialog');
+expect(css.includes('dialog.k-vehicle-modal-r78{position:fixed;inset:0;margin:auto;display:block'),'vehicle native dialog must be centered in browser top layer');
+for(const token of ['.k-request-window-r78','.k-request-picker-r78','.k-garage-dialog-r78','.k-request-stepper','.k-garage-workspace-r78'])expect(css.includes(token),`R78 CSS contract missing ${token}`);
+expect(registry.includes('css/next/client_request_garage.css'),'R78 CSS missing from asset registry');
+expect(registry.includes('js/next/request_window.js'),'R78 request window JS missing from asset registry');
+expect(asset.includes('r1885638-client-request-garage-window-flow')&&sw.includes('r1885638-client-request-garage-window-flow'),'R78 release suffix missing');
+expect(asset.includes('r1885636-ux-restructure-window-engine')&&asset.includes('r1885637-work-order-native-lifecycle'),'R76/R77 version chain must remain before R78');
+for(const [file,hash] of Object.entries(manifest.files)){const target=path.join(root,file);if(!fs.existsSync(target)){if(file.startsWith('assets/'))continue;expect(false,`SHELL FREEZE FILE MISSING: ${file}`);continue;}const actual=crypto.createHash('sha256').update(fs.readFileSync(target)).digest('hex');expect(actual===hash,`SHELL FREEZE VIOLATION: ${file}`)}
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}
+console.log('R188.5.5.6.78 baseline compatibility: Request Window + native pickers + on-demand Garage dialogs + Work Order handoff + Shell Freeze 2 OK');

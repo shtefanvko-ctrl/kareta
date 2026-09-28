@@ -1,0 +1,34 @@
+/* R188.5.5.6.39 — Community feed desktop density
+   Tablet keeps the existing 2-column layout.
+   Desktop uses 3 columns; wide desktop uses 4 columns so the 2400px page surface is used efficiently. */
+@media (min-width: 901px) {
+  .k-community-feed {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .k-community-feed > .k-community-card,
+  .k-community-feed > .k-empty,
+  .k-community-feed > .k-community-skeleton {
+    min-width: 0;
+  }
+
+  .k-community-feed > .k-empty,
+  .k-community-feed > .k-community-skeleton {
+    grid-column: 1 / -1;
+  }
+
+  .k-community-skeleton {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1600px) {
+  .k-community-feed {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .k-community-skeleton {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

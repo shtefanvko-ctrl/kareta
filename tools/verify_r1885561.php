@@ -1,0 +1,22 @@
+<?php
+declare(strict_types=1);
+$root=dirname(__DIR__);$fail=[];
+$read=static fn(string $file):string=>(string)@file_get_contents($root.'/'.$file);
+$has=static function(string $file,string $needle)use($read,&$fail):void{if(!str_contains($read($file),$needle))$fail[]=$file.': missing '.$needle;};
+$lacks=static function(string $file,string $needle)use($read,&$fail):void{if(str_contains($read($file),$needle))$fail[]=$file.': forbidden '.$needle;};
+foreach(['docs/releases/changelog/CHANGELOG_R188_5_5_6_1.md','docs/releases/deploy/DEPLOY_R188_5_5_6_1.md','tools/test_r1885561_atomic_runtime.js'] as $file)if(!is_file($root.'/'.$file))$fail[]='missing file: '.$file;
+$release='r1885561-atomic-runtime-bootstrap';
+foreach(['inc/asset_version.php','sw.js','js/next/core/realtime_client.js'] as $file)$has($file,$release);
+$has('index.php','id="k-atomic-runtime-bootstrap"');
+$has('index.php','manifestPreflight');
+$has('index.php','stale_service_worker_controller');
+$has('index.php','script.async=false');
+$has('index.php','Clear-Site-Data: "cache"');
+$has('index.php','CDN-Cache-Control: no-store');
+$lacks('index.php','<?= kareta_render_scripts() ?>');
+$has('js/next/shell_nav.js',"deferScript('shell_nav'");
+$lacks('js/next/shell_nav.js','Dynamic navigation stack is required before shell_nav.js');
+$has('js/next/shell_menu.js',"deferScript('shell_menu'");
+$lacks('js/next/shell_menu.js','Dynamic navigation is required before shell_menu.js');
+$has('js/next/app_next.js',"deferScript('app_next'");
+if($fail){fwrite(STDERR,implode(PHP_EOL,$fail).PHP_EOL);exit(1);}echo "R188.5.5.6.1 verifier OK".PHP_EOL;

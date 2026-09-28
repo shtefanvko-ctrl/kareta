@@ -1,0 +1,13 @@
+<?php
+declare(strict_types=1);
+$root=dirname(__DIR__);$fail=[];
+foreach(['docs/releases/changelog/CHANGELOG_R188_5_3.md','docs/releases/plans/PLAN_R188_5_4.md','css/next/navigation_more_accessibility.css','tools/test_r18853_more_menu_navigation.js'] as $file)if(!is_file($root.'/'.$file))$fail[]='missing:'.$file;
+$version=(string)@file_get_contents($root.'/inc/asset_version.php');if(!str_contains($version,'r18853-more-menu-navigation-fix')&&!str_contains($version,'r18854-context-switcher-more-layouts')&&!str_contains($version,'r18855-client-community-navigation')&&!str_contains($version,'r188551-onboarding-identity-session')&&!str_contains($version,'r188552-legacy-role-picker-center-removal')&&!str_contains($version,'r188553-role-surface-chat-master-spacing')&&!str_contains($version,'r188554-role-e2e-recovery-chat-search')&&!str_contains($version,'r188555-runtime-dependency-bootstrap'))$fail[]='asset_version';
+$sw=(string)@file_get_contents($root.'/sw.js');if(!str_contains($sw,'r18853-more-menu-navigation-fix')&&!str_contains($sw,'r18854-context-switcher-more-layouts')&&!str_contains($sw,'r18855-client-community-navigation')&&!str_contains($sw,'r188551-onboarding-identity-session')&&!str_contains($sw,'r188552-legacy-role-picker-center-removal')&&!str_contains($sw,'r188553-role-surface-chat-master-spacing')&&!str_contains($sw,'r188554-role-e2e-recovery-chat-search')&&!str_contains($sw,'r188555-runtime-dependency-bootstrap'))$fail[]='service_worker_version';
+$assets=(string)@file_get_contents($root.'/inc/asset_registry.php');if(substr_count($assets,'css/next/navigation_more_accessibility.css')!==1)$fail[]='r18853_css_asset';
+$hub=(string)@file_get_contents($root.'/js/next/smart_action_hub.js');foreach(['anonymous:Object.freeze','organization:Object.freeze','iconSvg','KaretaShellMenu?.close?.()','setMoreButtonState'] as $needle)if(!str_contains($hub,$needle))$fail[]='hub:'.$needle;
+$nav=(string)@file_get_contents($root.'/js/next/shell_nav.js');if(str_contains($nav,'else window.KaretaShellMenu'))$fail[]='more_burger_coupling';
+$route=(string)@file_get_contents($root.'/js/next/route_registry.js');if(!str_contains($route,"notifications:Object.freeze({ path:'#/notifications'"))$fail[]='notifications_route';
+$csp=(string)@file_get_contents($root.'/index.php');if(!str_contains($csp,'https://images.unsplash.com'))$fail[]='unsplash_csp';
+$realtime=(string)@file_get_contents($root.'/js/next/core/realtime_client.js');if(!str_contains($realtime,'if(!identity.authenticated&&!legacyConfirmed)'))$fail[]='realtime_session_gate';
+if($fail){fwrite(STDERR,implode("\n",$fail)."\n");exit(1);}echo "R188.5.3 verifier OK\n";

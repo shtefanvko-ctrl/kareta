@@ -1,0 +1,14 @@
+'use strict';
+const fs=require('fs');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=file=>fs.readFileSync(path.join(root,file),'utf8');
+const core=read('js/next/pages/core.js');
+const registry=read('inc/asset_registry.php');
+const failures=[];const expect=(condition,message)=>{if(!condition)failures.push(message);};
+for(const token of ['k-home-ref-chips','Замена масла','Диагностика','Шиномонтаж'])expect(core.includes(token),`reference popular service missing ${token}`);
+expect(!core.includes('homeServiceCategories()'),'legacy home service category renderer returned');
+expect(!core.includes('k-home-service-categories__grid'),'legacy category grid returned');
+expect(!fs.existsSync(path.join(root,'css/next/home_service_categories.css')),'legacy home_service_categories.css returned');
+expect(!registry.includes('home_service_categories.css'),'legacy home_service_categories.css still registered');
+if(failures.length){console.error(failures.join('\n'));process.exit(1);}console.log('R188.5.5.6.14 home popular services: OK (reference-home override)');

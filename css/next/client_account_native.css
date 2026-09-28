@@ -1,0 +1,131 @@
+/* R188.5.5.6.48 — Client account refinement. Page-only layer; shell is frozen. */
+.k-client-account-native{
+  width:100%;
+  max-width:var(--k-page-max,2400px);
+  margin:0 auto;
+  padding:24px clamp(12px,2.2vw,32px) 120px;
+  display:grid;
+  gap:18px;
+  box-sizing:border-box;
+}
+.k-client-account-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:22px;
+  padding:24px;
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:24px;
+  background:#fff;
+}
+.k-client-account-head>div:first-child{min-width:0}
+.k-client-account-head span,.k-client-account-sections>header span,.k-account-vehicles-head span{
+  display:block;
+  color:#ff6b00;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.12em;
+}
+.k-client-account-head h1{margin:4px 0 7px;font-size:clamp(30px,3.8vw,52px);line-height:1.02;letter-spacing:-.045em;color:#111827}
+.k-client-account-head p{max-width:780px;margin:0;color:#667085;font-size:14px;line-height:1.5}
+.k-client-account-head__actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.k-client-account-profile{margin:0}
+.k-client-account-profile .k-social-profile-card{margin:0;box-shadow:none;border-color:rgba(15,23,42,.08)}
+.k-client-account-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.k-client-account-overview article{
+  min-width:0;
+  padding:18px;
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:20px;
+  background:#fff;
+  display:grid;
+  gap:4px;
+}
+.k-client-account-overview span{color:#737d8c;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.k-client-account-overview b{color:#111827;font-size:28px;line-height:1}
+.k-client-account-overview small{color:#7a8494;font-size:11px;line-height:1.3}
+.k-client-vehicles-host{min-width:0}
+.k-account-vehicles{
+  display:grid;
+  gap:14px;
+  padding:20px;
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:24px;
+  background:#fff;
+}
+.k-account-vehicles-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px}
+.k-account-vehicles-head h2{margin:4px 0 5px;color:#111827;font-size:22px;letter-spacing:-.025em}
+.k-account-vehicles-head p{max-width:760px;margin:0;color:#737d8c;font-size:12px;line-height:1.45}
+.k-account-vehicles-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;min-width:0}
+.k-account-vehicle-card{
+  min-width:0;
+  width:auto!important;
+  max-width:none!important;
+  margin:0!important;
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:20px;
+  background:#fbfcfe;
+  overflow:hidden;
+  display:grid;
+  grid-template-rows:94px 1fr;
+  box-shadow:none;
+}
+.k-account-vehicle-visual{position:relative;min-height:94px;background:linear-gradient(135deg,#f7f8fa,#eef1f5);overflow:hidden}
+.k-account-vehicle-brand{position:absolute;left:16px;top:14px;display:grid;place-items:center;width:46px;height:46px;border-radius:15px;background:#fff;color:#ff6b00;font-size:20px;font-weight:900;box-shadow:0 8px 20px rgba(15,23,42,.08)}
+.k-account-vehicle-road{position:absolute;left:0;right:0;bottom:17px;height:2px;background:rgba(15,23,42,.12)}
+.k-account-vehicle-road:after{content:"";position:absolute;left:12%;right:12%;top:-1px;border-top:2px dashed rgba(255,255,255,.95)}
+.k-account-vehicle-body{padding:15px;display:grid;gap:11px;min-width:0}
+.k-account-vehicle-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.k-account-vehicle-head span{display:block;color:#7a8494;font-size:10px;font-weight:800}
+.k-account-vehicle-head h3{margin:3px 0 0;color:#111827;font-size:18px;line-height:1.15;letter-spacing:-.02em}
+.k-account-vehicle-primary{flex:0 0 auto;padding:5px 8px;border-radius:999px;background:#fff1e7;color:#d85700;font-size:9px;text-transform:uppercase;letter-spacing:.05em}
+.k-account-vehicle-body>p{margin:0;color:#667085;font-size:11px}
+.k-account-vehicle-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.k-account-vehicle-stats span{min-width:0;padding:9px 6px;border-radius:12px;background:#fff;text-align:center;display:grid;gap:2px}
+.k-account-vehicle-stats b{color:#111827;font-size:15px}
+.k-account-vehicle-stats small{color:#7a8494;font-size:8px;line-height:1.2}
+.k-account-vehicle-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.k-account-vehicle-actions .k-btn{width:100%;justify-content:center;min-width:0;padding-inline:9px}
+.k-client-account-empty{padding:18px;border:1px dashed rgba(15,23,42,.15);border-radius:18px;background:#fbfcfe;display:grid;justify-items:start;gap:7px}
+.k-client-account-empty b{font-size:16px;color:#111827}.k-client-account-empty p{max-width:680px;margin:0 0 5px;color:#737d8c;font-size:12px;line-height:1.45}
+.k-client-account-sections{display:grid;gap:14px}
+.k-client-account-sections>header{padding:0 3px}
+.k-client-account-sections>header h2{margin:4px 0 4px;color:#111827;font-size:22px;letter-spacing:-.025em}
+.k-client-account-sections>header p{margin:0;color:#737d8c;font-size:12px}
+.k-client-account-native .k-client-cabinet-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.k-client-account-native .k-client-cabinet-card,.k-client-account-native .k-client-cabinet-card:first-child,.k-client-account-native .k-client-cabinet-card:nth-child(2){grid-column:auto;min-height:150px;padding:18px;border-radius:20px;gap:12px;box-shadow:none}
+.k-client-account-native .k-client-cabinet-card:hover{transform:none}
+.k-client-account-native .k-client-card-icon{width:42px;height:42px;border-radius:14px}
+.k-client-account-native .k-client-cabinet-card b{font-size:17px;margin-bottom:4px}
+.k-client-account-native .k-client-cabinet-card small{font-size:11px}
+@media(min-width:1800px){
+  .k-account-vehicles-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .k-client-account-native .k-client-cabinet-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:1100px){
+  .k-client-account-overview{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .k-account-vehicles-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .k-client-account-native .k-client-cabinet-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .k-client-account-native{padding:12px 10px 104px;gap:12px}
+  .k-client-account-head{display:grid;align-items:start;padding:16px;border-radius:20px}
+  .k-client-account-head h1{font-size:29px}.k-client-account-head p{font-size:12px}
+  .k-client-account-head__actions{display:grid;grid-template-columns:1fr 1fr;width:100%}.k-client-account-head__actions .k-btn{width:100%;justify-content:center;padding-inline:8px}
+  .k-client-account-profile .k-social-profile-card{border-radius:20px}
+  .k-client-account-overview{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .k-client-account-overview article{padding:13px;border-radius:16px}.k-client-account-overview b{font-size:23px}.k-client-account-overview small{font-size:9px}
+  .k-account-vehicles{padding:13px;border-radius:20px;gap:11px}.k-account-vehicles-head{display:grid;align-items:start}.k-account-vehicles-head h2{font-size:18px}.k-account-vehicles-head p{font-size:10px}.k-account-vehicles-head>.k-btn{width:100%;justify-content:center}
+  .k-account-vehicles-grid{grid-template-columns:1fr;gap:9px}
+  .k-account-vehicle-card{grid-template-rows:78px 1fr;border-radius:17px}.k-account-vehicle-visual{min-height:78px}.k-account-vehicle-brand{width:40px;height:40px;border-radius:13px;left:13px;top:12px;font-size:17px}.k-account-vehicle-body{padding:13px}.k-account-vehicle-head h3{font-size:17px}
+  .k-account-vehicle-actions{grid-template-columns:1fr 1fr}
+  .k-client-account-sections>header h2{font-size:18px}.k-client-account-sections>header p{font-size:10px}
+  .k-client-account-native .k-client-cabinet-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .k-client-account-native .k-client-cabinet-card,.k-client-account-native .k-client-cabinet-card:first-child,.k-client-account-native .k-client-cabinet-card:nth-child(2){min-height:138px;padding:13px;border-radius:17px;gap:9px}
+  .k-client-account-native .k-client-card-icon{width:38px;height:38px;border-radius:12px}.k-client-account-native .k-client-cabinet-card b{font-size:14px}.k-client-account-native .k-client-cabinet-card small{font-size:9px;line-height:1.35}
+}
+@media(max-width:360px){
+  .k-client-account-head__actions,.k-account-vehicle-actions{grid-template-columns:1fr}
+  .k-client-account-native .k-client-cabinet-grid{grid-template-columns:1fr}
+  .k-client-account-overview{grid-template-columns:1fr 1fr}
+}

@@ -1,0 +1,118 @@
+{
+  "schema": "kareta.release-master-plan.stage-check.v1",
+  "stage": 7,
+  "totalStages": 2513,
+  "phase": "00 — BASELINE_TEST_HARNESS",
+  "sourceBaseline": "R188.5.5.6.84.109",
+  "task": "Зафиксировать browser support matrix",
+  "matrix": {
+    "status": "PASS",
+    "file": "docs/qa/browser_support_matrix_84_109.json",
+    "targets": 6,
+    "minimums": {
+      "chromeDesktop": 105,
+      "edgeDesktop": 105,
+      "safariDesktop": "15.4",
+      "firefoxDesktop": 121,
+      "android": {
+        "os": 10,
+        "chrome": 105
+      },
+      "ios": {
+        "os": "15.4",
+        "safari": "15.4"
+      }
+    },
+    "requiredSmoke": [
+      "boot_shell",
+      "auth_session",
+      "spa_routing",
+      "native_dialogs",
+      "request_flow",
+      "responsive_layout",
+      "asset_mime",
+      "pwa_runtime"
+    ]
+  },
+  "automation": {
+    "status": "PASS",
+    "test": "tools/test_browser_support_matrix_84_109.js",
+    "releaseChecklist": {
+      "status": "PASS",
+      "passed": 18,
+      "total": 18
+    }
+  },
+  "localBrowserSmoke": {
+    "chrome": {
+      "version": "153.0.8010.53",
+      "status": "PASS",
+      "releaseVerified": true,
+      "appRootPresent": true,
+      "karetaMarkerPresent": true
+    },
+    "edge": {
+      "status": "NOT_RUN_NOT_INSTALLED"
+    },
+    "firefox": {
+      "status": "NOT_RUN_NOT_INSTALLED"
+    },
+    "safari": {
+      "status": "NOT_RUN_PLATFORM_UNAVAILABLE"
+    },
+    "android": {
+      "status": "NOT_RUN_DEVICE_UNAVAILABLE"
+    },
+    "ios": {
+      "status": "NOT_RUN_DEVICE_UNAVAILABLE"
+    }
+  },
+  "externalStaging": {
+    "url": "https://s.kareta.kz/",
+    "status": "BLOCKED_HTTP_403",
+    "browserPreflight": [
+      {
+        "target": "chrome_desktop",
+        "minimum": "105",
+        "httpStatus": 403,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      {
+        "target": "edge_desktop",
+        "minimum": "105",
+        "httpStatus": 403,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      {
+        "target": "safari_desktop",
+        "minimum": "15.4",
+        "httpStatus": 403,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      {
+        "target": "firefox_desktop",
+        "minimum": "121",
+        "httpStatus": 403,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      {
+        "target": "android_chrome",
+        "minimum": "Android 10 / Chrome 105",
+        "httpStatus": 403,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      {
+        "target": "ios_safari",
+        "minimum": "iOS 15.4 / Safari 15.4",
+        "httpStatus": 403,
+        "contentType": "text/html; charset=UTF-8"
+      }
+    ],
+    "realBrowserSmokeExecuted": false
+  },
+  "runtimeChanged": false,
+  "apiChanged": false,
+  "dbChanged": false,
+  "stageComplete": false,
+  "stageBlocker": "s.kareta.kz returns HTTP 403 for every supported browser target before application boot"
+}

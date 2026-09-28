@@ -1,0 +1,14 @@
+const fs=require('fs'),path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const must=(v,m)=>{if(!v){console.error('FAIL',m);process.exit(1)}};
+const work=read('api/master_workplace.php'),feed=read('js/next/pages/work_feed.js'),css=read('css/next/app_next.css'),mig=read('api/migrations/109_master_profile_runtime_repair.php');
+must(work.includes('kareta_master_workplace_repair_profile'),'runtime master repair missing');
+must(work.includes("requested_role='master' AND status='approved'"),'repair authorization guard missing');
+must(work.includes('INSERT INTO masters(id,user_id,user_phone,name,phone,initials,spec,active)'),'master materialization missing');
+must(mig.includes("'version' => 109")||mig.includes("'version'=>109"),'migration 109 missing');
+must(!feed.includes('class="k-exchange-kpi"'),'persistent KPI block still rendered');
+must(feed.includes('data-exchange-kpi-toggle')&&feed.includes('data-exchange-kpi-dialog'),'KPI button/dialog missing');
+must(feed.includes('dialog.showModal()'),'KPI dialog is not opened by button');
+must(css.includes('.k-exchange-page--production>.k-exchange-hero{display:none!important}'),'mobile exchange hero is not hidden');
+console.log('OK R188.5.5.6.31 master profile repair + exchange KPI cleanup');

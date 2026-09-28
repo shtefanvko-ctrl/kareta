@@ -1,0 +1,50 @@
+{
+  "schema": "kareta.release-master-plan.stage-check.v1",
+  "stage": 8,
+  "totalStages": 2513,
+  "phase": "00 — BASELINE_TEST_HARNESS",
+  "sourceBaseline": "R188.5.5.6.84.109",
+  "task": "Создать production feature matrix",
+  "matrix": {
+    "status": "PASS",
+    "totalModules": 67,
+    "counts": {
+      "READY": 35,
+      "BETA": 19,
+      "DISABLED": 1,
+      "INTERNAL": 12
+    },
+    "generator": "tools/build_production_feature_matrix_84_109.js",
+    "test": "tools/test_production_feature_matrix_84_109.js",
+    "json": "docs/qa/production_feature_matrix_84_109.json",
+    "markdown": "docs/qa/production_feature_matrix_84_109.md"
+  },
+  "releaseChecklist": {
+    "status": "PASS",
+    "passed": 19,
+    "total": 19,
+    "finalMarker": "RELEASE_CHECKLIST: PASS"
+  },
+  "externalStaging": {
+    "checkedAtUtc": "2026-09-25T00:41:46.9395636Z",
+    "root": {
+      "url": "https://s.kareta.kz/",
+      "httpStatus": 403,
+      "statusDescription": "Forbidden",
+      "contentType": "text/html; charset=UTF-8"
+    },
+    "matrixUrl": {
+      "url": "https://s.kareta.kz/docs/qa/production_feature_matrix_84_109.json",
+      "httpStatus": 403,
+      "statusDescription": "Forbidden",
+      "contentType": "text/html; charset=UTF-8"
+    },
+    "uiStatusExposureVerified": false,
+    "status": "BLOCKED_HTTP_403"
+  },
+  "runtimeBusinessCodeChanged": false,
+  "apiChanged": false,
+  "dbChanged": false,
+  "stageComplete": false,
+  "stageBlocker": "External staging returns HTTP 403 before app boot, so status exposure cannot be verified there."
+}

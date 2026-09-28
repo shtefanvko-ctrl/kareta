@@ -1,0 +1,28 @@
+﻿{
+    "schema":  "kareta.release-master-plan.stage-check.v1",
+    "stage":  18,
+    "baseline":  "R188.5.5.6.84.109",
+    "task":  "Unified route loading state",
+    "staging":  "https://s.kareta.kz",
+    "checkedAt":  "2026-09-25T03:43:36.2650823Z",
+    "status":  "FAIL_NOT_DEPLOYED_OR_STALE",
+    "runtimeStatus":  "degraded",
+    "runtimeVersion":  "188.5.5.6.84.109",
+    "checks":  {
+                   "runtimeHttp":  true,
+                   "runtimeVersion":  true,
+                   "appProgressMarkup":  false,
+                   "shellProgressReporter":  false,
+                   "eagerCssLoadingState":  false
+               },
+    "http":  {
+                 "health":  200,
+                 "appNext":  200,
+                 "shellBundle":  200,
+                 "bootCss":  200
+             },
+    "errors":  {
+
+               },
+    "dod":  "NOT_MET_ON_STAGING"
+}

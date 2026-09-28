@@ -1,0 +1,22 @@
+(() => {
+  'use strict';
+  const get=(api,options={})=>api.request('api/db.php?action=stoWorkplace.get',{cacheTtlMs:8000,force:true,...options});
+  const post=(api,action,payload={})=>api.request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...payload}),cacheTtlMs:0,dedupe:false});
+  const assign=(api,p)=>post(api,'stoBays.assign',p);
+  const release=(api,p)=>post(api,'stoBays.release',p);
+  const assignMaster=(api,p)=>post(api,'stoOrders.assignMaster',p);
+  const masterCandidates=(api,p)=>post(api,'stoOrders.masterCandidates',p);
+  const bayCandidates=(api,p)=>post(api,'stoBays.candidates',p);
+  const rebalance=(api)=>post(api,'productionDispatch.rebalance',{});
+  const recoveryPreview=(api,p={})=>post(api,'stoRecovery.preview',p);
+  const recoveryApply=(api,p={})=>post(api,'stoRecovery.apply',p);
+  const recoveryProtect=(api,p={})=>post(api,'stoRecovery.protect',p);
+  const recoveryNotifyResend=(api,p={})=>post(api,'stoRecovery.notifyResend',p);
+  const saveSchedulePreferences=(api,p={})=>post(api,'stoSchedule.preferencesSave',p);
+  const alternatives=(api,p={})=>post(api,'stoCapacity.alternatives',p);
+  const assignPair=(api,p={})=>post(api,'stoCapacity.assignPair',p);
+  const incidentPreview=(api,p={})=>post(api,'stoCapacity.incidentPreview',p);
+  const incidentApply=(api,p={})=>post(api,'stoCapacity.incidentApply',p);
+  const incidentResolve=(api,p={})=>post(api,'stoCapacity.incidentResolve',p);
+  window.KaretaStoWorkplaceApi=Object.freeze({get,assign,release,assignMaster,masterCandidates,bayCandidates,rebalance,recoveryPreview,recoveryApply,recoveryProtect,recoveryNotifyResend,saveSchedulePreferences,alternatives,assignPair,incidentPreview,incidentApply,incidentResolve});
+})();

@@ -1,0 +1,53 @@
+{
+  "schema": "kareta.release-master-plan.stage-check.v1",
+  "stage": 6,
+  "totalStages": 2513,
+  "phase": "00 — BASELINE_TEST_HARNESS",
+  "sourceBaseline": "R188.5.5.6.84.109",
+  "task": "Прогнать полный пакет с assets",
+  "localFullPackage": {
+    "status": "PASS",
+    "assetFiles": 682,
+    "registryImages": 23,
+    "groups": {
+      "logos": 2,
+      "welcomeBackgrounds": 12,
+      "error403Backgrounds": 8,
+      "media": 1
+    },
+    "staticIntegrity": "PASS",
+    "httpMimeCheck": "PASS",
+    "httpCheckedAssets": 49,
+    "notFound": 0,
+    "mimeErrors": 0
+  },
+  "releaseRegression": {
+    "status": "PASS",
+    "passed": 17,
+    "total": 17,
+    "finalMarker": "RELEASE_CHECKLIST: PASS"
+  },
+  "externalStaging": {
+    "url": "https://s.kareta.kz/",
+    "status": "FAIL_MISSING_FULL_ASSETS",
+    "registryImagesTotal": 23,
+    "registryImagesPass": 1,
+    "registryImagesFail": 22,
+    "http404": 22,
+    "mimeErrorsOnServedAssets": 0,
+    "manifests": {
+      "assets/onboarding/backgrounds/welcome/manifest.json": 404,
+      "assets/errors/403/manifest.json": 404
+    },
+    "servedExample": {
+      "path": "media/kareta_create_request_vehicle_background_r188_5_5_6_84_31.png",
+      "httpStatus": 200,
+      "contentType": "image/png"
+    }
+  },
+  "runtimeChanged": false,
+  "apiChanged": false,
+  "dbChanged": false,
+  "stageComplete": false,
+  "stageBlocker": "22 of 23 mandatory registry images are HTTP 404 on external staging"
+}

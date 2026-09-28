@@ -1,0 +1,20 @@
+const fs=require('fs');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+let failed=0,total=0;
+function expect(name,ok){total++;if(ok)console.log('[OK]',name);else{failed++;console.error('[FAIL]',name);}}
+const css=read('css/next/first_vehicle_flow.css');
+const flow=read('js/next/client/first_vehicle_flow.js');
+expect('dedicated first vehicle surface is created by flow',flow.includes("root.id='k-first-vehicle-layer'"));
+expect('surface is inserted as sibling immediately before mobile FAB stack',flow.includes("const fab=document.getElementById('k-mobile-fab-stack')")&&flow.includes('host.insertBefore(root,fab)'));
+expect('surface carries required page classes',flow.includes("root.className='k-page k-client-cabinet-page k-first-vehicle-page'"));
+expect('surface is fixed viewport',/#k-first-vehicle-layer\.k-first-vehicle-page\s*\{[\s\S]*?position:fixed!important;[\s\S]*?inset:0!important;[\s\S]*?height:100dvh!important/.test(css));
+expect('surface is above mobile FAB z-index',css.includes('z-index:11000!important'));
+expect('flow mounts to dedicated layer',flow.includes("document.getElementById('k-first-vehicle-layer')")&&flow.includes("host.insertBefore(root,fab)"));
+expect('steps are rendered inside header',/function flowHeader\(step\)\{return `<header class="k-first-vehicle-header">[\s\S]*?\$\{steps\(step\)\}<\/header>`/.test(flow));
+expect('step bar uses three equal tracks',((css.includes('grid-template-columns:repeat(3,minmax(0,1fr))')&&flow.includes("['3','Подтверждение']"))||(flow.includes('kmo-stepper k-first-vehicle-steps')&&flow.includes('const rows=[1,2,3]')&&css.includes('.k-first-vehicle-steps.kmo-stepper i'))));
+expect('legacy first vehicle back control removed',!flow.includes('k-first-vehicle-back')&&!flow.includes('data-first-vehicle-back')&&!css.includes('.k-first-vehicle-back'));
+expect('desktop side rail progress removed',!css.includes('grid-row:2 / span 8'));
+console.log(`RESULT ${total-failed}/${total}`);
+process.exit(failed?1:0);

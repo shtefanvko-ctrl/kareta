@@ -1,0 +1,50 @@
+/* R188.5.5.6.84.106 — Master mobile navigation component contract.
+   Single owner of Master bottom-nav geometry; no route/page overrides. */
+@media (max-width:700px){
+  html[data-user-role="master"]{--k-mobile-nav-h:74px}
+  html[data-user-role="master"] #k-mobile-nav.k-mobile-nav{
+    --k-mobile-nav-count:6!important;
+    left:8px;right:8px;bottom:max(8px,env(safe-area-inset-bottom,0px));
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:2px;min-height:70px;padding:5px;
+    border:1px solid rgba(17,24,39,.09);border-radius:20px;background:rgba(255,255,255,.98);
+    box-shadow:0 14px 38px rgba(15,23,42,.16);backdrop-filter:blur(18px)
+  }
+  html[data-user-role="master"] #k-mobile-nav .k-nav-link{
+    position:relative;min-width:0;min-height:58px;padding:5px 1px;gap:3px;border:0;border-radius:14px;
+    background:transparent;color:#69717e;box-shadow:none
+  }
+  html[data-user-role="master"] #k-mobile-nav .k-nav-icon{width:22px;height:22px;display:grid;place-items:center;flex:0 0 22px}
+  html[data-user-role="master"] #k-mobile-nav .k-nav-icon svg{width:21px;height:21px;stroke:currentColor}
+  html[data-user-role="master"] #k-mobile-nav .k-nav-label,
+  html[data-user-role="master"] #k-mobile-nav .k-nav-link>span:not(.k-nav-icon):not(.k-nav-badge):not(.k-nav-unread){
+    display:block;max-width:100%;min-height:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    font-size:10px;font-weight:800;letter-spacing:-.025em;line-height:1.1
+  }
+  html[data-user-role="master"] #k-mobile-nav :is(.k-nav-badge,.k-nav-unread){
+    position:absolute;top:4px;left:50%;margin-left:6px;transform:none
+  }
+  html[data-user-role="master"] #k-mobile-nav .k-nav-link:is(.is-active,[aria-current="page"]),
+  html[data-user-role="master"] #k-mobile-nav .k-nav-more[aria-expanded="true"]{
+    background:#fff1eb;color:#b9380c;box-shadow:inset 0 0 0 1px #ffd2c2
+  }
+}
+@media (max-width:380px){
+  html[data-user-role="master"] #k-mobile-nav .k-nav-label,
+  html[data-user-role="master"] #k-mobile-nav .k-nav-link>span:not(.k-nav-icon):not(.k-nav-badge):not(.k-nav-unread){font-size:9px}
+}
+
+/* R188.5.5.6.84.179 — Master tablet/desktop navigation is a RIGHT rail. */
+@media(min-width:700px) and (max-width:1099px){
+  html[data-user-role="master"] .k-app-shell{padding-left:0!important;padding-right:var(--k-master-tablet-rail,92px)!important}
+  html[data-user-role="master"] #k-shell-header.k-shell-header{left:0!important;right:var(--k-master-tablet-rail,92px)!important}
+  html[data-user-role="master"] #k-shell-header>.k-brand{left:auto!important;right:8px!important}
+  html[data-user-role="master"] #k-shell-header>#k-desktop-nav.k-desktop-nav{left:auto!important;right:0!important;border-left:1px solid #e6e8eb!important;border-right:0!important;box-shadow:-7px 0 24px rgba(15,23,42,.045)!important}
+  html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"])::before{left:auto!important;right:-8px!important;border-radius:3px 0 0 3px!important}
+}
+@media(min-width:1100px){
+  html[data-user-role="master"] .k-app-shell{padding-left:0!important;padding-right:var(--k-master-desktop-rail,232px)!important}
+  html[data-user-role="master"] #k-shell-header.k-shell-header{left:0!important;right:var(--k-master-desktop-rail,232px)!important}
+  html[data-user-role="master"] #k-shell-header>.k-brand{left:auto!important;right:16px!important}
+  html[data-user-role="master"] #k-shell-header>#k-desktop-nav.k-desktop-nav{left:auto!important;right:0!important;box-shadow:-8px 0 28px rgba(15,23,42,.10)!important}
+  html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"])::before{left:auto!important;right:0!important;border-radius:3px 0 0 3px!important}
+}

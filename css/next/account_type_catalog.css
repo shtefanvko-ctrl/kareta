@@ -1,0 +1,57 @@
+/* R188.5.5.6.10: complete account-type catalog and moderated add flow. */
+#k-context-switcher .k-context-button--type {
+  border-style: dashed;
+}
+
+#k-context-switcher .k-context-button--type.is-available,
+#k-context-switcher .k-context-button--type.is-rejected {
+  border-color: rgba(255, 107, 0, .42);
+  background: linear-gradient(145deg, #fff, #fff8f2);
+  color: #344054;
+}
+
+#k-context-switcher .k-context-button--type.is-available .k-context-button-icon,
+#k-context-switcher .k-context-button--type.is-rejected .k-context-button-icon {
+  background: rgba(255, 107, 0, .12);
+  color: #d85400;
+}
+
+#k-context-switcher .k-context-button--type.is-pending,
+#k-context-switcher .k-context-button--type.is-setup_required {
+  border-style: solid;
+  border-color: #f4c98d;
+  background: #fffaf2;
+  color: #7a4a08;
+  opacity: 1;
+}
+
+#k-context-switcher .k-context-button--type.is-pending .k-context-button-icon,
+#k-context-switcher .k-context-button--type.is-setup_required .k-context-button-icon {
+  background: #ffedd5;
+  color: #b45309;
+}
+
+#k-context-switcher .k-context-button--type:disabled:not(.is-active) {
+  cursor: default;
+}
+
+#k-context-switcher .k-context-account-note {
+  padding: 9px 10px;
+  border-radius: 11px;
+  background: #f8fafc;
+  color: #667085;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+#k-context-switcher .k-context-button--type > i {
+  font-weight: 800;
+  opacity: .8;
+}
+
+@media (max-width: 359px) {
+  #k-context-switcher .k-context-account-note {
+    padding: 8px;
+    font-size: 9px;
+  }
+}

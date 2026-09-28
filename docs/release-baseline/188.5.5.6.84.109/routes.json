@@ -1,0 +1,692 @@
+{
+  "release": "188.5.5.6.84.109",
+  "source": "js/next/route_registry.js",
+  "counts": {
+    "routeKeys": 67,
+    "legacyAliases": 39,
+    "dynamicPatterns": 17,
+    "desktopNavKeys": 29,
+    "mobileNavKeys": 5
+  },
+  "routes": {
+    "home": {
+      "path": "#/home",
+      "label": "Главная",
+      "icon": "⌂"
+    },
+    "platform": {
+      "path": "#/platform",
+      "label": "Платформа",
+      "icon": "◆"
+    },
+    "corePlatform": {
+      "path": "#/core",
+      "label": "Ядро",
+      "icon": "◉"
+    },
+    "calendarBooking": {
+      "path": "#/calendar",
+      "label": "Календарь",
+      "icon": "▦"
+    },
+    "finance": {
+      "path": "#/finance",
+      "label": "Финансы",
+      "icon": "₸"
+    },
+    "market": {
+      "path": "#/market",
+      "label": "Marketplace",
+      "icon": "▣"
+    },
+    "crm": {
+      "path": "#/crm",
+      "label": "CRM",
+      "icon": "◫"
+    },
+    "identityMigration": {
+      "path": "#/admin/identity-migration",
+      "label": "Identity Migration",
+      "icon": "⇄",
+      "nav": false
+    },
+    "adminUsers": {
+      "path": "#/admin/users",
+      "label": "Пользователи",
+      "icon": "users"
+    },
+    "adminOrganizations": {
+      "path": "#/admin/organizations",
+      "label": "Организации",
+      "icon": "organization"
+    },
+    "adminMonitoring": {
+      "path": "#/admin/monitoring",
+      "label": "Мониторинг",
+      "icon": "monitor"
+    },
+    "adminManagement": {
+      "path": "#/admin/management",
+      "label": "Управление",
+      "icon": "settings"
+    },
+    "services": {
+      "path": "#/services",
+      "label": "Услуги",
+      "icon": "⚙"
+    },
+    "news": {
+      "path": "#/news",
+      "label": "Новости",
+      "icon": "◫",
+      "description": "Новости перенесены в Сообщество",
+      "nav": false
+    },
+    "masterNews": {
+      "path": "#/master/news",
+      "label": "Мои новости",
+      "icon": "▤",
+      "nav": false
+    },
+    "masterNewsCreate": {
+      "path": "#/master/news/create",
+      "label": "Создать новость",
+      "icon": "＋",
+      "nav": false
+    },
+    "masterNewsEdit": {
+      "path": "#/master/news/edit",
+      "label": "Редактировать новость",
+      "icon": "✎",
+      "nav": false
+    },
+    "works": {
+      "path": "#/works",
+      "label": "Сообщество",
+      "icon": "◎",
+      "description": "Новости, работы, товары и публикации KARETA.KZ"
+    },
+    "profile": {
+      "path": "#/profile",
+      "label": "Профиль",
+      "icon": "☻",
+      "nav": false
+    },
+    "following": {
+      "path": "#/following",
+      "label": "Мои подписки",
+      "icon": "◎",
+      "description": "Мастера, новости и работы из ваших подписок",
+      "nav": false
+    },
+    "realWorks": {
+      "path": "#/real-works",
+      "label": "Реальные работы",
+      "icon": "▥",
+      "description": "Каталог выполненных ремонтов мастеров и СТО",
+      "nav": false
+    },
+    "workDetail": {
+      "path": "#/works/item",
+      "label": "Работа",
+      "icon": "▥",
+      "nav": false
+    },
+    "serviceManagement": {
+      "path": "#/services/manage",
+      "label": "Мои услуги",
+      "icon": "🧾"
+    },
+    "masters": {
+      "path": "#/masters",
+      "label": "Мастера",
+      "icon": "👨‍🔧"
+    },
+    "masterOnboarding": {
+      "path": "#/onboarding/master",
+      "label": "Настройка мастера",
+      "icon": "wrench",
+      "nav": false
+    },
+    "masterDashboard": {
+      "path": "#/master",
+      "label": "Рабочее место",
+      "icon": "🧰"
+    },
+    "masterSchedule": {
+      "path": "#/master/schedule",
+      "label": "Мой график",
+      "icon": "calendar",
+      "nav": false
+    },
+    "masterProfileOwner": {
+      "path": "#/master/profile",
+      "label": "Мой профиль",
+      "icon": "☻",
+      "nav": false
+    },
+    "masterWallOwner": {
+      "path": "#/master/wall",
+      "label": "Моя Стена",
+      "icon": "▤",
+      "nav": false
+    },
+    "masterWorks": {
+      "path": "#/master/works",
+      "label": "Мои работы",
+      "icon": "▥",
+      "nav": false
+    },
+    "masterReviews": {
+      "path": "#/master/reviews",
+      "label": "Отзывы",
+      "icon": "★",
+      "nav": false
+    },
+    "masterExchange": {
+      "path": "#/master/exchange",
+      "label": "Биржа",
+      "icon": "⌁",
+      "nav": false
+    },
+    "community": {
+      "path": "#/community",
+      "label": "Сообщество",
+      "icon": "◎",
+      "nav": false
+    },
+    "stoDashboard": {
+      "path": "#/sto",
+      "label": "СТО",
+      "icon": "🏢"
+    },
+    "parts": {
+      "path": "#/parts",
+      "label": "Новые запчасти",
+      "icon": "▣"
+    },
+    "usedParts": {
+      "path": "#/parts/used",
+      "label": "Биржа БУ",
+      "icon": "exchange",
+      "nav": false
+    },
+    "seller": {
+      "path": "#/seller",
+      "label": "Магазин",
+      "icon": "🛒"
+    },
+    "sellerProducts": {
+      "path": "#/seller/products",
+      "label": "Товары",
+      "icon": "▣"
+    },
+    "sellerOrders": {
+      "path": "#/seller/orders",
+      "label": "Заказы товаров",
+      "icon": "●"
+    },
+    "orders": {
+      "path": "#/orders",
+      "label": "Заказы",
+      "icon": "●"
+    },
+    "workflow": {
+      "path": "#/workflow",
+      "label": "Workflow",
+      "icon": "▦",
+      "nav": false
+    },
+    "requestNew": {
+      "path": "#/orders/new",
+      "label": "Новая заявка",
+      "icon": "＋",
+      "nav": false
+    },
+    "workOrder": {
+      "path": "#/orders/item",
+      "label": "Заказ-наряд",
+      "icon": "▤",
+      "nav": false
+    },
+    "vehicle": {
+      "path": "#/garage/car",
+      "label": "Автомобиль",
+      "icon": "◈",
+      "nav": false
+    },
+    "chats": {
+      "path": "#/chats",
+      "label": "Чаты",
+      "icon": "✉"
+    },
+    "notifications": {
+      "path": "#/notifications",
+      "label": "Уведомления",
+      "icon": "bell",
+      "nav": false
+    },
+    "cabinet": {
+      "path": "#/cabinet",
+      "label": "Кабинет",
+      "icon": "☻"
+    },
+    "cabinetGarage": {
+      "path": "#/cabinet/garage",
+      "label": "Мой гараж",
+      "icon": "◈",
+      "nav": false
+    },
+    "cabinetData": {
+      "path": "#/cabinet/data",
+      "label": "Мои данные",
+      "icon": "◎",
+      "nav": false
+    },
+    "cabinetHistory": {
+      "path": "#/cabinet/history",
+      "label": "История",
+      "icon": "↺",
+      "nav": false
+    },
+    "cabinetDocuments": {
+      "path": "#/cabinet/documents",
+      "label": "Документы",
+      "icon": "▤",
+      "nav": false
+    },
+    "cabinetPromos": {
+      "path": "#/cabinet/promotions",
+      "label": "Мои акции",
+      "icon": "%",
+      "nav": false
+    },
+    "cabinetTariff": {
+      "path": "#/cabinet/tariff",
+      "label": "Тариф",
+      "icon": "₸",
+      "nav": false
+    },
+    "cabinetSettings": {
+      "path": "#/cabinet/settings",
+      "label": "Настройки",
+      "icon": "⚙",
+      "nav": false
+    },
+    "about": {
+      "path": "#/about",
+      "label": "О платформе",
+      "icon": "ⓘ",
+      "description": "Возможности KARETA.KZ для каждой роли"
+    },
+    "rules": {
+      "path": "#/rules",
+      "label": "Правила",
+      "icon": "✓",
+      "description": "Правила работы и ответственность участников"
+    },
+    "help": {
+      "path": "#/help",
+      "label": "Помощь",
+      "icon": "?",
+      "description": "Ответы по услугам, товарам и заказам"
+    },
+    "assistant": {
+      "path": "#/assistant",
+      "label": "AI-консультант",
+      "icon": "✦",
+      "description": "Предварительная помощь по неисправности",
+      "nav": false
+    },
+    "privacy": {
+      "path": "#/privacy",
+      "label": "Конфиденциальность",
+      "icon": "🔐",
+      "description": "Использование и защита данных"
+    },
+    "contacts": {
+      "path": "#/contacts",
+      "label": "Контакты",
+      "icon": "☎",
+      "description": "Связь и поддержка платформы"
+    },
+    "lawyer": {
+      "path": "#/lawyer",
+      "label": "Юрист",
+      "icon": "⚖",
+      "description": "Помощь при ДТП, страховых и правовых спорах",
+      "nav": false
+    },
+    "towTruck": {
+      "path": "#/tow-truck",
+      "label": "Эвакуатор",
+      "icon": "▰",
+      "description": "Вызов эвакуатора и передача геопозиции",
+      "nav": false
+    },
+    "productDetail": {
+      "path": "#/parts/item",
+      "label": "Товар",
+      "icon": "▣",
+      "nav": false
+    },
+    "serviceDetail": {
+      "path": "#/services/item",
+      "label": "Услуга",
+      "icon": "⚙",
+      "nav": false
+    },
+    "providerDetail": {
+      "path": "#/masters/profile",
+      "label": "Исполнитель",
+      "icon": "◉",
+      "nav": false
+    },
+    "providerBooking": {
+      "path": "#/masters/book",
+      "label": "Запись к мастеру",
+      "icon": "calendar",
+      "nav": false
+    },
+    "providerReviews": {
+      "path": "#/masters/reviews",
+      "label": "Отзывы",
+      "icon": "★",
+      "nav": false
+    }
+  },
+  "legacyAliases": {
+    "#home": "#/home",
+    "#following": "#/following",
+    "#news": "#/works",
+    "#/news": "#/works",
+    "#works": "#/works",
+    "#real-works": "#/real-works",
+    "#services": "#/services",
+    "#services:quick": "#/services",
+    "#services:manage": "#/services/manage",
+    "#master:services": "#/services/manage",
+    "#sto:services": "#/services/manage",
+    "#masters": "#/masters",
+    "#master": "#/master",
+    "#master:profile": "#/master/profile",
+    "#master:wall": "#/master/wall",
+    "#master:works": "#/master/works",
+    "#master:reviews": "#/master/reviews",
+    "#master:work:queue": "#/master/exchange",
+    "#/master/requests": "#/orders",
+    "#/master/workplace": "#/master",
+    "#/master/settings": "#/cabinet/settings",
+    "#sto": "#/sto",
+    "#sto_dashboard": "#/sto",
+    "#parts": "#/parts",
+    "#seller": "#/seller",
+    "#shop": "#/seller",
+    "#orders": "#/orders",
+    "#myorders": "#/orders",
+    "#messages": "#/chats",
+    "#chats": "#/chats",
+    "#cabinet": "#/cabinet",
+    "#about": "#/about",
+    "#rules": "#/rules",
+    "#help": "#/help",
+    "#assistant": "#/assistant",
+    "#privacy": "#/privacy",
+    "#contacts": "#/contacts",
+    "#lawyer": "#/lawyer",
+    "#tow-truck": "#/tow-truck"
+  },
+  "desktopKeys": [
+    "home",
+    "platform",
+    "corePlatform",
+    "calendarBooking",
+    "finance",
+    "market",
+    "crm",
+    "adminUsers",
+    "adminOrganizations",
+    "adminMonitoring",
+    "adminManagement",
+    "services",
+    "works",
+    "serviceManagement",
+    "masters",
+    "masterDashboard",
+    "stoDashboard",
+    "parts",
+    "seller",
+    "sellerProducts",
+    "sellerOrders",
+    "orders",
+    "chats",
+    "cabinet",
+    "about",
+    "rules",
+    "help",
+    "privacy",
+    "contacts"
+  ],
+  "mobileKeys": [
+    "home",
+    "parts",
+    "masters",
+    "orders",
+    "cabinet"
+  ],
+  "uxSurfaces": {
+    "home": "workspace",
+    "platform": "workspace",
+    "corePlatform": "workspace",
+    "calendarBooking": "workspace",
+    "finance": "workspace",
+    "market": "workspace",
+    "crm": "workspace",
+    "identityMigration": "workspace",
+    "adminUsers": "workspace",
+    "adminOrganizations": "workspace",
+    "adminMonitoring": "workspace",
+    "adminManagement": "workspace",
+    "services": "workspace",
+    "news": "deep-link-fallback",
+    "masterNews": "workspace",
+    "masterNewsCreate": "work-dialog",
+    "masterNewsEdit": "work-dialog",
+    "works": "workspace",
+    "profile": "entity-window",
+    "following": "workspace",
+    "realWorks": "workspace",
+    "workDetail": "entity-window",
+    "serviceManagement": "workspace",
+    "masters": "workspace",
+    "masterOnboarding": "workspace",
+    "masterDashboard": "workspace",
+    "masterSchedule": "workspace",
+    "masterProfileOwner": "workspace",
+    "masterWallOwner": "workspace",
+    "masterWorks": "workspace",
+    "masterReviews": "workspace",
+    "masterExchange": "workspace",
+    "community": "workspace",
+    "stoDashboard": "workspace",
+    "parts": "workspace",
+    "usedParts": "workspace",
+    "seller": "workspace",
+    "sellerProducts": "workspace",
+    "sellerOrders": "workspace",
+    "orders": "workspace",
+    "workflow": "workspace",
+    "requestNew": "work-dialog",
+    "workOrder": "entity-window",
+    "vehicle": "entity-window",
+    "chats": "workspace",
+    "notifications": "deep-link-fallback",
+    "cabinet": "workspace",
+    "cabinetGarage": "workspace",
+    "cabinetData": "deep-link-fallback",
+    "cabinetHistory": "workspace",
+    "cabinetDocuments": "deep-link-fallback",
+    "cabinetPromos": "workspace",
+    "cabinetTariff": "deep-link-fallback",
+    "cabinetSettings": "deep-link-fallback",
+    "about": "workspace",
+    "rules": "workspace",
+    "help": "workspace",
+    "assistant": "workspace",
+    "privacy": "workspace",
+    "contacts": "workspace",
+    "lawyer": "workspace",
+    "towTruck": "workspace",
+    "productDetail": "entity-window",
+    "serviceDetail": "entity-window",
+    "providerDetail": "entity-window",
+    "providerBooking": "entity-window",
+    "providerReviews": "entity-window"
+  },
+  "uxAudit": {
+    "ok": true,
+    "total": 67,
+    "missing": [],
+    "extra": [],
+    "invalid": [],
+    "surfaces": {
+      "home": "workspace",
+      "platform": "workspace",
+      "corePlatform": "workspace",
+      "calendarBooking": "workspace",
+      "finance": "workspace",
+      "market": "workspace",
+      "crm": "workspace",
+      "identityMigration": "workspace",
+      "adminUsers": "workspace",
+      "adminOrganizations": "workspace",
+      "adminMonitoring": "workspace",
+      "adminManagement": "workspace",
+      "services": "workspace",
+      "news": "deep-link-fallback",
+      "masterNews": "workspace",
+      "masterNewsCreate": "work-dialog",
+      "masterNewsEdit": "work-dialog",
+      "works": "workspace",
+      "profile": "entity-window",
+      "following": "workspace",
+      "realWorks": "workspace",
+      "workDetail": "entity-window",
+      "serviceManagement": "workspace",
+      "masters": "workspace",
+      "masterOnboarding": "workspace",
+      "masterDashboard": "workspace",
+      "masterSchedule": "workspace",
+      "masterProfileOwner": "workspace",
+      "masterWallOwner": "workspace",
+      "masterWorks": "workspace",
+      "masterReviews": "workspace",
+      "masterExchange": "workspace",
+      "community": "workspace",
+      "stoDashboard": "workspace",
+      "parts": "workspace",
+      "usedParts": "workspace",
+      "seller": "workspace",
+      "sellerProducts": "workspace",
+      "sellerOrders": "workspace",
+      "orders": "workspace",
+      "workflow": "workspace",
+      "requestNew": "work-dialog",
+      "workOrder": "entity-window",
+      "vehicle": "entity-window",
+      "chats": "workspace",
+      "notifications": "deep-link-fallback",
+      "cabinet": "workspace",
+      "cabinetGarage": "workspace",
+      "cabinetData": "deep-link-fallback",
+      "cabinetHistory": "workspace",
+      "cabinetDocuments": "deep-link-fallback",
+      "cabinetPromos": "workspace",
+      "cabinetTariff": "deep-link-fallback",
+      "cabinetSettings": "deep-link-fallback",
+      "about": "workspace",
+      "rules": "workspace",
+      "help": "workspace",
+      "assistant": "workspace",
+      "privacy": "workspace",
+      "contacts": "workspace",
+      "lawyer": "workspace",
+      "towTruck": "workspace",
+      "productDetail": "entity-window",
+      "serviceDetail": "entity-window",
+      "providerDetail": "entity-window",
+      "providerBooking": "entity-window",
+      "providerReviews": "entity-window"
+    }
+  },
+  "dynamicRoutes": [
+    {
+      "pattern": "#/works/item/*",
+      "routeKey": "workDetail"
+    },
+    {
+      "pattern": "#/parts/item/*",
+      "routeKey": "productDetail"
+    },
+    {
+      "pattern": "#/parts/store/*",
+      "routeKey": "productDetail"
+    },
+    {
+      "pattern": "#/services/item/*",
+      "routeKey": "serviceDetail"
+    },
+    {
+      "pattern": "#/services/group/*",
+      "routeKey": "services"
+    },
+    {
+      "pattern": "#/services/category/*",
+      "routeKey": "services"
+    },
+    {
+      "pattern": "#/profile/person/*",
+      "routeKey": "profile"
+    },
+    {
+      "pattern": "#/profile/organization/*",
+      "routeKey": "profile"
+    },
+    {
+      "pattern": "#/masters/reviews/master/*",
+      "routeKey": "providerReviews"
+    },
+    {
+      "pattern": "#/masters/reviews/sto/*",
+      "routeKey": "providerReviews"
+    },
+    {
+      "pattern": "#/masters/book/master/*",
+      "routeKey": "providerBooking"
+    },
+    {
+      "pattern": "#/masters/profile/master/*",
+      "routeKey": "providerDetail"
+    },
+    {
+      "pattern": "#/masters/profile/sto/*",
+      "routeKey": "providerDetail"
+    },
+    {
+      "pattern": "#/community/*",
+      "routeKey": "community"
+    },
+    {
+      "pattern": "#/master/news/edit/*",
+      "routeKey": "masterNewsEdit"
+    },
+    {
+      "pattern": "#/orders/item/*",
+      "routeKey": "workOrder"
+    },
+    {
+      "pattern": "#/garage/car/*",
+      "routeKey": "vehicle"
+    }
+  ]
+}

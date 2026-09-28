@@ -1,0 +1,15 @@
+.k-context-switcher{margin:0 0 16px}.k-context-field{display:grid;gap:6px;padding:12px;border:1px solid var(--k-border,#dfe5ec);border-radius:14px;background:var(--k-surface,#fff)}.k-context-field>span{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.k-context-field select{width:100%;min-height:42px;border:1px solid var(--k-border,#dfe5ec);border-radius:10px;padding:0 36px 0 12px;background:var(--k-surface,#fff);color:inherit;font:inherit}.k-context-field small{color:var(--k-muted,#667085)}.k-context-loading,.k-context-error{width:100%;padding:12px;border:1px solid var(--k-border,#dfe5ec);border-radius:12px;background:var(--k-surface,#fff);text-align:left;color:inherit}.k-context-error{cursor:pointer}@media(max-width:720px){.k-context-switcher{margin-bottom:12px}.k-context-field{padding:10px}}
+
+
+.k-context-legacy{display:grid;gap:6px;min-width:0}.k-context-legacy>span{font-size:11px;font-weight:700;opacity:.7}.k-context-legacy-actions{display:flex;flex-wrap:wrap;gap:6px}.k-context-legacy-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:6px 10px;border:1px solid var(--k-border,#d9dee8);border-radius:999px;background:var(--k-surface,#fff);color:inherit;text-decoration:none;font-size:12px;font-weight:700;max-width:100%;overflow-wrap:anywhere}.k-context-legacy-actions a.is-active{background:var(--k-accent,#1665d8);border-color:var(--k-accent,#1665d8);color:#fff}.k-context-legacy small{font-size:10px;opacity:.65;overflow-wrap:anywhere}@media(max-width:520px){.k-context-legacy-actions a{flex:1 1 calc(50% - 6px)}}
+
+/* R186.5 Navigation Core: atomic context switch */
+html.k-context-switching #k-app{pointer-events:none;}
+html.k-context-switching #k-page-outlet,
+html.k-context-switching #k-desktop-nav,
+html.k-context-switching #k-mobile-nav,
+html.k-context-switching #k-menu-drawer{opacity:.55;transition:opacity .16s ease;}
+html:not(.k-context-switching) #k-page-outlet,
+html:not(.k-context-switching) #k-desktop-nav,
+html:not(.k-context-switching) #k-mobile-nav,
+html:not(.k-context-switching) #k-menu-drawer{transition:opacity .16s ease;}

@@ -1,0 +1,56 @@
+/* R188.5.5.6.40 — sensible desktop card-grid expansion for the 2400px page contract.
+   Only catalog/navigation/feed surfaces expand. Forms, workflow, finance and dense operational panels stay unchanged. */
+
+@media (min-width: 1100px) {
+  /* Client and staff cabinets are navigation-card surfaces: 3 columns fit comfortably. */
+  #k-page-outlet .k-client-cabinet-grid,
+  #k-page-outlet .k-staff-cabinet-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* Staff cabinet previously had an internal 1220px cap that defeated the 2400px page surface. */
+  #k-page-outlet .k-staff-cabinet {
+    width: 100%;
+    max-width: var(--k-page-max, 2400px);
+  }
+}
+
+@media (min-width: 1200px) {
+  /* Provider cards contain stats/actions, so 3 columns start later than simple feed cards. */
+  #k-page-outlet .k-provider-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1400px) {
+  /* Marketplace keeps its side panel; the product area gets a third useful column first. */
+  #k-page-outlet .k-market-products {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1600px) {
+  /* Work/publication cards are visual content and scale cleanly to four columns. */
+  #k-page-outlet .k-work-feed-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1800px) {
+  #k-page-outlet .k-client-cabinet-grid,
+  #k-page-outlet .k-staff-cabinet-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1900px) {
+  #k-page-outlet .k-provider-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 2000px) {
+  #k-page-outlet .k-market-products {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

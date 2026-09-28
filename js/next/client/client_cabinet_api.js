@@ -1,0 +1,22 @@
+(() => {
+  'use strict';
+  const api = window.KaretaApiClient;
+  if (!api) throw new Error('KaretaApiClient is required before client_cabinet_api.js');
+  const get = (options={}) => api.request('api/db.php?action=clientCabinet.get',{cacheTtlMs:15000,cacheKey:'client.cabinet',...options});
+  const post = payload => api.request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const saveProfile = payload => post({action:'profile.updateMine',...payload});
+  const savePreferences = payload => post({action:'clientPreferences.save',...payload});
+  const firstEntryCurrent = (options={}) => api.request('api/db.php?action=clientFirstEntry.current',{cacheTtlMs:0,cacheKey:'client.first-entry',...options});
+  const saveFirstEntryDraft = payload => post({action:'clientFirstEntry.saveDraft',...payload});
+  const dismissFirstEntry = payload => post({action:'clientFirstEntry.dismiss',...payload});
+  const saveVehicle = vehicle => post({action:'vehicles.upsert',vehicle});
+  const setDefaultVehicle = id => post({action:'vehicles.setDefault',id});
+  const archiveVehicle = id => post({action:'vehicles.delete',id});
+  const restoreVehicle = id => post({action:'vehicles.restore',id});
+  const saveMaintenance = payload => post({action:'clientMaintenance.save',...payload});
+  const saveExpense = payload => post({action:'clientExpense.save',...payload});
+  const saveWarranty = payload => post({action:'clientWarranty.save',...payload});
+  const saveDocument = payload => post({action:'clientDocument.save',...payload});
+  const deleteDocument = id => post({action:'clientDocument.delete',id});
+  window.KaretaClientCabinetApi = Object.freeze({get,saveProfile,savePreferences,firstEntryCurrent,saveFirstEntryDraft,dismissFirstEntry,saveVehicle,setDefaultVehicle,archiveVehicle,restoreVehicle,saveMaintenance,saveExpense,saveWarranty,saveDocument,deleteDocument});
+})();

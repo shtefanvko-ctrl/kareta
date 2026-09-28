@@ -1,0 +1,32 @@
+const fs=require('fs');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+function must(cond,msg){if(!cond){console.error('FAIL:',msg);process.exit(1)}}
+const role=read('js/next/onboarding/pages/role_page.js');
+const lifecycle=read('js/next/onboarding/onboarding_lifecycle.js');
+const recovery=read('js/next/recovery_manager.js');
+const identitySession=read('api/identity_session.php');
+const shell=read('js/next/shell_nav.js');
+const css=read('css/next/shell_session_stability.css');
+const registry=read('inc/asset_registry.php');
+const assetVersion=read('inc/asset_version.php');
+const sw=read('sw.js');
+
+const existingBranch=role.indexOf('if (verifyResult?.existingAccount && verifyResult?.user)');
+const completeCall=role.indexOf('KaretaOnboardingState?.markComplete?.',existingBranch);
+const transitionCall=role.indexOf("window.KaretaRouteRuntime?.transition?.",existingBranch);
+must(existingBranch>=0 && completeCall>existingBranch && transitionCall>completeCall,'existing-account login commits onboarding completion before route transition');
+must(role.includes("role:user.role || flow.role || 'client'"),'existing-account completion uses authoritative user role');
+must(lifecycle.includes("addEventListener('kareta:session-confirmed'") && lifecycle.includes("reconcile('session-confirmed', { force:true })"),'server-confirmed session heals missing local onboarding completion');
+must(recovery.includes('allowLegacyBridge:true') && recovery.includes('legacyUser'),'recovery preserves valid legacy session while rebuilding identity');
+const bindPos=identitySession.indexOf('$ctx->resolveAccount([]);');
+const currentPos=identitySession.indexOf('$current=$ctx->currentContext');
+must(bindPos>=0 && currentPos>bindPos,'identity current endpoint binds ContextService to current identity session');
+must(shell.includes('function syncDesktopLayout()') && shell.includes("classList.toggle('is-overflowing',overflowing)"),'desktop nav detects overflow instead of compressing icons');
+must(shell.includes('class="k-nav-label"'),'nav labels have stable explicit wrapper');
+must(css.includes('#k-desktop-nav .k-nav-icon') && css.includes('flex:0 0 20px') && css.includes('width:20px!important'),'desktop icons have fixed geometry');
+must(css.includes('.is-overflowing{justify-content:flex-start}') && css.includes('overflow-x:auto'),'wide desktop navigation scrolls safely when necessary');
+must(registry.includes("css/next/shell_session_stability.css"),'stability stylesheet is registered');
+must(assetVersion.includes('r1885584-pc-header-session-resume-stability') && sw.includes('r1885584-pc-header-session-resume-stability'),'asset and service worker versions synchronized');
+console.log('OK R188.5.5.6.24 shell/session stability');

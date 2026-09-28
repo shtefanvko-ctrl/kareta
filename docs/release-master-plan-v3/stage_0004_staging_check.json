@@ -1,0 +1,38 @@
+{
+  "schema": "kareta.release-master-plan.stage-check.v1",
+  "stage": 4,
+  "totalStages": 2513,
+  "phase": "00 — BASELINE_TEST_HARNESS",
+  "sourceBaseline": "R188.5.5.6.84.109",
+  "task": "Создать единый release checklist",
+  "command": "bash tools/release_checklist.sh",
+  "localGate": {
+    "status": "PASS",
+    "passed": 17,
+    "total": 17,
+    "failed": 0,
+    "exitCode": 0,
+    "finalMarker": "RELEASE_CHECKLIST: PASS",
+    "runtimeSeconds": 22.37
+  },
+  "sections": {
+    "syntax": "PASS",
+    "migrations": "PASS",
+    "auth": "PASS",
+    "visual": "PASS",
+    "api": "PASS",
+    "pwa": "PASS",
+    "smoke": "PASS"
+  },
+  "externalStaging": {
+    "url": "https://s.kareta.kz/",
+    "checkedAtUtc": "2026-09-24T23:52:54.2332005Z",
+    "status": "BLOCKED_HTTP_403",
+    "httpStatus": 403,
+    "statusDescription": "Forbidden",
+    "gateExecutedOnExternalStaging": false
+  },
+  "runtimeChanged": false,
+  "apiChanged": false,
+  "dbChanged": false
+}

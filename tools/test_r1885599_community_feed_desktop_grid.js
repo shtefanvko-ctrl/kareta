@@ -1,0 +1,10 @@
+const fs = require('fs');
+const css = fs.readFileSync('css/next/community_feed_desktop_grid.css','utf8');
+const community = fs.readFileSync('css/next/community.css','utf8');
+const registry = fs.readFileSync('inc/asset_registry.php','utf8');
+const fail = (m) => { throw new Error(m); };
+if (!/@media\s*\(min-width:\s*901px\)[\s\S]*?\.k-community-feed\s*\{[\s\S]*?repeat\(3,\s*minmax\(0,\s*1fr\)\)/.test(css)) fail('desktop community feed must be 3 columns from 901px');
+if (!/@media\s*\(min-width:\s*1600px\)[\s\S]*?\.k-community-feed\s*\{[\s\S]*?repeat\(4,\s*minmax\(0,\s*1fr\)\)/.test(css)) fail('wide desktop community feed must be 4 columns from 1600px');
+if (!/@media\(min-width:761px\)[\s\S]*?\.k-community-feed\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/.test(community)) fail('existing tablet 2-column contract must remain');
+if (!/community_feed_desktop_grid\.css/.test(registry)) fail('new desktop grid stylesheet must be registered');
+console.log('R188.5.5.6.39 community feed desktop grid: OK');

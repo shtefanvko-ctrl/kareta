@@ -1,0 +1,577 @@
+{
+  "release": "188.5.5.6.84.112",
+  "fixture": "/tools/fixtures/desktop_shell_84_112.html",
+  "browser": "Chrome/153.0.8010.53",
+  "generatedAt": "2026-09-25T08:54:39.102Z",
+  "pass": true,
+  "results": [
+    {
+      "width": 1024,
+      "height": 768,
+      "pass": true,
+      "state": {
+        "width": 1024,
+        "height": 768,
+        "scrollWidth": 1024,
+        "overflowX": false,
+        "header": {
+          "x": 0,
+          "y": 0,
+          "w": 1024,
+          "h": 77,
+          "display": "grid",
+          "position": "fixed"
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 76,
+          "w": 84,
+          "h": 692,
+          "display": "block",
+          "position": "fixed"
+        },
+        "desktopNav": {
+          "x": 10,
+          "y": 90,
+          "w": 63,
+          "h": 336,
+          "display": "flex",
+          "position": "static"
+        },
+        "mobileNav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "fixed"
+        },
+        "outlet": {
+          "x": 84,
+          "y": 76,
+          "w": 940,
+          "h": 356,
+          "display": "block",
+          "position": "static"
+        },
+        "fullLogo": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "static"
+        },
+        "iconLogo": {
+          "x": 20,
+          "y": 16,
+          "w": 44,
+          "h": 44,
+          "display": "block",
+          "position": "static"
+        },
+        "pageMax": "1440px",
+        "sidebarW": "84px",
+        "expected": 84,
+        "pass": true
+      }
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "pass": true,
+      "state": {
+        "width": 1280,
+        "height": 720,
+        "scrollWidth": 1280,
+        "overflowX": false,
+        "header": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 77,
+          "display": "grid",
+          "position": "fixed"
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 76,
+          "w": 248,
+          "h": 644,
+          "display": "block",
+          "position": "fixed"
+        },
+        "desktopNav": {
+          "x": 14,
+          "y": 92,
+          "w": 219,
+          "h": 336,
+          "display": "flex",
+          "position": "static"
+        },
+        "mobileNav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "fixed"
+        },
+        "outlet": {
+          "x": 248,
+          "y": 76,
+          "w": 1032,
+          "h": 356,
+          "display": "block",
+          "position": "static"
+        },
+        "fullLogo": {
+          "x": 24,
+          "y": 14,
+          "w": 176,
+          "h": 48,
+          "display": "block",
+          "position": "static"
+        },
+        "iconLogo": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "static"
+        },
+        "pageMax": "1440px",
+        "sidebarW": "248px",
+        "expected": 248,
+        "pass": true
+      }
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "pass": true,
+      "state": {
+        "width": 1366,
+        "height": 768,
+        "scrollWidth": 1366,
+        "overflowX": false,
+        "header": {
+          "x": 0,
+          "y": 0,
+          "w": 1366,
+          "h": 77,
+          "display": "grid",
+          "position": "fixed"
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 76,
+          "w": 248,
+          "h": 692,
+          "display": "block",
+          "position": "fixed"
+        },
+        "desktopNav": {
+          "x": 14,
+          "y": 92,
+          "w": 219,
+          "h": 336,
+          "display": "flex",
+          "position": "static"
+        },
+        "mobileNav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "fixed"
+        },
+        "outlet": {
+          "x": 248,
+          "y": 76,
+          "w": 1118,
+          "h": 356,
+          "display": "block",
+          "position": "static"
+        },
+        "fullLogo": {
+          "x": 24,
+          "y": 14,
+          "w": 176,
+          "h": 48,
+          "display": "block",
+          "position": "static"
+        },
+        "iconLogo": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "static"
+        },
+        "pageMax": "1440px",
+        "sidebarW": "248px",
+        "expected": 248,
+        "pass": true
+      }
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "pass": true,
+      "state": {
+        "width": 1440,
+        "height": 900,
+        "scrollWidth": 1440,
+        "overflowX": false,
+        "header": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 77,
+          "display": "grid",
+          "position": "fixed"
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 76,
+          "w": 248,
+          "h": 824,
+          "display": "block",
+          "position": "fixed"
+        },
+        "desktopNav": {
+          "x": 14,
+          "y": 92,
+          "w": 219,
+          "h": 336,
+          "display": "flex",
+          "position": "static"
+        },
+        "mobileNav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "fixed"
+        },
+        "outlet": {
+          "x": 248,
+          "y": 76,
+          "w": 1192,
+          "h": 356,
+          "display": "block",
+          "position": "static"
+        },
+        "fullLogo": {
+          "x": 24,
+          "y": 14,
+          "w": 176,
+          "h": 48,
+          "display": "block",
+          "position": "static"
+        },
+        "iconLogo": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "static"
+        },
+        "pageMax": "1440px",
+        "sidebarW": "248px",
+        "expected": 248,
+        "pass": true
+      }
+    },
+    {
+      "width": 1536,
+      "height": 864,
+      "pass": true,
+      "state": {
+        "width": 1536,
+        "height": 864,
+        "scrollWidth": 1536,
+        "overflowX": false,
+        "header": {
+          "x": 0,
+          "y": 0,
+          "w": 1536,
+          "h": 77,
+          "display": "grid",
+          "position": "fixed"
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 76,
+          "w": 248,
+          "h": 788,
+          "display": "block",
+          "position": "fixed"
+        },
+        "desktopNav": {
+          "x": 14,
+          "y": 92,
+          "w": 219,
+          "h": 336,
+          "display": "flex",
+          "position": "static"
+        },
+        "mobileNav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "fixed"
+        },
+        "outlet": {
+          "x": 248,
+          "y": 76,
+          "w": 1288,
+          "h": 356,
+          "display": "block",
+          "position": "static"
+        },
+        "fullLogo": {
+          "x": 24,
+          "y": 14,
+          "w": 176,
+          "h": 48,
+          "display": "block",
+          "position": "static"
+        },
+        "iconLogo": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "static"
+        },
+        "pageMax": "1440px",
+        "sidebarW": "248px",
+        "expected": 248,
+        "pass": true
+      }
+    },
+    {
+      "width": 1600,
+      "height": 900,
+      "pass": true,
+      "state": {
+        "width": 1600,
+        "height": 900,
+        "scrollWidth": 1600,
+        "overflowX": false,
+        "header": {
+          "x": 0,
+          "y": 0,
+          "w": 1600,
+          "h": 77,
+          "display": "grid",
+          "position": "fixed"
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 76,
+          "w": 248,
+          "h": 824,
+          "display": "block",
+          "position": "fixed"
+        },
+        "desktopNav": {
+          "x": 14,
+          "y": 92,
+          "w": 219,
+          "h": 336,
+          "display": "flex",
+          "position": "static"
+        },
+        "mobileNav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "fixed"
+        },
+        "outlet": {
+          "x": 248,
+          "y": 76,
+          "w": 1352,
+          "h": 356,
+          "display": "block",
+          "position": "static"
+        },
+        "fullLogo": {
+          "x": 24,
+          "y": 14,
+          "w": 176,
+          "h": 48,
+          "display": "block",
+          "position": "static"
+        },
+        "iconLogo": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "static"
+        },
+        "pageMax": "1440px",
+        "sidebarW": "248px",
+        "expected": 248,
+        "pass": true
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "pass": true,
+      "state": {
+        "width": 1920,
+        "height": 1080,
+        "scrollWidth": 1920,
+        "overflowX": false,
+        "header": {
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 77,
+          "display": "grid",
+          "position": "fixed"
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 76,
+          "w": 248,
+          "h": 1004,
+          "display": "block",
+          "position": "fixed"
+        },
+        "desktopNav": {
+          "x": 14,
+          "y": 92,
+          "w": 219,
+          "h": 336,
+          "display": "flex",
+          "position": "static"
+        },
+        "mobileNav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "fixed"
+        },
+        "outlet": {
+          "x": 364,
+          "y": 76,
+          "w": 1440,
+          "h": 356,
+          "display": "block",
+          "position": "static"
+        },
+        "fullLogo": {
+          "x": 24,
+          "y": 14,
+          "w": 176,
+          "h": 48,
+          "display": "block",
+          "position": "static"
+        },
+        "iconLogo": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "static"
+        },
+        "pageMax": "1440px",
+        "sidebarW": "248px",
+        "expected": 248,
+        "pass": true
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1440,
+      "pass": true,
+      "state": {
+        "width": 2560,
+        "height": 1440,
+        "scrollWidth": 2560,
+        "overflowX": false,
+        "header": {
+          "x": 0,
+          "y": 0,
+          "w": 2560,
+          "h": 77,
+          "display": "grid",
+          "position": "fixed"
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 76,
+          "w": 248,
+          "h": 1364,
+          "display": "block",
+          "position": "fixed"
+        },
+        "desktopNav": {
+          "x": 14,
+          "y": 92,
+          "w": 219,
+          "h": 336,
+          "display": "flex",
+          "position": "static"
+        },
+        "mobileNav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "fixed"
+        },
+        "outlet": {
+          "x": 684,
+          "y": 76,
+          "w": 1440,
+          "h": 356,
+          "display": "block",
+          "position": "static"
+        },
+        "fullLogo": {
+          "x": 24,
+          "y": 14,
+          "w": 176,
+          "h": 48,
+          "display": "block",
+          "position": "static"
+        },
+        "iconLogo": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "position": "static"
+        },
+        "pageMax": "1440px",
+        "sidebarW": "248px",
+        "expected": 248,
+        "pass": true
+      }
+    }
+  ]
+}

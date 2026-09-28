@@ -1,0 +1,16 @@
+const fs=require('fs');
+const assert=(v,m)=>{if(!v)throw new Error(m)};
+const services=fs.readFileSync('js/next/pages/services.js','utf8');
+const details=fs.readFileSync('js/next/pages/details.js','utf8');
+const serviceCss=fs.readFileSync('css/next/reference_client_pages.css','utf8');
+const detailsCss=fs.readFileSync('css/next/details.css','utf8');
+const av=fs.readFileSync('inc/asset_version.php','utf8');
+const sw=fs.readFileSync('sw.js','utf8');
+assert(services.includes('referenceServiceAsCategoryCard'),'missing category visual leaf renderer');
+assert(services.includes("category==='diagnostics'"),'diagnostics visual rule missing');
+assert(services.includes("view.group==='body'"),'body visual rule missing');
+assert(serviceCss.includes('.k-services-ref-card--service-category'),'service category visual CSS missing');
+assert(details.includes('data-master-ref-version="2"'),'master profile V2 marker missing');
+assert(detailsCss.includes('public master profile V2'),'master profile V2 CSS missing');
+assert(av.includes('188.5.5.6.84.44')&&sw.includes('188.5.5.6.84.44'),'version mismatch');
+console.log('R188.5.5.6.84.44 services/profile regression: OK');

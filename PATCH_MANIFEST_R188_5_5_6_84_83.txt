@@ -1,0 +1,15 @@
+R188.5.5.6.84.83 PATCH MANIFEST
+Base: R188.5.5.6.84.82
+Target: R188.5.5.6.84.83
+Mode: overlay patch
+
+802b1c239e41368bc778da1863ca2ed5146da8157c1c140c2fc67348fe9189c5  ./PATCH_R188_5_5_6_84_83.md
+bac4c8e73475897a6f2c295bddca439d9d8aa6b31d8a4cd290ad06fe5fbb5996  ./asset_manifest.php
+bef8307cc0b4aa518efcd3048d8151cb6999ebda38484eeb505c0040dc2414bd  ./inc/asset_version.php
+b00eaa84048cc889055b5edb90d64688e1e04ae4e7862ffe387ce6918664974b  ./js/boot/runtime_shell_bundle.js
+f63b3a6a6592606e64b7c8be3bb43aeace56170ca7eb90a4577fa0657297f341  ./js/next/route_asset_loader.js
+4bfaf421fce7af95e7cdbeb4202a9aac0101318b768fe84301c18726228b4d26  ./sw.js
+000790b8eb6db9972189edee6d0c8d788ed766e254695132bf72801aeed87d29  ./tools/release_gate.php
+0fdc0825f0a2fff64310c3a41465c0418d203bf64f7b4c5fb6a0eb84b64596bc  ./tools/test_critical_js_session_boot_84_82.js
+f3c41195ba498ddc4f0c06674091bcd51ac904677a205d118a166d3326b63f29  ./tools/test_fast_manifest_hot_path_84_83.js
+c5f62e16ab3433062f5fc7adcf15b831f4812e05cfb77a981ff2d7384d18a461  ./tools/test_route_lazy_loader_84_66.js

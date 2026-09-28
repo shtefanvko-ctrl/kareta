@@ -1,0 +1,31 @@
+'use strict';
+const fs=require('fs'),path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const expect=(v,m)=>{if(!v)throw new Error(m)};
+const index=read('index.php');
+const app=read('css/next/app_next.css');
+const width=read('css/next/desktop_full_width.css');
+const boot=read('css/runtime_boot_bundle.css');
+const postlude=read('css/routes/client_guard_postlude.css');
+const asset=read('inc/asset_version.php');
+const sw=read('sw.js');
+expect(index.includes('id="k-desktop-sidebar"'),'desktop sidebar markup missing');
+expect(index.indexOf('id="k-desktop-sidebar"')>index.indexOf('</header>'),'sidebar must be outside header');
+expect(app.includes('--k-page-max:1440px'),'app page max is not 1440');
+expect(app.includes('--k-desktop-sidebar-w:84px'),'desktop rail token missing');
+expect(app.includes('--k-desktop-sidebar-w:248px'),'desktop sidebar token missing');
+expect(!width.includes('2400px'),'legacy desktop width contract still contains 2400px');
+expect(width.includes('--k-page-max: 1440px'),'bounded desktop width source missing');
+const marker='/* ===== SOURCE: css/next/desktop_full_width.css ===== */';
+for(const [name,text] of [['boot',boot],['postlude',postlude]]){
+ const a=text.indexOf(marker),b=text.indexOf('/* ===== SOURCE:',a+marker.length);
+ expect(a>=0&&b>a,name+' desktop width source block missing');
+ const block=text.slice(a,b);
+ expect(!block.includes('2400px'),name+' desktop width block still contains 2400px');
+ expect(block.includes('--k-page-max: 1440px'),name+' desktop width block not synced');
+}
+expect(asset.includes("188.5.5.6.84.112"),'asset version mismatch');
+expect(sw.includes("const RELEASE = '188.5.5.6.84.112'"),'service worker release mismatch');
+expect(boot.length<=850000,'critical CSS budget exceeded: '+boot.length);
+console.log('DESKTOP_SHELL_84_112: PASS rail=84 sidebar=248 pageMax=1440 legacy2400=removed');

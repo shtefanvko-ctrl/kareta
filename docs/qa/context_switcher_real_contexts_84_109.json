@@ -1,0 +1,30 @@
+{
+  "stage": "AUTO_STAGE: 16/2513",
+  "name": "Показывать только доступные context buttons",
+  "baseline": "R188.5.5.6.84.109",
+  "checked_at_utc": "2026-09-25T03:05:37Z",
+  "local": {
+    "context_contract": "PASS",
+    "boot_bundle_sync": "PASS",
+    "role_context_scenarios": "PASS",
+    "context_auto_activation": "PASS",
+    "db_monolith_budget": "PASS"
+  },
+  "staging": {
+    "base_url": "https://s.kareta.kz/",
+    "root_http": 403,
+    "context_manager_http": 200,
+    "context_manager_bytes": 17320,
+    "runtime_identity_bundle_http": 200,
+    "runtime_identity_bundle_bytes": 82258,
+    "new_real_contexts_marker": false,
+    "old_visible_context_options_marker": true,
+    "result": "FAIL_NOT_DEPLOYED"
+  },
+  "dod": {
+    "local_only_real_identity_contexts": true,
+    "sto_requires_service_station_context": true,
+    "seller_requires_seller_profile_or_parts_store_context": true,
+    "staging_verified": false
+  }
+}

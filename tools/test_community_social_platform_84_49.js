@@ -1,0 +1,24 @@
+'use strict';
+const fs=require('fs'),path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};
+const page=read('js/next/pages/community.js');
+const api=read('js/next/community/community_api.js');
+const state=read('js/next/community/community_state.js');
+const css=read('css/next/community.css');
+const route=read('js/next/route_registry.js');
+const reg=read('inc/asset_registry.php');
+const asset=read('inc/asset_version.php');
+const sw=read('sw.js');
+for(const token of ['#/community/subscriptions','#/community/nearby','#/community/story/create','#/community/post/create','#/community/question/create','#/community/groups','#/community/group/','#/community/topic/','renderCommunityPost','k-community-stories','k-community-feed-tabs','k-community-composer','data-community-comments-sheet','IntersectionObserver'])expect(page.includes(token),`community page missing ${token}`);
+for(const token of ['getFeed','getPost','getComments','addComment','likePost','savePost','getStories','getGroups','createPost','createQuestion','mockRows'])expect(api.includes(token),`community api missing ${token}`);
+for(const token of ['feedMode','posts:[]','stories:[]','groups:[]','scrollByRoute','rememberScroll','pagination'])expect(state.includes(token),`community state missing ${token}`);
+for(const token of ['.k-community-v2','.k-community-stories','.k-community-comments-sheet','.k-community-story-overlay','.k-community-media-grid','61.8fr 38.2fr','100dvh','prefers-reduced-motion'])expect(css.includes(token),`community css missing ${token}`);
+expect(route.includes("/^#\\/community(?:\\/.*)?$/"),'nested community routes must resolve through existing router');
+expect(reg.indexOf('js/next/community/community_state.js')<reg.indexOf('js/next/pages/community.js'),'community state must load before page');
+expect(reg.indexOf('js/next/community/community_api.js')<reg.indexOf('js/next/pages/community.js'),'community api must load before page');
+const av=(asset.match(/KARETA_ASSET_VERSION = '188\.5\.5\.6\.84\.(\d+)'/)||[])[1];const sv=(sw.match(/RELEASE = '188\.5\.5\.6\.84\.(\d+)'/)||[])[1];expect(Number(av)>=49&&Number(sv)>=49&&av===sv,'asset/sw version mismatch');
+expect(asset.includes('r188568450-community-mobile-autoplay')||asset.includes('r188568449-community-social-platform-v2'),'community V2 release marker missing');
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}
+console.log('R188.5.5.6.84.49 Community social platform V2: OK');

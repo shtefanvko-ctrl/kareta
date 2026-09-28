@@ -1,0 +1,58 @@
+﻿=== ROOT ===
+HTTP/1.1 403 Forbidden
+Server: nginx
+Date: Fri, 25 Sep 2026 03:08:49 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Length: 795
+Connection: keep-alive
+Vary: Accept-Encoding
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: geolocation=(self), camera=(self), microphone=(self)
+Last-Modified: Tue, 25 Mar 2025 14:45:02 GMT
+ETag: "31b-6312bc4041306"
+Accept-Ranges: bytes
+
+=== PING ===
+HTTP/1.1 200 OK
+Server: nginx
+Date: Fri, 25 Sep 2026 03:08:50 GMT
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Vary: Accept-Encoding
+X-Kareta-Request-Id: b09419126341aefa
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Pragma: no-cache
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+Referrer-Policy: strict-origin-when-cross-origin
+Access-Control-Allow-Headers: Content-Type, X-Idempotency-Key, X-Request-Id
+Cache-Control: no-store
+Set-Cookie: KARETASESSID=9f4340da1c64e7c5fabacd98631258bc; expires=Wed, 24-Mar-2027 03:08:50 GMT; Max-Age=15552000; path=/; secure; HttpOnly; SameSite=Lax
+Permissions-Policy: geolocation=(self), camera=(self), microphone=(self)
+X-Content-Type-Options: nosniff
+X-Powered-By: PleskLin
+
+{"ok":true,"dbReady":false,"databaseState":"configuration_missing","recoveryAction":"configure_private_database_settings","failureStage":"","failedMigrationVersion":0,"diagnosticCode":"84650804048629ff","failureCategory":"configuration_missing","failureSqlState":"","failureDriverCode":"","assetVersion":"188.5.5.6.84.109","code":"OK","message":"╨Ю╨┐╨╡╤А╨░╤Ж╨╕╤П ╨▓╤Л╨┐╨╛╨╗╨╜╨╡╨╜╨░","meta":{"httpStatus":200,"requestId":"b09419126341aefa","traceId":""}}
+=== IDENTITY_SESSION ===
+HTTP/1.1 503 Service Unavailable
+Server: nginx
+Date: Fri, 25 Sep 2026 03:08:50 GMT
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Kareta-Trace-Id: srv_47656d32fb880c4a
+X-Kareta-Request-Id: c13dd7c621369aff
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Pragma: no-cache
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+Referrer-Policy: strict-origin-when-cross-origin
+Access-Control-Allow-Headers: Content-Type, X-Idempotency-Key, X-Request-Id
+Cache-Control: no-store
+Set-Cookie: KARETASESSID=36adf507f1668a079ef26dc81f6463a4; expires=Wed, 24-Mar-2027 03:08:50 GMT; Max-Age=15552000; path=/; secure; HttpOnly; SameSite=Lax
+Permissions-Policy: geolocation=(self), camera=(self), microphone=(self)
+
+{"ok":false,"error":"database_unavailable","code":"DATABASE_UNAVAILABLE","message":"╨Э╨╡ ╤Г╨┤╨░╨╗╨╛╤Б╤М ╨▓╤Л╨┐╨╛╨╗╨╜╨╕╤В╤М ╨╛╨┐╨╡╤А╨░╤Ж╨╕╤О","errors":[],"meta":{"httpStatus":503,"requestId":"c13dd7c621369aff","traceId":""}}

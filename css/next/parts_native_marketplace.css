@@ -1,0 +1,610 @@
+/* R188.5.5.6.58 — Native parts marketplace. Page-only rules; Shell Freeze 2 untouched. */
+.k-parts-native-page{display:grid;gap:22px;max-width:2400px!important;width:100%}
+.k-parts-native-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;padding:28px;border:1px solid rgba(15,23,42,.08);border-radius:28px;background:linear-gradient(135deg,#fff,#fff7ed)}
+.k-parts-native-hero small,.k-parts-native-types>header small,.k-parts-native-categories header small,.k-parts-native-section>header small,.k-parts-native-results>header small{display:block;color:#ea580c;font-size:11px;font-weight:900;letter-spacing:.12em}
+.k-parts-native-hero h1{margin:5px 0 7px;font-size:clamp(30px,5vw,54px);line-height:1}.k-parts-native-hero p{margin:0;color:#64748b;max-width:760px}
+.k-parts-native-hero>button{border:1px solid rgba(15,23,42,.1);background:#fff;border-radius:18px;padding:12px 15px;display:grid;grid-template-columns:auto auto auto;align-items:center;gap:9px;cursor:pointer}.k-parts-native-hero>button span{width:24px;height:24px}.k-parts-native-hero>button i{font-style:normal;background:#f97316;color:#fff;border-radius:999px;min-width:24px;height:24px;display:grid;place-items:center;font-size:11px;font-weight:900}
+.k-parts-repair-context{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:15px 18px;border-radius:20px;background:#eff6ff;border:1px solid #bfdbfe}.k-parts-repair-context>span{font-size:11px;font-weight:900;color:#1d4ed8}.k-parts-repair-context b,.k-parts-repair-context small{display:block}.k-parts-repair-context small{color:#64748b;margin-top:3px}.k-parts-repair-context a{font-weight:850;color:#1d4ed8;text-decoration:none}
+.k-parts-native-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}.k-parts-native-toolbar label{height:50px;border:1px solid #dbe1e8;border-radius:17px;background:#fff;display:flex;align-items:center;gap:10px;padding:0 14px}.k-parts-native-toolbar label span{width:22px;height:22px;color:#64748b}.k-parts-native-toolbar input{min-width:0;width:100%;border:0;outline:0;background:transparent;font:inherit}.k-parts-native-toolbar>button{min-height:50px;border:1px solid #dbe1e8;border-radius:17px;background:#fff;padding:0 14px;display:flex;align-items:center;gap:8px;font-weight:850;cursor:pointer}.k-parts-native-toolbar>button span{width:20px;height:20px}.k-parts-native-toolbar>button i{font-style:normal;min-width:22px;height:22px;border-radius:999px;background:#fff2e8;color:#c2410c;display:grid;place-items:center;font-size:11px}
+.k-parts-native-utility{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.k-parts-native-utility>button{border:1px solid rgba(15,23,42,.09);background:#fff;border-radius:20px;padding:16px;text-align:left;display:grid;grid-template-columns:42px 1fr;grid-template-rows:auto auto;column-gap:12px;cursor:pointer}.k-parts-native-utility>button>span{grid-row:1/3;width:42px;height:42px;border-radius:14px;background:#fff7ed;color:#ea580c;display:grid;place-items:center;font-weight:900}.k-parts-native-utility b{align-self:end}.k-parts-native-utility small{color:#64748b;margin-top:3px;line-height:1.3}
+.k-parts-native-types,.k-parts-native-categories,.k-parts-native-section,.k-parts-native-results{display:grid;gap:13px}.k-parts-native-types>header h2,.k-parts-native-categories header h2,.k-parts-native-section>header h2,.k-parts-native-results>header h2{margin:4px 0 0;font-size:clamp(22px,3vw,32px)}
+.k-parts-native-types>div{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.k-parts-native-types button{position:relative;border:1px solid rgba(15,23,42,.09);background:#fff;border-radius:22px;padding:17px;text-align:left;display:grid;grid-template-columns:46px 1fr auto;grid-template-rows:auto auto;gap:3px 12px;cursor:pointer}.k-parts-native-types button>span{grid-row:1/3;width:46px;height:46px;border-radius:15px;background:#f8fafc;display:grid;place-items:center;font-weight:950}.k-parts-native-types button>b{align-self:end}.k-parts-native-types button>small{color:#64748b;line-height:1.3}.k-parts-native-types button>i{grid-row:1/3;grid-column:3;align-self:center;font-style:normal;font-weight:900;color:#64748b}.k-parts-native-types button.is-active{border-color:#fb923c;background:#fff7ed}.k-parts-native-types button.is-active>span{background:#ffedd5;color:#c2410c}
+.k-parts-native-categories>div{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}.k-parts-native-categories button{border:1px solid rgba(15,23,42,.08);background:#fff;border-radius:18px;padding:14px;display:grid;grid-template-columns:38px 1fr;grid-template-rows:auto auto;column-gap:10px;text-align:left;cursor:pointer}.k-parts-native-categories button>span{grid-row:1/3;width:38px;height:38px;border-radius:12px;background:#f8fafc;display:grid;place-items:center}.k-parts-native-categories button>b{font-size:13px;align-self:end}.k-parts-native-categories button>small{font-size:11px;color:#64748b}.k-parts-native-categories button.is-active{border-color:#fb923c;background:#fff7ed}
+.k-parts-native-section>header,.k-parts-native-results>header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}.k-parts-native-section>header p,.k-parts-native-results>header p{margin:5px 0 0;color:#64748b}.k-parts-native-section>header button,.k-parts-native-results>header button{border:1px solid #dbe1e8;background:#fff;border-radius:13px;min-height:40px;padding:0 13px;font-weight:800;cursor:pointer}
+.k-parts-native-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:stretch}.k-parts-native-grid>.k-catalog-card,.k-parts-native-grid>.k-parts-native-card{height:100%}
+.k-parts-native-card{position:relative;background:#fff;border:1px solid rgba(15,23,42,.09);border-radius:20px;overflow:hidden}.k-parts-native-card__open{position:absolute;inset:0;border:0;background:transparent;z-index:1;cursor:pointer}.k-parts-native-card__media{position:relative;aspect-ratio:16/10;background:#f8fafc;display:grid;place-items:center;color:#ea580c;font-size:26px;font-weight:900}.k-parts-native-card__media img{width:100%;height:100%;object-fit:cover}.k-parts-native-card__media>b{position:absolute;left:10px;top:10px;background:#111827;color:#fff;border-radius:999px;padding:5px 8px;font-size:10px}.k-parts-native-card__body{padding:15px;display:grid;gap:8px}.k-parts-native-card__body>small{color:#ea580c;font-weight:800;font-size:11px}.k-parts-native-card__body h3{margin:0;font-size:17px}.k-parts-native-card__body p{margin:0;color:#64748b;font-size:13px;line-height:1.4}.k-parts-native-tags{display:flex;flex-wrap:wrap;gap:6px}.k-parts-native-tags span{border-radius:999px;background:#f8fafc;border:1px solid #e5e7eb;padding:5px 8px;font-size:10px;color:#475569}.k-parts-native-card footer{position:relative;z-index:2;border-top:1px solid #eef2f7;padding-top:10px;display:flex;justify-content:space-between;gap:10px;align-items:center}.k-parts-native-card footer b,.k-parts-native-card footer small{display:block}.k-parts-native-card footer small{color:#64748b;font-size:10px;margin-top:3px}.k-parts-native-card footer>button{width:38px;height:38px;border:1px solid #e5e7eb;background:#fff;border-radius:12px;font-size:18px;cursor:pointer}.k-parts-native-empty,.k-parts-native-loading,.k-parts-native-error{padding:22px;border-radius:18px;background:#f8fafc;color:#64748b}.k-parts-native-error{background:#fef2f2;color:#b91c1c}
+.k-parts-native-dialog{border:0;padding:0;background:transparent;width:min(860px,calc(100% - 24px));max-height:min(90vh,900px)}.k-parts-native-dialog::backdrop{background:rgba(15,23,42,.62)}.k-parts-native-dialog__panel,.k-parts-listing-form{background:#fff;border-radius:24px;padding:22px;max-height:min(90vh,900px);overflow:auto}.k-parts-native-dialog header,.k-parts-listing-form>header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px}.k-parts-native-dialog header small,.k-parts-listing-form>header small{display:block;font-size:11px;color:#ea580c;font-weight:900;letter-spacing:.1em}.k-parts-native-dialog header h2,.k-parts-listing-form>header h2{margin:4px 0 0}.k-parts-native-dialog header>button,.k-parts-listing-form>header>button{border:0;background:#f8fafc;width:42px;height:42px;border-radius:14px;font-size:25px;cursor:pointer}
+.k-parts-native-dialog__panel>footer,.k-parts-confirm footer{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}.k-parts-native-dialog__panel>footer button,.k-parts-confirm footer button{min-height:44px;border:1px solid #dbe1e8;border-radius:13px;background:#fff;padding:0 15px;font-weight:800}
+.k-parts-native-dialog__panel>section,.k-parts-listing-form>section{display:grid;gap:8px;margin-bottom:16px}.k-parts-native-dialog__panel>label,.k-parts-listing-form>label{display:grid;gap:7px;font-weight:750}.k-parts-native-dialog input,.k-parts-listing-form input,.k-parts-listing-form textarea{width:100%;box-sizing:border-box;border:1px solid #dbe1e8;border-radius:13px;padding:12px;font:inherit;background:#fff}
+.k-parts-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.k-parts-choice-grid button{border:1px solid #dbe1e8;background:#fff;border-radius:14px;padding:11px;text-align:left;cursor:pointer}.k-parts-choice-grid button b,.k-parts-choice-grid button small{display:block}.k-parts-choice-grid button small{color:#64748b;margin-top:3px}.k-parts-choice-grid button.is-active{border-color:#fb923c;background:#fff7ed}
+.k-parts-filter-categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.k-parts-filter-categories button{border:1px solid #e5e7eb;background:#fff;border-radius:12px;padding:10px;text-align:left}.k-parts-filter-categories button.is-active{border-color:#fb923c;background:#fff7ed;color:#c2410c}
+.k-parts-vehicle-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.k-parts-vehicle-card{border:1px solid #e5e7eb;background:#fff;border-radius:18px;padding:14px;display:grid;grid-template-columns:42px 1fr;gap:12px;text-align:left;align-items:center}.k-parts-vehicle-card>span{width:42px;height:42px;border-radius:14px;background:#f8fafc;display:grid;place-items:center}.k-parts-vehicle-card b,.k-parts-vehicle-card small{display:block}.k-parts-vehicle-card small{color:#64748b;margin-top:3px}.k-parts-vehicle-card.is-active{border-color:#fb923c;background:#fff7ed}
+.k-parts-listing-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.k-parts-listing-form>header,.k-parts-listing-form>section,.k-parts-listing-form>.is-wide,.k-parts-listing-form>footer{grid-column:1/-1}.k-parts-field-button{border:1px solid #dbe1e8;background:#fff;border-radius:13px;padding:12px;text-align:left;display:flex;justify-content:space-between;gap:12px}.k-parts-field-button span{font-weight:700}.k-parts-field-button b{color:#c2410c}.k-parts-listing-form>footer{display:flex;justify-content:flex-end;gap:10px}.k-parts-listing-form>footer button{min-height:44px;border:1px solid #dbe1e8;border-radius:13px;background:#fff;padding:0 15px;font-weight:800}
+.k-parts-category-choice{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.k-parts-category-choice button{border:1px solid #e5e7eb;background:#fff;border-radius:14px;padding:12px;display:grid;grid-template-columns:34px 1fr;align-items:center;gap:8px;text-align:left}.k-parts-category-choice button span{width:34px;height:34px;border-radius:10px;background:#f8fafc;display:grid;place-items:center}
+.k-used-detail-image{width:100%;max-height:420px;object-fit:cover;border-radius:18px;margin-bottom:14px}.k-used-detail-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px}.k-used-detail-facts span{padding:11px;border-radius:13px;background:#f8fafc}.k-used-detail-facts small,.k-used-detail-facts b{display:block}.k-used-detail-facts small{color:#64748b}.k-used-exchange-note{padding:14px;border-radius:15px;background:#fff7ed;border:1px solid #fed7aa}.k-used-exchange-note p{margin:6px 0 0}.k-parts-native-dialog__panel[data-used-detail-body]>footer{display:flex;justify-content:flex-end;gap:8px}.k-parts-native-dialog__panel[data-used-detail-body]>footer button{min-height:44px;border:1px solid #dbe1e8;border-radius:13px;background:#fff;padding:0 14px;font-weight:800}
+.k-parts-native-cart{width:min(700px,calc(100% - 24px))}.k-parts-native-cart .k-shop-checkout{display:grid;gap:12px}.k-parts-native-cart .k-shop-checkout>section{display:grid;gap:8px}.k-parts-native-cart .k-shop-checkout label{display:grid;gap:6px}.k-parts-native-cart input{width:100%;box-sizing:border-box;border:1px solid #dbe1e8;border-radius:13px;padding:12px;font:inherit}
+@media(max-width:1500px){.k-parts-native-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.k-parts-native-categories>div{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:1000px){.k-parts-native-utility,.k-parts-native-types>div{grid-template-columns:repeat(2,minmax(0,1fr))}.k-parts-native-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.k-parts-native-categories>div{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){
+ .k-parts-native-page{gap:16px;padding-inline:12px!important}.k-parts-native-hero{padding:18px;border-radius:20px;align-items:flex-start}.k-parts-native-hero p{font-size:13px}.k-parts-native-hero>button{padding:10px}.k-parts-native-hero>button>b{display:none}
+ .k-parts-repair-context{grid-template-columns:auto 1fr}.k-parts-repair-context a{grid-column:1/-1}
+ .k-parts-native-toolbar{grid-template-columns:1fr auto}.k-parts-native-toolbar>button b{display:none}
+ .k-parts-native-utility{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.k-parts-native-utility>button{grid-template-columns:36px 1fr;padding:12px}.k-parts-native-utility>button>span{width:36px;height:36px}
+ .k-parts-native-types>div{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.k-parts-native-types button{grid-template-columns:38px 1fr;padding:12px}.k-parts-native-types button>span{width:38px;height:38px}.k-parts-native-types button>i{display:none}.k-parts-native-types button>small{font-size:11px}
+ .k-parts-native-categories>div{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.k-parts-native-categories button{padding:11px}
+ .k-parts-native-section>header,.k-parts-native-results>header{align-items:flex-start}.k-parts-native-section>header p,.k-parts-native-results>header p{font-size:12px}
+ .k-parts-native-grid{grid-template-columns:1fr;gap:10px}.k-parts-native-card{border-radius:17px}.k-parts-native-card__media{aspect-ratio:16/9}
+ .k-parts-native-dialog{width:100%;max-width:none;max-height:100dvh;height:100dvh;margin:0}.k-parts-native-dialog__panel,.k-parts-listing-form{height:100dvh;max-height:none;border-radius:0;padding:16px;box-sizing:border-box;overflow:auto}
+ .k-parts-filter-categories{grid-template-columns:repeat(2,minmax(0,1fr))}.k-parts-vehicle-list{grid-template-columns:1fr}.k-parts-listing-form{grid-template-columns:1fr}.k-parts-listing-form>header,.k-parts-listing-form>section,.k-parts-listing-form>.is-wide,.k-parts-listing-form>footer{grid-column:1}.k-parts-category-choice{grid-template-columns:repeat(2,minmax(0,1fr))}.k-used-detail-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .k-parts-native-cart{width:100%;height:100dvh;max-height:none;margin:0;border-radius:0}.k-parts-native-cart::backdrop{background:rgba(15,23,42,.62)}
+}
+
+/* R188.5.5.6.84.46 — reference parts marketplace */
+.k-parts-ref-page{
+  --k-parts-accent:#ff3b0a;
+  --k-parts-line:#e4e6ea;
+  --k-parts-soft:#f6f7f8;
+  width:min(100%,1180px);
+  margin:0 auto;
+  padding:18px 20px 110px;
+  background:#fff;
+  color:#111317;
+}
+.k-parts-ref-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px}
+.k-parts-ref-head h1{margin:0;font-size:32px;line-height:1.08;font-weight:780;letter-spacing:-.035em}
+.k-parts-ref-head p{margin:5px 0 0;color:#747983;font-size:13px;line-height:18px}
+.k-parts-ref-head-action{position:relative;width:48px;height:48px;display:grid;place-items:center;border:1px solid var(--k-parts-line);border-radius:14px;background:#fff;color:#1d2025;cursor:pointer}
+.k-parts-ref-head-action svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8}
+.k-parts-ref-head-action i{position:absolute;right:-4px;top:-6px;min-width:20px;height:20px;padding:0 5px;display:grid;place-items:center;border-radius:99px;background:var(--k-parts-accent);color:#fff;font-size:10px;font-style:normal;font-weight:750}
+.k-parts-ref-search{display:grid;grid-template-columns:minmax(0,1fr) 52px;gap:10px;margin-bottom:14px}
+.k-parts-ref-search label{height:52px;display:grid;grid-template-columns:22px minmax(0,1fr);align-items:center;gap:10px;padding:0 15px;border:1px solid var(--k-parts-line);border-radius:14px;background:#fff}
+.k-parts-ref-search label span{display:grid;place-items:center;color:#6f7580}.k-parts-ref-search label svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8}
+.k-parts-ref-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#17191d;font:inherit;font-size:15px}
+.k-parts-ref-search input::placeholder{color:#8b9098}
+.k-parts-ref-search>button{position:relative;width:52px;height:52px;display:grid;place-items:center;border:1px solid var(--k-parts-line);border-radius:14px;background:#fff;color:#555b64;cursor:pointer}
+.k-parts-ref-search>button svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8}
+.k-parts-ref-search>button i{position:absolute;right:4px;top:4px;min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:var(--k-parts-accent);color:#fff;font-size:9px;font-style:normal;display:none;place-items:center}
+.k-parts-ref-search>button i:not(:empty){display:grid}
+.k-parts-ref-search>button i:where(:empty),.k-parts-ref-search>button i:is([data-empty="1"]){display:none}
+.k-parts-ref-tabs{display:flex;gap:8px;overflow-x:auto;padding:0 0 14px;scrollbar-width:none}
+.k-parts-ref-tabs::-webkit-scrollbar{display:none}
+.k-parts-ref-tabs a,.k-parts-ref-tabs button{flex:0 0 auto;height:40px;padding:0 18px;display:grid;place-items:center;border:1px solid var(--k-parts-line);border-radius:12px;background:#fff;color:#25282d;text-decoration:none;font:inherit;font-size:14px;font-weight:590;cursor:pointer;white-space:nowrap}
+.k-parts-ref-tabs .is-active{border-color:var(--k-parts-accent);background:var(--k-parts-accent);color:#fff}
+.k-parts-ref-vehicle{margin-bottom:18px}
+.k-parts-ref-vehicle>button{width:100%;min-height:62px;padding:10px 14px;display:grid;grid-template-columns:38px minmax(0,1fr) 18px;gap:10px;align-items:center;border:1px solid #e7e9ec;border-radius:16px;background:#fafafb;color:#202328;text-align:left;cursor:pointer}
+.k-parts-ref-vehicle>button>span:first-child{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:#fff;color:var(--k-parts-accent)}
+.k-parts-ref-vehicle svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8}.k-parts-ref-vehicle>button>span:nth-child(2){display:grid;gap:2px;min-width:0}.k-parts-ref-vehicle b{font-size:14px;line-height:19px}.k-parts-ref-vehicle small{color:#7b8089;font-size:11px;line-height:16px}.k-parts-ref-vehicle i{font-style:normal;font-size:24px;color:#8a9098}
+.k-parts-ref-categories{margin:0 0 22px}.k-parts-ref-categories>header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.k-parts-ref-categories h2{margin:0;font-size:20px;line-height:26px;font-weight:730}.k-parts-ref-categories header button{border:0;background:transparent;color:var(--k-parts-accent);font:inherit;font-size:12px;font-weight:650;cursor:pointer}.k-parts-ref-categories>div{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;padding-bottom:2px}.k-parts-ref-categories>div::-webkit-scrollbar{display:none}.k-parts-ref-categories>div>button{flex:0 0 auto;min-width:104px;min-height:72px;padding:10px 12px;display:grid;grid-template-columns:28px minmax(0,1fr);align-items:center;gap:8px;border:1px solid var(--k-parts-line);border-radius:14px;background:#fff;color:#202328;text-align:left;scroll-snap-align:start;cursor:pointer}.k-parts-ref-categories>div>button>span{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:#f3f4f6;color:var(--k-parts-accent)}.k-parts-ref-categories>div>button b{font-size:12px;line-height:16px;font-weight:650}.k-parts-ref-categories>div>button.is-active{border-color:var(--k-parts-accent);background:#fff8f5}
+.k-parts-ref-main{display:grid;gap:24px}
+.k-parts-ref-section{display:grid;gap:12px}.k-parts-ref-section>header{display:flex;align-items:end;justify-content:space-between;gap:12px}.k-parts-ref-section>header h2{margin:0;font-size:21px;line-height:27px;font-weight:750}.k-parts-ref-section>header p{margin:3px 0 0;color:#777d86;font-size:12px;line-height:17px}.k-parts-ref-section>header>button{border:0;background:transparent;color:var(--k-parts-accent);font:inherit;font-size:12px;font-weight:650;cursor:pointer}
+.k-parts-ref-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+.k-parts-ref-card{min-width:0;overflow:hidden;border:1px solid #e2e4e8;border-radius:16px;background:#fff;box-shadow:0 1px 2px rgba(17,24,39,.025);display:flex;flex-direction:column}
+.k-parts-ref-card__media{position:relative;aspect-ratio:1.16/1;display:grid;place-items:center;overflow:hidden;background:#f7f7f8;text-decoration:none}.k-parts-ref-card__media img{width:100%;height:100%;object-fit:contain;padding:10px}.k-parts-ref-card__placeholder{display:grid;place-items:center;width:72px;height:72px;border-radius:18px;background:#fff;color:#8b9098;font-size:32px}
+.k-parts-ref-card__body{padding:11px 11px 4px;display:flex;flex:1;flex-direction:column}.k-parts-ref-card__body small{color:#707680;font-size:11px;line-height:15px}.k-parts-ref-card__body h3{margin:4px 0 0;font-size:14px;line-height:19px;font-weight:700;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.k-parts-ref-card__body h3 a{color:inherit;text-decoration:none}.k-parts-ref-card__body p{margin:5px 0 0;color:#777d86;font-size:10px;line-height:15px}
+.k-parts-ref-card>footer{padding:9px 10px 11px;display:flex;align-items:center;justify-content:space-between;gap:8px}.k-parts-ref-card>footer strong{font-size:14px;line-height:20px;font-weight:780;white-space:nowrap}.k-parts-ref-card>footer>div{display:flex;gap:5px}.k-parts-ref-card>footer button{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;cursor:pointer}.k-parts-ref-card>footer button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}.k-parts-ref-favorite{border:0;background:transparent;color:#626872}.k-parts-ref-cart{border:0;background:var(--k-parts-accent);color:#fff}
+.k-parts-ref-used-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:0 0 18px}.k-parts-ref-used-actions>button{min-width:0;padding:11px 9px;display:grid;grid-template-columns:28px minmax(0,1fr);gap:7px;align-items:center;border:1px solid var(--k-parts-line);border-radius:14px;background:#fff;color:#202328;text-align:left;cursor:pointer}.k-parts-ref-used-actions>button>svg{width:21px;height:21px;fill:none;stroke:var(--k-parts-accent);stroke-width:1.8}.k-parts-ref-used-actions>button>span:last-child{display:grid;gap:1px}.k-parts-ref-used-actions b{font-size:11px;line-height:15px}.k-parts-ref-used-actions small{color:#80858e;font-size:9px;line-height:13px}
+.k-parts-ref-page .k-parts-native-empty,.k-parts-ref-page .k-parts-native-loading,.k-parts-ref-page .k-parts-native-error{padding:24px;border:1px dashed #dfe2e6;border-radius:16px;background:#fafafa;text-align:center;color:#757b84}
+.k-parts-ref-page .k-parts-native-card--used{border-radius:16px;border-color:#e2e4e8;box-shadow:none;overflow:hidden}.k-parts-ref-page .k-parts-native-card--used .k-parts-native-card__media{min-height:150px}.k-parts-ref-page .k-parts-native-card--used .k-parts-native-card__body{padding:11px}.k-parts-ref-page .k-parts-native-tags{display:flex;gap:4px;flex-wrap:wrap}.k-parts-ref-page .k-parts-native-tags span{font-size:9px}
+@media(min-width:700px){.k-parts-ref-page{padding-inline:28px}.k-parts-ref-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important}.k-parts-ref-card__body h3{font-size:15px;line-height:20px}.k-parts-ref-card>footer strong{font-size:15px}.k-parts-ref-categories>div{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));overflow:visible}.k-parts-ref-categories>div>button{min-width:0}}
+@media(min-width:1024px){.k-parts-ref-page{padding:26px 32px 64px}.k-parts-ref-head h1{font-size:38px}.k-parts-ref-search{max-width:760px}.k-parts-ref-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:18px!important}.k-parts-ref-card__media{aspect-ratio:1.22/1}.k-parts-ref-categories>div{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(max-width:420px){.k-parts-ref-page{padding:14px 14px 96px}.k-parts-ref-head h1{font-size:28px}.k-parts-ref-card__body{padding-inline:9px}.k-parts-ref-card>footer{padding-inline:8px}.k-parts-ref-card>footer strong{font-size:13px}.k-parts-ref-tabs a,.k-parts-ref-tabs button{padding-inline:15px}.k-parts-ref-used-actions{grid-template-columns:1fr}.k-parts-ref-used-actions>button{grid-template-columns:34px minmax(0,1fr)}}
+
+/* R188.5.5.6.84.48 — used-parts reference card polish */
+.k-parts-ref-page[data-parts-surface="used"] .k-parts-native-grid{gap:10px}.k-parts-ref-page[data-parts-surface="used"] .k-parts-native-card--used{background:#fff;border:1px solid #e6e8eb;border-radius:17px;box-shadow:none;transition:transform .16s ease,border-color .16s ease}.k-parts-ref-page[data-parts-surface="used"] .k-parts-native-card--used:hover{transform:translateY(-1px);border-color:#f0b79b}.k-parts-ref-page[data-parts-surface="used"] .k-parts-native-card--used .k-parts-native-card__media{min-height:160px;background:#f5f6f7}.k-parts-ref-page[data-parts-surface="used"] .k-parts-native-card--used .k-parts-native-card__body{padding:10px;display:grid;gap:5px}.k-parts-ref-page[data-parts-surface="used"] .k-parts-native-card--used h3{font-size:13px;line-height:18px}.k-parts-ref-page[data-parts-surface="used"] .k-parts-native-card--used footer{margin-top:6px;padding-top:8px;border-top:1px solid #f0f1f2}.k-parts-ref-page[data-parts-surface="used"] .k-parts-native-card--used footer b{font-size:14px}.k-parts-ref-page[data-parts-surface="used"] .k-parts-native-card--used footer small{font-size:9px;color:#858a91}
+@media(max-width:520px){.k-parts-ref-page[data-parts-surface="used"] .k-parts-native-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.k-parts-ref-page[data-parts-surface="used"] .k-parts-native-card--used .k-parts-native-card__media{min-height:126px}.k-parts-ref-page[data-parts-surface="used"] .k-parts-native-card--used .k-parts-native-card__body{padding:8px}}
+
+/* R188.5.5.6.84.53 — Parts reference width containment.
+   The old width:100% + horizontal padding used content-box sizing and could exceed the viewport. */
+.k-parts-native-page.k-parts-ref-page{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  box-sizing:border-box!important;
+  overflow-x:clip!important;
+}
+.k-parts-ref-page>* ,
+.k-parts-ref-main,
+.k-parts-ref-section,
+.k-parts-ref-grid,
+.k-parts-ref-categories,
+.k-parts-ref-categories>header,
+.k-parts-ref-categories>div{
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+.k-parts-ref-categories{
+  width:100%!important;
+  overflow:hidden!important;
+}
+.k-parts-ref-categories>div{
+  width:100%!important;
+  overscroll-behavior-inline:contain;
+  -webkit-overflow-scrolling:touch;
+}
+.k-parts-ref-categories>div>button{
+  box-sizing:border-box!important;
+}
+@media(max-width:699px){
+  .k-parts-native-page.k-parts-ref-page{
+    max-width:100%!important;
+    padding-left:var(--k-client-page-gutter,12px)!important;
+    padding-right:var(--k-client-page-gutter,12px)!important;
+  }
+  .k-parts-ref-categories>div{
+    display:flex!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    padding-right:1px!important;
+  }
+  .k-parts-ref-categories>div>button{
+    flex:0 0 min(112px,38vw)!important;
+    min-width:0!important;
+    max-width:112px!important;
+  }
+}
+
+/* R188.5.5.6.84.127 — approved mobile Parts marketplace reference. */
+@media(max-width:699px){
+  html[data-user-role="client"] .k-parts-ref-page{padding:14px 16px 100px!important;gap:18px!important;background:#fff!important}
+  html[data-user-role="client"] .k-parts-ref-head{display:none!important}
+  html[data-user-role="client"] .k-parts-ref-search{grid-template-columns:minmax(0,1fr) 58px!important;gap:8px!important;margin:0!important}
+  html[data-user-role="client"] .k-parts-ref-search label{height:64px!important;border:0!important;border-radius:19px!important;padding:0 17px!important;background:#fff!important;box-shadow:0 11px 30px rgba(15,23,42,.12)!important}
+  html[data-user-role="client"] .k-parts-ref-search label svg{width:29px!important;height:29px!important;color:#111!important}
+  html[data-user-role="client"] .k-parts-ref-search input{font-size:17px!important}.k-parts-ref-search input::placeholder{color:#868e9a!important}
+  html[data-user-role="client"] .k-parts-ref-search>button{width:58px!important;height:64px!important;border:0!important;border-radius:18px!important;background:#ff4b0a!important;color:#fff!important;box-shadow:0 10px 25px rgba(255,75,10,.22)!important}
+  html[data-user-role="client"] .k-parts-ref-tabs{gap:8px!important;padding:0 0 2px!important}
+  html[data-user-role="client"] .k-parts-ref-tabs a,html[data-user-role="client"] .k-parts-ref-tabs button{height:48px!important;border-radius:14px!important;padding:0 16px!important;font-size:14px!important}
+  html[data-user-role="client"] .k-parts-ref-tabs .is-active{border-color:#ff4b0a!important;background:#fff7f2!important;color:#ff4b0a!important;box-shadow:inset 0 0 0 1px #ff4b0a!important}
+  html[data-user-role="client"] .k-parts-ref-vehicle{margin:0!important}.k-parts-ref-vehicle>button{min-height:72px!important;border:0!important;border-radius:18px!important;background:#fff!important;box-shadow:0 8px 25px rgba(15,23,42,.07)!important}
+  html[data-user-role="client"] .k-parts-ref-categories{margin:0!important;overflow:visible!important}
+  html[data-user-role="client"] .k-parts-ref-categories>header{margin-bottom:12px!important}.k-parts-ref-categories h2{font-size:25px!important;line-height:30px!important;font-weight:900!important}
+  html[data-user-role="client"] .k-parts-ref-categories>div{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important;width:100%!important;overflow:visible!important}
+  html[data-user-role="client"] .k-parts-ref-categories>div>button{min-width:0!important;min-height:98px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;gap:8px!important;padding:10px 5px!important;border:0!important;border-radius:17px!important;background:#fff!important;box-shadow:0 8px 24px rgba(15,23,42,.07)!important;text-align:center!important}
+  html[data-user-role="client"] .k-parts-ref-categories>div>button>span{width:38px!important;height:38px!important;background:transparent!important;color:#ff4b0a!important;font-size:26px!important}
+  html[data-user-role="client"] .k-parts-ref-categories>div>button b{font-size:12px!important;line-height:15px!important;font-weight:850!important}
+  html[data-user-role="client"] .k-parts-ref-main{gap:24px!important}.k-parts-ref-section{gap:12px!important}
+  html[data-user-role="client"] .k-parts-ref-section>header h2{font-size:25px!important;line-height:30px!important;font-weight:900!important;letter-spacing:-.035em!important}
+  html[data-user-role="client"] .k-parts-ref-section>header p{display:none!important}
+  html[data-user-role="client"] .k-parts-ref-section>header>button{font-size:16px!important;color:#7c838d!important}
+  html[data-user-role="client"] .k-parts-ref-grid{grid-template-columns:1fr!important;gap:12px!important}
+  html[data-user-role="client"] .k-parts-ref-card{display:grid!important;grid-template-columns:122px minmax(0,1fr)!important;grid-template-rows:minmax(72px,auto) auto!important;min-height:154px!important;border:0!important;border-radius:18px!important;box-shadow:0 9px 27px rgba(15,23,42,.08)!important}
+  html[data-user-role="client"] .k-parts-ref-card__media{grid-column:1!important;grid-row:1/3!important;aspect-ratio:auto!important;min-height:154px!important;background:#f4f5f6!important}
+  html[data-user-role="client"] .k-parts-ref-card__media img{padding:8px!important;object-fit:contain!important}
+  html[data-user-role="client"] .k-parts-ref-card__body{grid-column:2!important;grid-row:1!important;padding:13px 12px 2px!important}
+  html[data-user-role="client"] .k-parts-ref-card__body small{font-size:11px!important}.k-parts-ref-card__body h3{font-size:16px!important;line-height:20px!important;font-weight:850!important}.k-parts-ref-card__body p{font-size:11px!important}
+  html[data-user-role="client"] .k-parts-ref-card>footer{grid-column:2!important;grid-row:2!important;padding:6px 11px 12px!important;border:0!important}
+  html[data-user-role="client"] .k-parts-ref-card>footer strong{font-size:18px!important;line-height:24px!important;font-weight:900!important}
+  html[data-user-role="client"] .k-parts-ref-card>footer>div{align-items:center!important}.k-parts-ref-card>footer button{height:42px!important;border-radius:12px!important}
+  html[data-user-role="client"] .k-parts-ref-card .k-parts-ref-cart{width:auto!important;min-width:84px!important;padding:0 15px!important;background:#ff4b0a!important;color:#fff!important;font-weight:850!important}
+  html[data-user-role="client"] .k-parts-ref-card .k-parts-ref-cart svg{display:none!important}.k-parts-ref-card .k-parts-ref-cart span{display:block!important}
+}
+@media(max-width:365px){
+  html[data-user-role="client"] .k-parts-ref-categories>div{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  html[data-user-role="client"] .k-parts-ref-card{grid-template-columns:108px minmax(0,1fr)!important}
+}
+
+
+/* R188.5.5.6.84.134 — Parts responsive grids after right-rail shell. */
+@media(min-width:700px) and (max-width:899px){
+  html[data-user-role="client"] .k-parts-native-page.k-parts-ref-page{
+    padding:20px 22px 44px!important;background:#fff!important
+  }
+  html[data-user-role="client"] .k-parts-ref-head{display:flex!important}
+  html[data-user-role="client"] .k-parts-ref-search{margin-bottom:14px!important}
+  html[data-user-role="client"] .k-parts-ref-categories>div{
+    display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:10px!important;overflow:visible!important
+  }
+  html[data-user-role="client"] .k-parts-ref-categories>div>button{
+    min-width:0!important;max-width:none!important;min-height:86px!important
+  }
+  html[data-user-role="client"] .k-parts-ref-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important
+  }
+  html[data-user-role="client"] .k-parts-ref-card{
+    display:flex!important;min-height:0!important
+  }
+  html[data-user-role="client"] .k-parts-ref-card__media{
+    aspect-ratio:1.2/1!important;min-height:0!important
+  }
+  html[data-user-role="client"] .k-parts-ref-card__body,
+  html[data-user-role="client"] .k-parts-ref-card>footer{
+    display:flex!important;grid-column:auto!important;grid-row:auto!important
+  }
+  html[data-user-role="client"] .k-parts-ref-card__body{flex-direction:column!important}
+}
+@media(min-width:900px) and (max-width:1279px){
+  .k-parts-ref-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .k-parts-ref-categories>div{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+}
+@media(min-width:1280px){
+  .k-parts-ref-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .k-parts-ref-categories>div{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+}
+
+/* R188.5.5.6.84.167 — mobile parts single-card layout + compact master actions + provider header offset. */
+@media(max-width:699px){
+  html[data-user-role="client"] .k-parts-ref-grid{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:10px!important;
+    width:100%!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card{
+    display:grid!important;
+    grid-template-columns:112px minmax(0,1fr)!important;
+    grid-template-rows:minmax(86px,auto) auto!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:150px!important;
+    overflow:hidden!important;
+    border:1px solid #e6e8eb!important;
+    border-radius:15px!important;
+    background:#fff!important;
+    box-shadow:0 5px 16px rgba(15,23,42,.065)!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card__media{
+    grid-column:1!important;
+    grid-row:1/3!important;
+    width:112px!important;
+    height:100%!important;
+    min-height:150px!important;
+    aspect-ratio:auto!important;
+    padding:8px!important;
+    background:#f5f6f7!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card__media img{
+    width:100%!important;
+    height:100%!important;
+    max-width:100%!important;
+    max-height:100%!important;
+    object-fit:contain!important;
+    object-position:center!important;
+    padding:0!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card__body{
+    grid-column:2!important;
+    grid-row:1!important;
+    display:block!important;
+    min-width:0!important;
+    padding:11px 11px 3px!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card__body small{
+    display:block!important;
+    font-size:10px!important;
+    line-height:14px!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card__body h3{
+    margin:3px 0 0!important;
+    font-size:14px!important;
+    line-height:18px!important;
+    font-weight:850!important;
+    -webkit-line-clamp:2!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card__body p{
+    display:-webkit-box!important;
+    margin:4px 0 0!important;
+    overflow:hidden!important;
+    font-size:10px!important;
+    line-height:14px!important;
+    -webkit-line-clamp:2!important;
+    -webkit-box-orient:vertical!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card>footer{
+    grid-column:2!important;
+    grid-row:2!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    flex-wrap:nowrap!important;
+    min-width:0!important;
+    gap:7px!important;
+    padding:5px 10px 10px!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card>footer strong{
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    flex:1 1 auto!important;
+    font-size:15px!important;
+    line-height:19px!important;
+    font-weight:900!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card>footer>div{
+    display:flex!important;
+    flex:0 0 auto!important;
+    align-items:center!important;
+    gap:5px!important;
+    margin:0!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card>footer button,
+  html[data-user-role="client"] .k-parts-ref-card .k-parts-ref-cart{
+    width:36px!important;
+    min-width:36px!important;
+    height:36px!important;
+    padding:0!important;
+    border-radius:10px!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card .k-parts-ref-cart svg{
+    display:block!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card .k-parts-ref-cart span{
+    display:none!important;
+  }
+
+  html[data-user-role="client"] .k-master-reference-action-icon{
+    width:42px!important;
+    min-width:42px!important;
+    height:40px!important;
+    min-height:40px!important;
+    display:grid!important;
+    place-items:center!important;
+    padding:0!important;
+  }
+  html[data-user-role="client"] .k-master-reference-action-icon>span{
+    display:none!important;
+  }
+  html[data-user-role="client"] .k-master-reference-action-icon .k-ui-icon,
+  html[data-user-role="client"] .k-master-reference-action-icon svg{
+    width:20px!important;
+    height:20px!important;
+  }
+  html[data-user-role="client"] .k-master-reference-actions{
+    grid-template-columns:42px 42px minmax(80px,1fr) minmax(108px,1.2fr)!important;
+    align-items:center!important;
+  }
+
+  html[data-user-role="client"]:has(#k-page-outlet[data-current-route="providerDetail"] .k-master-ref-profile) #k-shell-header,
+  html[data-user-role="client"]:has(#k-page-outlet[data-current-route="providerBooking"] .k-master-ref-booking) #k-shell-header{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+  html[data-user-role="client"]:has(#k-page-outlet[data-current-route="providerDetail"] .k-master-ref-profile) #k-page-outlet,
+  html[data-user-role="client"]:has(#k-page-outlet[data-current-route="providerBooking"] .k-master-ref-booking) #k-page-outlet{
+    padding-top:68px!important;
+  }
+  html[data-user-role="client"] .k-master-ref-profile,
+  html[data-user-role="client"] .k-master-ref-booking{
+    margin-top:0!important;
+  }
+  html[data-user-role="client"] .k-master-ref-profile__inner,
+  html[data-user-role="client"] .k-master-ref-booking__inner{
+    padding-top:12px!important;
+  }
+}
+@media(max-width:390px){
+  html[data-user-role="client"] .k-parts-ref-card{
+    grid-template-columns:102px minmax(0,1fr)!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-card__media{
+    width:102px!important;
+  }
+}
+
+/* R188.5.5.6.84.170 — canonical mobile Parts category grid. */
+@media(max-width:699px){
+  html[data-user-role="client"] .k-parts-ref-categories{
+    overflow:visible!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-categories>div{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:8px!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    overflow:visible!important;
+    scroll-snap-type:none!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-categories>div>button{
+    flex:none!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    min-height:88px!important;
+    box-sizing:border-box!important;
+  }
+}
+
+/* R188.5.5.6.84.175 — canonical responsive repair from visual audit. */
+
+/* Home: service cards must never inherit the old horizontal chip geometry on desktop. */
+@media(min-width:700px){
+  html[data-user-role="client"] .k-home-reference--app .k-home-ref-service-grid{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:12px!important;
+  }
+  html[data-user-role="client"] .k-home-reference--app .k-home-ref-service-card{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    grid-template-rows:118px minmax(62px,auto)!important;
+    min-width:0!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+  html[data-user-role="client"] .k-home-reference--app .k-home-ref-service-card__media{
+    display:block!important;
+    width:100%!important;
+    height:118px!important;
+    min-width:0!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+  html[data-user-role="client"] .k-home-reference--app .k-home-ref-service-card__media img{
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+  }
+  html[data-user-role="client"] .k-home-reference--app .k-home-ref-service-card__copy{
+    display:grid!important;
+    align-content:start!important;
+    gap:4px!important;
+    width:100%!important;
+    min-width:0!important;
+    padding:10px 11px 11px!important;
+  }
+  html[data-user-role="client"] .k-home-reference--app .k-home-ref-service-card__title{
+    display:flex!important;
+    align-items:flex-start!important;
+    gap:6px!important;
+    min-width:0!important;
+  }
+  html[data-user-role="client"] .k-home-reference--app .k-home-ref-service-card__title>b{
+    display:block!important;
+    min-width:0!important;
+    font-size:12px!important;
+    line-height:16px!important;
+    font-weight:850!important;
+    white-space:normal!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    hyphens:none!important;
+  }
+  html[data-user-role="client"] .k-home-reference--app .k-home-ref-service-card__copy>small{
+    display:block!important;
+    font-size:10px!important;
+    line-height:14px!important;
+    white-space:normal!important;
+    word-break:normal!important;
+  }
+}
+@media(min-width:960px){
+  html[data-user-role="client"] .k-home-reference--app .k-home-ref-service-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+}
+
+/* Community desktop: explicit tracks stop late width-guards from moving the feed. */
+@media(min-width:1180px){
+  .k-community-v2 .k-community-layout-v2{
+    display:grid!important;
+    grid-template-columns:190px minmax(520px,640px) 260px!important;
+    grid-template-areas:"community-nav community-feed community-aside"!important;
+    justify-content:center!important;
+    align-items:start!important;
+    gap:18px!important;
+    width:min(100%,1144px)!important;
+    max-width:1144px!important;
+    margin:0 auto!important;
+    padding:18px 12px!important;
+  }
+  .k-community-v2 .k-community-desktop-nav{
+    grid-area:community-nav!important;
+    grid-column:auto!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+  .k-community-v2 .k-flow-community-main.k-community-feed-column{
+    grid-area:community-feed!important;
+    grid-column:auto!important;
+    width:100%!important;
+    max-width:640px!important;
+    min-width:0!important;
+    justify-self:stretch!important;
+    margin:0!important;
+  }
+  .k-community-v2 .k-community-secondary{
+    grid-area:community-aside!important;
+    grid-column:auto!important;
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+  }
+}
+@media(min-width:768px) and (max-width:1179px){
+  .k-community-v2 .k-community-layout-v2{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(240px,320px)!important;
+    gap:16px!important;
+    width:min(100%,960px)!important;
+    max-width:960px!important;
+    margin:0 auto!important;
+    padding:16px!important;
+  }
+  .k-community-v2 .k-community-desktop-nav{display:none!important}
+  .k-community-v2 .k-flow-community-main.k-community-feed-column{
+    grid-column:1!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+  }
+  .k-community-v2 .k-community-secondary{
+    grid-column:2!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+}
+
+/* <=699 owns the mobile shell. The desktop rail must not consume content width. */
+@media(max-width:699px){
+  html[data-user-role="client"] .k-app-shell{
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+  html[data-user-role="client"] #k-shell-header.k-shell-header{
+    left:0!important;
+    right:0!important;
+    width:100%!important;
+  }
+  html[data-user-role="client"] #k-shell-header>#k-desktop-nav.k-desktop-nav{
+    display:none!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+  html[data-user-role="client"] #k-mobile-nav{
+    display:grid!important;
+    visibility:visible!important;
+  }
+  html[data-user-role="client"] .k-page-outlet{
+    width:100%!important;
+    max-width:none!important;
+    padding-right:0!important;
+  }
+}
+
+/* 700–1099: compact rail, not the full desktop width tax. */
+@media(min-width:700px) and (max-width:1099px){
+  :root{--k-client-right-nav-w:82px}
+  html[data-user-role="client"] .k-app-shell{
+    padding-right:var(--k-client-right-nav-w)!important;
+  }
+  html[data-user-role="client"] #k-shell-header.k-shell-header{
+    width:calc(100% - var(--k-client-right-nav-w))!important;
+  }
+  html[data-user-role="client"] #k-shell-header>#k-desktop-nav.k-desktop-nav{
+    right:calc(-1 * var(--k-client-right-nav-w))!important;
+    width:var(--k-client-right-nav-w)!important;
+    min-width:var(--k-client-right-nav-w)!important;
+    padding:10px 7px!important;
+  }
+}
+
+/* Market narrow pages: use the whole viewport and make empty state intentional. */
+@media(max-width:699px){
+  html[data-user-role="client"] .k-parts-native-page.k-parts-ref-page{
+    width:100%!important;
+    max-width:none!important;
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-page .k-parts-native-empty,
+  html[data-user-role="client"] .k-parts-ref-page .k-parts-native-loading,
+  html[data-user-role="client"] .k-parts-ref-page .k-parts-native-error{
+    min-height:150px!important;
+    display:grid!important;
+    place-items:center!important;
+    align-content:center!important;
+    padding:20px 14px!important;
+    border-radius:16px!important;
+  }
+}

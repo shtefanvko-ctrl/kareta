@@ -1,0 +1,164 @@
+/* R74q — mobile quick action stack: back above chat. */
+.k-mobile-fab-stack,
+.k-mobile-fab { display: none; }
+
+@media (max-width: 900px) {
+  .k-mobile-fab-stack {
+    position: fixed;
+    right: 14px;
+    bottom: calc(var(--k-mobile-nav-h, 72px) + 20px);
+    z-index: 72;
+    display: grid;
+    gap: 10px;
+    justify-items: end;
+    pointer-events: none;
+  }
+  .k-mobile-fab-stack[hidden] { display: none !important; }
+
+  .k-mobile-fab {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid rgba(17, 24, 39, .12);
+    border-radius: 17px;
+    background: rgba(255, 255, 255, .97);
+    color: #111827;
+    box-shadow: 0 14px 36px rgba(15, 23, 42, .18);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+  }
+  .k-mobile-fab:not([hidden]) { display: grid; }
+  .k-mobile-fab svg {
+    width: 23px;
+    height: 23px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .k-mobile-fab:active { transform: scale(.96); }
+  .k-mobile-fab:focus-visible { outline: 3px solid rgba(255,107,0,.28); outline-offset: 3px; }
+
+  .k-mobile-back {
+    margin-bottom: 2px;
+  }
+  .k-mobile-chat {
+    background: #111827;
+    color: #fff;
+    border-color: rgba(255,255,255,.08);
+  }
+  .k-mobile-chat[aria-current="page"] {
+    background: #ff6b00;
+  }
+  .k-mobile-chat-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: #ff3b30;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .k-mobile-chat-badge[hidden] { display: none !important; }
+
+  body.onboarding-active .k-mobile-fab-stack,
+  body.is-onboarding .k-mobile-fab-stack { display: none !important; }
+}
+
+@media (max-width: 380px) {
+  .k-mobile-fab-stack {
+    right: 10px;
+    bottom: calc(var(--k-mobile-nav-h, 72px) + 16px);
+    gap: 8px;
+  }
+  .k-mobile-fab {
+    width: 44px;
+    height: 44px;
+    border-radius: 15px;
+  }
+}
+
+/* R77ah — three isolated mobile quick actions: back, chats, orders. */
+@media (max-width: 900px) {
+  .k-mobile-fab-stack {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: calc(var(--k-mobile-nav-h, 72px) + env(safe-area-inset-bottom) + 24px);
+    grid-template-columns: 1fr;
+    grid-auto-flow: row;
+    align-content: end;
+    gap: 10px;
+  }
+
+  .k-mobile-fab {
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+
+  .k-mobile-chat,
+  .k-mobile-orders {
+    background: #111827 !important;
+    color: #fff !important;
+    border-color: rgba(255,255,255,.12) !important;
+  }
+
+  .k-mobile-chat svg,
+  .k-mobile-orders svg {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    stroke: currentColor !important;
+    fill: none !important;
+  }
+
+  .k-mobile-chat[aria-current="page"],
+  .k-mobile-orders[aria-current="page"] {
+    background: #ff6b00 !important;
+    color: #fff !important;
+  }
+
+  .k-mobile-orders-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: #ff6b00;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .k-mobile-orders-badge[hidden] { display: none !important; }
+
+  /* Reserve only vertical safety around the nav; the buttons never overlap one another or the bottom bar. */
+  .k-page-outlet {
+    padding-bottom: calc(var(--k-mobile-nav-h, 72px) + env(safe-area-inset-bottom) + 34px);
+  }
+}
+
+@media (max-width: 380px) {
+  .k-mobile-fab-stack {
+    right: max(8px, env(safe-area-inset-right));
+    bottom: calc(var(--k-mobile-nav-h, 72px) + env(safe-area-inset-bottom) + 18px);
+    gap: 8px;
+  }
+}

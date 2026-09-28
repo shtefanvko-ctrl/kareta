@@ -1,0 +1,32 @@
+'use strict';
+const fs=require('fs'),path=require('path'),crypto=require('crypto');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};
+const workplace=read('js/next/pages/master_workplace.js');
+const schedule=read('js/next/pages/master_schedule.js');
+const css=read('css/next/master_workspace_windows.css');
+const reg=read('inc/asset_registry.php');
+const asset=read('inc/asset_version.php');
+const sw=read('sw.js');
+const config=read('config.php');
+const manifest=JSON.parse(read('tools/shell_freeze_manifest_r1885603.json'));
+const dbv=Number((/KARETA_DB_VERSION',\s*(\d+)/.exec(config)||[])[1]||0);
+expect(dbv>=127,`R81 baseline requires DB 127 or newer (got ${dbv})`);
+for(const marker of ["MASTER_WORKSPACE_R81_CONTRACT='R188.5.5.6.81'",'k-master-r81-commandbar','k-master-r81-operations','k-master-r81-operation-list','data-master-workspace-settings-dialog','data-master-workspace-settings-save','operationalOrderRow','operationalAcceptedRow','operationalLeadRow'])expect(workplace.includes(marker),`workplace missing R81 marker ${marker}`);
+for(const old of ['k-master-native-main-grid','k-master-r66-accepted-section','k-master-native-exchange','k-master-native-upcoming'])expect(!workplace.includes(old),`R81 workplace still renders legacy standalone block ${old}`);
+expect(!workplace.includes('РАБОЧЕЕ МЕСТО'),'removed workplace heading returned');
+expect(!workplace.includes('<select'),'R81 workplace must not use select/dropdown');
+for(const marker of ['k-master-r81-schedule-toolbar','data-r81-schedule-window','data-r81-schedule-open','data-r81-schedule-tab','data-r81-day-window','data-r81-day-open','scheduleWorkspaceDialog','dayWorkspaceDialog'])expect(schedule.includes(marker),`schedule missing R81 marker ${marker}`);
+const renderMatch=/function renderData\(d\)\{([\s\S]*?)\n  function renderFreeSlots/.exec(schedule);const renderBody=renderMatch?renderMatch[1]:'';
+expect(renderBody.includes('scheduleWorkspaceDialog(d)')&&renderBody.includes('dayWorkspaceDialog(d)'),'R81 schedule dialogs not attached to main render');
+for(const forbidden of ['${recoveryPanel(d)}','${weeklyTemplate(d)}','<section class="k-schedule-policy"'])expect(!renderBody.includes(forbidden),`R81 schedule still renders long inline settings surface ${forbidden}`);
+expect(!schedule.includes('<select'),'R81 schedule must not use select/dropdown');
+for(const token of ['.k-master-r81-window','.k-master-r81-operation','.k-master-r81-schedule-toolbar','.k-master-r81-day-window','height:100dvh'])expect(css.includes(token),`R81 CSS missing ${token}`);
+for(const frozen of ['#k-mobile-nav','#k-desktop-nav','#k-shell-header','.k-menu-drawer','.k-context-switch'])expect(!css.includes(frozen),`R81 CSS targets frozen shell ${frozen}`);
+expect(reg.includes('css/next/master_workspace_windows.css'),'R81 CSS not registered');
+expect(asset.includes('r1885641-master-workspace-window-architecture')&&sw.includes('r1885641-master-workspace-window-architecture'),'R81 release suffix missing');
+expect(asset.includes('r1885640-social-communication-window-flow'),'R80 must precede R81 in release chain');
+for(const [file,hash] of Object.entries(manifest.files)){const actual=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');expect(actual===hash,`SHELL FREEZE VIOLATION: ${file}`)}
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}
+console.log('R188.5.5.6.81 Master Workspace Window Architecture: unified operations feed + workplace settings window + schedule management windows + Shell Freeze 2 OK');

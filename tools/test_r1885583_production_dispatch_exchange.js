@@ -1,0 +1,13 @@
+const fs=require('fs'),path=require('path');const root=path.resolve(__dirname,'..');const read=p=>fs.readFileSync(path.join(root,p),'utf8');const must=(c,m)=>{if(!c){console.error('FAIL:',m);process.exit(1)}};
+const feed=read('js/next/pages/work_feed.js'),dispatch=read('api/production_dispatch.php'),sto=read('js/next/pages/sto_workplace.js'),mig=read('api/migrations/108_production_dispatch_engine.php'),db=read('api/db.php');
+['new','saved','responded','accepted'].forEach(t=>must(feed.includes(`data-exchange-tab=\\"${t}\\"`)||feed.includes(`data-exchange-tab="${t}"`),`tab ${t}`));
+must(feed.includes('data-exchange-distance')&&feed.includes('data-exchange-price-min')&&feed.includes('data-exchange-urgency'),'production filters');
+must(feed.includes('data-exchange-quick')&&feed.includes('quickResponse'),'quick response');
+must(dispatch.includes('kareta_dispatch_rank_order')&&dispatch.includes('kareta_dispatch_master_load'),'ranking and load');
+must(dispatch.includes('kareta_dispatch_plan_order')&&dispatch.includes('sto_bay_assignments'),'bay slot planning');
+must(dispatch.includes('kareta_dispatch_rebalance_sto')&&dispatch.includes('auto_reassign'),'auto reassignment');
+must(dispatch.includes('slaDueAt')&&dispatch.includes('slaState'),'SLA runtime');
+must(sto.includes('Диспетчеризация производства')&&sto.includes('data-sto-rebalance'),'STO dispatcher UI');
+must(mig.includes("'version'=>108")&&mig.includes('work_order_dispatch_state')&&mig.includes('master_dispatch_settings'),'migration 108');
+must(db.includes('kareta_master_exchange_feed_v2($pdo)')&&db.includes('productionDispatch.rebalance'),'dispatch API routes');
+console.log('OK R188.5.5.6.23 production dispatch master exchange');

@@ -1,0 +1,222 @@
+/* R188.5.5.6.84.57 — client viewport/layer ownership.
+   Final mobile layer: VisualViewport/keyboard-safe chats, community overlays,
+   FAB/nav stacking and master profile/booking viewport geometry. */
+:root{
+  --k-visual-viewport-height:100dvh;
+  --k-visual-viewport-width:100dvw;
+  --k-visual-viewport-top:0px;
+  --k-visual-viewport-left:0px;
+  --k-keyboard-inset:0px;
+  --k-client-active-bottom-space:var(--k-client-mobile-nav-space,72px);
+}
+
+@media(max-width:900px){
+  html[data-user-role="client"] body{
+    min-width:0!important;
+    min-height:var(--k-visual-viewport-height,100dvh);
+  }
+
+  /* Keyboard owns the lower visual viewport. Navigation/FAB must not compete with it. */
+  html[data-user-role="client"] body.k-client-keyboard-open #k-mobile-nav{
+    transform:translate3d(0,110%,0)!important;
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+  html[data-user-role="client"] body.k-client-keyboard-open #k-mobile-fab-stack{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+  html[data-user-role="client"] #k-mobile-fab-stack{
+    right:max(10px,env(safe-area-inset-right,0px))!important;
+    bottom:calc(var(--k-client-active-bottom-space) + 14px)!important;
+    max-height:calc(var(--k-visual-viewport-height,100dvh) - 24px)!important;
+  }
+
+  /* COMMUNITY: one sticky rail below the global shell, then overlays own VisualViewport. */
+  html[data-user-role="client"] .k-community-v2 .k-community-feed-tabs{
+    top:var(--k-shell-h,68px)!important;
+    z-index:70!important;
+  }
+  html[data-user-role="client"]:has(#k-shell-header.is-scroll-hidden) .k-community-v2 .k-community-feed-tabs{
+    top:0!important;
+  }
+  html[data-user-role="client"] .k-community-story-overlay,
+  html[data-user-role="client"] .k-community-comments-sheet,
+  html[data-user-role="client"] .k-community-filter-sheet-wrap{
+    top:var(--k-visual-viewport-top,0px)!important;
+    right:0!important;
+    bottom:auto!important;
+    left:0!important;
+    width:100%!important;
+    max-width:100%!important;
+    height:var(--k-visual-viewport-height,100dvh)!important;
+    max-height:var(--k-visual-viewport-height,100dvh)!important;
+    box-sizing:border-box!important;
+  }
+  html[data-user-role="client"] .k-community-story-overlay{
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+  html[data-user-role="client"] .k-community-story-content{
+    min-height:0!important;
+    max-height:100%!important;
+  }
+  html[data-user-role="client"] .k-community-comments-panel,
+  html[data-user-role="client"] .k-community-filter-panel{
+    max-height:min(calc(var(--k-visual-viewport-height,100dvh) - 8px),720px)!important;
+    padding-bottom:max(env(safe-area-inset-bottom,0px),4px)!important;
+  }
+  html[data-user-role="client"] body.k-client-keyboard-open .k-community-comments-panel{
+    max-height:100%!important;
+    border-radius:18px 18px 0 0!important;
+  }
+  html[data-user-role="client"] body.k-client-keyboard-open .k-community-comments-panel>form{
+    padding-bottom:max(7px,env(safe-area-inset-bottom,0px))!important;
+  }
+  html[data-user-role="client"] .k-community-v2 .k-community-topic-reply{
+    bottom:var(--k-client-active-bottom-space)!important;
+  }
+  html[data-user-role="client"] .k-community-v2 .k-community-topic-fab{
+    bottom:calc(var(--k-client-active-bottom-space) + 14px)!important;
+  }
+
+  /* CHATS: no duplicate shell/header stack. The chat grid owns the visible viewport. */
+  html[data-user-role="client"]:has(#k-page-outlet [data-page="chats"]) #k-shell-header{
+    display:none!important;
+  }
+  html[data-user-role="client"]:has(#k-page-outlet [data-page="chats"]) .k-app-shell{
+    padding-top:0!important;
+  }
+  html[data-user-role="client"] #k-page-outlet>[data-page="chats"].k-page-shell--workspace{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+  }
+  html[data-user-role="client"] [data-page="chats"]>.k-workspace-head{
+    display:none!important;
+  }
+  html[data-user-role="client"] [data-page="chats"] .k-chat-layout{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    height:calc(var(--k-visual-viewport-height,100dvh) - var(--k-client-active-bottom-space))!important;
+    min-height:0!important;
+    max-height:calc(var(--k-visual-viewport-height,100dvh) - var(--k-client-active-bottom-space))!important;
+    border:0!important;
+    border-radius:0!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+  }
+  html[data-user-role="client"] [data-page="chats"] :is(.k-chat-sidebar,.k-chat-main,.k-chat-list,.k-chat-thread){
+    min-width:0!important;
+    min-height:0!important;
+    max-width:100%!important;
+  }
+  html[data-user-role="client"] [data-page="chats"] .k-chat-main{
+    height:100%!important;
+    max-height:100%!important;
+    grid-template-rows:auto auto minmax(0,1fr) auto!important;
+    overflow:hidden!important;
+  }
+  html[data-user-role="client"] [data-page="chats"] .k-chat-thread{
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch;
+    scroll-padding-bottom:16px!important;
+  }
+  html[data-user-role="client"] [data-page="chats"] .k-chat-head{
+    min-height:58px!important;
+    padding:7px 10px!important;
+    gap:8px!important;
+  }
+  html[data-user-role="client"] [data-page="chats"] .k-chat-head-copy{
+    min-width:0!important;
+    flex:1 1 auto!important;
+    overflow:hidden!important;
+  }
+  html[data-user-role="client"] [data-page="chats"] .k-chat-head-copy :is(strong,span){
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+  html[data-user-role="client"] [data-page="chats"] .k-chat-head-actions{
+    flex:0 0 auto!important;
+    min-width:0!important;
+  }
+  html[data-user-role="client"] [data-page="chats"] .k-chat-composer{
+    position:relative!important;
+    z-index:8!important;
+    padding:7px 8px max(7px,env(safe-area-inset-bottom,0px))!important;
+    background:#fff!important;
+    box-shadow:0 -8px 22px rgba(15,23,42,.05)!important;
+  }
+  html[data-user-role="client"] [data-page="chats"] .k-chat-composer textarea{
+    width:100%!important;
+    min-width:0!important;
+    min-height:44px!important;
+    max-height:min(112px,30dvh)!important;
+    padding:11px 12px!important;
+  }
+  html[data-user-role="client"] body.k-client-keyboard-open [data-page="chats"] .k-chat-composer{
+    padding-bottom:7px!important;
+  }
+  html[data-user-role="client"] .k-chat-contact-dialog,
+  html[data-user-role="client"] .k-chat-contact-layer{
+    top:var(--k-visual-viewport-top,0px)!important;
+    bottom:auto!important;
+    height:var(--k-visual-viewport-height,100dvh)!important;
+    max-height:var(--k-visual-viewport-height,100dvh)!important;
+  }
+  html[data-user-role="client"] .k-chat-contact-sheet{
+    max-height:min(72%,calc(var(--k-visual-viewport-height,100dvh) - 8px))!important;
+  }
+
+  /* MASTER PROFILE / BOOKING: these screens already hide shell, so remove the reserved shell gap too. */
+  html[data-user-role="client"]:has(#k-page-outlet[data-current-route="providerDetail"] .k-master-ref-profile) .k-app-shell,
+  html[data-user-role="client"]:has(#k-page-outlet[data-current-route="providerBooking"] .k-master-ref-booking) .k-app-shell{
+    padding-top:0!important;
+  }
+  html[data-user-role="client"] .k-master-ref-profile,
+  html[data-user-role="client"] .k-master-ref-booking{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    min-height:calc(var(--k-visual-viewport-height,100dvh) - var(--k-client-active-bottom-space))!important;
+    padding-bottom:calc(var(--k-client-active-bottom-space) + 12px)!important;
+    box-sizing:border-box!important;
+    overflow-x:clip!important;
+  }
+  html[data-user-role="client"] .k-master-ref-profile__inner,
+  html[data-user-role="client"] .k-master-ref-booking__inner,
+  html[data-user-role="client"] .k-master-ref-profile[data-master-ref-version="2"] .k-master-ref-profile__inner{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin-inline:0!important;
+    padding-left:var(--k-client-mobile-gutter,12px)!important;
+    padding-right:var(--k-client-mobile-gutter,12px)!important;
+    box-sizing:border-box!important;
+  }
+  html[data-user-role="client"] .k-master-ref-booking-continue{
+    position:sticky!important;
+    bottom:calc(var(--k-client-active-bottom-space) + 8px)!important;
+    z-index:12!important;
+    box-shadow:0 8px 0 #fff,0 -8px 22px rgba(15,23,42,.06)!important;
+  }
+}
+
+@media(max-width:430px){
+  html[data-user-role="client"] [data-page="chats"] .k-chat-thread{padding:12px 10px!important}
+  html[data-user-role="client"] [data-page="chats"] .k-chat-message>div{max-width:90%!important;padding:10px 12px!important}
+  html[data-user-role="client"] [data-page="chats"] .k-chat-mobile-back{width:42px!important;height:42px!important;min-width:42px!important;padding:0!important;font-size:0!important;display:grid!important;place-items:center!important}
+  html[data-user-role="client"] [data-page="chats"] .k-chat-mobile-back::before{content:'‹';font-size:30px;line-height:1}
+  html[data-user-role="client"] .k-master-ref-booking__inner{padding-top:8px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html[data-user-role="client"] #k-mobile-nav,
+  html[data-user-role="client"] #k-mobile-fab-stack{transition:none!important}
+}
