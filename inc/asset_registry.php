@@ -10,6 +10,9 @@ function kareta_asset_registry(): array
     return [
         'styles' => [
             'css/runtime_boot_bundle.css',
+            // Role-scoped shell authority. Eager by design so direct Master deep-links
+            // never depend on which route happened to load first.
+            'css/next/master_shell_canonical_84_143.css',
         ],
         'scripts' => [
             'js/next/runtime_logger.js',
@@ -719,7 +722,7 @@ function kareta_route_asset_plan(): array
             'cascade' => 'last',
             'routeKeys' => ['masterDashboard','masterSchedule','masterExchange','serviceManagement','masterProfileOwner','masterWallOwner','masterWorks','masterReviews','cabinet','cabinetSettings','orders','chats','parts','community'],
             'routes' => ['#/master','#/master/schedule','#/master/exchange','#/services/manage','#/master/profile','#/master/wall','#/master/works','#/master/reviews','#/cabinet','#/cabinet/settings','#/orders','#/chats','#/parts','#/community'],
-            'styles' => ['css/next/master_ui_foundation.css','css/next/master_role_skin.css','css/next/master_surface_contract.css','css/routes/master_reference_final_84_130.css'],
+            'styles' => ['css/next/master_ui_foundation.css','css/next/master_role_skin.css','css/next/master_surface_contract.css','css/routes/master_reference_final_84_130.css','css/next/master_shell_canonical_84_143.css'],
             'scripts' => [],
             'globals' => [],
         ],
