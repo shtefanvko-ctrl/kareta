@@ -1,0 +1,28 @@
+{
+  "schema": "kareta.release.current.v1",
+  "release": "188.5.5.6.84.146",
+  "sourceBranch": "import/kareta-current-84.142",
+  "targetBranch": "main",
+  "branchState": {
+    "status": "diverged",
+    "aheadBy": 61,
+    "behindBy": 3,
+    "mergeBase": "1732058c6bda6a5b4e1e703c2b9d965e69449a61"
+  },
+  "database": {
+    "canonicalVersion": 129,
+    "manifestVersion": 129,
+    "pendingDirectory": "api/migrations_pending",
+    "pendingStartsAt": 130
+  },
+  "verification": {
+    "ciWorkflow": ".github/workflows/verify.yml",
+    "stagingWorkflow": ".github/workflows/staging-verify.yml",
+    "stagingStatus": "NOT_VERIFIED_AFTER_84_146"
+  },
+  "ui": {
+    "notFound": "first_class_spa_route",
+    "desktopFrameMaxPx": 1280,
+    "masterShell": "css/next/master_shell_canonical_84_143.css"
+  }
+}
