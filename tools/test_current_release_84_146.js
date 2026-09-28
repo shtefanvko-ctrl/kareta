@@ -15,11 +15,14 @@ const shellBundle=read('js/boot/runtime_shell_bundle.js');
 const geometry=read('css/next/page_geometry_canonical_84_146.css');
 const notFoundCss=read('css/next/not_found_84_146.css');
 const notFoundJs=read('js/next/pages/not_found.js');
+const current=JSON.parse(read('docs/release/current.json'));
 
 const va=(version.match(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/)||[])[1]||'';
 const vs=(sw.match(/const RELEASE = '([^']+)'/)||[])[1]||'';
 expect(va==='188.5.5.6.84.146','asset release is not 84.146');
 expect(vs===va,'service worker / asset release mismatch');
+expect(current.release===va,'docs/release/current.json release mismatch');
+expect(Number(current.database?.canonicalVersion)===129,'current release DB boundary must stay 129');
 
 expect(routes.includes("notFound:Object.freeze({ path:'#/404'"),'notFound route missing');
 expect(routes.includes("return found ? found[0] : 'notFound';"),'unknown hashes do not resolve to notFound');
