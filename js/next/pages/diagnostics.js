@@ -230,7 +230,7 @@
     function stopLive(){
       if(liveTimer){window.clearInterval(liveTimer);liveTimer=0;}
       liveBusy=false;
-      liveStart.disabled=!connected;
+      liveStart.disabled=!ready;
       liveStop.disabled=true;
       liveState.textContent='Live-режим остановлен.';
     }
