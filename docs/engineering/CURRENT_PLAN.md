@@ -1,6 +1,6 @@
 # KARETA.KZ — Current engineering plan
 
-Current web/runtime release: **188.5.5.6.84.146**  
+Current web/runtime release: **188.5.5.6.84.147**  
 Working branch: `import/kareta-current-84.142`  
 Merge target: `main`
 
@@ -33,6 +33,15 @@ Repository branch protection must require the `verification-gate` status before 
 ### P1 — release/version metadata
 
 `inc/asset_version.php` and `sw.js` are synchronized at 84.146. `docs/release/current.json` is the human/machine release snapshot; `tools/test_current_release_84_146.js` fails on release drift.
+
+
+### P1 — WebView/static cache without stale releases
+
+84.147 changes static JS/CSS/image/font loading to **cache-first inside a release-scoped Service Worker cache**. A route asset is fetched once per release and reused on later route visits. A new `KARETA_ASSET_VERSION` creates a new cache namespace, so changed assets are fetched under the new release instead of being pinned indefinitely.
+
+Missing static files must return a real HTTP 404; they must never fall through to `index.php` as HTML because WebView will reject that response for CSS/JS and surface `route_*_load_failed`.
+
+This layer is intentionally separate from API/content caching. API reads keep their own freshness/revalidation contract so user data is not treated as immutable static content.
 
 ### P1 — staging verification
 

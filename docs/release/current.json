@@ -1,6 +1,6 @@
 {
   "schema": "kareta.release.current.v1",
-  "release": "188.5.5.6.84.146",
+  "release": "188.5.5.6.84.147",
   "sourceBranch": "import/kareta-current-84.142",
   "targetBranch": "main",
   "branchState": {
@@ -19,7 +19,7 @@
   "verification": {
     "ciWorkflow": ".github/workflows/verify.yml",
     "stagingWorkflow": ".github/workflows/staging-verify.yml",
-    "stagingStatus": "NOT_VERIFIED_AFTER_84_146"
+    "stagingStatus": "NOT_VERIFIED_AFTER_84_147"
   },
   "ui": {
     "notFound": "first_class_spa_route",
@@ -31,5 +31,10 @@
     "dbPhpDirectRoleGates": 96,
     "filesWithDirectRoleGates": 8,
     "budget": "docs/architecture/LEGACY_ROLE_BUDGET_CURRENT.json"
+  },
+  "cache": {
+    "staticAssets": "service-worker cache-first inside release-scoped cache namespace",
+    "updateStrategy": "new release token creates a new cache namespace; HTML/version probes remain network-authoritative",
+    "missingStatic": "must return HTTP 404 and never SPA HTML"
   }
 }
