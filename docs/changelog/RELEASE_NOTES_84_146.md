@@ -9,6 +9,7 @@
 - Quarantined unpromoted colliding migrations 130+ outside the active migration directory. Canonical DB remains 129.
 - Added GitHub Actions verification workflow and current staging verification workflow/script.
 - Added current release metadata and current engineering plan.
+- Measured current legacy authorization debt at 108 direct role gates / 96 in `api/db.php` and added a per-file no-growth gate.
 
 ## Verification status
 
