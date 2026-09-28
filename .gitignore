@@ -1,0 +1,63 @@
+# Secrets and environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+secrets/
+credentials/
+
+# PHP / Composer
+/vendor/
+composer.phar
+.phpunit.result.cache
+.phpunit.cache/
+coverage/
+
+# Node / frontend
+/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+.cache/
+
+# Runtime / logs / uploads
+*.log
+logs/
+runtime/
+tmp/
+temp/
+cache/
+storage/logs/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+
+# Backups / archives / dumps
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+*.sql
+*.dump
+*.bak
+*.backup
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Local research / crawl artifacts
+.firecrawl/
