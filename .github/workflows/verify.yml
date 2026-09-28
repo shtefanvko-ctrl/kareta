@@ -50,8 +50,8 @@ jobs:
           php tools/test_migration_contract.php
           php tools/test_release_migration_manifest.php
 
-      - name: Legacy authorization no-growth
-        run: node tools/test_legacy_role_budget_84_109.js
+      - name: Legacy authorization inventory
+        run: node tools/audit_legacy_role_authorization_current.js
 
       - name: Current release contract
         run: node tools/test_current_release_84_146.js
