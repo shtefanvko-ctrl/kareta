@@ -114,7 +114,9 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
           }
           if ('caches' in window) {
             const keys = await caches.keys();
-            await Promise.all(keys.filter(k => k.startsWith('kareta-')).map(k => caches.delete(k)));
+            // Preserve the last known-good shell. A transient DNS/TLS failure during
+            // retry must not strand the user on the synthetic offline document.
+            await Promise.all(keys.filter(k => String(k).startsWith('kareta-static-')).map(k => caches.delete(k)));
           }
         } catch (_) {}
       };
@@ -368,7 +370,9 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
         try{
           if('caches' in window){
             const keys=await caches.keys();
-            await Promise.all(keys.filter(key=>String(key).startsWith('kareta-')).map(key=>caches.delete(key)));
+            // Static assets are release-scoped and safe to purge. Preserve shell HTML
+            // until the replacement Service Worker has successfully precached '/'.
+            await Promise.all(keys.filter(key=>String(key).startsWith('kareta-static-')).map(key=>caches.delete(key)));
           }
         }catch(_error){}
         try{
