@@ -46,7 +46,7 @@ python3 tools/verify_staging_current.py --base-url https://s.kareta.kz
 
 ### P4 — legacy authorization
 
-The historical capability-migration budget remains enforced by `tools/test_legacy_role_budget_84_109.js`. Remaining direct role gates are technical debt, not an authorization pattern for new work. No new direct role gate is allowed.
+The current 84.146 inventory is **108 direct role gates across 8 files**, including **96 in `api/db.php`**. This is a regression from the historical 84.109 stage report (68/50). `tools/audit_legacy_role_authorization_current.js` now enforces a measured per-file no-growth ceiling from `docs/architecture/LEGACY_ROLE_BUDGET_CURRENT.json`. Remaining direct role gates are technical debt, not an authorization pattern for new work.
 
 ### P4 — issues / changelog / plan
 
