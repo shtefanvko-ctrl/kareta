@@ -369,9 +369,10 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_ui_bundle","js/boot/runtime_ui
   const inFlight = new Map();
   const PERSIST_PREFIX='kareta.api.cache.v2:';
 
-  // Shared read gate for the monolithic DB endpoint. Some production hosts
+  // Shared safe-request gate for the monolithic DB endpoint. Some production hosts
   // answer concurrent PHP bursts with HTTP 429 before db.php itself runs.
-  // Serialize only GET reads; mutations stay immediate and are never replayed.
+  // GET reads enter automatically. POST calls enter only when a wrapper explicitly
+  // marks the operation dbSafeReplay=true (read-like or idempotent mutation).
   const DB_READ_MIN_GAP_MS = 300;
   const DB_READ_RETRY_DEFAULT_MS = 900;
   const DB_READ_RETRY_MAX_MS = 3000;
@@ -486,6 +487,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_ui_bundle","js/boot/runtime_ui
     const cacheTtlMs = Math.max(0, Number(options.cacheTtlMs ?? (method === 'GET' ? 10000 : 0)) || 0);
     const dedupe = options.dedupe !== false && method === 'GET';
     const force = options.force === true;
+    const dbSafeReplay = options.dbSafeReplay === true;
     const key = requestKey(requestUrl, method, String(options.cacheKey || ''));
 
     const fetchOptions = { ...options };
@@ -493,6 +495,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_ui_bundle","js/boot/runtime_ui
     delete fetchOptions.dedupe;
     delete fetchOptions.force;
     delete fetchOptions.cacheKey;
+    delete fetchOptions.dbSafeReplay;
     fetchOptions.method = method;
     fetchOptions.cache = 'no-store';
     fetchOptions.credentials = 'same-origin';
@@ -509,7 +512,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_ui_bundle","js/boot/runtime_ui
       if (!force && inFlight.has(key)) return inFlight.get(key);
     }
 
-    const transport = isDbRead(requestUrl, method) ? executeDbRead(requestUrl, fetchOptions) : execute(requestUrl, fetchOptions);
+    const transport = (isDbRead(requestUrl, method) || dbSafeReplay) ? executeDbRead(requestUrl, fetchOptions) : execute(requestUrl, fetchOptions);
     const promise = transport.then(result => {
       if (dedupe && result.ok && cacheTtlMs > 0) { const record={ at:Date.now(), result }; memoryCache.set(key,record); writePersistent(key,record); }
       if(dedupe && !result.ok){const stale=memoryCache.get(key)||readPersistent(key);if(stale?.result)return cloneResult(stale.result,{fromCache:true,stale:true});}
@@ -562,13 +565,31 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_ui_bundle","js/boot/runtime_ui
   function publishWorkPost(payload){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'workPosts.publish',...payload})}); }
   async function addWorkPostComment(postId, body, parentId='', options={}){ const idempotencyKey=String(options.idempotencyKey||makeIdempotencyKey('wpc',[postId,parentId])); const result=await request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json','X-Idempotency-Key':idempotencyKey},body:JSON.stringify({action:'workPosts.comment',postId,body,parentId,idempotencyKey}),cacheTtlMs:0,dedupe:false}); if(result?.ok){const item=result.payload?.comment||result.payload?.data?.comment||{authorName:'Вы',body,createdAt:new Date().toISOString()};const key=`work:${postId}`,current=window.KaretaSocialState?.getPost?.(key);window.KaretaSocialState?.patchPost?.(key,{comments:[...(current?.comments||[]),item]});} return result; }
   async function deleteWorkPostComment(commentId){ const result=await request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'workPosts.commentDelete',commentId}),cacheTtlMs:0,dedupe:false}); return result; }
-  function getChats(options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.getAll'}),cacheTtlMs:0,dedupe:false,...options}); }
-  function getChatContacts(options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.contacts'}),cacheTtlMs:0,dedupe:false,...options}); }
-  function openDirectChat(target, options={}){ const payload=(target&&typeof target==='object')?{...target}:{userId:target}; const targetKey=payload.userId||payload.masterId||payload.stoId||'unknown'; return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.openDirect',...payload,idempotencyKey:`direct:${targetKey}`}),cacheTtlMs:0,dedupe:false,...options}); }
-  function getMessages(chatId, options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'messages.get',chatId}),cacheTtlMs:0,dedupe:false,...options}); }
+  const directChatInFlight=new Map();
+  function getChats(options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.getAll'}),cacheTtlMs:0,dedupe:false,dbSafeReplay:true,...options}); }
+  function getChatContacts(options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.contacts'}),cacheTtlMs:0,dedupe:false,dbSafeReplay:true,...options}); }
+  function openDirectChat(target, options={}){
+    const payload=(target&&typeof target==='object')?{...target}:{userId:target};
+    const targetKey=String(payload.userId||payload.masterId||payload.stoId||'unknown');
+    const flightKey=[payload.userId||'',payload.masterId||'',payload.stoId||''].join('|');
+    if(directChatInFlight.has(flightKey))return directChatInFlight.get(flightKey);
+    const idempotencyKey=String(options.idempotencyKey||makeIdempotencyKey('direct',[targetKey]));
+    const promise=request('api/db.php',{
+      ...options,
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Idempotency-Key':idempotencyKey},
+      body:JSON.stringify({action:'chats.openDirect',...payload,idempotencyKey}),
+      cacheTtlMs:0,
+      dedupe:false,
+      dbSafeReplay:true,
+    }).finally(()=>{if(directChatInFlight.get(flightKey)===promise)directChatInFlight.delete(flightKey);});
+    directChatInFlight.set(flightKey,promise);
+    return promise;
+  }
+  function getMessages(chatId, options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'messages.get',chatId}),cacheTtlMs:0,dedupe:false,dbSafeReplay:true,...options}); }
   function sendMessage(chatId,msg, options={}){ const idempotencyKey=String(options.idempotencyKey||makeIdempotencyKey('message',[chatId])); return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json','X-Idempotency-Key':idempotencyKey},body:JSON.stringify({action:'messages.add',chatId,msg,idempotencyKey}),cacheTtlMs:0,dedupe:false,...options}); }
   function updateMessage(chatId,messageId,text,options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'messages.update',chatId,messageId,text}),cacheTtlMs:0,dedupe:false,...options}); }
-  function markChatRead(chatId,role){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.markRead',chatId,role})}); }
+  function markChatRead(chatId,role){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.markRead',chatId,role}),cacheTtlMs:0,dedupe:false,dbSafeReplay:true}); }
   function openSupportChat(message, options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.supportOpen',message,idempotencyKey:`support:${Date.now()}`}),cacheTtlMs:0,dedupe:false,...options}); }
   function createOrder(order, options={}){ const idempotencyKey=String(options.idempotencyKey||order?.idempotencyKey||makeIdempotencyKey('order',[order?.clientPhone||order?.phone||''])); const payload={...order}; delete payload.idempotencyKey; return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json','X-Idempotency-Key':idempotencyKey},body:JSON.stringify({action:'orders.create',order:payload,idempotencyKey}),cacheTtlMs:0,dedupe:false}); }
   function getBookingSlots(params={},options={}){return request(withQuery(ENDPOINTS.bookingSlots,params),{cacheTtlMs:15000,cacheKey:`booking.slots:${JSON.stringify(params)}`,...options});}
