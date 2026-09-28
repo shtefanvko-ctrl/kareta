@@ -160,7 +160,10 @@
     const base=identityMode ? (window.KaretaNavigationCore?.resolveRoute?.(requested)||requested) : roleAccess.resolve(requested);
     return gate?.resolveRoute?.(base) || base;
   }
-  function routeKeyFromHash(hashValue){ return resolveAppRoute(routeRegistry.keyFromHash(hashValue)); }
+  function routeKeyFromHash(hashValue){
+    if(!String(hashValue||'').trim() && String(window.KARETA_HTTP_NOT_FOUND_PATH||'').trim()) return 'notFound';
+    return resolveAppRoute(routeRegistry.keyFromHash(hashValue));
+  }
 
   function updateActiveNav(){
     if (window.KaretaShellNav) window.KaretaShellNav.setActive(state.routeKey);
