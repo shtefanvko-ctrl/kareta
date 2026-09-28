@@ -31,4 +31,18 @@ for(const file of walk(apiRoot)){
 }
 const ordered=Object.fromEntries(Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])));
 const result={schema:'kareta.legacy-role-inventory.v2',total,files:Object.keys(ordered).length,dbPhp:ordered['api/db.php']||0,remainingByFile:ordered};
+const budgetPath=path.join(root,'docs','architecture','LEGACY_ROLE_BUDGET_CURRENT.json');
+const baseline=JSON.parse(fs.readFileSync(budgetPath,'utf8'));
+const failures=[];
+if(total>Number(baseline.budget?.total||0))failures.push('total '+total+' > '+baseline.budget.total);
+if(result.dbPhp>Number(baseline.budget?.dbPhp||0))failures.push('api/db.php '+result.dbPhp+' > '+baseline.budget.dbPhp);
+for(const [file,count] of Object.entries(ordered)){
+  const allowed=Number(baseline.remainingByFile?.[file]??0);
+  if(count>allowed)failures.push(file+' '+count+' > '+allowed);
+}
 console.log(JSON.stringify(result,null,2));
+if(failures.length){
+  console.error('LEGACY_ROLE_NO_GROWTH: FAIL '+failures.join('; '));
+  process.exit(1);
+}
+console.log('LEGACY_ROLE_NO_GROWTH: PASS total='+total+'/'+baseline.budget.total+' db='+result.dbPhp+'/'+baseline.budget.dbPhp);
