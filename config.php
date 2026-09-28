@@ -98,7 +98,7 @@ if (!defined('KARETA_CONFIG_LOADED')) {
         foreach (explode(PATH_SEPARATOR, $kareta_open_basedir) as $base) {
             $base = rtrim(str_replace('\\', '/', trim($base)), '/');
             if ($base === '') continue;
-            if ($candidate === $base || str_starts_with($candidate . '/', $base . '/')) {
+            if ($candidate === $base || strpos($candidate . '/', $base . '/') === 0) {
                 $allowed = true;
                 break;
             }
