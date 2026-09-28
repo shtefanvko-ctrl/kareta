@@ -5,9 +5,10 @@
   "targetBranch": "main",
   "branchState": {
     "status": "diverged",
-    "aheadBy": 61,
-    "behindBy": 3,
-    "mergeBase": "1732058c6bda6a5b4e1e703c2b9d965e69449a61"
+    "aheadByAtAudit": 61,
+    "behindByAtAudit": 3,
+    "mergeBase": "1732058c6bda6a5b4e1e703c2b9d965e69449a61",
+    "note": "Counts are the 84.146 audit snapshot; later commits on this branch intentionally change ahead-by."
   },
   "database": {
     "canonicalVersion": 129,
@@ -24,5 +25,11 @@
     "notFound": "first_class_spa_route",
     "desktopFrameMaxPx": 1280,
     "masterShell": "css/next/master_shell_canonical_84_143.css"
+  },
+  "authorization": {
+    "legacyDirectRoleGates": 108,
+    "dbPhpDirectRoleGates": 96,
+    "filesWithDirectRoleGates": 8,
+    "budget": "docs/architecture/LEGACY_ROLE_BUDGET_CURRENT.json"
   }
 }
