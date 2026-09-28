@@ -417,6 +417,15 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
   function mount(options={}){const desktop=document.querySelector(options.desktopSelector||'#k-desktop-nav');const mobile=document.querySelector(options.mobileSelector||'#k-mobile-nav');if(!desktop||!mobile)return false;if(!state.mounted||desktop!==state.desktopNode||mobile!==state.mobileNode){state.desktopNode=desktop;state.mobileNode=mobile;state.mounted=true;state.mountCount+=1;state.signature='';}render();setActive(options.activeKey||state.activeKey);return true;}
   function refresh(options={}){if(!state.mounted)return mount(options);state.signature='';render();setActive(options.activeKey||state.activeKey);return true;}
   function setActive(routeKey){
+    if(routeKey==='notFound'){
+      state.activeKey='notFound';
+      document.querySelectorAll('#k-desktop-nav .k-nav-link,#k-mobile-nav .k-nav-link').forEach(link=>{
+        link.classList.remove('is-active');
+        link.removeAttribute('aria-current');
+      });
+      document.querySelector('#k-mobile-nav [data-mobile-more]')?.setAttribute('aria-expanded','false');
+      return;
+    }
     const identityMode=window.KaretaIdentity?.snapshot?.()?.mode==='identity';
     const requested=registry.has(routeKey)?routeKey:(window.KaretaNavigationCore?.defaultRoute?.()||navigation.defaultRoute());
     let key=identityMode?(window.KaretaNavigationCore?.resolveRoute?.(requested)||(navigation.canAccess(requested)?requested:navigation.defaultRoute())):(access?.resolve?.(requested)||navigation.resolve?.(requested)||requested);
