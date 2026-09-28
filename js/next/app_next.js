@@ -93,6 +93,7 @@
     about:{global:'KaretaInfoPages',render:'renderAbout'},
     rules:{global:'KaretaInfoPages',render:'renderRules'},
     help:{global:'KaretaInfoPages',render:'renderHelp'},
+    notFound:{global:'KaretaNotFoundPages',render:'renderNotFound',mount:'mountNotFound'},
     privacy:{global:'KaretaInfoPages',render:'renderPrivacy'},
     contacts:{global:'KaretaInfoPages',render:'renderContacts'},
     lawyer:{global:'KaretaInfoPages',render:'renderLawyer',mount:'mountLawyer'},
@@ -151,6 +152,7 @@
 
 
   function resolveAppRoute(routeKey){
+    if(routeKey==='notFound') return 'notFound';
     const gate=window.KaretaMasterOnboardingGate;
     const requested=routeRegistry.has(routeKey) ? routeKey : '';
     if (gate?.shouldOwnRoute?.(requested)) return gate.resolveRoute(requested);
