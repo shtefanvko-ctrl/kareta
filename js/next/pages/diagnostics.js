@@ -135,6 +135,7 @@
     const liveCoolant=q('[data-obd-live-coolant]');
     const liveVoltage=q('[data-obd-live-voltage]');
     let connected=false;
+    let ready=false;
     let currentAdapter=null;
     let selectedVehicle=null;
     let vehicles=[];
@@ -203,7 +204,7 @@
     }
 
     async function pollLive(){
-      if(!connected||!mobile?.available?.()||liveBusy)return;
+      if(!ready||!mobile?.available?.()||liveBusy)return;
       liveBusy=true;
       try{
         const data=await mobile.elmLiveSnapshot();
@@ -217,7 +218,7 @@
     }
 
     function startLive(){
-      if(!connected||liveTimer)return;
+      if(!ready||liveTimer)return;
       liveFailures=0;
       liveStart.disabled=true;
       liveStop.disabled=false;
@@ -229,22 +230,26 @@
     function stopLive(){
       if(liveTimer){window.clearInterval(liveTimer);liveTimer=0;}
       liveBusy=false;
-      liveStart.disabled=!connected;
+      liveStart.disabled=!ready;
       liveStop.disabled=true;
       liveState.textContent='Live-режим остановлен.';
     }
 
 
+    const setDiagnosticReady=value=>{
+      ready=!!value;
+      snapshotBtn.disabled=!ready;
+      sendBtn.disabled=!ready;
+      liveStart.disabled=!ready||!!liveTimer;
+      qa('[data-obd-command]').forEach(button=>button.disabled=!ready);
+      if(!ready)stopLive();
+    };
     const setConnected=value=>{
       connected=!!value;
       initBtn.disabled=!connected;
       disconnectBtn.disabled=!connected;
-      snapshotBtn.disabled=!connected;
-      sendBtn.disabled=!connected;
-      liveStart.disabled=!connected||!!liveTimer;
-      if(!connected)stopLive();
-      qa('[data-obd-command]').forEach(button=>button.disabled=!connected);
-      btChip.textContent=connected?'Подключено':'Не подключено';
+      if(!connected)setDiagnosticReady(false);
+      btChip.textContent=ready?'Готово':connected?'Адаптер':'Не подключено';
       btChip.classList.toggle('is-ok',connected);
     };
     const updateNetwork=()=>{
@@ -286,6 +291,9 @@
           }catch(_){}
         }
         setConnected(!!status.connected);
+        setDiagnosticReady(!!status.ready);
+        btChip.textContent=status.ready?'Готово':status.connected?'Адаптер':'Не подключено';
+        if(status.lastError&&!status.ready) nativeText.textContent='ELM327: '+status.lastError;
         if(status.address){
           currentAdapter={name:status.name||'ELM327',address:status.address};
           deviceText.textContent=`${currentAdapter.name} · ${currentAdapter.address}`;
@@ -328,7 +336,9 @@
         deviceList.hidden=true;
         setResult('Соединение установлено. Выполняется инициализация ELM327…');
         const init=await mobile.elmInit();
-        setResult({connected:true,adapter:currentAdapter,initialization:init});
+        setDiagnosticReady(!!init?.vehicleConnected);
+        btChip.textContent=init?.vehicleConnected?'Готово':'Адаптер';
+        setResult({connected:true,ready:!!init?.vehicleConnected,adapter:currentAdapter,initialization:init});
       }catch(error){
         setConnected(false);
         setResult('Ошибка подключения: '+(error.message||String(error)));
@@ -380,13 +390,11 @@
         });
         const payload=await response.json();
         if(!response.ok||!payload.ok)throw new Error(payload.code||'SYNC_FAILED');
+        await mobile.offlineAcknowledge(items);
         await updateOffline();
         await loadHistory();
         return true;
       }catch(error){
-        if(drained?.items?.length){
-          try{await mobile.offlineRestore(drained.items);}catch(_){}
-        }
         await updateOffline();
         setResult('Сессия сохранена офлайн. Синхронизация будет повторена: '+(error.message||String(error)));
         return false;
@@ -394,7 +402,7 @@
     }
 
     async function runSnapshot(){
-      if(!connected)return;
+      if(!ready)return;
       snapshotBtn.disabled=true;
       setResult('Читаем основные параметры автомобиля…');
       try{
@@ -405,11 +413,11 @@
         setResult(snapshot);
         if(navigator.onLine)await syncOffline();
       }catch(error){setResult(error.message||String(error));}
-      finally{snapshotBtn.disabled=!connected;}
+      finally{snapshotBtn.disabled=!ready;}
     }
 
     async function runCommand(command){
-      if(!connected||!command)return;
+      if(!ready||!command)return;
       setResult('Команда '+command+'…');
       try{setResult(await mobile.elmCommand(command,3500));}
       catch(error){setResult(error.message||String(error));}
@@ -451,7 +459,9 @@
           setConnected(true);
           deviceText.textContent=[currentAdapter.name,currentAdapter.address].filter(Boolean).join(' · ');
           const init=await mobile.elmInit();
-          setResult({connected:true,reconnected:true,adapter:currentAdapter,initialization:init});
+          setDiagnosticReady(!!init?.vehicleConnected);
+          btChip.textContent=init?.vehicleConnected?'Готово':'Адаптер';
+          setResult({connected:true,ready:!!init?.vehicleConnected,reconnected:true,adapter:currentAdapter,initialization:init});
         }catch(error){setConnected(false);setResult('Не удалось переподключиться: '+(error.message||String(error)));}
         return;
       }
@@ -465,7 +475,15 @@
       if(device){await connect(device.dataset.obdAddress||'',device.dataset.obdName||'ELM327');return;}
       if(event.target.closest('[data-obd-devices]')){await listDevices();return;}
       if(event.target.closest('[data-obd-settings]')){try{await mobile?.openBluetoothSettings?.();}catch(_){}return;}
-      if(event.target.closest('[data-obd-init]')){try{setResult(await mobile.elmInit());}catch(e){setResult(e.message||String(e));}return;}
+      if(event.target.closest('[data-obd-init]')){
+        try{
+          const init=await mobile.elmInit();
+          setDiagnosticReady(!!init?.vehicleConnected);
+          btChip.textContent=init?.vehicleConnected?'Готово':'Адаптер';
+          setResult(init);
+        }catch(e){setDiagnosticReady(false);setResult(e.message||String(e));}
+        return;
+      }
       if(event.target.closest('[data-obd-disconnect]')){try{await mobile.elmDisconnect();}catch(_){}setConnected(false);deviceText.textContent='Адаптер отключён.';return;}
       if(event.target.closest('[data-obd-snapshot]')){await runSnapshot();return;}
       const command=event.target.closest('[data-obd-command]');
