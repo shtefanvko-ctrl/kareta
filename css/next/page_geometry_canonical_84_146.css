@@ -1,0 +1,45 @@
+/* KARETA.KZ R188.5.5.6.84.146 — canonical route content geometry */
+:root{
+  --k-route-frame-max:1280px;
+  --k-route-frame-gutter:clamp(18px,2.4vw,36px);
+}
+#k-page-outlet.k-page-outlet{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+@media(min-width:901px){
+  #k-page-outlet.k-page-outlet{
+    padding-left:var(--k-route-frame-gutter)!important;
+    padding-right:var(--k-route-frame-gutter)!important;
+  }
+  html body #k-page-outlet.k-page-outlet > :where(section,main,article,div)[class]{
+    width:100%!important;
+    max-width:var(--k-route-frame-max)!important;
+    min-width:0!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    padding-left:0!important;
+    padding-right:0!important;
+    box-sizing:border-box!important;
+  }
+  html[data-user-role="master"] #k-page-outlet > .k-master-surface-page{
+    max-width:var(--k-route-frame-max)!important;
+  }
+}
+@media(min-width:1600px){
+  :root{--k-route-frame-max:1320px}
+}
+@media(max-width:900px){
+  #k-page-outlet.k-page-outlet{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+  #k-page-outlet.k-page-outlet > *{
+    min-width:0!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+}
