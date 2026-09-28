@@ -16,6 +16,8 @@ const geometry=read('css/next/page_geometry_canonical_84_146.css');
 const notFoundCss=read('css/next/not_found_84_146.css');
 const notFoundJs=read('js/next/pages/not_found.js');
 const current=JSON.parse(read('docs/release/current.json'));
+const htaccess=read('.htaccess');
+const indexPhp=read('index.php');
 
 const va=(version.match(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/)||[])[1]||'';
 const vs=(sw.match(/const RELEASE = '([^']+)'/)||[])[1]||'';
@@ -42,5 +44,9 @@ expect(geometry.includes('#k-page-outlet.k-page-outlet > :where(section,main,art
 expect(geometry.includes('padding-left:0!important')&&geometry.includes('padding-right:0!important'),'route roots still own outer desktop gutters');
 expect(notFoundCss.includes('.k-not-found-page'),'404 design CSS missing');
 expect(notFoundJs.includes('Страница не найдена'),'404 renderer missing');
+expect(htaccess.includes('index.php?kareta_route_fallback=1'),'clean URL fallback is not marked for HTTP 404');
+expect(indexPhp.includes("http_response_code(404);"),'index.php does not emit HTTP 404 for clean fallback');
+expect(indexPhp.includes('KARETA_HTTP_NOT_FOUND_PATH'),'clean URL 404 context is not exposed to runtime');
+expect(app.includes("KARETA_HTTP_NOT_FOUND_PATH"),'app does not resolve clean fallback to SPA 404');
 
 console.log('CURRENT_RELEASE_84_146: PASS release='+va);
