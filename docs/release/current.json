@@ -5,10 +5,11 @@
   "targetBranch": "main",
   "branchState": {
     "status": "ahead",
-    "aheadByAtAudit": 88,
-    "behindByAtAudit": 0,
+    "behindBy": 0,
+    "mainAncestor": true,
+    "aheadByAtReconciliation": 88,
     "mergeBase": "5d333d5e67857d91a44a653e725fb2924eef2004",
-    "note": "Android Native API 6 main delta reconciled by merge commit d0660fa1f9c562e826c5f8e81707f837368075cf; main is now an ancestor of the working branch."
+    "note": "Android Native API 6 main delta reconciled by merge commit d0660fa1f9c562e826c5f8e81707f837368075cf. Later planning/test commits may increase ahead-by; the invariant is mainAncestor=true and behindBy=0."
   },
   "database": {
     "canonicalVersion": 129,

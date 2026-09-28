@@ -11,7 +11,7 @@ This plan converts the defects observed during the Android WebView test into own
 
 ## Current branch/release constraint
 
-The Android Native API 6 delta has been reconciled by merge commit `d0660fa1f9c562e826c5f8e81707f837368075cf`. The working branch is now 88 commits ahead and 0 behind `main`. The reconciled delta was limited to:
+The Android Native API 6 delta has been reconciled by merge commit `d0660fa1f9c562e826c5f8e81707f837368075cf`. `main` is now an ancestor of the working branch and the working branch is 0 behind. The reconciled delta was limited to:
 
 - `api/obd.php`
 - `js/mobile_native_bridge.js`

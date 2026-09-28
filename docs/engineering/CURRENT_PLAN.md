@@ -6,7 +6,7 @@ Merge target: `main`
 
 ## Current branch reality
 
-The Native API reconciliation is now committed. The working branch is **88 commits ahead** and **0 behind** `main`; `main` head `5d333d5e67857d91a44a653e725fb2924eef2004` is an ancestor of the working branch.
+The Native API reconciliation is now committed. The working branch is **0 behind** `main`; `main` head `5d333d5e67857d91a44a653e725fb2924eef2004` is an ancestor of the working branch. Ahead-by may continue to increase as verification/planning commits are added.
 
 Merge commit `d0660fa1f9c562e826c5f8e81707f837368075cf` reconciled the Android Native API 6 delta with the 84.148 web/runtime line. The three Native API files were unchanged on the web branch since the previous main merge, so the main versions were transplanted without dropping later web/runtime work.
 
