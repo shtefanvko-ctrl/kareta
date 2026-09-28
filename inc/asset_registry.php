@@ -13,6 +13,8 @@ function kareta_asset_registry(): array
             // Role-scoped shell authority. Eager by design so direct Master deep-links
             // never depend on which route happened to load first.
             'css/next/master_shell_canonical_84_143.css',
+            // One owner for desktop route-root width/gutters across all roles.
+            'css/next/page_geometry_canonical_84_146.css',
         ],
         'scripts' => [
             'js/next/runtime_logger.js',
@@ -574,6 +576,14 @@ function kareta_route_asset_plan(): array
             'styles' => [],
             'scripts' => ['js/next/pages/info.js'],
             'globals' => ['KaretaInfoPages'],
+        ],
+        'notFound' => [
+            'lazy' => true,
+            'routeKeys' => ['notFound'],
+            'routes' => ['#/404'],
+            'styles' => ['css/next/not_found_84_146.css'],
+            'scripts' => ['js/next/pages/not_found.js'],
+            'globals' => ['KaretaNotFoundPages'],
         ],
         'clientLegacyPhase1' => [
             'lazy' => true,
