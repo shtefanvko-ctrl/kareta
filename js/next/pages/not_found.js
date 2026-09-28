@@ -7,6 +7,8 @@
   })[ch]);
 
   function requestedAddress(){
+    const serverPath=String(window.KARETA_HTTP_NOT_FOUND_PATH||'').trim();
+    if(serverPath)return serverPath;
     const hash=String(location.hash||'').trim();
     if(hash&&hash!=='#/404')return hash;
     return `${location.pathname||'/'}${location.search||''}`;
