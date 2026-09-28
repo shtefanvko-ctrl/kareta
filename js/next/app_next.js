@@ -563,7 +563,9 @@
     try {
       if ('caches' in window) {
         const keys=await caches.keys();
-        await Promise.all(keys.filter(key=>String(key).startsWith('kareta-')).map(key=>caches.delete(key)));
+        // Version reconciliation may happen during a flaky network window. Purge
+        // release-scoped static assets but keep the last known-good HTML shell.
+        await Promise.all(keys.filter(key=>String(key).startsWith('kareta-static-')).map(key=>caches.delete(key)));
       }
     } catch (_error) {}
     try { apiClient.invalidate?.(); } catch (_error) {}
