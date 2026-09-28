@@ -58,3 +58,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# Local research / crawl artifacts
+.firecrawl/
