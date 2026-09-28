@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+'use strict';
+const fs=require('fs'),path=require('path'),root=path.resolve(__dirname,'..');
+const read=file=>fs.readFileSync(path.join(root,file),'utf8');
+const detail=read('api/catalog_details.php');
+const catalog=read('api/masters_catalog.php');
+const asset=read('inc/asset_version.php');
+const sw=read('sw.js');
+const gate=read('tools/release_gate.php');
+const fail=[];const expect=(v,m)=>{if(!v)fail.push(m);};
+expect(detail.includes('function kareta_provider_detail_fallback_provider'),'provider fallback helper missing');
+expect(detail.includes("PROVIDER_DETAIL_SERVICE_SCHEMA_FAILSOFT"),'service schema fail-soft guard missing');
+expect(detail.includes("PROVIDER_DETAIL_CATALOG_FAILSOFT"),'catalog fail-soft guard missing');
+expect(detail.includes("PROVIDER_DETAIL_OFFERS_FAILSOFT"),'offers fail-soft guard missing');
+expect(detail.includes("PROVIDER_DETAIL_REVIEWS_FAILSOFT"),'reviews fail-soft guard missing');
+expect(detail.includes("PROVIDER_DETAIL_WORKS_FAILSOFT"),'works fail-soft guard missing');
+expect(detail.includes("PROVIDER_DETAIL_NEWS_FAILSOFT"),'news fail-soft guard missing');
+expect(detail.includes("PROVIDER_DETAIL_WALL_FAILSOFT"),'wall fail-soft guard missing');
+expect(detail.includes("PROVIDER_DETAIL_SOCIAL_FAILSOFT"),'social fail-soft guard missing');
+expect(detail.includes("if (!$provider) $provider = kareta_provider_detail_fallback_provider"),'catalog fallback is not wired');
+expect(detail.includes("if (!in_array($type, ['master','sto'], true))"),'provider type validation missing');
+expect(detail.includes("$offer['service_id'] = $serviceId"),'normalized offers must preserve service_id for existing UI');
+expect(catalog.includes("$hasStoLinks ="),'sto_master_links schema guard missing');
+expect(catalog.includes("$offerHasAvailability ="),'availability_status schema guard missing');
+expect(catalog.includes("MASTERS_CATALOG_MASTER_FAILSOFT"),'master catalog isolation missing');
+expect(catalog.includes("MASTERS_CATALOG_STO_FAILSOFT"),'STO catalog isolation missing');
+expect(catalog.includes("MASTERS_CATALOG_OFFERS_TOTAL_FAILSOFT"),'offers total fail-soft missing');
+const av=(asset.match(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/)||[])[1]||'';
+const sv=(sw.match(/const RELEASE\s*=\s*'([^']+)'/)||[])[1]||'';
+expect(/^188\.5\.5\.6\.84\.(?:10[4-9]|1[1-9][0-9]|[2-9][0-9]{2,})$/.test(av),'asset version must be 84.104+');
+expect(sv===av,'service worker release parity missing');
+expect(gate.includes("'84.104' => 'tools/test_provider_detail_failsoft_84_104.js'"),'release gate must run 84.104 regression');
+if(fail.length){console.error(fail.join('\n'));process.exit(1);}
+console.log('[84.104] Provider detail schema-tolerant recovery passed.');

@@ -1,0 +1,239 @@
+/* R73.2 — единая шапка страниц. Эталон: прежний .k-work-feed-hero. */
+.k-page-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(18px, 3vw, 32px);
+  width: 100%;
+  min-height: 220px;
+  padding: clamp(24px, 4vw, 36px);
+  overflow: hidden;
+  border: 0;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #111 0%, #242424 66%, #ff6b00 180%);
+  color: #fff;
+  box-shadow: 0 18px 48px rgba(17, 17, 17, .14);
+}
+.k-page-hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: -90px;
+  bottom: -125px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(255, 107, 0, .18);
+  filter: blur(2px);
+}
+.k-page-hero > div:first-child,
+.k-page-hero > .k-primary-panel {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+}
+.k-page-hero > div:first-child > span:first-child:not(.k-vehicle-photo) {
+  color: #ff9a52;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.k-page-hero h1,
+.k-page-hero .k-title,
+.k-page-hero .k-seller-title {
+  max-width: 880px;
+  margin: .35rem 0 .55rem;
+  color: #fff;
+  font-size: clamp(30px, 4.4vw, 52px);
+  font-weight: 820;
+  line-height: 1.04;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+.k-page-hero p,
+.k-page-hero .k-subtitle {
+  max-width: 720px;
+  margin: 0;
+  color: rgba(255, 255, 255, .74);
+  font-size: clamp(14px, 1.55vw, 17px);
+  line-height: 1.55;
+}
+.k-page-hero > .k-btn,
+.k-page-hero > button,
+.k-page-hero .k-seller-hero-actions,
+.k-page-hero .k-detail-actions {
+  align-self: end;
+}
+.k-page-hero .k-btn-primary,
+.k-page-hero > .k-btn-primary,
+.k-page-hero > button:not(.k-icon-button) {
+  border-color: #ff6b00;
+  background: #ff6b00;
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(255, 107, 0, .28);
+}
+.k-page-hero .k-btn-secondary,
+.k-page-hero .k-btn-ghost {
+  border-color: rgba(255, 255, 255, .28);
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+}
+.k-page-hero .k-btn:hover,
+.k-page-hero > button:hover {
+  transform: translateY(-1px);
+}
+/* Контекстная панель больше не формирует вторую конкурирующую шапку. */
+.k-page-hero.k-hero > .k-context-panel {
+  display: none;
+}
+/* Уникальные вторичные элементы сохраняются, но подчиняются общей геометрии. */
+.k-page-hero .k-news-hero-mark,
+.k-page-hero .k-master-shift-state,
+.k-page-hero .k-vehicle-health,
+.k-page-hero .k-role-hero-icon {
+  border: 1px solid rgba(255, 255, 255, .16);
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+  box-shadow: none;
+  backdrop-filter: blur(10px);
+}
+.k-page-hero .k-news-hero-mark span,
+.k-page-hero .k-master-shift-state span,
+.k-page-hero .k-master-shift-state small,
+.k-page-hero .k-vehicle-health small,
+.k-page-hero .k-vehicle-health span {
+  color: rgba(255, 255, 255, .68);
+}
+.k-page-hero.k-vehicle-hero {
+  grid-template-columns: 118px minmax(0, 1fr) auto;
+}
+.k-page-hero .k-vehicle-photo {
+  border: 1px solid rgba(255, 255, 255, .16);
+  background: rgba(255, 255, 255, .08);
+}
+.k-page-hero .k-vehicle-intro > a,
+.k-page-hero .k-vehicle-intro > span,
+.k-page-hero .k-vehicle-tags span {
+  color: rgba(255,255,255,.78);
+}
+.k-page-hero .k-vehicle-tags span {
+  border-color: rgba(255,255,255,.16);
+  background: rgba(255,255,255,.08);
+}
+/* Главная использует ту же поверхность, но сохраняет компактную подачу. */
+.k-page-hero.k-home-simple-hero {
+  grid-template-columns: 1fr;
+  align-items: center;
+  max-width: none;
+  min-height: 210px;
+  margin: 0;
+  text-align: left;
+}
+.k-page-hero.k-home-simple-hero h1,
+.k-page-hero.k-home-simple-hero p {
+  margin-left: 0;
+  margin-right: 0;
+}
+@media (max-width: 760px) {
+  .k-page-hero,
+  .k-page-hero.k-vehicle-hero {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding: 22px;
+    border-radius: 22px;
+  }
+  .k-page-hero h1,
+  .k-page-hero .k-title,
+  .k-page-hero .k-seller-title {
+    font-size: clamp(28px, 9vw, 38px);
+  }
+  .k-page-hero > .k-btn,
+  .k-page-hero > button,
+  .k-page-hero .k-seller-hero-actions {
+    width: 100%;
+  }
+  .k-page-hero .k-seller-hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .k-page-hero .k-seller-hero-actions .k-btn,
+  .k-page-hero > .k-btn,
+  .k-page-hero > button {
+    justify-content: center;
+  }
+  .k-page-hero .k-news-hero-mark,
+  .k-page-hero .k-role-hero-icon {
+    display: none;
+  }
+  .k-page-hero .k-master-shift-state,
+  .k-page-hero .k-vehicle-health {
+    width: 100%;
+  }
+}
+
+
+/* R73.3 — весь текст внутренних hero центрирован. Главная сохраняет собственную композицию. */
+.k-page-hero:not(.k-home-simple-hero) {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+}
+.k-page-hero:not(.k-home-simple-hero) > div:first-child,
+.k-page-hero:not(.k-home-simple-hero) > .k-primary-panel,
+.k-page-hero:not(.k-home-simple-hero) .k-vehicle-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 820px);
+  margin-inline: auto;
+  text-align: center;
+}
+.k-page-hero:not(.k-home-simple-hero) h1,
+.k-page-hero:not(.k-home-simple-hero) .k-title,
+.k-page-hero:not(.k-home-simple-hero) .k-seller-title,
+.k-page-hero:not(.k-home-simple-hero) p,
+.k-page-hero:not(.k-home-simple-hero) .k-subtitle {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+.k-page-hero:not(.k-home-simple-hero) > .k-btn,
+.k-page-hero:not(.k-home-simple-hero) > button,
+.k-page-hero:not(.k-home-simple-hero) .k-seller-hero-actions,
+.k-page-hero:not(.k-home-simple-hero) .k-detail-actions {
+  align-self: center;
+  justify-self: center;
+  justify-content: center;
+}
+.k-page-hero:not(.k-home-simple-hero) .k-news-hero-mark,
+.k-page-hero:not(.k-home-simple-hero) .k-master-shift-state,
+.k-page-hero:not(.k-home-simple-hero) .k-vehicle-health,
+.k-page-hero:not(.k-home-simple-hero) .k-role-hero-icon,
+.k-page-hero:not(.k-home-simple-hero) .k-vehicle-photo {
+  justify-self: center;
+}
+.k-page-hero.k-vehicle-hero:not(.k-home-simple-hero) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* r77u: avoid mobile GPU blur-layer corruption */
+@media (max-width:900px){
+  .k-page-hero::after{filter:none}
+  .k-page-hero .k-news-hero-mark,.k-page-hero .k-master-shift-state,.k-page-hero .k-vehicle-health,.k-page-hero .k-role-hero-icon{-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+
+/* r89: hide selected decorative page heroes on mobile layouts */
+@media (max-width: 760px) {
+  .k-page-hero.k-hero,
+  .k-page-hero.k-shop-hero,
+  .k-page-hero.k-masters-hero {
+    display: none !important;
+  }
+}

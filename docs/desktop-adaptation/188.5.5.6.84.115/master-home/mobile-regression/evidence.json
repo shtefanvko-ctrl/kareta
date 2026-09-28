@@ -1,0 +1,572 @@
+{
+  "release": "188.5.5.6.84.115",
+  "url": "http://localhost/#/master",
+  "browser": "Chrome/153.0.8010.53",
+  "fixture": "synthetic_master_identity_onboarding_workplace_get_only_mobile_regression",
+  "fixtureLimitations": [
+    "no_real_account",
+    "no_POST_actions",
+    "workplace_data_synthetic"
+  ],
+  "generatedAt": "2026-09-25T10:12:12.016Z",
+  "pass": true,
+  "noteInteraction": {
+    "hash": "#/master",
+    "scrollY": 1061,
+    "targetTop": 3,
+    "ok": true
+  },
+  "results": [
+    {
+      "width": 390,
+      "height": 844,
+      "state": {
+        "release": "188.5.5.6.84.115",
+        "role": "master",
+        "actualRoute": "masterDashboard",
+        "phase": "ready",
+        "viewport": {
+          "w": 390,
+          "h": 844
+        },
+        "document": {
+          "clientWidth": 390,
+          "scrollWidth": 390,
+          "overflowX": false
+        },
+        "blocks": [
+          "header",
+          "status",
+          "quick-actions",
+          "my-requests",
+          "notes",
+          "paused",
+          "today"
+        ],
+        "titles": [
+          "Мои заявки",
+          "Заметки",
+          "Услуги",
+          "Запчасти"
+        ],
+        "workplace": {
+          "x": 12,
+          "y": 140,
+          "w": 366,
+          "h": 2550,
+          "display": "grid",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "requests": {
+          "x": 12,
+          "y": 655,
+          "w": 366,
+          "h": 693,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "status": {
+          "x": 12,
+          "y": 230,
+          "w": 366,
+          "h": 158,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "today": {
+          "x": 12,
+          "y": 2063,
+          "w": 366,
+          "h": 627,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "notes": {
+          "x": 12,
+          "y": 1366,
+          "w": 366,
+          "h": 278,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "paused": {
+          "x": 12,
+          "y": 1662,
+          "w": 366,
+          "h": 382,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "actionCols": 2,
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "mobileNav": {
+          "x": 8,
+          "y": 766,
+          "w": 374,
+          "h": 70,
+          "display": "grid",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "ratio": 0.5,
+        "pass": true
+      },
+      "screenshot": "master-home__fixture__390x844__chrome__mobile-regression.jpg"
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "state": {
+        "release": "188.5.5.6.84.115",
+        "role": "master",
+        "actualRoute": "masterDashboard",
+        "phase": "ready",
+        "viewport": {
+          "w": 430,
+          "h": 932
+        },
+        "document": {
+          "clientWidth": 430,
+          "scrollWidth": 430,
+          "overflowX": false
+        },
+        "blocks": [
+          "header",
+          "status",
+          "quick-actions",
+          "my-requests",
+          "notes",
+          "paused",
+          "today"
+        ],
+        "titles": [
+          "Мои заявки",
+          "Заметки",
+          "Услуги",
+          "Запчасти"
+        ],
+        "workplace": {
+          "x": 12,
+          "y": 140,
+          "w": 406,
+          "h": 2534,
+          "display": "grid",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "requests": {
+          "x": 12,
+          "y": 639,
+          "w": 406,
+          "h": 693,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "status": {
+          "x": 12,
+          "y": 230,
+          "w": 406,
+          "h": 158,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "today": {
+          "x": 12,
+          "y": 2047,
+          "w": 406,
+          "h": 627,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "notes": {
+          "x": 12,
+          "y": 1350,
+          "w": 406,
+          "h": 278,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "paused": {
+          "x": 12,
+          "y": 1647,
+          "w": 406,
+          "h": 382,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "actionCols": 2,
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "mobileNav": {
+          "x": 8,
+          "y": 854,
+          "w": 414,
+          "h": 70,
+          "display": "grid",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "ratio": 0.5,
+        "pass": true
+      },
+      "screenshot": ""
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "state": {
+        "release": "188.5.5.6.84.115",
+        "role": "master",
+        "actualRoute": "masterDashboard",
+        "phase": "ready",
+        "viewport": {
+          "w": 768,
+          "h": 1024
+        },
+        "document": {
+          "clientWidth": 768,
+          "scrollWidth": 768,
+          "overflowX": false
+        },
+        "blocks": [
+          "header",
+          "status",
+          "quick-actions",
+          "my-requests",
+          "notes",
+          "paused",
+          "today"
+        ],
+        "titles": [
+          "Мои заявки",
+          "Заметки",
+          "Услуги",
+          "Запчасти"
+        ],
+        "workplace": {
+          "x": 17,
+          "y": 86,
+          "w": 734,
+          "h": 2242,
+          "display": "grid",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "requests": {
+          "x": 17,
+          "y": 572,
+          "w": 734,
+          "h": 543,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "status": {
+          "x": 17,
+          "y": 196,
+          "w": 734,
+          "h": 114,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "today": {
+          "x": 17,
+          "y": 1784,
+          "w": 734,
+          "h": 543,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "notes": {
+          "x": 17,
+          "y": 1134,
+          "w": 734,
+          "h": 286,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "paused": {
+          "x": 17,
+          "y": 1438,
+          "w": 734,
+          "h": 328,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "actionCols": 2,
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "mobileNav": {
+          "x": 8,
+          "y": 952,
+          "w": 752,
+          "h": 64,
+          "display": "grid",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "ratio": 0.5,
+        "pass": true
+      },
+      "screenshot": "master-home__fixture__768x1024__chrome__mobile-regression.jpg"
+    },
+    {
+      "width": 820,
+      "height": 1180,
+      "state": {
+        "release": "188.5.5.6.84.115",
+        "role": "master",
+        "actualRoute": "masterDashboard",
+        "phase": "ready",
+        "viewport": {
+          "w": 820,
+          "h": 1180
+        },
+        "document": {
+          "clientWidth": 820,
+          "scrollWidth": 820,
+          "overflowX": false
+        },
+        "blocks": [
+          "header",
+          "status",
+          "quick-actions",
+          "my-requests",
+          "notes",
+          "paused",
+          "today"
+        ],
+        "titles": [
+          "Мои заявки",
+          "Заметки",
+          "Услуги",
+          "Запчасти"
+        ],
+        "workplace": {
+          "x": 18,
+          "y": 86,
+          "w": 784,
+          "h": 2242,
+          "display": "grid",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "requests": {
+          "x": 18,
+          "y": 572,
+          "w": 784,
+          "h": 543,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "status": {
+          "x": 18,
+          "y": 196,
+          "w": 784,
+          "h": 114,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "today": {
+          "x": 18,
+          "y": 1784,
+          "w": 784,
+          "h": 543,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "notes": {
+          "x": 18,
+          "y": 1134,
+          "w": 784,
+          "h": 286,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "paused": {
+          "x": 18,
+          "y": 1438,
+          "w": 784,
+          "h": 328,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "actionCols": 2,
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "mobileNav": {
+          "x": 8,
+          "y": 1108,
+          "w": 804,
+          "h": 64,
+          "display": "grid",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "ratio": 0.5,
+        "pass": true
+      },
+      "screenshot": ""
+    },
+    {
+      "width": 1023,
+      "height": 768,
+      "state": {
+        "release": "188.5.5.6.84.115",
+        "role": "master",
+        "actualRoute": "masterDashboard",
+        "phase": "ready",
+        "viewport": {
+          "w": 1023,
+          "h": 768
+        },
+        "document": {
+          "clientWidth": 1023,
+          "scrollWidth": 1023,
+          "overflowX": false
+        },
+        "blocks": [
+          "header",
+          "status",
+          "quick-actions",
+          "my-requests",
+          "notes",
+          "paused",
+          "today"
+        ],
+        "titles": [
+          "Мои заявки",
+          "Заметки",
+          "Услуги",
+          "Запчасти"
+        ],
+        "workplace": {
+          "x": 23,
+          "y": 94,
+          "w": 978,
+          "h": 2164,
+          "display": "grid",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "requests": {
+          "x": 23,
+          "y": 503,
+          "w": 978,
+          "h": 543,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "status": {
+          "x": 23,
+          "y": 204,
+          "w": 978,
+          "h": 114,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "today": {
+          "x": 23,
+          "y": 1714,
+          "w": 978,
+          "h": 543,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "notes": {
+          "x": 23,
+          "y": 1064,
+          "w": 978,
+          "h": 286,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "paused": {
+          "x": 23,
+          "y": 1368,
+          "w": 978,
+          "h": 328,
+          "display": "block",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "actionCols": 4,
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "mobileNav": {
+          "x": 152,
+          "y": 602,
+          "w": 720,
+          "h": 154,
+          "display": "grid",
+          "gridColumn": "auto/auto",
+          "gridRow": "auto/auto"
+        },
+        "ratio": 0.5,
+        "pass": true
+      },
+      "screenshot": "master-home__fixture__1023x768__chrome__mobile-regression.jpg"
+    }
+  ],
+  "events": []
+}

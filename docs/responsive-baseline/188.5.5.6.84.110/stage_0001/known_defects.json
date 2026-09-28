@@ -1,0 +1,92 @@
+[
+  {
+    "type": "route_mismatch",
+    "screenshot": "adminMonitoring__admin__390x844__chrome__baseline.png",
+    "state": {
+      "requestedRole": "admin",
+      "effectiveRole": "admin",
+      "requestedRoute": "adminMonitoring",
+      "actualRoute": "home",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 11368,
+      "outletText": "Усть-Каменогорск\nЗдравствуйте, Responsive!\n1\n2\n3\n4\nСоздать заявку\n\nОпишите проблему —\nмастера предложат решение\n\nНачать\nЭвакуатор\nДиагностика\nРемонт\nМой автомобиль\nРядом с вами\nСмотреть все\nТМ\nТестовый Мастер\n—\nУсть-Каменогорск\n50 м\nЗМ\nзаводится Машина не\n—\nАктобе\n50 м\nПопулярные услуги\nЗамена масла\nДиагностика\nШиномонтаж\nПоследние работы мастеров\nСмотреть все\nРабота\nЗамена комплекта ГРМ Renault L",
+      "viewportWidth": 390,
+      "documentScrollWidth": 390,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 68
+      },
+      "mobileNav": {
+        "x": 8,
+        "y": 772,
+        "w": 374,
+        "h": 64
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    }
+  },
+  {
+    "type": "route_mismatch",
+    "screenshot": "adminMonitoring__admin__768x1024__chrome__baseline.png",
+    "state": {
+      "requestedRole": "admin",
+      "effectiveRole": "admin",
+      "requestedRoute": "adminMonitoring",
+      "actualRoute": "home",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 11368,
+      "outletText": "Усть-Каменогорск\nЗдравствуйте, Responsive!\n1\n2\n3\n4\nСоздать заявку\n\nОпишите проблему —\nмастера предложат решение\n\nНачать\nЭвакуатор\nДиагностика\nРемонт\nМой автомобиль\nРядом с вами\nСмотреть все\nТМ\nТестовый Мастер\n—\nУсть-Каменогорск\n50 м\nЗМ\nзаводится Машина не\n—\nАктобе\n50 м\nПопулярные услуги\nЗамена масла\nДиагностика\nШиномонтаж\nПоследние работы мастеров\nСмотреть все\nРабота\nЗамена комплекта ГРМ Renault L",
+      "viewportWidth": 768,
+      "documentScrollWidth": 768,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 768,
+        "h": 69
+      },
+      "mobileNav": {
+        "x": 8,
+        "y": 952,
+        "w": 752,
+        "h": 64
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    }
+  },
+  {
+    "type": "route_mismatch",
+    "screenshot": "adminMonitoring__admin__1440x900__chrome__baseline.png",
+    "state": {
+      "requestedRole": "admin",
+      "effectiveRole": "admin",
+      "requestedRoute": "adminMonitoring",
+      "actualRoute": "home",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 11368,
+      "outletText": "Усть-Каменогорск\nЗдравствуйте, Responsive!\n1\n2\n3\n4\nСоздать заявку\n\nОпишите проблему —\nмастера предложат решение\n\nНачать\nЭвакуатор\nДиагностика\nРемонт\nМой автомобиль\nРядом с вами\nСмотреть все\nТМ\nТестовый Мастер\n—\nУсть-Каменогорск\n50 м\nЗМ\nзаводится Машина не\n—\nАктобе\n50 м\nПопулярные услуги\nЗамена масла\nДиагностика\nШиномонтаж\nПоследние работы мастеров\nСмотреть все\nРабота\nЗамена комплекта ГРМ Renault L",
+      "viewportWidth": 1440,
+      "documentScrollWidth": 1440,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 76
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    }
+  }
+]

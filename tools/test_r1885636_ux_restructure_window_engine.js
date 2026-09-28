@@ -1,0 +1,20 @@
+'use strict';
+const fs=require('fs'),path=require('path'),crypto=require('crypto');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};
+const page=read('js/next/page_ui.js'),engine=read('js/next/window_engine.js'),routes=read('js/next/route_registry.js'),app=read('js/next/app_next.js'),parts=read('js/next/pages/parts.js'),request=read('js/next/pages/request.js'),css=read('css/next/window_engine.css'),registry=read('inc/asset_registry.php'),asset=read('inc/asset_version.php'),sw=read('sw.js'),config=read('config.php'),manifest=JSON.parse(read('tools/shell_freeze_manifest_r1885603.json'));
+for(const t of ['k-page-shell--workspace','k-workspace-head','publicLike','opts.workspace !== false'])expect(page.includes(t),`workspace shell missing ${t}`);
+for(const t of ['KaretaWindowEngine','workOrder','vehicle','productDetail','serviceDetail','providerDetail','showModal','stopImmediatePropagation','entity-window-close','replaceState'])expect(engine.includes(t),`window engine missing ${t}`);
+expect(engine.includes("document.addEventListener('click',handleClick,true)"),'entity interception must run in capture phase');
+expect(routes.includes("usedParts:Object.freeze({ path:'#/parts/used'"),'used parts route missing');
+expect(routes.includes("hash === '#/parts/used'"),'used parts route resolution missing');
+expect(app.includes('usedParts:partsPages.renderParts')&&app.includes('usedParts:partsPages.mountParts'),'used parts app mapping missing');
+for(const t of ['surfaceKind','data-parts-surface','Биржа БУ запчастей','Новые запчасти','#/parts/used','isUsedSurface'])expect(parts.includes(t),`parts split missing ${t}`);
+expect(request.includes('KaretaWindowEngine?.openEntity'),'new order must open work order window');
+for(const t of ['One entity = one large central window','k-entity-window','k-workspace-head','k-parts-surface-switch'])expect(css.includes(t),`R76 CSS missing ${t}`);
+expect(registry.includes('js/next/window_engine.js')&&registry.includes('css/next/window_engine.css'),'R76 assets missing');
+expect(asset.includes('r1885636-ux-restructure-window-engine')&&sw.includes('r1885636-ux-restructure-window-engine'),'R76 version suffix missing');
+const dbv=Number((/KARETA_DB_VERSION',\s*(\d+)/.exec(config)||[])[1]||0);expect(dbv>=127,'R76 baseline requires DB version 127 or newer');
+for(const [file,hash] of Object.entries(manifest.files)){const actual=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');expect(actual===hash,`SHELL FREEZE VIOLATION: ${file}`)}
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}console.log('R188.5.5.6.76 UX restructure: workspace shell + entity windows + parts market split + Shell Freeze 2 OK');

@@ -1,0 +1,64 @@
+{
+  "schema": "kareta.release-master-plan.stage-check.v1",
+  "stage": 14,
+  "totalStages": 2513,
+  "phase": "00 — BASELINE_TEST_HARNESS",
+  "sourceBaseline": "R188.5.5.6.84.109",
+  "task": "Сократить legacy role PHP checks",
+  "checkedAtUtc": "2026-09-25T02:37:00.7232760Z",
+  "local": {
+    "status": "PASS",
+    "roleDebtBefore": {
+      "total": 108,
+      "dbPhp": 90
+    },
+    "roleDebtAfter": {
+      "total": 68,
+      "dbPhp": 50
+    },
+    "migratedCallSites": 40,
+    "releaseChecklist": {
+      "status": "PASS",
+      "passed": 25,
+      "total": 25,
+      "failed": 0
+    },
+    "dbMonolith": {
+      "status": "PASS",
+      "bytes": 673303,
+      "maxBytes": 675028
+    }
+  },
+  "externalStaging": {
+    "root": {
+      "url": "https://s.kareta.kz/",
+      "httpStatus": 403,
+      "statusDescription": "Forbidden"
+    },
+    "runtimeHealth": {
+      "url": "https://s.kareta.kz/api/runtime_health.php",
+      "httpStatus": 200,
+      "status": "degraded",
+      "version": "188.5.5.6.84.109"
+    },
+    "apiPing": {
+      "url": "https://s.kareta.kz/api/db.php?action=ping",
+      "httpStatus": 200,
+      "dbReady": false,
+      "databaseState": "configuration_missing",
+      "recoveryAction": "configure_private_database_settings",
+      "diagnosticCode": "84650804048629ff"
+    },
+    "migratedProbe": {
+      "url": "https://s.kareta.kz/api/db.php?action=news.mine",
+      "httpStatus": 503,
+      "code": "DB_UNAVAILABLE"
+    },
+    "status": "BLOCKED_ENVIRONMENT"
+  },
+  "dbSchemaChanged": false,
+  "frontendRoutesChanged": false,
+  "businessDataChanged": false,
+  "stageComplete": false,
+  "stageBlocker": "Staging database private configuration is missing; end-to-end capability authorization cannot be verified."
+}

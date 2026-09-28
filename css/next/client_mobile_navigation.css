@@ -1,0 +1,48 @@
+/* CLIENT mobile navigation only. Role isolation is intentional:
+   MASTER/STO/SELLER/ADMIN use their own templates and styles. */
+@media (max-width: 900px) {
+  html[data-user-role="client"] #k-mobile-nav {
+    --k-mobile-nav-count: 6 !important;
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    grid-template-rows: 1fr !important;
+    gap: 4px !important;
+    padding-inline: 6px !important;
+  }
+
+  html[data-user-role="client"] #k-mobile-nav .k-nav-link {
+    min-width: 0;
+    min-height: 52px;
+    gap: 2px;
+    padding-inline: 1px !important;
+  }
+
+  html[data-user-role="client"] #k-mobile-nav .k-nav-link .k-nav-icon,
+  html[data-user-role="client"] #k-mobile-nav .k-nav-link .k-nav-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  html[data-user-role="client"] #k-mobile-nav .k-nav-link > span:not(.k-nav-icon):not(.k-nav-badge) {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: clamp(8px, 2.05vw, 10px);
+    line-height: 1.1;
+    letter-spacing: -.02em;
+  }
+}
+
+@media (max-width: 350px) {
+  html[data-user-role="client"] #k-mobile-nav {
+    left: max(4px, env(safe-area-inset-left, 0px));
+    right: max(4px, env(safe-area-inset-right, 0px));
+    gap: 2px !important;
+    padding-inline: 4px !important;
+  }
+
+  html[data-user-role="client"] #k-mobile-nav .k-nav-link > span:not(.k-nav-icon):not(.k-nav-badge) {
+    font-size: 8px;
+  }
+}

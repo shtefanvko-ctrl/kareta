@@ -1,0 +1,25 @@
+/* R188.5.5.6.18 — full master order lifecycle */
+/* Workflow R188.5.5.6.18 has 12 explicit stages, including warranty. */
+.k-sto-workflow-track{grid-template-columns:repeat(12,minmax(92px,1fr))}
+
+.k-lifecycle-console{display:grid;gap:16px;padding:22px;border:1px solid #dbe4ef;border-radius:26px;background:linear-gradient(145deg,#f8fafc,#fff)}
+.k-lifecycle-console>header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.k-lifecycle-console>header div span,.k-lifecycle-action>div>span{display:block;font-size:11px;font-weight:900;letter-spacing:.14em;color:#ea580c}
+.k-lifecycle-console>header h2,.k-lifecycle-action h2{margin:5px 0 0}.k-lifecycle-console>header>strong{font-size:12px;color:#64748b}
+.k-lifecycle-action{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:22px;padding:22px;border:1px solid #e2e8f0;border-radius:22px;background:#fff}
+.k-lifecycle-action.is-primary{border-color:#fdba74;background:linear-gradient(135deg,#fff7ed,#fff)}
+.k-lifecycle-action.is-complete{border-color:#86efac;background:linear-gradient(135deg,#ecfdf5,#fff)}
+.k-lifecycle-action p{margin:7px 0 0;color:#64748b;max-width:760px}
+.k-lifecycle-form{display:grid;gap:14px;grid-column:1/-1}.k-lifecycle-form h3{margin:0}.k-lifecycle-form label{display:grid;gap:7px;font-weight:750;color:#334155}
+.k-lifecycle-form input,.k-lifecycle-form textarea,.k-lifecycle-form select{width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:14px;background:#fff;padding:12px 14px;font:inherit;color:#0f172a}
+.k-lifecycle-form textarea{resize:vertical}.k-lifecycle-form input:focus,.k-lifecycle-form textarea:focus,.k-lifecycle-form select:focus{outline:2px solid rgba(249,115,22,.22);border-color:#fb923c}
+.k-lifecycle-check{display:flex!important;grid-template-columns:none!important;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:14px;background:#f8fafc}.k-lifecycle-check input{width:20px!important;height:20px;margin:0;accent-color:#f97316}
+.k-lifecycle-check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.k-lifecycle-check-grid label{display:flex;align-items:center;gap:9px;padding:12px;border-radius:14px;background:#f8fafc;font-size:14px}.k-lifecycle-check-grid input{width:19px;height:19px;accent-color:#f97316}
+.k-lifecycle-inline-actions,.k-lifecycle-choice{display:flex;flex-wrap:wrap;gap:10px}.k-lifecycle-split{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.k-lifecycle-quotes,.k-lifecycle-reservations,.k-lifecycle-quality-list{grid-column:1/-1;display:grid;gap:10px}
+.k-lifecycle-quote,.k-lifecycle-reservation,.k-lifecycle-quality{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px;padding:15px;border:1px solid #e2e8f0;border-radius:17px;background:#f8fafc}
+.k-lifecycle-quote span,.k-lifecycle-quality span{font-size:10px;font-weight:900;letter-spacing:.11em;color:#64748b}.k-lifecycle-quote h3,.k-lifecycle-reservation h3{margin:5px 0}.k-lifecycle-quote p,.k-lifecycle-reservation p,.k-lifecycle-quality p{margin:0;color:#64748b}.k-lifecycle-quote.is-accepted{border-color:#86efac;background:#f0fdf4}.k-lifecycle-quote.is-declined,.k-lifecycle-quality.is-fail{border-color:#fecaca;background:#fef2f2}.k-lifecycle-quality.is-pass{border-color:#86efac;background:#f0fdf4}
+.k-lifecycle-reservation{grid-template-columns:minmax(0,1fr) auto auto}.k-lifecycle-reservation small{color:#64748b}.k-lifecycle-status{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px;padding:14px;border-radius:14px;background:#f0fdf4}.k-lifecycle-status small{color:#64748b}
+.k-lifecycle-next-info{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:15px}.k-lifecycle-next-info article{display:grid;gap:4px;padding:12px 14px;border-radius:14px;background:#f8fafc}.k-lifecycle-next-info small{color:#64748b}
+.k-sto-workflow-history li small{display:block;color:#64748b;margin-top:3px}
+@media(max-width:760px){.k-sto-workflow-track{grid-template-columns:repeat(12,112px)}.k-lifecycle-action{grid-template-columns:1fr;padding:17px}.k-lifecycle-action>.k-button,.k-lifecycle-action>a.k-button{width:100%}.k-lifecycle-split,.k-lifecycle-check-grid{grid-template-columns:1fr}.k-lifecycle-quote,.k-lifecycle-reservation,.k-lifecycle-quality{grid-template-columns:1fr}.k-lifecycle-inline-actions .k-button,.k-lifecycle-choice .k-button{flex:1 1 100%}.k-lifecycle-console{padding:14px;border-radius:20px}.k-lifecycle-console>header{align-items:flex-start}}

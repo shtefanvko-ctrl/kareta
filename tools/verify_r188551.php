@@ -1,0 +1,15 @@
+<?php
+declare(strict_types=1);
+$root=dirname(__DIR__);$fail=[];
+foreach(['api/identity/onboarding_identity_bridge.php','api/migrations/100_onboarding_identity_session_bridge.php','docs/releases/changelog/CHANGELOG_R188_5_5_1.md','docs/releases/plans/PLAN_R188_5_5_2_IDENTITY_OBSERVABILITY.md','tools/test_r188551_onboarding_identity.js'] as $file)if(!is_file($root.'/'.$file))$fail[]='missing:'.$file;
+$version=(string)@file_get_contents($root.'/inc/asset_version.php');if(!str_contains($version,'r188551-onboarding-identity-session')&&!str_contains($version,'r188552-legacy-role-picker-center-removal')&&!str_contains($version,'r188553-role-surface-chat-master-spacing')&&!str_contains($version,'r188554-role-e2e-recovery-chat-search')&&!str_contains($version,'r188555-runtime-dependency-bootstrap'))$fail[]='asset_version';
+$sw=(string)@file_get_contents($root.'/sw.js');if(!str_contains($sw,'r188551-onboarding-identity-session')&&!str_contains($sw,'r188552-legacy-role-picker-center-removal')&&!str_contains($sw,'r188553-role-surface-chat-master-spacing')&&!str_contains($sw,'r188554-role-e2e-recovery-chat-search')&&!str_contains($sw,'r188555-runtime-dependency-bootstrap'))$fail[]='service_worker_version';
+$config=(string)@file_get_contents($root.'/config.php');if(!preg_match("/KARETA_DB_VERSION',\s*(100|[1-9][0-9]{2,})/",$config))$fail[]='db_version';
+$auth=(string)@file_get_contents($root.'/api/auth_session.php');if(!str_contains($auth,'KaretaOnboardingIdentityBridge')||substr_count($auth,"'identity' => \$identity")<2)$fail[]='onboarding_identity_response';
+$bridge=(string)@file_get_contents($root.'/api/identity/onboarding_identity_bridge.php');foreach(['KaretaAccountService','KaretaProfileService','KaretaSessionService','KaretaIdentityContextService','KaretaCapabilityService'] as $needle)if(!str_contains($bridge,$needle))$fail[]='bridge:'.$needle;
+$resolver=(string)@file_get_contents($root.'/api/identity/auth_resolver.php');if(!str_contains($resolver,'new KaretaAccountService')||!str_contains($resolver,'ensureClient'))$fail[]='legacy_runtime_backfill';
+$frontend=(string)@file_get_contents($root.'/js/next/identity_frontend.js');if(!str_contains($frontend,'bootstrapSession')||!str_contains($frontend,'identity_bootstrap_invalid'))$fail[]='identity_hydration';
+$manager=(string)@file_get_contents($root.'/js/next/context_manager.js');if(str_contains($manager,'options.allowLegacyBridge||state.legacyUser')||!str_contains($manager,'detail.identity?.authenticated'))$fail[]='context_request_gate';
+$onboarding=(string)@file_get_contents($root.'/js/next/onboarding/onboarding_app.js');if(!str_contains($onboarding,"bootstrapSession?.(identityPayload, 'onboarding-session')")||!str_contains($onboarding,'legacy:!identity'))$fail[]='onboarding_hydration';
+$migration=(string)@file_get_contents($root.'/api/migrations/100_onboarding_identity_session_bridge.php');foreach(['accounts','persons','person_profiles','contexts','context_members'] as $table)if(!str_contains($migration,'INSERT INTO '.$table))$fail[]='migration:'.$table;
+if($fail){fwrite(STDERR,implode("\n",$fail)."\n");exit(1);}echo "R188.5.5.1 verifier OK\n";

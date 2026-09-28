@@ -1,0 +1,184 @@
+/* KARETA.KZ R188.5.5.6.84.12 — persistent Shell header restoration.
+   Owns only the top Shell: desktop nav, location, notifications and burger. */
+
+/* The header is fixed by the base Shell and must never auto-hide while scrolling. */
+#k-shell-header.k-shell-header,
+#k-shell-header.k-shell-header.is-scroll-hidden,
+#k-shell-header.k-shell-header.is-scroll-visible{
+  transform:translate3d(0,0,0)!important;
+  pointer-events:auto!important;
+}
+
+#k-shell-header .k-shell-actions{
+  position:relative;
+  display:flex!important;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  min-width:0;
+}
+
+.k-shell-utility{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:6px;
+  min-width:0;
+}
+
+.k-shell-location,
+.k-shell-notifications{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:44px;
+  height:44px;
+  border:1px solid var(--k-line);
+  border-radius:14px;
+  background:#fff;
+  color:#344054;
+  box-shadow:0 2px 8px rgba(15,23,42,.04);
+}
+
+.k-shell-location{
+  gap:7px;
+  max-width:210px;
+  padding:0 11px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.k-shell-location>svg:first-child,
+.k-shell-notifications>svg{
+  flex:0 0 21px;
+  width:21px;
+  height:21px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.k-shell-location>svg:first-child{color:var(--k-orange)}
+.k-shell-location__label{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-size:12px;
+  line-height:1;
+}
+.k-shell-location__chevron{
+  flex:0 0 15px;
+  width:15px;
+  height:15px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2;
+  transition:transform .16s ease;
+}
+.k-shell-location[aria-expanded="true"] .k-shell-location__chevron{transform:rotate(180deg)}
+.k-shell-location:hover,.k-shell-notifications:hover{border-color:rgba(255,107,0,.34);background:#fff8f3;color:#111827}
+
+.k-shell-notifications{position:relative;padding:0}
+.k-shell-notifications__badge{
+  position:absolute;
+  top:-4px;
+  right:-4px;
+  display:grid;
+  place-items:center;
+  min-width:19px;
+  height:19px;
+  padding:0 4px;
+  border:2px solid #fff;
+  border-radius:999px;
+  background:var(--k-orange);
+  color:#fff;
+  font-size:9px;
+  line-height:1;
+  font-weight:900;
+}
+.k-shell-notifications__badge[hidden]{display:none}
+
+.k-shell-location-popover{
+  position:absolute;
+  z-index:96;
+  top:calc(100% + 10px);
+  right:50px;
+  display:grid;
+  gap:9px;
+  width:min(300px,calc(100vw - 24px));
+  padding:14px;
+  border:1px solid var(--k-line-strong);
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 20px 55px rgba(15,23,42,.16);
+}
+.k-shell-location-popover[hidden]{display:none}
+.k-shell-location-popover>b{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--k-muted)}
+.k-shell-location-popover__current{display:flex;align-items:center;gap:8px;min-height:36px;font-size:14px;font-weight:850;color:#111827}
+.k-shell-location-popover__current>svg{flex:0 0 20px;width:20px;height:20px;fill:none;stroke:var(--k-orange);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.k-shell-location-popover>a{display:flex;align-items:center;min-height:42px;padding:0 12px;border-radius:12px;background:#fff5ed;color:#c94f00;font-size:13px;font-weight:800}
+
+/* Burger remains a permanent Shell control on every viewport. */
+#k-menu-toggle.k-menu-toggle{
+  display:inline-flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  flex:0 0 44px;
+  width:44px;
+  min-width:44px;
+  height:44px;
+  padding:0;
+}
+#k-menu-toggle .k-menu-toggle-label{display:none}
+
+/* Desktop top navigation is authoritative from 861px upward. */
+@media (min-width:861px){
+  #k-shell-header.k-shell-header{
+    grid-template-columns:minmax(150px,190px) minmax(0,1fr) auto;
+  }
+  #k-desktop-nav.k-desktop-nav{
+    display:flex!important;
+    min-width:0;
+    width:100%;
+  }
+}
+
+/* Compact the utility area before hiding any desktop navigation item. */
+@media (min-width:861px) and (max-width:1279px){
+  .k-shell-location{width:44px;max-width:44px;padding:0}
+  .k-shell-location__label,.k-shell-location__chevron{display:none}
+  .k-shell-location-popover{right:50px}
+}
+
+@media (max-width:860px){
+  #k-shell-header.k-shell-header{
+    grid-template-columns:minmax(44px,1fr) auto;
+    gap:8px;
+  }
+  #k-desktop-nav.k-desktop-nav{display:none!important}
+  #k-shell-header>.k-brand{justify-self:start}
+  #k-shell-header>.k-shell-actions{justify-self:end}
+  .k-shell-location{width:44px;max-width:44px;padding:0}
+  .k-shell-location__label,.k-shell-location__chevron{display:none}
+  .k-shell-location-popover{position:fixed;top:74px;right:12px}
+}
+
+@media (max-width:640px){
+  #k-shell-header.k-shell-header{padding:10px 12px}
+  .k-shell-utility{gap:5px}
+  #k-shell-header .k-shell-actions{gap:5px}
+  .k-shell-location,.k-shell-notifications,#k-menu-toggle.k-menu-toggle{width:42px;min-width:42px;height:42px;border-radius:13px}
+}
+
+@media (max-width:359px){
+  #k-shell-header.k-shell-header{padding-inline:8px;gap:5px}
+  .k-shell-utility,#k-shell-header .k-shell-actions{gap:4px}
+  .k-shell-location,.k-shell-notifications,#k-menu-toggle.k-menu-toggle{width:40px;min-width:40px;height:40px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .k-shell-location__chevron{transition:none}
+}

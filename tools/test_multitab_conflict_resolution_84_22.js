@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+'use strict';
+const fs=require('fs');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const master=read('js/next/pages/master_onboarding.js');
+const client=read('js/next/client/first_vehicle_flow.js');
+const masterCss=read('css/next/master_onboarding.css');
+const clientCss=read('css/next/first_vehicle_flow.css');
+let pass=0,fail=0;
+function check(name,ok){if(ok){pass++;console.log('PASS',name);}else{fail++;console.error('FAIL',name);}}
+check('master stores explicit conflict object',/conflict:null/.test(master)&&/function setConflict\(/.test(master));
+check('master shows exact conflict message',master.includes('Данные изменены в другой вкладке'));
+check('master offers server version action',master.includes('Использовать серверную версию')&&master.includes('data-kmo-conflict-server'));
+check('master offers local version action',master.includes('Сохранить мои изменения')&&master.includes('data-kmo-conflict-local'));
+check('master does not auto merge revision conflicts',!master.includes('function mergeConflict(')&&!/draft_revision_conflict[\s\S]{0,500}mergeConflict\(/.test(master));
+check('master local retry uses fresh revision',/keepLocalConflict\(\)[\s\S]{0,700}model\.revision=conflict\.revision[\s\S]{0,700}persist\(0\)/.test(master));
+check('master server choice replaces local draft',/useServerConflict\(\)[\s\S]{0,600}mergeDraft\(conflict\.serverDraft\)/.test(master));
+check('master conflict pauses automatic save',/saveLocal\(\);if\(model\.conflict\)return;/.test(master));
+check('master conflict blocks primary CTA',/model\.submitting\|\|model\.conflict/.test(master));
+check('master conflict banner is accessible',/kmo-conflict[^`]*role="alert"[^`]*aria-live="assertive"/.test(master));
+check('master conflict responsive CSS exists',masterCss.includes('.kmo-conflict')&&masterCss.includes('.kmo-conflict__actions'));
+check('client stores server and local conflict drafts',/serverConflict=\{kind:'saveDraft'[^}]*revision:state\.serverRevision/.test(client)&&client.includes('serverDraft:{...defaultDraft()'));
+check('client shows exact conflict message',client.includes('Данные изменены в другой вкладке'));
+check('client offers server version action',client.includes('data-first-vehicle-conflict-server')&&client.includes('Использовать серверную версию'));
+check('client offers local version action',client.includes('data-first-vehicle-conflict-local')&&client.includes('Сохранить мои изменения'));
+check('client auto-save pauses while conflict unresolved',client.includes('state.editVehicleId||state.serverConflict||typeof api.saveFirstEntryDraft'));
+check('client local retry uses fresh revision',/keepLocalConflict\(\)[\s\S]{0,700}state\.serverRevision=conflict\.revision[\s\S]{0,700}flushServerDraft\(\)/.test(client));
+check('client server version overwrites local draft explicitly',/useServerConflict\(\)[\s\S]{0,700}conflict\.serverDraft[\s\S]{0,700}storeDraft\(next\)/.test(client));
+check('client dismiss conflict no longer auto retries destructive dismiss',!client.includes('const retry=await api.dismissFirstEntry'));
+check('client conflict prevents silent dismiss navigation',/if\(synced\)[\s\S]{0,250}else if\(!state\.serverConflict\)/.test(client));
+check('client conflict banner is accessible',/k-first-vehicle-conflict[^`]*role="alert"[^`]*aria-live="assertive"/.test(client));
+check('client conflict responsive CSS exists',clientCss.includes('.k-first-vehicle-conflict')&&clientCss.includes('.k-first-vehicle-conflict__actions'));
+console.log(`\n${pass}/${pass+fail} checks passed`);
+process.exit(fail?1:0);

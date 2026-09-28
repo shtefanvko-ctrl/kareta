@@ -1,0 +1,15 @@
+(() => { 'use strict';
+ const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+ const attrs=obj=>Object.entries(obj||{}).filter(([,v])=>v!==false&&v!==null&&v!==undefined).map(([k,v])=>v===true?esc(k):`${esc(k)}="${esc(v)}"`).join(' ');
+ const badge=(text,tone='neutral')=>`<span class="k-ui-badge k-ui-badge--${esc(tone)}">${esc(text)}</span>`;
+ const button=(text,{tone='secondary',icon='',attributes={}}={})=>`<button class="k-btn k-btn--${esc(tone)}" ${attrs(attributes)}>${icon?`<span aria-hidden="true">${esc(icon)}</span>`:''}<span>${esc(text)}</span></button>`;
+ const card=({title='',meta='',body='',actions='',className='',eyebrow=''})=>`<article class="k-ui-card ${esc(className)}"><header>${eyebrow?`<span class="k-ui-card__eyebrow">${esc(eyebrow)}</span>`:''}<div><h3>${esc(title)}</h3>${meta?`<p>${esc(meta)}</p>`:''}</div></header><div class="k-ui-card__body">${body}</div>${actions?`<footer>${actions}</footer>`:''}</article>`;
+ const empty=(title='Пока нет данных',text='')=>`<div class="k-ui-empty"><strong>${esc(title)}</strong>${text?`<p>${esc(text)}</p>`:''}</div>`;
+ const error=(title='Не удалось загрузить',text='')=>`<div class="k-ui-error"><strong>${esc(title)}</strong>${text?`<p>${esc(text)}</p>`:''}</div>`;
+ const skeleton=(rows=3)=>`<div class="k-ui-skeleton" aria-busy="true">${Array.from({length:rows},()=>'<span></span>').join('')}</div>`;
+ const avatar=(name='',src='')=>src?`<img class="k-ui-avatar" src="${esc(src)}" alt="${esc(name)}">`:`<span class="k-ui-avatar k-ui-avatar--fallback">${esc(String(name).trim().charAt(0).toUpperCase()||'K')}</span>`;
+ const money=(amount,currency='KZT')=>`${Number(amount||0).toLocaleString('ru-RU',{minimumFractionDigits:0,maximumFractionDigits:2})} ${esc(currency)}`;
+ const timeline=items=>`<ol class="k-ui-timeline">${(items||[]).map(x=>`<li><span class="k-ui-timeline__dot"></span><div><strong>${esc(x.title||x.eventType||'Событие')}</strong><p>${esc(x.text||x.meta||'')}</p><time>${esc(x.time||x.occurredAt||'')}</time></div></li>`).join('')}</ol>`;
+ const tabs=(items,active='')=>`<div class="k-ui-tabs" role="tablist">${(items||[]).map(x=>`<button role="tab" aria-selected="${String(x.id===active)}" data-tab="${esc(x.id)}">${esc(x.label)}</button>`).join('')}</div>`;
+ window.KaretaUIKit=Object.freeze({esc,attrs,badge,button,card,empty,error,skeleton,avatar,money,timeline,tabs});
+})();

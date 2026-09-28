@@ -1,0 +1,19 @@
+/* R188.5.5.6.70 — Master Day Operations & Auto-Recovery */
+.k-master-r70-recovery,.k-master-r70-timeline{margin:16px 0;padding:18px;border:1px solid var(--k-border,#e5e7eb);border-radius:22px;background:var(--k-surface,#fff)}
+.k-master-r70-recovery>header,.k-master-r70-timeline>header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}
+.k-master-r70-recovery>header small,.k-master-r70-timeline>header small,.k-master-r70-extension small{display:block;font-size:11px;font-weight:800;letter-spacing:.08em;opacity:.62}
+.k-master-r70-recovery>header h2,.k-master-r70-timeline>header h2{margin:3px 0 5px;font-size:20px}
+.k-master-r70-recovery>header p{max-width:760px;margin:0;opacity:.72}
+.k-master-r70-recovery__state{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.k-master-r70-recovery__state article{padding:12px 14px;border-radius:16px;background:var(--k-surface-soft,#f6f7f9);display:flex;flex-direction:column;gap:4px}
+.k-master-r70-recovery__state span{font-size:12px;opacity:.68}.k-master-r70-recovery__state strong{font-size:15px}
+.k-master-r70-recovery details{margin-top:12px}.k-master-r70-recovery summary{cursor:pointer;font-weight:700}
+.k-master-r70-recovery__log{display:grid;gap:8px;margin-top:10px}.k-master-r70-recovery__log article{display:grid;grid-template-columns:160px 1fr auto;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--k-surface-soft,#f6f7f9)}
+.k-master-r70-recovery.is-disabled{opacity:.78}
+.k-master-r70-timeline>div{display:grid;gap:8px}.k-master-r70-timeline article{display:grid;grid-template-columns:105px minmax(0,1fr) auto;gap:14px;align-items:center;padding:11px 12px;border:1px solid var(--k-border,#e5e7eb);border-radius:16px}
+.k-master-r70-timeline time{font-weight:800;font-variant-numeric:tabular-nums}.k-master-r70-timeline article>div{display:flex;flex-direction:column;min-width:0}.k-master-r70-timeline article small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.68}.k-master-r70-timeline nav{display:flex;gap:8px}.k-master-r70-timeline nav a{font-weight:700;text-decoration:none}
+.k-master-r70-extension{display:flex;align-items:end;gap:10px;flex-wrap:wrap;margin:12px 0;padding:12px 14px;border-radius:16px;background:var(--k-surface-soft,#f6f7f9)}
+.k-master-r70-extension>div{margin-right:auto}.k-master-r70-extension>div strong{display:block;margin-top:3px}.k-master-r70-extension label{display:flex;flex-direction:column;gap:4px;font-size:12px}.k-master-r70-extension input{min-height:38px}.k-master-r70-extension button{min-height:38px;border:1px solid var(--k-border,#d8dce2);border-radius:12px;padding:0 12px;background:var(--k-surface,#fff);font-weight:700}.k-master-r70-extension .is-danger{opacity:.78}
+.k-schedule-policy form .k-master-r70-toggle{grid-column:span 2;display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1px solid var(--k-border,#e5e7eb);border-radius:16px}.k-master-r70-toggle>input{margin-top:3px}.k-master-r70-toggle span{display:flex;flex-direction:column;gap:3px}.k-master-r70-toggle small{opacity:.68;line-height:1.35}
+[data-arrival-countdown]{font-variant-numeric:tabular-nums}
+@media(max-width:760px){.k-master-r70-recovery,.k-master-r70-timeline{margin:12px 0;padding:14px;border-radius:18px}.k-master-r70-recovery>header,.k-master-r70-timeline>header{flex-direction:column}.k-master-r70-recovery__state{grid-template-columns:repeat(2,minmax(0,1fr))}.k-master-r70-recovery__log article{grid-template-columns:1fr}.k-master-r70-timeline article{grid-template-columns:86px minmax(0,1fr)}.k-master-r70-timeline nav{grid-column:1/-1}.k-schedule-policy form .k-master-r70-toggle{grid-column:1/-1}.k-master-r70-extension{align-items:stretch}.k-master-r70-extension>div{width:100%}}

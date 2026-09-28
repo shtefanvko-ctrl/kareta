@@ -1,0 +1,3179 @@
+[
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/home",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 390,
+      "height": 844,
+      "class": "mobile"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "home__client__390x844__chrome__baseline.png",
+    "state": {
+      "requestedRole": "client",
+      "effectiveRole": "client",
+      "requestedRoute": "home",
+      "actualRoute": "home",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 11368,
+      "outletText": "Усть-Каменогорск\nЗдравствуйте, Responsive!\n1\n2\n3\n4\nСоздать заявку\n\nОпишите проблему —\nмастера предложат решение\n\nНачать\nЭвакуатор\nДиагностика\nРемонт\nМой автомобиль\nРядом с вами\nСмотреть все\nТМ\nТестовый Мастер\n—\nУсть-Каменогорск\n50 м\nЗМ\nзаводится Машина не\n—\nАктобе\n50 м\nПопулярные услуги\nЗамена масла\nДиагностика\nШиномонтаж\nПоследние работы мастеров\nСмотреть все\nРабота\nЗамена комплекта ГРМ Renault L",
+      "viewportWidth": 390,
+      "documentScrollWidth": 390,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 68
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 772,
+        "w": 390,
+        "h": 72
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php?action=clientCabinet.get"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugnflmk_2refa0"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnflr6_h_4om1z",
+            "method": "GET",
+            "url": "/api/db.php?action=clientCabinet.get",
+            "action": "",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 79,
+            "error": "forbidden",
+            "requestId": "0153123c934615f7",
+            "serverTraceId": "kt_mugnflr6_h_4om1z",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needRole\":[\"client\",\"master\",\"sto\",\"admin\",\"owner\"],\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"0153123c934615f7\",\"traceId\":\"kt_mugnflr6_h_4om1z\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugnfltg_o_5vh7w",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 50,
+            "error": "session_required",
+            "requestId": "72df25f2ba9e4e1e",
+            "serverTraceId": "kt_mugnfltg_o_5vh7w",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"72df25f2ba9e4e1e\",\"traceId\":\"kt_mugnfltg_o_5vh7w\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php?action=clientFirstEntry.current"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfmxl_1b_uus6f",
+            "method": "GET",
+            "url": "/api/db.php?action=clientFirstEntry.current",
+            "action": "",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 14,
+            "error": "forbidden",
+            "requestId": "f0cf91caf75aab74",
+            "serverTraceId": "kt_mugnfmxl_1b_uus6f",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needRole\":[\"client\",\"master\",\"sto\",\"admin\",\"owner\"],\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"f0cf91caf75aab74\",\"traceId\":\"kt_mugnfmxl_1b_uus6f\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          "JSHandle@object"
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:20.100Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/home",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 768,
+      "height": 1024,
+      "class": "tablet"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "home__client__768x1024__chrome__baseline.png",
+    "state": {
+      "requestedRole": "client",
+      "effectiveRole": "client",
+      "requestedRoute": "home",
+      "actualRoute": "home",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 11368,
+      "outletText": "Усть-Каменогорск\nЗдравствуйте, Responsive!\n1\n2\n3\n4\nСоздать заявку\n\nОпишите проблему —\nмастера предложат решение\n\nНачать\nЭвакуатор\nДиагностика\nРемонт\nМой автомобиль\nРядом с вами\nСмотреть все\nТМ\nТестовый Мастер\n—\nУсть-Каменогорск\n50 м\nЗМ\nзаводится Машина не\n—\nАктобе\n50 м\nПопулярные услуги\nЗамена масла\nДиагностика\nШиномонтаж\nПоследние работы мастеров\nСмотреть все\nРабота\nЗамена комплекта ГРМ Renault L",
+      "viewportWidth": 768,
+      "documentScrollWidth": 768,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 768,
+        "h": 68
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 952,
+        "w": 768,
+        "h": 72
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php?action=clientCabinet.get"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugnfne1_ui56v8"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfngv_h_6iejj",
+            "method": "GET",
+            "url": "/api/db.php?action=clientCabinet.get",
+            "action": "",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 44,
+            "error": "forbidden",
+            "requestId": "1c204d501f73c7fd",
+            "serverTraceId": "kt_mugnfngv_h_6iejj",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needRole\":[\"client\",\"master\",\"sto\",\"admin\",\"owner\"],\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"1c204d501f73c7fd\",\"traceId\":\"kt_mugnfngv_h_6iejj\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugnfni6_o_dan8y",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 18,
+            "error": "session_required",
+            "requestId": "672b39b05a3b8857",
+            "serverTraceId": "kt_mugnfni6_o_dan8y",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"672b39b05a3b8857\",\"traceId\":\"kt_mugnfni6_o_dan8y\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php?action=clientFirstEntry.current"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfong_1a_3bnd3",
+            "method": "GET",
+            "url": "/api/db.php?action=clientFirstEntry.current",
+            "action": "",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 13,
+            "error": "forbidden",
+            "requestId": "19e1dcf33c540678",
+            "serverTraceId": "kt_mugnfong_1a_3bnd3",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needRole\":[\"client\",\"master\",\"sto\",\"admin\",\"owner\"],\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"19e1dcf33c540678\",\"traceId\":\"kt_mugnfong_1a_3bnd3\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:22.364Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/home",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "class": "desktop"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "home__client__1440x900__chrome__baseline.png",
+    "state": {
+      "requestedRole": "client",
+      "effectiveRole": "client",
+      "requestedRoute": "home",
+      "actualRoute": "home",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 11368,
+      "outletText": "Усть-Каменогорск\nЗдравствуйте, Responsive!\n1\n2\n3\n4\nСоздать заявку\n\nОпишите проблему —\nмастера предложат решение\n\nНачать\nЭвакуатор\nДиагностика\nРемонт\nМой автомобиль\nРядом с вами\nСмотреть все\nТМ\nТестовый Мастер\n—\nУсть-Каменогорск\n50 м\nЗМ\nзаводится Машина не\n—\nАктобе\n50 м\nПопулярные услуги\nЗамена масла\nДиагностика\nШиномонтаж\nПоследние работы мастеров\nСмотреть все\nРабота\nЗамена комплекта ГРМ Renault L",
+      "viewportWidth": 1440,
+      "documentScrollWidth": 1440,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 76
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php?action=clientCabinet.get"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugnfp4j_4oxl0m"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfp6p_h_94i7x",
+            "method": "GET",
+            "url": "/api/db.php?action=clientCabinet.get",
+            "action": "",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 57,
+            "error": "forbidden",
+            "requestId": "bc7826b5dc48625f",
+            "serverTraceId": "kt_mugnfp6p_h_94i7x",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needRole\":[\"client\",\"master\",\"sto\",\"admin\",\"owner\"],\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"bc7826b5dc48625f\",\"traceId\":\"kt_mugnfp6p_h_94i7x\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugnfp8e_o_o4roj",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 52,
+            "error": "session_required",
+            "requestId": "ff2734d55ef77b70",
+            "serverTraceId": "kt_mugnfp8e_o_o4roj",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"ff2734d55ef77b70\",\"traceId\":\"kt_mugnfp8e_o_o4roj\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php?action=clientFirstEntry.current"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfqcv_1a_riuol",
+            "method": "GET",
+            "url": "/api/db.php?action=clientFirstEntry.current",
+            "action": "",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 16,
+            "error": "forbidden",
+            "requestId": "877022f96ac36365",
+            "serverTraceId": "kt_mugnfqcv_1a_riuol",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needRole\":[\"client\",\"master\",\"sto\",\"admin\",\"owner\"],\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"877022f96ac36365\",\"traceId\":\"kt_mugnfqcv_1a_riuol\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfqle_1d_dath0",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 13,
+            "error": "session_required",
+            "requestId": "6a74b86789c14be6",
+            "serverTraceId": "kt_mugnfqle_1d_dath0",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"6a74b86789c14be6\",\"traceId\":\"kt_mugnfqle_1d_dath0\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:24.787Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/master",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 390,
+      "height": 844,
+      "class": "mobile"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "masterDashboard__master__390x844__chrome__baseline.png",
+    "state": {
+      "requestedRole": "master",
+      "effectiveRole": "master",
+      "requestedRoute": "masterDashboard",
+      "actualRoute": "masterDashboard",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 490,
+      "outletText": "СМЕНА\nДанные временно недоступны\n\nНедостаточно прав для выполнения операции\n\nПовторить",
+      "viewportWidth": 390,
+      "documentScrollWidth": 390,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 68
+      },
+      "mobileNav": {
+        "x": 8,
+        "y": 772,
+        "w": 374,
+        "h": 64
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugnfqzz_3budvh"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugnfr2z_l_dhddc",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 23,
+            "error": "session_required",
+            "requestId": "83b51f02252203ee",
+            "serverTraceId": "kt_mugnfr2z_l_dhddc",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"83b51f02252203ee\",\"traceId\":\"kt_mugnfr2z_l_dhddc\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php?action=masterWorkplace.get"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfr7d_o_3h0om",
+            "method": "GET",
+            "url": "/api/db.php?action=masterWorkplace.get",
+            "action": "",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 33,
+            "error": "forbidden",
+            "requestId": "03de8c3ff7bb6012",
+            "serverTraceId": "kt_mugnfr7d_o_3h0om",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needRole\":[\"master\",\"admin\",\"owner\"],\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"03de8c3ff7bb6012\",\"traceId\":\"kt_mugnfr7d_o_3h0om\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfrfp_z_2ywks",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 13,
+            "error": "session_required",
+            "requestId": "72cd555fd487ae80",
+            "serverTraceId": "kt_mugnfrfp_z_2ywks",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"72cd555fd487ae80\",\"traceId\":\"kt_mugnfrfp_z_2ywks\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:26.875Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/master",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 768,
+      "height": 1024,
+      "class": "tablet"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "masterDashboard__master__768x1024__chrome__baseline.png",
+    "state": {
+      "requestedRole": "master",
+      "effectiveRole": "master",
+      "requestedRoute": "masterDashboard",
+      "actualRoute": "masterDashboard",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 490,
+      "outletText": "СМЕНА\nДанные временно недоступны\n\nНедостаточно прав для выполнения операции\n\nПовторить",
+      "viewportWidth": 768,
+      "documentScrollWidth": 768,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 768,
+        "h": 69
+      },
+      "mobileNav": {
+        "x": 8,
+        "y": 952,
+        "w": 752,
+        "h": 64
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugnfskz_x6mrl6"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugnfsn2_l_5wr4o",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 35,
+            "error": "session_required",
+            "requestId": "5cc6b68fcc15609d",
+            "serverTraceId": "kt_mugnfsn2_l_5wr4o",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"5cc6b68fcc15609d\",\"traceId\":\"kt_mugnfsn2_l_5wr4o\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php?action=masterWorkplace.get"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfsrf_o_0n0k6",
+            "method": "GET",
+            "url": "/api/db.php?action=masterWorkplace.get",
+            "action": "",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 19,
+            "error": "forbidden",
+            "requestId": "d6f3634c2f1c6f9c",
+            "serverTraceId": "kt_mugnfsrf_o_0n0k6",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needRole\":[\"master\",\"admin\",\"owner\"],\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"d6f3634c2f1c6f9c\",\"traceId\":\"kt_mugnfsrf_o_0n0k6\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfszu_z_vxnd1",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 11,
+            "error": "session_required",
+            "requestId": "3ac34d23405f404b",
+            "serverTraceId": "kt_mugnfszu_z_vxnd1",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"3ac34d23405f404b\",\"traceId\":\"kt_mugnfszu_z_vxnd1\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:28.931Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/master",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "class": "desktop"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "masterDashboard__master__1440x900__chrome__baseline.png",
+    "state": {
+      "requestedRole": "master",
+      "effectiveRole": "master",
+      "requestedRoute": "masterDashboard",
+      "actualRoute": "masterDashboard",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 490,
+      "outletText": "СМЕНА\nДанные временно недоступны\n\nНедостаточно прав для выполнения операции\n\nПовторить",
+      "viewportWidth": 1440,
+      "documentScrollWidth": 1440,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 76
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugnfu9e_4f0v5f"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugnfubh_l_5sbep",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 27,
+            "error": "session_required",
+            "requestId": "bf45925d03de69b7",
+            "serverTraceId": "kt_mugnfubh_l_5sbep",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"bf45925d03de69b7\",\"traceId\":\"kt_mugnfubh_l_5sbep\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php?action=masterWorkplace.get"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfuf9_o_yy6f2",
+            "method": "GET",
+            "url": "/api/db.php?action=masterWorkplace.get",
+            "action": "",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 15,
+            "error": "forbidden",
+            "requestId": "038b29b8e6f0ceba",
+            "serverTraceId": "kt_mugnfuf9_o_yy6f2",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needRole\":[\"master\",\"admin\",\"owner\"],\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"038b29b8e6f0ceba\",\"traceId\":\"kt_mugnfuf9_o_yy6f2\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfunn_z_4mfv2",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 12,
+            "error": "session_required",
+            "requestId": "b452932b777c4d93",
+            "serverTraceId": "kt_mugnfunn_z_4mfv2",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"b452932b777c4d93\",\"traceId\":\"kt_mugnfunn_z_4mfv2\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:31.127Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/sto",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 390,
+      "height": 844,
+      "class": "mobile"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "stoDashboard__sto__390x844__chrome__baseline.png",
+    "state": {
+      "requestedRole": "sto",
+      "effectiveRole": "sto",
+      "requestedRoute": "stoDashboard",
+      "actualRoute": "stoDashboard",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 201,
+      "outletText": "Кабинет СТО недоступен\n\nНедостаточно прав для выполнения операции",
+      "viewportWidth": 390,
+      "documentScrollWidth": 390,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 68
+      },
+      "mobileNav": {
+        "x": 8,
+        "y": 772,
+        "w": 374,
+        "h": 64
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugnfvvc_ww13ol"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugnfvxk_l_bx7dd",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 15,
+            "error": "session_required",
+            "requestId": "9328179e121554c5",
+            "serverTraceId": "kt_mugnfvxk_l_bx7dd",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"9328179e121554c5\",\"traceId\":\"kt_mugnfvxk_l_bx7dd\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php?action=stoWorkplace.get"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfvz8_o_f8ltz",
+            "method": "GET",
+            "url": "/api/db.php?action=stoWorkplace.get",
+            "action": "",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 24,
+            "error": "forbidden",
+            "requestId": "41b45a27314b51ef",
+            "serverTraceId": "kt_mugnfvz8_o_f8ltz",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needRole\":[\"sto\",\"admin\",\"owner\"],\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"41b45a27314b51ef\",\"traceId\":\"kt_mugnfvz8_o_f8ltz\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfw7l_z_47hjb",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 12,
+            "error": "session_required",
+            "requestId": "e65346d261dd58d7",
+            "serverTraceId": "kt_mugnfw7l_z_47hjb",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"e65346d261dd58d7\",\"traceId\":\"kt_mugnfw7l_z_47hjb\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:33.176Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/sto",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 768,
+      "height": 1024,
+      "class": "tablet"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "stoDashboard__sto__768x1024__chrome__baseline.png",
+    "state": {
+      "requestedRole": "sto",
+      "effectiveRole": "sto",
+      "requestedRoute": "stoDashboard",
+      "actualRoute": "stoDashboard",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 201,
+      "outletText": "Кабинет СТО недоступен\n\nНедостаточно прав для выполнения операции",
+      "viewportWidth": 768,
+      "documentScrollWidth": 768,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 768,
+        "h": 69
+      },
+      "mobileNav": {
+        "x": 8,
+        "y": 952,
+        "w": 752,
+        "h": 64
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugnfxg4_2lmejz"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugnfxie_l_zl4zk",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 35,
+            "error": "session_required",
+            "requestId": "13ffe5a41043edf5",
+            "serverTraceId": "kt_mugnfxie_l_zl4zk",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"13ffe5a41043edf5\",\"traceId\":\"kt_mugnfxie_l_zl4zk\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php?action=stoWorkplace.get"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfxkm_o_e7e8c",
+            "method": "GET",
+            "url": "/api/db.php?action=stoWorkplace.get",
+            "action": "",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 21,
+            "error": "forbidden",
+            "requestId": "176e6d4bc6f3342e",
+            "serverTraceId": "kt_mugnfxkm_o_e7e8c",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needRole\":[\"sto\",\"admin\",\"owner\"],\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"176e6d4bc6f3342e\",\"traceId\":\"kt_mugnfxkm_o_e7e8c\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfxtb_z_liglf",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 12,
+            "error": "session_required",
+            "requestId": "2bec2c1a7f7e21d7",
+            "serverTraceId": "kt_mugnfxtb_z_liglf",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"2bec2c1a7f7e21d7\",\"traceId\":\"kt_mugnfxtb_z_liglf\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:35.233Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/sto",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "class": "desktop"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "stoDashboard__sto__1440x900__chrome__baseline.png",
+    "state": {
+      "requestedRole": "sto",
+      "effectiveRole": "sto",
+      "requestedRoute": "stoDashboard",
+      "actualRoute": "stoDashboard",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 201,
+      "outletText": "Кабинет СТО недоступен\n\nНедостаточно прав для выполнения операции",
+      "viewportWidth": 1440,
+      "documentScrollWidth": 1440,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 76
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugnfz1b_cfbgob"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugnfz3e_l_deqpw",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 30,
+            "error": "session_required",
+            "requestId": "ebd581d5295ba3a5",
+            "serverTraceId": "kt_mugnfz3e_l_deqpw",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"ebd581d5295ba3a5\",\"traceId\":\"kt_mugnfz3e_l_deqpw\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php?action=stoWorkplace.get"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfz51_o_8ts4f",
+            "method": "GET",
+            "url": "/api/db.php?action=stoWorkplace.get",
+            "action": "",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 22,
+            "error": "forbidden",
+            "requestId": "edd04b7d0ed5cd3e",
+            "serverTraceId": "kt_mugnfz51_o_8ts4f",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needRole\":[\"sto\",\"admin\",\"owner\"],\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"edd04b7d0ed5cd3e\",\"traceId\":\"kt_mugnfz51_o_8ts4f\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnfzdf_z_d08k2",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 12,
+            "error": "session_required",
+            "requestId": "3f3114c069458dd6",
+            "serverTraceId": "kt_mugnfzdf_z_d08k2",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"3f3114c069458dd6\",\"traceId\":\"kt_mugnfzdf_z_d08k2\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:37.317Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/seller",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 390,
+      "height": 844,
+      "class": "mobile"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "seller__seller__390x844__chrome__baseline.png",
+    "state": {
+      "requestedRole": "seller",
+      "effectiveRole": "seller",
+      "requestedRoute": "seller",
+      "actualRoute": "seller",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 12241,
+      "outletText": "МАГАЗИН\nМагазин\n\nЗаказы, остатки и действия, требующие ответа.\n\nОбзор\nТовары\nЗаказы товаров\nНовые запчасти\nБиржа БУ\nДобавить товар\nТовары\nЗаказы\nПрофиль магазина\nНовые запчасти\nБиржа БУ\nНедостаточно прав для выполнения операции\n📦\n0\nТоваров\n✓\n0\nВ наличии\n🧾\n0\nНовых заказов\n₸\n0 ₸\nВыручка\nK\nПРОФИЛЬ МАГАЗИНА\nМагазин запчастей\n\nПроверьте БИН/ИИН, адрес склада и описание. До одобрения витрина магазина ",
+      "viewportWidth": 390,
+      "documentScrollWidth": 390,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 68
+      },
+      "mobileNav": {
+        "x": 8,
+        "y": 772,
+        "w": 374,
+        "h": 64
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugng0n3_ph0c68"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugng0pk_l_eytx3",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 26,
+            "error": "session_required",
+            "requestId": "7bc0157d89363c82",
+            "serverTraceId": "kt_mugng0pk_l_eytx3",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"7bc0157d89363c82\",\"traceId\":\"kt_mugng0pk_l_eytx3\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugng0rv_o_t4xa3",
+            "method": "POST",
+            "url": "/api/db.php",
+            "action": "seller.dashboard",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 51,
+            "error": "forbidden",
+            "requestId": "4c67e3300df1cb90",
+            "serverTraceId": "kt_mugng0rv_o_t4xa3",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needExactRole\":\"seller\",\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"4c67e3300df1cb90\",\"traceId\":\"kt_mugng0rv_o_t4xa3\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugng0tb_u_oiyz8",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 19,
+            "error": "session_required",
+            "requestId": "499fb013599fe8e4",
+            "serverTraceId": "kt_mugng0tb_u_oiyz8",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"499fb013599fe8e4\",\"traceId\":\"kt_mugng0tb_u_oiyz8\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:39.383Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/seller",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 768,
+      "height": 1024,
+      "class": "tablet"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "seller__seller__768x1024__chrome__baseline.png",
+    "state": {
+      "requestedRole": "seller",
+      "effectiveRole": "seller",
+      "requestedRoute": "seller",
+      "actualRoute": "seller",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 12241,
+      "outletText": "МАГАЗИН\nМагазин\n\nЗаказы, остатки и действия, требующие ответа.\n\nОбзор\nТовары\nЗаказы товаров\nНовые запчасти\nБиржа БУ\nДобавить товар\nТовары\nЗаказы\nПрофиль магазина\nНовые запчасти\nБиржа БУ\nНедостаточно прав для выполнения операции\n📦\n0\nТоваров\n✓\n0\nВ наличии\n🧾\n0\nНовых заказов\n₸\n0 ₸\nВыручка\nK\nПРОФИЛЬ МАГАЗИНА\nМагазин запчастей\n\nПроверьте БИН/ИИН, адрес склада и описание. До одобрения витрина магазина ",
+      "viewportWidth": 768,
+      "documentScrollWidth": 768,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 768,
+        "h": 69
+      },
+      "mobileNav": {
+        "x": 8,
+        "y": 952,
+        "w": 752,
+        "h": 64
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugng28t_lahyp2"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugng2b4_l_qsv66",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 37,
+            "error": "session_required",
+            "requestId": "cb83758bef05833a",
+            "serverTraceId": "kt_mugng2b4_l_qsv66",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"cb83758bef05833a\",\"traceId\":\"kt_mugng2b4_l_qsv66\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugng2d8_o_ug9w9",
+            "method": "POST",
+            "url": "/api/db.php",
+            "action": "seller.dashboard",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 21,
+            "error": "forbidden",
+            "requestId": "7ec17e07adad35db",
+            "serverTraceId": "kt_mugng2d8_o_ug9w9",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needExactRole\":\"seller\",\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"7ec17e07adad35db\",\"traceId\":\"kt_mugng2d8_o_ug9w9\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugng2ee_y_8mht7",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 24,
+            "error": "session_required",
+            "requestId": "a7a502c316b11c50",
+            "serverTraceId": "kt_mugng2ee_y_8mht7",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"a7a502c316b11c50\",\"traceId\":\"kt_mugng2ee_y_8mht7\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:41.492Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/seller",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "class": "desktop"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "seller__seller__1440x900__chrome__baseline.png",
+    "state": {
+      "requestedRole": "seller",
+      "effectiveRole": "seller",
+      "requestedRoute": "seller",
+      "actualRoute": "seller",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 12241,
+      "outletText": "МАГАЗИН\nМагазин\n\nЗаказы, остатки и действия, требующие ответа.\n\nОбзор\nТовары\nЗаказы товаров\nНовые запчасти\nБиржа БУ\nДобавить товар\nТовары\nЗаказы\nПрофиль магазина\nНовые запчасти\nБиржа БУ\nНедостаточно прав для выполнения операции\n📦\n0\nТоваров\n✓\n0\nВ наличии\n🧾\n0\nНовых заказов\n₸\n0 ₸\nВыручка\nK\nПРОФИЛЬ МАГАЗИНА\nМагазин запчастей\n\nПроверьте БИН/ИИН, адрес склада и описание. До одобрения витрина магазина ",
+      "viewportWidth": 1440,
+      "documentScrollWidth": 1440,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 76
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugng3vs_xpqh9z"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugng3ys_l_ywp8k",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 17,
+            "error": "session_required",
+            "requestId": "26bc568e6a22c122",
+            "serverTraceId": "kt_mugng3ys_l_ywp8k",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"26bc568e6a22c122\",\"traceId\":\"kt_mugng3ys_l_ywp8k\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 403,
+        "url": "http://localhost/api/db.php"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugng409_o_w5y95",
+            "method": "POST",
+            "url": "/api/db.php",
+            "action": "seller.dashboard",
+            "status": 403,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 22,
+            "error": "forbidden",
+            "requestId": "b46373a11b4d7767",
+            "serverTraceId": "kt_mugng409_o_w5y95",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"forbidden\",\"needExactRole\":\"seller\",\"code\":\"FORBIDDEN\",\"message\":\"Недостаточно прав для выполнения операции\",\"errors\":[],\"meta\":{\"httpStatus\":403,\"requestId\":\"b46373a11b4d7767\",\"traceId\":\"kt_mugng409_o_w5y95\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugng416_y_raw36",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 44,
+            "error": "session_required",
+            "requestId": "be7ceefbc81a1d2d",
+            "serverTraceId": "kt_mugng416_y_raw36",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"be7ceefbc81a1d2d\",\"traceId\":\"kt_mugng416_y_raw36\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:43.676Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/admin/monitoring",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 390,
+      "height": 844,
+      "class": "mobile"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "adminMonitoring__admin__390x844__chrome__baseline.png",
+    "state": {
+      "requestedRole": "admin",
+      "effectiveRole": "admin",
+      "requestedRoute": "adminMonitoring",
+      "actualRoute": "home",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 11368,
+      "outletText": "Усть-Каменогорск\nЗдравствуйте, Responsive!\n1\n2\n3\n4\nСоздать заявку\n\nОпишите проблему —\nмастера предложат решение\n\nНачать\nЭвакуатор\nДиагностика\nРемонт\nМой автомобиль\nРядом с вами\nСмотреть все\nТМ\nТестовый Мастер\n—\nУсть-Каменогорск\n50 м\nЗМ\nзаводится Машина не\n—\nАктобе\n50 м\nПопулярные услуги\nЗамена масла\nДиагностика\nШиномонтаж\nПоследние работы мастеров\nСмотреть все\nРабота\nЗамена комплекта ГРМ Renault L",
+      "viewportWidth": 390,
+      "documentScrollWidth": 390,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 68
+      },
+      "mobileNav": {
+        "x": 8,
+        "y": 772,
+        "w": 374,
+        "h": 64
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugng5km_bvwgyb"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugng5nv_o_fifkf",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 29,
+            "error": "session_required",
+            "requestId": "df00ef0db85f3c6a",
+            "serverTraceId": "kt_mugng5nv_o_fifkf",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"df00ef0db85f3c6a\",\"traceId\":\"kt_mugng5nv_o_fifkf\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugng6kq_18_win9u",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 11,
+            "error": "session_required",
+            "requestId": "e22125d4ff69f9b1",
+            "serverTraceId": "kt_mugng6kq_18_win9u",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"e22125d4ff69f9b1\",\"traceId\":\"kt_mugng6kq_18_win9u\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugng5km_bvwgyb"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?mode=poll&cursor=0&clientId=rt_mugng5km_bvwgyb"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugng7zr_1b_1hzot",
+            "method": "GET",
+            "url": "/api/realtime.php?mode=poll&cursor=0&clientId=rt_mugng5km_bvwgyb",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 12,
+            "error": "session_required",
+            "requestId": "b67bc28ca2b55667",
+            "serverTraceId": "kt_mugng7zr_1b_1hzot",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"b67bc28ca2b55667\",\"traceId\":\"kt_mugng7zr_1b_1hzot\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:50.911Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/admin/monitoring",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 768,
+      "height": 1024,
+      "class": "tablet"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "adminMonitoring__admin__768x1024__chrome__baseline.png",
+    "state": {
+      "requestedRole": "admin",
+      "effectiveRole": "admin",
+      "requestedRoute": "adminMonitoring",
+      "actualRoute": "home",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 11368,
+      "outletText": "Усть-Каменогорск\nЗдравствуйте, Responsive!\n1\n2\n3\n4\nСоздать заявку\n\nОпишите проблему —\nмастера предложат решение\n\nНачать\nЭвакуатор\nДиагностика\nРемонт\nМой автомобиль\nРядом с вами\nСмотреть все\nТМ\nТестовый Мастер\n—\nУсть-Каменогорск\n50 м\nЗМ\nзаводится Машина не\n—\nАктобе\n50 м\nПопулярные услуги\nЗамена масла\nДиагностика\nШиномонтаж\nПоследние работы мастеров\nСмотреть все\nРабота\nЗамена комплекта ГРМ Renault L",
+      "viewportWidth": 768,
+      "documentScrollWidth": 768,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 768,
+        "h": 69
+      },
+      "mobileNav": {
+        "x": 8,
+        "y": 952,
+        "w": 752,
+        "h": 64
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugngb86_c3ompl"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugngbcz_o_zxyoi",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 32,
+            "error": "session_required",
+            "requestId": "7d65582038f0de9a",
+            "serverTraceId": "kt_mugngbcz_o_zxyoi",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"7d65582038f0de9a\",\"traceId\":\"kt_mugngbcz_o_zxyoi\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugngc8x_18_vjx0x",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 13,
+            "error": "session_required",
+            "requestId": "751a8349c2fa0583",
+            "serverTraceId": "kt_mugngc8x_18_vjx0x",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"751a8349c2fa0583\",\"traceId\":\"kt_mugngc8x_18_vjx0x\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugngb86_c3ompl"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?mode=poll&cursor=0&clientId=rt_mugngb86_c3ompl"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugngdpe_1b_d2zfq",
+            "method": "GET",
+            "url": "/api/realtime.php?mode=poll&cursor=0&clientId=rt_mugngb86_c3ompl",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 10,
+            "error": "session_required",
+            "requestId": "5d31ab91081b8a33",
+            "serverTraceId": "kt_mugngdpe_1b_d2zfq",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"5d31ab91081b8a33\",\"traceId\":\"kt_mugngdpe_1b_d2zfq\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:38:58.302Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/admin/monitoring",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "class": "desktop"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "adminMonitoring__admin__1440x900__chrome__baseline.png",
+    "state": {
+      "requestedRole": "admin",
+      "effectiveRole": "admin",
+      "requestedRoute": "adminMonitoring",
+      "actualRoute": "home",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 11368,
+      "outletText": "Усть-Каменогорск\nЗдравствуйте, Responsive!\n1\n2\n3\n4\nСоздать заявку\n\nОпишите проблему —\nмастера предложат решение\n\nНачать\nЭвакуатор\nДиагностика\nРемонт\nМой автомобиль\nРядом с вами\nСмотреть все\nТМ\nТестовый Мастер\n—\nУсть-Каменогорск\n50 м\nЗМ\nзаводится Машина не\n—\nАктобе\n50 м\nПопулярные услуги\nЗамена масла\nДиагностика\nШиномонтаж\nПоследние работы мастеров\nСмотреть все\nРабота\nЗамена комплекта ГРМ Renault L",
+      "viewportWidth": 1440,
+      "documentScrollWidth": 1440,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 76
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugnggw6_7tj33h"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugngh1a_o_04t42",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 41,
+            "error": "session_required",
+            "requestId": "1acc81277a99103d",
+            "serverTraceId": "kt_mugngh1a_o_04t42",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"1acc81277a99103d\",\"traceId\":\"kt_mugngh1a_o_04t42\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugnghwq_18_kadzo",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 12,
+            "error": "session_required",
+            "requestId": "19470f71b9db22f9",
+            "serverTraceId": "kt_mugnghwq_18_kadzo",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"19470f71b9db22f9\",\"traceId\":\"kt_mugnghwq_18_kadzo\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugnggw6_7tj33h"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?mode=poll&cursor=0&clientId=rt_mugnggw6_7tj33h"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugngjdv_1b_0zoe1",
+            "method": "GET",
+            "url": "/api/realtime.php?mode=poll&cursor=0&clientId=rt_mugnggw6_7tj33h",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 10,
+            "error": "session_required",
+            "requestId": "09d5cb5e594c7610",
+            "serverTraceId": "kt_mugngjdv_1b_0zoe1",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"09d5cb5e594c7610\",\"traceId\":\"kt_mugngjdv_1b_0zoe1\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:39:05.832Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/home",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 390,
+      "height": 844,
+      "class": "mobile"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "home__owner__390x844__chrome__baseline.png",
+    "state": {
+      "requestedRole": "owner",
+      "effectiveRole": "owner",
+      "requestedRoute": "home",
+      "actualRoute": "home",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 11368,
+      "outletText": "Усть-Каменогорск\nЗдравствуйте, Responsive!\n1\n2\n3\n4\nСоздать заявку\n\nОпишите проблему —\nмастера предложат решение\n\nНачать\nЭвакуатор\nДиагностика\nРемонт\nМой автомобиль\nРядом с вами\nСмотреть все\nТМ\nТестовый Мастер\n—\nУсть-Каменогорск\n50 м\nЗМ\nзаводится Машина не\n—\nАктобе\n50 м\nПопулярные услуги\nЗамена масла\nДиагностика\nШиномонтаж\nПоследние работы мастеров\nСмотреть все\nРабота\nЗамена комплекта ГРМ Renault L",
+      "viewportWidth": 390,
+      "documentScrollWidth": 390,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 68
+      },
+      "mobileNav": {
+        "x": 8,
+        "y": 772,
+        "w": 374,
+        "h": 64
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugngmq7_qyrlmz"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugngmvu_p_hoapv",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 28,
+            "error": "session_required",
+            "requestId": "7887fa420cf89d10",
+            "serverTraceId": "kt_mugngmvu_p_hoapv",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"7887fa420cf89d10\",\"traceId\":\"kt_mugngmvu_p_hoapv\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugngnrq_18_fd0to",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 11,
+            "error": "session_required",
+            "requestId": "86f1d3be4678bfbf",
+            "serverTraceId": "kt_mugngnrq_18_fd0to",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"86f1d3be4678bfbf\",\"traceId\":\"kt_mugngnrq_18_fd0to\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:39:08.102Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/home",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 768,
+      "height": 1024,
+      "class": "tablet"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "home__owner__768x1024__chrome__baseline.png",
+    "state": {
+      "requestedRole": "owner",
+      "effectiveRole": "owner",
+      "requestedRoute": "home",
+      "actualRoute": "home",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 11368,
+      "outletText": "Усть-Каменогорск\nЗдравствуйте, Responsive!\n1\n2\n3\n4\nСоздать заявку\n\nОпишите проблему —\nмастера предложат решение\n\nНачать\nЭвакуатор\nДиагностика\nРемонт\nМой автомобиль\nРядом с вами\nСмотреть все\nТМ\nТестовый Мастер\n—\nУсть-Каменогорск\n50 м\nЗМ\nзаводится Машина не\n—\nАктобе\n50 м\nПопулярные услуги\nЗамена масла\nДиагностика\nШиномонтаж\nПоследние работы мастеров\nСмотреть все\nРабота\nЗамена комплекта ГРМ Renault L",
+      "viewportWidth": 768,
+      "documentScrollWidth": 768,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 768,
+        "h": 69
+      },
+      "mobileNav": {
+        "x": 8,
+        "y": 952,
+        "w": 752,
+        "h": 64
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugngogr_jei8ed"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugngolt_o_k11hf",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 29,
+            "error": "session_required",
+            "requestId": "9ac919fcc422b4a7",
+            "serverTraceId": "kt_mugngolt_o_k11hf",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"9ac919fcc422b4a7\",\"traceId\":\"kt_mugngolt_o_k11hf\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugngphm_18_gnl0w",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 12,
+            "error": "session_required",
+            "requestId": "f02de5a11e6b127f",
+            "serverTraceId": "kt_mugngphm_18_gnl0w",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"f02de5a11e6b127f\",\"traceId\":\"kt_mugngphm_18_gnl0w\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:39:10.454Z"
+  },
+  {
+    "stage": "1/539",
+    "release": "188.5.5.6.84.110",
+    "baseUrl": "http://localhost/",
+    "url": "http://localhost/#/home",
+    "browser": "Chrome/153.0.8010.53",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "class": "desktop"
+    },
+    "fixture": "legacy_session_ui_fixture",
+    "fixtureLimitations": [
+      "identity_backend_not_authenticated",
+      "secured_role_api_401_403_is_expected_in_fixture"
+    ],
+    "screenshot": "home__owner__1440x900__chrome__baseline.png",
+    "state": {
+      "requestedRole": "owner",
+      "effectiveRole": "owner",
+      "requestedRoute": "home",
+      "actualRoute": "home",
+      "identityMode": "legacy-fallback",
+      "outletHtmlLength": 11368,
+      "outletText": "Усть-Каменогорск\nЗдравствуйте, Responsive!\n1\n2\n3\n4\nСоздать заявку\n\nОпишите проблему —\nмастера предложат решение\n\nНачать\nЭвакуатор\nДиагностика\nРемонт\nМой автомобиль\nРядом с вами\nСмотреть все\nТМ\nТестовый Мастер\n—\nУсть-Каменогорск\n50 м\nЗМ\nзаводится Машина не\n—\nАктобе\n50 м\nПопулярные услуги\nЗамена масла\nДиагностика\nШиномонтаж\nПоследние работы мастеров\nСмотреть все\nРабота\nЗамена комплекта ГРМ Renault L",
+      "viewportWidth": 1440,
+      "documentScrollWidth": 1440,
+      "pageOverflowX": false,
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 76
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "htmlClasses": "",
+      "bodyClasses": ""
+    },
+    "events": [
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/realtime.php?cursor=0&clientId=rt_mugngqap_9ac27o"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/context.php?action=list"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "warn",
+        "text": "[KARETA][auth.lifecycle] [object Object]",
+        "vals": [
+          "[KARETA][auth.lifecycle]",
+          {
+            "traceId": "kt_mugngqfx_o_rx31h",
+            "method": "GET",
+            "url": "/api/context.php?action=list",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": true,
+            "authLifecycleFailure": true,
+            "expectedOtpFailure": false,
+            "durationMs": 37,
+            "error": "session_required",
+            "requestId": "58813e92d93607da",
+            "serverTraceId": "kt_mugngqfx_o_rx31h",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"58813e92d93607da\",\"traceId\":\"kt_mugngqfx_o_rx31h\"}}"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "status": 401,
+        "url": "http://localhost/api/db.php?action=pull"
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "vals": []
+      },
+      {
+        "kind": "console",
+        "level": "error",
+        "text": "[KARETA][api.failure] [object Object]",
+        "vals": [
+          "[KARETA][api.failure]",
+          {
+            "traceId": "kt_mugngrbc_18_1yyx0",
+            "method": "GET",
+            "url": "/api/db.php?action=pull",
+            "action": "",
+            "status": 401,
+            "ok": false,
+            "applicationOk": false,
+            "expected": false,
+            "authLifecycleFailure": false,
+            "expectedOtpFailure": false,
+            "durationMs": 11,
+            "error": "session_required",
+            "requestId": "ecf4266125b1e996",
+            "serverTraceId": "kt_mugngrbc_18_1yyx0",
+            "contentType": "application/json; charset=utf-8",
+            "deliveryCategory": "",
+            "providerStatus": 0,
+            "retryAfter": 0,
+            "bodyPreview": "{\"ok\":false,\"error\":\"session_required\",\"stage\":\"identity_session\",\"code\":\"SESSION_REQUIRED\",\"message\":\"Не удалось выполнить операцию\",\"errors\":[],\"meta\":{\"httpStatus\":401,\"requestId\":\"ecf4266125b1e996\",\"traceId\":\"kt_mugngrbc_18_1yyx0\"}}"
+          }
+        ]
+      }
+    ],
+    "capturedAt": "2026-09-25T07:39:12.975Z"
+  }
+]

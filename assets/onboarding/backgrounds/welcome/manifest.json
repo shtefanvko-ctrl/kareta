@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "screen": "onboarding.welcome",
+  "activeTheme": "city-calm",
+  "fallbackTheme": "city-calm",
+  "selection": {
+    "mobileMaxWidth": 767,
+    "narrowMaxAspectRatio": 1.45,
+    "ultrawideMinAspectRatio": 2.0
+  },
+  "themes": {
+    "city-calm": {
+      "title": "Светлый городской",
+      "description": "Спокойная городская композиция. Рекомендуемый основной фон.",
+      "sources": {
+        "mobile": "./city-calm/city-calm-mobile.png",
+        "desktopNarrow": "./city-calm/city-calm-desktop-narrow.png",
+        "desktopStandard": "./city-calm/city-calm-desktop-standard.png",
+        "desktopUltrawide": "./city-calm/city-calm-desktop-ultrawide.png"
+      },
+      "position": {
+        "mobile": "center center",
+        "desktopNarrow": "center center",
+        "desktopStandard": "center center",
+        "desktopUltrawide": "center center"
+      }
+    },
+    "road-assist": {
+      "title": "Дорожная помощь",
+      "description": "Более динамичный фон с эстакадой и маршрутом эвакуаторов.",
+      "sources": {
+        "mobile": "./road-assist/road-assist-mobile.png",
+        "desktopNarrow": "./road-assist/road-assist-desktop-narrow.png",
+        "desktopStandard": "./road-assist/road-assist-desktop-standard.png",
+        "desktopUltrawide": "./road-assist/road-assist-desktop-ultrawide.png"
+      },
+      "position": {
+        "mobile": "center center",
+        "desktopNarrow": "center center",
+        "desktopStandard": "center center",
+        "desktopUltrawide": "center center"
+      }
+    },
+    "service-map": {
+      "title": "Карта сервиса",
+      "description": "Технологичный изометрический фон с маршрутами и сервисными узлами.",
+      "sources": {
+        "mobile": "./service-map/service-map-mobile.png",
+        "desktopNarrow": "./service-map/service-map-desktop-narrow.png",
+        "desktopStandard": "./service-map/service-map-desktop-standard.png",
+        "desktopUltrawide": "./service-map/service-map-desktop-ultrawide.png"
+      },
+      "position": {
+        "mobile": "center center",
+        "desktopNarrow": "center center",
+        "desktopStandard": "center center",
+        "desktopUltrawide": "center center"
+      }
+    }
+  }
+}

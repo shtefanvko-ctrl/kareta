@@ -1,0 +1,52 @@
+/* R188.5.5.6.84.112 — bounded desktop page contract.
+   Shared desktop surfaces are limited to 1440px; truly large workspaces may opt into 1600px locally. */
+@media (min-width: 901px) {
+  :root,
+  #app[data-kareta-layout="stable"] {
+    --k-page-max: 1440px;
+    --k-shell-max: 1440px;
+    --k-shell-content-w: 1440px;
+  }
+
+  #k-page-outlet {
+    width: 100%;
+    max-width: var(--k-page-max, 1440px) !important;
+    margin-inline: auto;
+  }
+
+  /* Every Next root page gets the same desktop width authority. */
+  #k-page-outlet > .k-page,
+  #k-page-outlet > [data-page].k-page,
+  #k-page-outlet .k-page-content {
+    width: 100% !important;
+    max-width: var(--k-page-max, 1440px) !important;
+    margin-inline: auto !important;
+  }
+
+  /* Older page roots that historically hard-coded 1180–1600px. */
+  #k-page-outlet :is(
+    .k-home-simple,
+    .k-client-cabinet,
+    .k-client-cabinet-page,
+    .k-profile-page,
+    .k-calendar-booking,
+    .k-market,
+    .k-core-platform,
+    .k-migration,
+    .k-sto-workplace-page,
+    .k-admin-workspace-grid
+  ) {
+    width: 100% !important;
+    max-width: var(--k-page-max, 1440px) !important;
+  }
+
+  /* Stable legacy shells embedded in the current app should obey the same page limit. */
+  #app[data-kareta-layout="stable"] :is(
+    .k-main-page,
+    .k-main-account,
+    .k-page-route,
+    .k-page-content
+  ) {
+    max-width: var(--k-page-max, 1440px) !important;
+  }
+}

@@ -1,0 +1,18 @@
+const fs=require('fs'),path=require('path'),assert=require('assert');
+const root=path.resolve(__dirname,'..'),read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const cabinet=read('js/next/pages/cabinet.js'),client=read('api/client_cabinet.php'),db=read('api/db.php'),migration=read('api/migrations/130_client_first_entry_daily_prompt.php'),first=read('js/next/client/first_vehicle_flow.js'),clientApi=read('js/next/client/client_cabinet_api.js'),home=read('js/next/pages/core.js'),master=read('js/next/pages/master_workplace.js'),request=read('js/next/pages/request.js'),boot=read('index.php'),version=read('inc/asset_version.php');
+assert(cabinet.includes('async function mountData()'),'cabinet mountData boot crash fix missing');
+assert(cabinet.includes('function openClientAccountWindow'),'client account window helper missing');
+assert(migration.includes("'version' => 130")&&migration.includes('last_prompt_local_date')&&migration.includes('account_entry_prompt_state'),'migration 130 daily prompt contract missing');
+assert(client.includes('kareta_client_first_entry_mark_prompt_shown')&&client.includes("'shouldPrompt'"),'client daily server authority missing');
+assert(db.includes("case 'clientFirstEntry.markPromptShown'")&&db.includes("case 'entryPrompt.claim'"),'daily prompt routes missing');
+assert(clientApi.includes('markFirstEntryPromptShown'),'client prompt API missing');
+assert(first.includes("markPrompt('shown:'+localDate())")&&first.includes('claimDailyPrompt'),'first vehicle must be once per local calendar day');
+assert(home.includes('data-home-garage')&&home.includes('В гараже пока нет автомобилей'),'permanent CLIENT Home garage state missing');
+assert(home.includes('aria-label="Три шага заявки"')&&!home.includes('<span>4</span></div>'),'Home request preview must show three steps');
+assert(request.includes("['place-time','Где и когда?'")&&request.includes('total:3'),'CLIENT Request three-step contract missing');
+assert(master.includes('data-master-readiness')&&master.includes('entryPrompt.claim')&&master.includes('Профиль заполнен на'),'MASTER readiness/daily reminder missing');
+assert(boot.includes("if(/^#role:(client|master):/.test(String(location.hash||''))) return;"),'onboarding route must skip business runtime preloads');
+assert(boot.includes('const preloadLimit=Math.min(16,scripts.length)'),'runtime preload cap missing');
+const vm=/188\.5\.5\.6\.84\.(\d+)/.exec(version);assert(vm&&Number(vm[1])>=23,'84.23+ version missing');
+console.log('KARETA first-entry completion + runtime recovery 84.23: OK');

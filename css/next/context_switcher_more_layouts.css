@@ -1,0 +1,204 @@
+/* R188.5.4: persistent account switcher and three More-menu compositions. */
+.k-menu-drawer {
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+}
+
+.k-context-switcher {
+  margin: 0;
+  padding: 14px 18px 0;
+  background: #f8fafc;
+}
+
+.k-context-switcher[hidden] {
+  display: none !important;
+}
+
+.k-context-card,
+.k-context-legacy {
+  display: grid;
+  gap: 11px;
+  padding: 14px;
+  border: 1px solid #dbe3ee;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .06);
+}
+
+.k-context-card > header {
+  display: grid;
+  gap: 3px;
+}
+
+.k-context-card > header > span,
+.k-context-legacy > span {
+  color: #ff6b00;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.k-context-card > header > small,
+.k-context-legacy > small {
+  color: #667085;
+  font-size: 11px;
+}
+
+.k-context-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.k-context-button {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 58px;
+  padding: 9px;
+  border: 1px solid #dbe3ee;
+  border-radius: 15px;
+  background: #fff;
+  color: #344054;
+  text-align: left;
+  cursor: pointer;
+}
+
+.k-context-button:not(:disabled):hover,
+.k-context-button:not(:disabled):focus-visible {
+  border-color: #ff6b00;
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, .1);
+}
+
+.k-context-button.is-active {
+  border-color: #111827;
+  background: #111827;
+  color: #fff;
+}
+
+.k-context-button-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: rgba(255, 107, 0, .1);
+  color: #d85400;
+}
+
+.k-context-button.is-active .k-context-button-icon {
+  background: rgba(255, 255, 255, .14);
+  color: #fff;
+}
+
+.k-context-button-icon svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.k-context-button > span:nth-child(2) {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.k-context-button b {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.k-context-button small {
+  overflow: hidden;
+  color: #667085;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.k-context-button.is-active small {
+  color: rgba(255, 255, 255, .7);
+}
+
+.k-context-button > i {
+  position: absolute;
+  right: 7px;
+  bottom: 4px;
+  font-size: 8px;
+  font-style: normal;
+  opacity: .65;
+}
+
+.k-context-add,
+.k-context-recover {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid #dbe3ee;
+  border-radius: 12px;
+  background: #fff;
+  color: #344054;
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.k-context-recover {
+  cursor: pointer;
+}
+
+.k-context-error {
+  font-size: 11px;
+}
+
+
+/* More window geometry moved to smart_action_hub.css V1.2. */
+
+@media (max-width:700px){.k-context-switcher{padding:12px 14px 0}.k-context-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:390px){.k-context-button{grid-template-columns:30px minmax(0,1fr);padding:7px}.k-context-button-icon{width:30px;height:30px}}
+
+/* R188.5.5.6.84.162 — context switcher in drawer scroll-flow + no service/master entity dialog. */
+#k-menu-drawer.k-menu-drawer{
+  grid-template-rows:minmax(0,1fr) auto!important;
+}
+#k-menu-drawer #k-menu-content.k-menu-content{
+  display:grid!important;
+  align-content:start!important;
+  gap:16px!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+}
+#k-menu-drawer #k-menu-content>#k-context-switcher.k-context-switcher{
+  position:static!important;
+  inset:auto!important;
+  z-index:auto!important;
+  order:-1!important;
+  margin:0!important;
+  padding:0!important;
+  width:100%!important;
+  background:transparent!important;
+  transform:none!important;
+}
+#k-menu-drawer #k-context-switcher .k-context-card{
+  margin:0!important;
+  box-shadow:0 6px 18px rgba(15,23,42,.06)!important;
+}
+#k-menu-drawer #k-context-switcher .k-context-buttons{
+  position:static!important;
+  inset:auto!important;
+  z-index:auto!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  transform:none!important;
+}

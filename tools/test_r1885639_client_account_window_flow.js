@@ -1,0 +1,33 @@
+'use strict';
+const fs=require('fs'),path=require('path'),crypto=require('crypto');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};
+const cabinet=read('js/next/pages/cabinet.js');
+const win=read('js/next/account_window.js');
+const css=read('css/next/client_account_windows.css');
+const reg=read('inc/asset_registry.php');
+const asset=read('inc/asset_version.php');
+const sw=read('sw.js');
+const config=read('config.php');
+const manifest=JSON.parse(read('tools/shell_freeze_manifest_r1885603.json'));
+const dbv=Number((/KARETA_DB_VERSION',\s*(\d+)/.exec(config)||[])[1]||0);
+expect(dbv>=127,`R79 baseline requires DB 127 or newer (got ${dbv})`);
+for(const marker of ['k-client-account-native','РАЗДЕЛЫ АККАУНТА','data-account-window="profile"','data-account-window="notifications"',"'Безопасность'","'security'","'Интерфейс'","'interface'",'refreshClientCabinet'])expect(cabinet.includes(marker),`cabinet missing R79 marker ${marker}`);
+expect(!cabinet.includes('bindSocialProfile(host)'),'dead bindSocialProfile call must be removed');
+expect(cabinet.includes('async function mountData()'),'cabinet mountData handler must be defined before export');
+expect(cabinet.includes("openClientAccountWindow('profile')"),'cabinet data route must bridge into Account Window');
+const profileSlice=(/function renderSocialProfile\(d\)\{([\s\S]*?)\n\s*function cabinetVehicleTitle/.exec(cabinet)||[])[1]||'';
+expect(profileSlice&&!profileSlice.includes('data-profile-form'),'client profile must not preload hidden inline edit form');
+for(const marker of ["document.createElement('dialog')",'k-account-window-r79','profile:{title:', 'documents:{title:', 'tariff:{title:', 'notifications:{title:', 'security:{title:', 'interface:{title:', 'kareta.account.window.pending','kareta:routechange'])expect(win.includes(marker),`Account Window missing ${marker}`);
+expect(!/<select\b/i.test(win),'R79 Account Window must not contain <select>');
+expect(win.includes("if(currentRoute()!=='cabinet'||!clientPage())")||win.includes("currentRoute()!=='cabinet'"),'Account Window must be scoped to client cabinet');
+expect(win.includes("KaretaIdentity?.load")&&win.includes("window.App?.logout"),'security window must expose session recheck and logout when available');
+for(const token of ['dialog.k-account-window-r79','.k-account-flat-row','.k-account-setting-list','.k-account-security','.k-account-picker-block'])expect(css.includes(token),`R79 CSS missing ${token}`);
+expect(reg.includes('css/next/client_account_windows.css'),'R79 CSS not registered');
+expect(reg.includes('js/next/account_window.js'),'R79 JS not registered');
+expect(asset.includes('r1885639-client-account-window-flow')&&sw.includes('r1885639-client-account-window-flow'),'R79 release suffix missing');
+expect(asset.includes('r1885636-ux-restructure-window-engine')&&asset.includes('r1885637-work-order-native-lifecycle')&&asset.includes('r1885638-client-request-garage-window-flow'),'R76-R78 version chain missing before R79');
+for(const [file,hash] of Object.entries(manifest.files)){const target=path.join(root,file);if(!fs.existsSync(target)){if(file.startsWith('assets/'))continue;expect(false,`SHELL FREEZE FILE MISSING: ${file}`);continue;}const actual=crypto.createHash('sha256').update(fs.readFileSync(target)).digest('hex');expect(actual===hash,`SHELL FREEZE VIOLATION: ${file}`)}
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}
+console.log('R188.5.5.6.79 Client Account & Settings Window Flow: single Account workspace + 6 large windows + no active dropdown + deep-link bridge + Shell Freeze 2 OK');

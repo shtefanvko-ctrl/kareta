@@ -1,0 +1,48 @@
+:root{
+  --k-welcome-background-image:none;
+  --k-welcome-background-position:center center;
+}
+
+/*
+ * Welcome background is a visual layer only.
+ * The existing first-window markup, logo, copy, progress and CTA stay untouched.
+ */
+#onb2-step-welcome .onb2-welcome-card{
+  position:relative;
+  isolation:isolate;
+  background:#f8f6f2 !important;
+}
+#onb2-step-welcome .onb2-welcome-card::before{
+  content:"";
+  position:absolute;
+  z-index:-2;
+  inset:0;
+  background-color:#f8f6f2;
+  background-image:var(--k-welcome-background-image);
+  background-position:var(--k-welcome-background-position);
+  background-repeat:no-repeat;
+  background-size:cover;
+  pointer-events:none;
+}
+#onb2-step-welcome .onb2-welcome-card::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.84) 0%,rgba(255,255,255,.66) 50%,rgba(255,255,255,.86) 100%);
+  pointer-events:none;
+}
+#onb2-step-welcome .onb2-welcome-card > *{
+  position:relative;
+  z-index:1;
+}
+
+@media (max-width:700px){
+  #onb2-step-welcome .onb2-welcome-card::after{
+    background:linear-gradient(180deg,rgba(255,255,255,.76) 0%,rgba(255,255,255,.50) 46%,rgba(255,255,255,.86) 100%);
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  #onb2-step-welcome .onb2-welcome-card{transition:none !important}
+}

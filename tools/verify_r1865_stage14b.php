@@ -1,0 +1,2 @@
+<?php
+declare(strict_types=1);$r=dirname(__DIR__);$files=['api/migrations/084_identity_migration_control_center.php','api/identity_migration_admin.php','js/next/pages/identity_migration.js','css/next/identity_migration.css','docs/identity/STAGE_14B_MIGRATION_CONTROL_CENTER.md'];foreach($files as $f){if(!is_file($r.'/'.$f)){fwrite(STDERR,'missing '.$f.PHP_EOL);exit(1);}}echo 'R186.5 Stage14B OK'.PHP_EOL;

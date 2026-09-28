@@ -1,0 +1,22 @@
+const fs=require('fs');
+const read=p=>fs.readFileSync(p,'utf8');
+const masters=read('js/next/pages/masters.js');
+const details=read('js/next/pages/details.js');
+const mastersCss=read('css/next/masters.css');
+const detailsCss=read('css/next/details.css');
+const version=read('inc/asset_version.php');
+const sw=read('sw.js');
+const errors=[]; const must=(ok,msg)=>{if(!ok)errors.push(msg)};
+must(masters.includes('k-master-reference-search')&&masters.includes('Свободны сегодня'),'Screen 16 search/filter composition');
+must(masters.includes('availabilityText')&&masters.includes("available?'Свободен сегодня':'Завтра'"),'Screen 16 visible availability state');
+must(mastersCss.includes('84.41 — screen 16 visual lock'),'Screen 16 final visual lock marker');
+must(mastersCss.includes('grid-template-columns:146px minmax(0,1fr)!important'),'Screen 16 card proportions');
+must(details.includes('k-master-ref-profile')&&details.includes('k-master-ref-actions'),'Screen 17 profile composition');
+must(detailsCss.includes('84.41 — screens 17–18 visual lock'),'Screens 17–18 final visual lock marker');
+must(detailsCss.includes('grid-template-columns:152px minmax(0,1fr)!important'),'Screen 17 identity proportions');
+must(details.includes('k-master-ref-booking-stepper')&&details.includes('Выберите дату')&&details.includes('Свободное время'),'Screen 18 booking composition');
+must(details.includes('data-book-slot')&&details.includes('is-active'),'Screen 18 selectable time slot states');
+must(detailsCss.includes('width:min(100% - 28px,450px)!important'),'Reference phone-width surface');
+const v=(/188\.5\.5\.6\.84\.(\d+)/.exec(version)||[])[1];const w=(/188\.5\.5\.6\.84\.(\d+)/.exec(sw)||[])[1];must(v&&w&&v===w&&Number(v)>=41,'Release 84.41+ synchronized');
+if(errors.length){console.error(errors.map(x=>'FAIL: '+x).join('\n'));process.exit(1)}
+console.log('master reference visual lock 84.41 OK');

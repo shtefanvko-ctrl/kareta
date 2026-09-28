@@ -1,0 +1,6 @@
+:root[data-realtime="live"] .k-realtime-indicator{--rt:#21a366}
+:root[data-realtime="connecting"] .k-realtime-indicator,:root[data-realtime="reconnecting"] .k-realtime-indicator{--rt:#d99a00}
+:root[data-realtime="polling"] .k-realtime-indicator{--rt:#3478f6}
+:root[data-realtime="offline"] .k-realtime-indicator{--rt:#c63838}
+.k-realtime-indicator{--rt:#8a94a6;position:fixed;right:14px;bottom:78px;z-index:45;width:10px;height:10px;border-radius:50%;background:var(--rt);box-shadow:0 0 0 4px color-mix(in srgb,var(--rt) 18%,transparent);pointer-events:none}
+@media(min-width:900px){.k-realtime-indicator{bottom:18px}}

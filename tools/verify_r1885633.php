@@ -1,0 +1,2 @@
+<?php
+declare(strict_types=1);$root=dirname(__DIR__);$required=['css/next/sto_recovery_native_operations.css','tools/test_r1885633_sto_recovery_native_operations.js','docs/releases/changelog/CHANGELOG_R188_5_5_6_73.md'];foreach($required as $f)if(!is_file($root.'/'.$f)){fwrite(STDERR,"Missing $f\n");exit(1);}passthru('node '.escapeshellarg($root.'/tools/test_r1885633_sto_recovery_native_operations.js'),$code);exit($code);

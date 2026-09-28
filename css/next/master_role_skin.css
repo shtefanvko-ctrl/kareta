@@ -1,0 +1,55 @@
+/* KARETA.KZ MASTER UI FINAL — role-aware skin for shared routes.
+   Functionality remains owned by each route. */
+html[data-user-role="master"] #k-page-outlet>.k-page.k-master-surface-page,
+html[data-user-role="master"] #k-page-outlet>.k-page[data-master-role-skin="1"]{
+  width:min(100%,var(--k-master-content-max));
+  max-width:var(--k-master-content-max);
+  margin-inline:auto;
+  padding:var(--k-master-page-y) var(--k-master-page-x) calc(var(--k-mobile-nav-live-height,var(--k-mobile-nav-h,72px)) + 28px + env(safe-area-inset-bottom,0px));
+  box-sizing:border-box;
+}
+
+/* Shared-route geometry: Parts / Cabinet / Orders / Chats / Community. */
+html[data-user-role="master"] #k-page-outlet :is(.k-shop-page,.k-staff-cabinet--master,.k-page[data-page~="orders-master"],.k-page[data-page="chats"],.k-community-page){
+  color:var(--k-master-text);
+}
+html[data-user-role="master"] #k-page-outlet :is(.k-parts-ref-head,.k-staff-cabinet-head,.k-workspace-head,.k-community-inner-header){
+  border-color:var(--k-master-line);
+}
+html[data-user-role="master"] #k-page-outlet :is(.k-parts-ref-head,.k-staff-cabinet-head,.k-workspace-head){
+  min-height:auto;margin:0 0 4px;padding:4px 0 15px;border-width:0 0 1px;border-style:solid;border-radius:0;background:transparent;box-shadow:none
+}
+html[data-user-role="master"] #k-page-outlet :is(.k-parts-ref-head,.k-staff-cabinet-head,.k-workspace-head) h1{margin:0;font-size:var(--k-master-title);line-height:1.06;letter-spacing:-.035em}
+html[data-user-role="master"] #k-page-outlet :is(.k-parts-ref-head,.k-staff-cabinet-head,.k-workspace-head) p{margin:6px 0 0;max-width:760px;color:var(--k-master-muted);font-size:var(--k-master-body);line-height:1.45}
+
+html[data-user-role="master"] #k-page-outlet :is(.k-shop-toolbar,.k-orders-toolbar,.k-orders-toolbar-v2,.k-chat-sidebar,.k-chat-main,.k-community-composer,.k-community-side-card,.k-staff-cabinet-card){
+  border-color:var(--k-master-line);background:var(--k-master-surface);box-shadow:none
+}
+html[data-user-role="master"] #k-page-outlet :is(.k-shop-toolbar,.k-orders-toolbar,.k-orders-toolbar-v2){border-radius:var(--k-master-small-card-radius)}
+html[data-user-role="master"] #k-page-outlet :is(.k-shop-product,.k-order-card,.k-orders-grid>article,.k-staff-cabinet-card,.k-community-post){border-color:var(--k-master-line);border-radius:var(--k-master-card-radius);box-shadow:none}
+html[data-user-role="master"] #k-page-outlet .k-chat-layout{border:1px solid var(--k-master-line);border-radius:var(--k-master-card-radius);overflow:hidden;background:var(--k-master-surface)}
+html[data-user-role="master"] #k-page-outlet .k-chat-sidebar{border-radius:0}
+html[data-user-role="master"] #k-page-outlet .k-chat-main{border-radius:0}
+
+/* Community remains a feed, but its outer geometry belongs to Master. */
+html[data-user-role="master"] #k-page-outlet .k-community-page{background:transparent}
+html[data-user-role="master"] #k-page-outlet .k-community-layout-v2{max-width:none;margin-inline:0}
+html[data-user-role="master"] #k-page-outlet .k-community-desktop-nav,
+html[data-user-role="master"] #k-page-outlet .k-community-secondary{align-self:start}
+html[data-user-role="master"] #k-page-outlet .k-community-feed-tabs{border-color:var(--k-master-line);background:var(--k-master-surface)}
+
+/* Client postlude is allowed to exist, but not to move Master shared surfaces. */
+html[data-user-role="master"] #k-page-outlet{max-width:none;padding-inline:0}
+html[data-user-role="master"] #k-page-outlet>.k-master-surface-page{max-width:var(--k-master-content-max)}
+
+@media(max-width:1024px){
+  html[data-user-role="master"] #k-page-outlet .k-community-layout-v2{grid-template-columns:minmax(0,1fr)}
+  html[data-user-role="master"] #k-page-outlet .k-community-desktop-nav,
+  html[data-user-role="master"] #k-page-outlet .k-community-secondary{display:none}
+}
+@media(max-width:700px){
+  html[data-user-role="master"] #k-page-outlet>.k-page.k-master-surface-page,
+  html[data-user-role="master"] #k-page-outlet>.k-page[data-master-role-skin="1"]{padding-inline:12px}
+  html[data-user-role="master"] #k-page-outlet .k-chat-layout{border-radius:16px}
+  html[data-user-role="master"] #k-page-outlet .k-community-page{padding-inline:12px}
+}

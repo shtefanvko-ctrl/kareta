@@ -1,0 +1,52 @@
+{
+  "schema": "kareta.release-baseline.v1",
+  "release": "188.5.5.6.84.109",
+  "sourceArchive": "KARETA_KZ_FULL_NO_ASSETS_R188_5_5_6_84_109_MASTER_EXCHANGE_STRUCTURE(1).zip",
+  "sourceArchiveSha256": "3959141cb6327bbc4c78e566616f67883c9c86202beb3b4de0f3febc56853013",
+  "sourceFileCount": 1009,
+  "sourceTreeSha256": "98cd84ca234e727b030a561b75fbe2d0640678e92e4f1f0d59028cf870ec24b6",
+  "keyFileCount": 26,
+  "routeRegistry": {
+    "routeKeys": 67,
+    "aliases": 39,
+    "dynamicPatterns": 17
+  },
+  "assetPlan": {
+    "lazyBundles": 56,
+    "eagerStyles": 1,
+    "eagerScripts": 11,
+    "criticalAssets": 18,
+    "scriptSources": 72,
+    "routeKeysWithLazyAssets": 67,
+    "missingReferencedAssets": 22,
+    "missingRuntimeCodeAssets": 0,
+    "missingImageAssets": 22,
+    "noAssetsArchive": true
+  },
+  "staging": {
+    "external": "BLOCKED_BY_EXECUTION_ENVIRONMENT",
+    "localEquivalent": "PASS"
+  },
+  "generatedAtUtc": "2026-09-24T20:01:10.324037+00:00",
+  "artifacts": [
+    "file_hashes.sha256",
+    "key_file_hashes.sha256",
+    "routes.json",
+    "asset_plan.json",
+    "staging_check.json",
+    "README.md"
+  ],
+  "qaTool": "tools/test_release_baseline_84_109.py",
+  "verification": {
+    "baselineTest": "PASS",
+    "masterExchange84_109": "PASS",
+    "routeLazyRuntime84_67": "PASS",
+    "routeSessionPreservation84_85": "PASS",
+    "externalStaging": "BLOCKED_BY_EXECUTION_ENVIRONMENT",
+    "localStagingEquivalent": "PASS",
+    "baselineIntegrity": "PASS",
+    "stageCheck": "NOT_OK",
+    "stageComplete": false,
+    "stageBlocker": "required external staging verification incomplete"
+  }
+}

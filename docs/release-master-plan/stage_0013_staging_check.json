@@ -1,0 +1,80 @@
+{
+  "schema": "kareta.release-master-plan.stage-check.v1",
+  "stage": 13,
+  "totalStages": 2513,
+  "phase": "00 — BASELINE_TEST_HARNESS",
+  "sourceBaseline": "R188.5.5.6.84.109",
+  "task": "Создать API contract smoke suite",
+  "local": {
+    "status": "PASS",
+    "suite": "tools/test_api_contract_smoke_84_109.js",
+    "result": "API_CONTRACT_SMOKE_84_109: PASS checks=10/10 domains=5 happyError=5/5",
+    "domains": {
+      "schema": {
+        "happy": "PASS",
+        "error": "PASS"
+      },
+      "status": {
+        "happy": "PASS",
+        "error": "PASS"
+      },
+      "auth": {
+        "happy": "PASS",
+        "error": "PASS"
+      },
+      "error": {
+        "happy": "PASS",
+        "error": "PASS"
+      },
+      "idempotency": {
+        "happy": "PASS",
+        "error": "PASS"
+      }
+    },
+    "releaseChecklist": {
+      "status": "PASS",
+      "passed": 24,
+      "total": 24,
+      "failed": 0
+    },
+    "defectsFixed": [
+      "idempotency_same_key_changed_payload_conflict",
+      "schema_reconciliation_error_classification",
+      "schema_contract_diagnostics_test_current_contract"
+    ]
+  },
+  "externalStaging": {
+    "checkedAtUtc": "2026-09-25T02:15:02.4449932Z",
+    "apiContractSmoke": {
+      "file": "docs/release-master-plan/stage_0013_api_contract_staging.json",
+      "passed": 5,
+      "failed": 1,
+      "status": "FAIL",
+      "failedProbe": "schema.happy",
+      "failedHttpStatus": 503,
+      "failedCode": "DATABASE_UNAVAILABLE"
+    },
+    "root": {
+      "url": "https://s.kareta.kz/",
+      "httpStatus": 403,
+      "statusDescription": "Forbidden",
+      "contentType": "text/html; charset=UTF-8"
+    },
+    "apiPing": {
+      "url": "https://s.kareta.kz/api/db.php?action=ping",
+      "httpStatus": 200,
+      "ok": true,
+      "dbReady": false,
+      "databaseState": "configuration_missing",
+      "recoveryAction": "configure_private_database_settings",
+      "diagnosticCode": "84650804048629ff",
+      "assetVersion": "188.5.5.6.84.109"
+    },
+    "status": "BLOCKED_ENVIRONMENT"
+  },
+  "businessDataMutatedBySmoke": false,
+  "dbSchemaChanged": false,
+  "frontendRoutesChanged": false,
+  "stageComplete": false,
+  "stageBlocker": "Staging schema health is HTTP 503 because private DB configuration is missing; root remains HTTP 403."
+}

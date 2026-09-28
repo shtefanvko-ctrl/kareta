@@ -1,0 +1,13 @@
+const fs=require('fs');
+const dispatch=fs.readFileSync('api/production_dispatch.php','utf8');
+const feed=fs.readFileSync('js/next/pages/work_feed.js','utf8');
+const fail=m=>{throw new Error(m)};
+for(const x of ['kareta_master_exchange_feed_fallback','MASTER_EXCHANGE_V2_DEGRADED','MASTER_EXCHANGE_ITEM_METRICS']) if(!dispatch.includes(x)) fail('missing '+x);
+if(!/catch\(Throwable \$error\)[\s\S]*kareta_master_exchange_feed_fallback/.test(dispatch)) fail('v2 feed must fall back instead of failing whole exchange');
+if(!dispatch.includes("kareta_column_exists($pdo,'orders','estimated_duration_min')")) fail('master load must tolerate old orders schema');
+if(!dispatch.includes('SELECT * FROM masters WHERE BINARY id=BINARY ? LIMIT 1')) fail('master row must tolerate optional master columns');
+if(!feed.includes('retriedIdentity=false')) fail('frontend must guard one identity retry');
+if(!feed.includes('window.KaretaIdentity?.load?.({force:true,allowLegacyBridge:true')) fail('frontend must repair identity before declaring exchange unavailable');
+if(!feed.includes('exchangeState.degraded=!!data.degraded')) fail('frontend must accept degraded exchange response');
+if(!feed.includes('Биржа доступна · метрики восстанавливаются')) fail('degraded mode must remain visibly usable');
+console.log('R188.5.5.6.41 master exchange fail-soft recovery: OK');

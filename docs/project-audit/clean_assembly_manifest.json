@@ -1,0 +1,36 @@
+{
+  "schema": "kareta.clean-assembly.v1",
+  "release": "188.5.5.6.84.110",
+  "canonicalRoot": "/home/karetakz/sites/kareta.kz",
+  "generatedAt": "2026-09-25T07:56:09.344172+00:00",
+  "counts": {
+    "api": 226,
+    "assets": 682,
+    "css": 149,
+    "docs": 82,
+    "inc": 5,
+    "js": 155,
+    "media": 1,
+    "storage": 9,
+    "tools": 466
+  },
+  "integrated": {
+    "globalTuningAssets": 629,
+    "manropeAssets": 4,
+    "responsiveStage1Evidence": 23,
+    "releaseMasterPlanReports": 15,
+    "historicalStageWorkScripts": 22
+  },
+  "excludedLegacyDesktopItems": [
+    "api/domains/capability_dispatch.php",
+    "api/domains/identity_admin.php",
+    "api/domains/runtime_config.php",
+    "kareta.kz.zip"
+  ],
+  "removedProjectJunk": [
+    "stage18-backup-20260925-120157",
+    "t --upgradable<ESC>"
+  ],
+  "responsiveHarness": "tools/responsive/capture_baseline_windows.js",
+  "totalFiles": 1819
+}

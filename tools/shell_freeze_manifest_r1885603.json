@@ -1,0 +1,20 @@
+{
+  "baseline": "R188.5.5.6.84.102: approved Master UI consolidation keeps primary navigation frozen while the Master More calendar now opens the native Master schedule; index.php markup remains frozen.",
+  "rule": "KARETA Shell Freeze 2 remains active. Explicit 84.71 boot-orchestrator exception: index.php runtime recovery may fail in-place and expose manual Retry to guarantee a single visible 0→100 document boot; frozen navigation, shell markup, menu contracts and visual assets remain unchanged.",
+  "files": {
+    "js/next/shell_nav.js": "ed25fe2fcb27d266c26041037d127941017892df81846591e3cae0e5758c392b",
+    "js/next/shell_menu.js": "9ead8333990d86ed60ad685f52ae414e9aef39a6baef12c5e273c3d67394fd2b",
+    "js/next/navigation_core.js": "dd30923e4a79208562ae02e5dbd5ed3b14683c5aff74dfce1ccee32dda86202a",
+    "js/next/smart_action_hub.js": "6e3941b4cc27e1f45e0f44ab0085efdd1b8e043fc9f55e0a4a66d58c05a50532",
+    "js/next/context_manager.js": "b4fca95e834e3ac567dfcc01d92c8f9b9ae44fcfcc968d55e16eef58d94f1006",
+    "js/next/identity_frontend.js": "cf63ad1e1a47e1165fa97120aec32b7c86e6d746b04a102a84c71022f37d2095",
+    "css/next/smart_action_hub.css": "17abf827632ffd3d95b428486142e5121536bb4975831d5c1b6051cdad0caeb8",
+    "css/next/master_mobile_nav.css": "1add13f9d4dcb90b9fed537f3dc2a16561740625c99fb00613f9012899592170",
+    "css/next/shell_session_stability.css": "a72276aba5702a066c463f732c5c4e485bb0f41243bc42acb8cb3832404044e6",
+    "assets/onboarding/kareta_logo_full.png": "14d590d40aad179c6baca3d0e58508d120eb6601f4c12166fe18ccfc367dac6c",
+    "assets/onboarding/kareta_logo_icon.png": "ea0ac89d33f0f323718cb8e2e50c3db62789b1778fe25f52c0d78691b01b3576",
+    "index.php": "5e3dbc84e0ff808dd023d490399677f7ff1616d3c7bebaeb1bfab462d0854d26",
+    "css/next/app_next.css": "21d2735f0f18cd5c683eb6301a9a6f41b2ba94cb03803a165b0e30cd1c8c8b14",
+    "css/next/shell_burger_recovery.css": "3157c4660a2b59a7922fd70c9a076d75784fba8b69e504fdbc58cce2e4c87c86"
+  }
+}

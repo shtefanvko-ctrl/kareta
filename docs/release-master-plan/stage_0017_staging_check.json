@@ -1,0 +1,14 @@
+{
+  "schema": "kareta.release-master-plan.stage-check.v1",
+  "stage": 17,
+  "baseline": "R188.5.5.6.84.109",
+  "task": "Identity E2E suite",
+  "staging": "https://s.kareta.kz",
+  "runtimePreflight": "PASS",
+  "runtimeVersion": "188.5.5.6.84.109",
+  "identityE2E": "BLOCKED_CONFIG",
+  "mutationStarted": false,
+  "blocker": "Reserved KARETA_E2E_ADMIN_PHONE and KARETA_E2E_TARGET_PHONE are not configured in the runner environment.",
+  "evidence": "docs/release-master-plan/stage_0017_identity_e2e_staging.json",
+  "dod": "NOT_MET"
+}

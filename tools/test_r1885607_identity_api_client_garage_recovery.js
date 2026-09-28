@@ -1,0 +1,18 @@
+const fs=require('fs');
+const assert=(ok,msg)=>{if(!ok){throw new Error(msg)}};
+const read=p=>fs.readFileSync(p,'utf8');
+const cabinet=read('api/client_cabinet.php');
+const bridge=read('api/identity/legacy_api_bridge.php');
+const db=read('api/db.php');
+const page=read('js/next/pages/cabinet.js');
+const rt=read('api/realtime.php');
+assert(cabinet.includes("kareta_client_cabinet_actor($pdo,'vehicles.read')"),'client cabinet must use vehicles.read capability');
+assert(!/function kareta_client_cabinet_get[\s\S]{0,180}kareta_require_role\('client'\)/.test(cabinet),'clientCabinet.get must not use legacy client role gate');
+assert(bridge.includes('function kareta_resolve_api_actor'),'identity-aware API actor resolver missing');
+assert(bridge.includes('function kareta_require_api_session'),'identity-aware API session gate missing');
+assert(db.includes("kareta_require_api_session($pdo,['client','master','sto','seller','admin','owner'])"),'pull must accept Identity session');
+assert(db.includes('$resolvedActor = kareta_resolve_api_actor($pdo);'),'pull must use resolved Identity actor');
+assert(page.includes('KaretaNavigationCore?.interfaceRole?.()'),'garage frontend must follow active Identity interface context');
+assert(page.includes("function isClientCabinetRole(){return currentRole()==='client';}"),'client garage must stay isolated from master/organization contexts');
+assert(rt.includes('REALTIME_EVENTS_DEGRADED')&&rt.includes('REALTIME_UNREAD_DEGRADED')&&rt.includes('REALTIME_CURSOR_DEGRADED'),'realtime fail-soft guards missing');
+console.log('R188.5.5.6.47 identity API / garage recovery OK');

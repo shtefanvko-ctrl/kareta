@@ -1,0 +1,54 @@
+{
+  "schema": "kareta.release-master-plan.stage-check.v1",
+  "stage": 15,
+  "totalStages": 2513,
+  "phase": "00 — BASELINE_TEST_HARNESS",
+  "sourceBaseline": "R188.5.5.6.84.109",
+  "task": "Сократить legacy role JS checks",
+  "checkedAtUtc": "2026-09-25T03:08:50Z",
+  "local": {
+    "status": "PASS_STAGE_SCOPE",
+    "authorizationSource": "server/capabilities",
+    "rolePolicy": "ui-only",
+    "stageContract": "PASS",
+    "nodeRegression": {"status":"PASS","passed":15,"total":15},
+    "phpSyntax": {"status":"PASS","passed":5,"total":5},
+    "legacyRoleBudget": {"status":"PASS","total":68,"budget":68,"dbPhp":50,"dbBudget":50},
+    "dbMonolith": {"status":"PASS","bytes":672086,"maxBytes":675028},
+    "bootBundles": {"status":"PASS","fresh":5,"total":5},
+    "fullReleaseChecklist": {"status":"NOT_EXECUTED_INFRA","reason":"Wsl/Service/0x80072746 during repeated launcher connections"}
+  },  "externalStaging": {
+    "root": {"url":"https://s.kareta.kz/","httpStatus":403,"statusDescription":"Forbidden"},
+    "apiPing": {
+      "url":"https://s.kareta.kz/api/db.php?action=ping",
+      "httpStatus":200,
+      "assetVersion":"188.5.5.6.84.109",
+      "dbReady":false,
+      "databaseState":"configuration_missing",
+      "recoveryAction":"configure_private_database_settings",
+      "diagnosticCode":"84650804048629ff"
+    },
+    "identitySession": {
+      "url":"https://s.kareta.kz/api/identity_session.php",
+      "httpStatus":503,
+      "code":"DATABASE_UNAVAILABLE"
+    },
+    "rawProbe":"docs/release-master-plan/stage_0015_staging_probe_raw.txt",
+    "status":"BLOCKED_ENVIRONMENT"
+  },  "changedScope": {
+    "dbSchemaChanged": false,
+    "routeRegistryChanged": false,
+    "activeRuntimeAuthorizationChanged": true,
+    "legacyCompatibilityAuthorizationChanged": true
+  },
+  "dod": {
+    "frontendRoleIsAuthorizationSource": false,
+    "identityRoutesUseCapabilities": true,
+    "privilegedRequestDataPathUsesCapability": true,
+    "piiVisibilityUsesServerMask": true,
+    "regressionGateAdded": true,
+    "stagingEndToEndVerified": false
+  },
+  "stageComplete": false,
+  "stageBlocker": "Staging root is HTTP 403 and private DB configuration is missing; Identity endpoint returns 503 DATABASE_UNAVAILABLE."
+}

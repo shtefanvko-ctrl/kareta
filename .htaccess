@@ -1,0 +1,63 @@
+# KARETA.KZ deployment hardening
+
+Options -Indexes
+DirectoryIndex index.php
+
+AddDefaultCharset UTF-8
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(self), camera=(self), microphone=(self)"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Never expose internal deployment/documentation folders.
+  RewriteRule ^(docs|storage/logs|storage/backups|tools)(/|$) - [F,L]
+  RewriteRule ^config\.private\.php$ - [F,L]
+
+  # Protect dotfiles except well-known ACME folder.
+  RewriteRule (^|/)\.(?!well-known/) - [F,L]
+
+  # R186.5 Identity Context Engine clean endpoints.
+  RewriteRule ^api/context/(list|current|select)/?$ api/context.php?action=$1 [QSA,L]
+  RewriteRule ^api/capabilities/(current|check)/?$ api/capabilities.php?action=$1 [QSA,L]
+
+  # Keep real files/directories and API endpoints untouched.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # SPA fallback for clean URLs.
+  RewriteRule ^ index.php [L]
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+</IfModule>
+
+
+# KARETA active patch cache policy
+<IfModule mod_headers.c>
+  <FilesMatch "^(sw\.js|index\.php|manifest\.json)$">
+    Header always set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header always set CDN-Cache-Control "no-store"
+    Header always set Surrogate-Control "no-store"
+    Header always set Pragma "no-cache"
+  </FilesMatch>
+  <FilesMatch "\.(js|css)$">
+    Header always set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+  </FilesMatch>
+</IfModule>
+
+# R186.5 identity session core
+RewriteRule ^api/identity/session/?$ api/identity_session.php [L,QSA]

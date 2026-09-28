@@ -1,0 +1,25 @@
+[data-kareta-403]{
+  position:relative;
+  min-height:100dvh;
+  overflow:hidden;
+  background-color:#f7f5f2;
+  isolation:isolate;
+}
+[data-kareta-403]::before{
+  position:absolute;
+  z-index:-2;
+  inset:0;
+  content:"";
+  background-image:var(--k-403-background-image,none);
+  background-position:var(--k-403-background-position,center center);
+  background-repeat:no-repeat;
+  background-size:var(--k-403-background-fit,cover);
+}
+[data-kareta-403]::after{
+  position:absolute;
+  z-index:-1;
+  inset:0;
+  content:"";
+  background:linear-gradient(90deg,rgba(255,255,255,.90) 0%,rgba(255,255,255,.58) 42%,rgba(255,255,255,.12) 72%);
+  pointer-events:none;
+}

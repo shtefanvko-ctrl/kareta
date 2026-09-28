@@ -1,0 +1,15 @@
+'use strict';
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const source=fs.readFileSync('js/next/pages/cabinet.js','utf8');
+const noop=()=>{};
+const window={KaretaPageUI:{},KaretaClientCabinetApi:{},KaretaFirstVehicleFlow:null,KaretaRoleAccess:{currentRole:()=> 'client',hasCapability:()=>false},KaretaNext:{state:{user:{role:'client'}}}};
+const sandbox={window,console,Intl,Date,URLSearchParams,setTimeout:noop,clearTimeout:noop,sessionStorage:{setItem:noop,getItem:()=>null,removeItem:noop},location:{hash:'#/cabinet'},history:{state:null,replaceState:noop},document:{querySelector:()=>null,querySelectorAll:()=>[],getElementById:()=>null,documentElement:{classList:{toggle:noop}}},HTMLFormElement:function(){},FormData:function(){return {entries:()=>[]}},CustomEvent:function(){}};
+window.window=window;window.document=sandbox.document;window.sessionStorage=sandbox.sessionStorage;window.location=sandbox.location;window.history=sandbox.history;
+vm.createContext(sandbox);
+vm.runInContext(source,sandbox,{filename:'cabinet.js'});
+const pages=window.KaretaCabinetPages;
+assert(pages,'KaretaCabinetPages export missing');
+for(const name of ['renderCabinet','renderGarage','renderData','renderHistory','renderDocuments','renderPromos','renderTariff','renderSettings','mountCabinet','mountGarage','mountData','mountHistory','mountDocuments','mountPromos','mountTariff','mountSettings']) assert.strictEqual(typeof pages[name],'function',`${name} must be a function`);
+assert(source.includes('function openClientAccountWindow(kind)'),'account window bridge must be declared');
+assert(source.includes("async function mountData()"),'mountData must be declared before export');
+console.log('KARETA cabinet runtime exports 84.25: OK');

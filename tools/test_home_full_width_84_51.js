@@ -1,0 +1,13 @@
+'use strict';
+const fs=require('fs');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+const css=fs.readFileSync(path.join(root,'css/next/reference_client_pages.css'),'utf8');
+const ver=fs.readFileSync(path.join(root,'inc/asset_version.php'),'utf8');
+const ok=(cond,msg)=>{if(!cond){console.error('[FAIL]',msg);process.exitCode=1;}else console.log('[OK]',msg);};
+ok(css.includes('R188.5.5.6.84.51 — Home width policy'),'84.51 home width override present');
+ok(/\.k-home-reference\s*\{[\s\S]*?max-width:none!important;[\s\S]*?margin-inline:0!important;/.test(css),'home root has no max-width cap');
+ok(css.includes('.k-home-reference>.k-home-ref-hero')&&css.includes('max-width:none!important'),'direct home sections are not capped on desktop');
+const m=ver.match(/KARETA_ASSET_VERSION\s*=\s*'188\.5\.5\.6\.84\.(\d+)'/);
+ok(m&&Number(m[1])>=51,'asset version 84.51+');
+if(!process.exitCode) console.log('home full width 84.51 OK');

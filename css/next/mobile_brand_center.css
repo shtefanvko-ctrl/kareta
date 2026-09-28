@@ -1,0 +1,87 @@
+/* R188.5.5.6.84.75 — mobile shell brand centering + header back icon polish. */
+@media (max-width:860px){
+  #k-shell-header.k-shell-header{position:fixed}
+  #k-shell-header > .k-brand{
+    position:absolute!important;
+    left:50%!important;
+    top:50%!important;
+    transform:translate(-50%,-50%)!important;
+    grid-column:auto!important;
+    grid-row:auto!important;
+    justify-self:auto!important;
+    align-self:auto!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:auto!important;
+    max-width:calc(100% - 136px)!important;
+    margin:0!important;
+    z-index:1!important;
+    overflow:visible!important;
+  }
+  #k-shell-header > .k-brand .k-brand-logo{
+    object-position:center center!important;
+    max-width:100%!important;
+  }
+  #k-shell-header > .k-shell-actions{
+    position:relative;
+    z-index:2;
+    margin-left:auto;
+  }
+}
+@media (max-width:359px){
+  html[data-user-role="client"] #k-shell-header > .k-brand .k-brand-logo--full{width:108px!important}
+}
+
+/* Keep the existing #k-mobile-back node/logic for non-client surfaces.
+   Client back/location controls are styled by the approved reference header. */
+@media (max-width:900px){
+  #k-shell-header > #k-mobile-back.k-mobile-back{
+    position:absolute!important;
+    left:max(12px,env(safe-area-inset-left,0px))!important;
+    top:50%!important;
+    right:auto!important;
+    bottom:auto!important;
+    transform:translateY(-50%)!important;
+    width:44px!important;
+    min-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    margin:0!important;
+    padding:0!important;
+    display:grid;
+    place-items:center;
+    border:0!important;
+    border-radius:14px!important;
+    background:#fff!important;
+    color:#111827!important;
+    box-shadow:none!important;
+    outline:none!important;
+    z-index:4!important;
+    pointer-events:auto!important;
+  }
+  #k-shell-header > #k-mobile-back[hidden]{display:none!important}
+  #k-shell-header > #k-mobile-back svg{
+    width:23px!important;
+    height:23px!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:2.1!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+  #k-shell-header > #k-mobile-back:active{transform:translateY(-50%) scale(.96)!important}
+  #k-shell-header > #k-mobile-back:focus-visible{outline:none!important;background:rgba(255,107,0,.08)!important}
+
+  html[data-user-role="client"] body.k-client-keyboard-open #k-shell-header > #k-mobile-back,
+  body.k-garage-modal-open #k-shell-header > #k-mobile-back,
+  html[data-user-role="client"].k-account-window-open #k-shell-header > #k-mobile-back{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+}
+
+@media (min-width:861px) and (max-width:900px){
+  #k-shell-header:has(> #k-mobile-back:not([hidden])) > .k-brand{margin-left:54px!important}
+}

@@ -1,0 +1,274 @@
+/* R188.5.5.6.84.55 — CLIENT width normalization and overflow guard.
+   Loaded last. It owns only geometry/containment; visual component styling stays in page modules. */
+html[data-user-role="client"]{
+  --k-client-safe-gutter:var(--k-client-page-gutter,clamp(12px,3.8vw,24px));
+}
+
+html[data-user-role="client"] #k-page-outlet{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  overflow-x:clip!important;
+}
+
+/* Direct client page surfaces may fill the outlet; components own their internal layout. */
+html[data-user-role="client"] #k-page-outlet > :is(
+  .k-home-reference,
+  [data-page="services"].k-page-shell--workspace,
+  .k-page.k-community-page.k-community-v2,
+  .k-masters-page,
+  .k-parts-native-page,
+  .k-work-feed-page,
+  .k-client-orders-native,
+  .k-client-cabinet,
+  .k-client-cabinet-page,
+  .k-chats-page,
+  .k-notifications-page,
+  .k-detail-page,
+  .k-profile-page
+){
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  box-sizing:border-box!important;
+}
+
+/* Shared overflow safety for grid/flex containers and their immediate tracks. */
+html[data-user-role="client"] #k-page-outlet :is(
+  .k-flow-community-layout,
+  .k-flow-community-main,
+  .k-community-feed,
+  .k-community-post,
+  .k-community-post-author,
+  .k-community-post-body,
+  .k-community-post-media,
+  .k-community-post-meta,
+  .k-community-post-actions,
+  .k-community-composer,
+  .k-community-header,
+  .k-community-feed-tabs,
+  .k-master-reference-inner,
+  .k-master-reference-directory,
+  .k-master-reference-card,
+  .k-master-reference-card__main,
+  .k-master-reference-copy,
+  .k-parts-ref-main,
+  .k-parts-ref-section,
+  .k-parts-ref-grid,
+  .k-parts-ref-categories,
+  .k-parts-ref-categories > header,
+  .k-parts-ref-categories > div,
+  .k-work-feed-grid,
+  .k-catalog-toolbar
+){
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+
+html[data-user-role="client"] #k-page-outlet :is(img,video,canvas,iframe){
+  max-width:100%!important;
+}
+html[data-user-role="client"] #k-page-outlet :is(input,textarea,select){
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+
+/* Community: the feed track must never be wider than the grid track. */
+html[data-user-role="client"] .k-community-v2 .k-community-layout-v2{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+html[data-user-role="client"] .k-community-v2 .k-flow-community-main.k-community-feed-column{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  justify-self:stretch!important;
+  overflow-x:clip!important;
+}
+html[data-user-role="client"] .k-community-v2 .k-flow-community-main.k-community-feed-column > *{
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+html[data-user-role="client"] .k-community-v2 .k-community-header{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  overflow:hidden!important;
+}
+html[data-user-role="client"] .k-community-v2 .k-community-header > div:first-child{
+  min-width:0!important;
+  overflow:hidden!important;
+}
+html[data-user-role="client"] .k-community-v2 .k-community-header > div:last-child{
+  min-width:max-content!important;
+  flex:0 0 auto!important;
+}
+html[data-user-role="client"] .k-community-v2 :is(.k-community-header h1,.k-community-header p,.k-community-post-body h2,.k-community-post-body p){
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+}
+html[data-user-role="client"] .k-community-v2 .k-community-stories{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  overscroll-behavior-inline:contain;
+}
+html[data-user-role="client"] .k-community-v2 .k-community-post-media{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  margin-inline:0!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+}
+html[data-user-role="client"] .k-community-v2 .k-community-post-media :is(img,video){
+  width:100%!important;
+  max-width:100%!important;
+}
+html[data-user-role="client"] .k-community-v2 :is(.k-community-comments-sheet,.k-community-filter-sheet-wrap){
+  width:auto!important;
+  max-width:none!important;
+  inset:0!important;
+}
+html[data-user-role="client"] .k-community-v2 :is(.k-community-comments-panel,.k-community-filter-panel){
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+
+/* Masters: remove the old full-viewport breakout and reference width caps. */
+html[data-user-role="client"] #k-page-outlet > .k-masters-page.k-master-reference-list{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding-left:var(--k-client-safe-gutter)!important;
+  padding-right:var(--k-client-safe-gutter)!important;
+  box-sizing:border-box!important;
+  overflow-x:clip!important;
+}
+html[data-user-role="client"] .k-master-reference-inner{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0!important;
+}
+html[data-user-role="client"] .k-master-reference-directory{
+  width:100%!important;
+  max-width:none!important;
+}
+
+/* Parts: page is full outlet width; only the category rail scrolls horizontally on phones. */
+html[data-user-role="client"] #k-page-outlet > .k-parts-native-page.k-parts-ref-page{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  overflow-x:clip!important;
+}
+html[data-user-role="client"] .k-parts-ref-categories{
+  width:100%!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+}
+html[data-user-role="client"] .k-parts-ref-categories > div{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+
+@media(max-width:860px){
+  html[data-user-role="client"] #k-page-outlet > :is(
+    .k-home-reference,
+    [data-page="services"].k-page-shell--workspace,
+    .k-page.k-community-page.k-community-v2
+  ){
+    max-width:none!important;
+  }
+
+  html[data-user-role="client"] .k-community-v2 .k-community-layout-v2{
+    display:block!important;
+    padding:0!important;
+    margin:0!important;
+    overflow-x:clip!important;
+  }
+  html[data-user-role="client"] .k-community-v2 .k-flow-community-main.k-community-feed-column{
+    display:grid!important;
+    border-radius:0!important;
+  }
+  html[data-user-role="client"] .k-community-v2 .k-community-feed-tabs{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+  html[data-user-role="client"] .k-community-v2 .k-community-feed-tabs > :is(a,button){
+    min-width:0!important;
+  }
+  html[data-user-role="client"] .k-community-v2 .k-community-post-media.is-grid{
+    height:min(112vw,460px)!important;
+  }
+
+  html[data-user-role="client"] .k-master-reference-directory{
+    grid-template-columns:1fr!important;
+  }
+
+  html[data-user-role="client"] .k-parts-ref-categories > div{
+    display:flex!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    overscroll-behavior-inline:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  html[data-user-role="client"] .k-parts-ref-categories > div::-webkit-scrollbar{display:none}
+  html[data-user-role="client"] .k-parts-ref-categories > div > button{
+    flex:0 0 clamp(96px,30vw,124px)!important;
+    min-width:0!important;
+    max-width:124px!important;
+    box-sizing:border-box!important;
+  }
+}
+
+@media(min-width:861px){
+  html[data-user-role="client"] .k-master-reference-directory{
+    grid-template-columns:repeat(auto-fit,minmax(min(100%,390px),1fr))!important;
+    gap:14px!important;
+  }
+  html[data-user-role="client"] .k-parts-ref-categories > div{
+    display:grid!important;
+    grid-template-columns:repeat(auto-fit,minmax(112px,1fr))!important;
+    overflow:visible!important;
+  }
+}
+
+@media(max-width:430px){
+  html[data-user-role="client"] .k-community-v2 .k-community-header{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:6px!important;
+  }
+  html[data-user-role="client"] .k-community-v2 .k-community-header h1{
+    font-size:22px!important;
+    line-height:27px!important;
+  }
+  html[data-user-role="client"] .k-community-v2 .k-community-post-author{
+    grid-template-columns:40px minmax(0,1fr) auto!important;
+  }
+  html[data-user-role="client"] .k-community-v2 .k-community-post-author-actions{
+    min-width:0!important;
+  }
+}

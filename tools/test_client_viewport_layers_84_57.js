@@ -1,0 +1,20 @@
+const fs=require('fs');
+const css=fs.readFileSync('css/next/client_viewport_layers.css','utf8');
+const js=fs.readFileSync('js/next/client_viewport_runtime.js','utf8');
+const reg=fs.readFileSync('inc/asset_registry.php','utf8');
+const ver=fs.readFileSync('inc/asset_version.php','utf8');
+const sw=fs.readFileSync('sw.js','utf8');
+let failed=0;
+function ok(v,m){if(!v){console.error('FAIL',m);failed=1;}}
+ok(css.includes('R188.5.5.6.84.57 — client viewport/layer ownership'),'84.57 CSS marker');
+const runtimeRev=Number((js.match(/version:'188\.5\.5\.6\.84\.(\d+)'/)||[])[1]||0);
+ok(runtimeRev>=57,'84.57+ viewport runtime marker');
+for(const token of ['--k-visual-viewport-height','--k-keyboard-inset','k-client-keyboard-open','visualViewport'])ok(js.includes(token),`runtime ${token}`);
+for(const token of ['.k-community-story-overlay','.k-community-comments-sheet','[data-page="chats"] .k-chat-layout','.k-master-ref-profile__inner','.k-master-ref-booking-continue','#k-mobile-fab-stack'])ok(css.includes(token),`CSS ${token}`);
+ok(css.includes('height:calc(var(--k-visual-viewport-height,100dvh) - var(--k-client-active-bottom-space))!important'),'chat visible viewport height');
+ok(css.includes('top:var(--k-visual-viewport-top,0px)!important'),'overlay visual viewport top');
+ok(reg.indexOf("'css/next/client_viewport_layers.css'")>reg.indexOf("'css/next/client_mobile_geometry.css'"),'viewport CSS loaded after geometry');
+ok(reg.indexOf("'js/next/client_viewport_runtime.js'")<reg.indexOf("'js/next/app_next.js'"),'viewport runtime loaded before app_next');
+const vm=(ver.match(/KARETA_ASSET_VERSION\s*=\s*'188\.5\.5\.6\.84\.(\d+)'/)||[])[1],sm=(sw.match(/RELEASE = '188\.5\.5\.6\.84\.(\d+)'/)||[])[1];
+ok(Number(vm)>=57&&vm===sm,'asset/sw version 84.57+ and synced');
+if(failed)process.exit(1);console.log('client viewport layers 84.57 OK');

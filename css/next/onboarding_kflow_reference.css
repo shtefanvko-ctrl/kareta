@@ -1,0 +1,582 @@
+/* KARETA.KZ — K-Flow onboarding visual contract (screens 01–04 only).
+   Normative targets: 390x844, 768x1024, 1024x768, desktop 1200+.
+   This layer intentionally overrides legacy modal styling only inside #onb2-overlay. */
+:root{
+  --kflow-ref-orange:#ff3b0a;
+  --kflow-ref-orange-top:#ff4b12;
+  --kflow-ref-orange-bottom:#ff3606;
+  --kflow-ref-text:#0a0a0a;
+  --kflow-ref-muted:#555;
+  --kflow-ref-muted-2:#777;
+  --kflow-ref-border:#d7d7d7;
+  --kflow-ref-border-soft:#e8e8e8;
+  --kflow-ref-idle:#efefef;
+  --kflow-ref-line:#e2e2e2;
+  --kflow-ref-focus:rgba(255,59,10,.22);
+  --kflow-ref-content:342px;
+  --kflow-ref-form:460px;
+  --kflow-ref-tablet:560px;
+  --kflow-ref-desktop:1180px;
+  --kflow-ref-wide:1280px;
+  --kflow-ref-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.08);
+}
+
+#onb2-overlay.k-onboarding,
+#onb2-overlay.k-onboarding *{box-sizing:border-box}
+#onb2-overlay.k-onboarding{
+  position:fixed!important;
+  inset:0!important;
+  z-index:10000!important;
+  min-height:100dvh!important;
+  overflow-x:clip!important;
+  overflow-y:auto!important;
+  background:#fff!important;
+  color:var(--kflow-ref-text)!important;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-synthesis:none!important;
+  text-rendering:optimizeLegibility;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+#onb2-step-welcome,
+#onb2-step-role,
+#onb2-step-profile,
+#onb2-step-code{
+  width:100%!important;
+  min-height:100dvh!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:stretch!important;
+  justify-content:center!important;
+  background:#fff!important;
+}
+
+/* One screen = one scene, never a generic application dialog. */
+#onb2-step-welcome .onb2-welcome-card,
+#onb2-step-role .k-flow-onboarding-window,
+#onb2-step-profile .k-flow-onboarding-window,
+#onb2-step-code .k-flow-onboarding-window{
+  position:relative!important;
+  width:100%!important;
+  min-height:100dvh!important;
+  height:auto!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:#fff!important;
+  color:var(--kflow-ref-text)!important;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+#onb2-step-role .k-flow-onboarding-window,
+#onb2-step-profile .k-flow-onboarding-window,
+#onb2-step-code .k-flow-onboarding-window{display:flex!important;flex-direction:column!important}
+
+/* Header */
+#onb2-step-role .k-flow-header,
+#onb2-step-profile .k-flow-header,
+#onb2-step-code .k-flow-header{
+  width:100%!important;
+  min-height:76px!important;
+  padding:max(16px,env(safe-area-inset-top)) 24px 0!important;
+  display:grid!important;
+  grid-template-columns:44px 1fr 44px!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+#onb2-step-role .k-flow-back,
+#onb2-step-profile .k-flow-back,
+#onb2-step-code .k-flow-back{
+  width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;
+  padding:0!important;border:0!important;border-radius:12px!important;background:transparent!important;color:#0a0a0a!important;
+  display:grid!important;place-items:center!important;
+}
+#onb2-step-role .k-flow-back:hover,
+#onb2-step-profile .k-flow-back:hover,
+#onb2-step-code .k-flow-back:hover{background:#f5f5f5!important}
+#onb2-step-role .k-flow-back:active,
+#onb2-step-profile .k-flow-back:active,
+#onb2-step-code .k-flow-back:active{background:#eee!important;transform:scale(.98)}
+#onb2-step-role .k-flow-back svg,
+#onb2-step-profile .k-flow-back svg,
+#onb2-step-code .k-flow-back svg{width:24px!important;height:24px!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+#onb2-step-role .k-flow-logo,
+#onb2-step-profile .k-flow-logo,
+#onb2-step-code .k-flow-logo{
+  display:block!important;width:160px!important;height:auto!important;max-width:160px!important;max-height:38px!important;object-fit:contain!important;justify-self:center!important;
+}
+#onb2-step-role .k-flow-header-spacer,
+#onb2-step-profile .k-flow-header-spacer,
+#onb2-step-code .k-flow-header-spacer{width:44px!important;height:44px!important}
+
+/* Stepper: current only orange. */
+#onb2-step-welcome .k-flow-steps,
+#onb2-step-role .k-flow-steps,
+#onb2-step-profile .k-flow-steps,
+#onb2-step-code .k-flow-steps{
+  width:270px!important;max-width:calc(100% - 48px)!important;margin:26px auto 0!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;
+}
+#onb2-step-welcome .k-flow-step,
+#onb2-step-role .k-flow-step,
+#onb2-step-profile .k-flow-step,
+#onb2-step-code .k-flow-step{min-width:28px!important;display:flex!important;align-items:center!important;flex:1!important}
+#onb2-step-welcome .k-flow-step:last-child,
+#onb2-step-role .k-flow-step:last-child,
+#onb2-step-profile .k-flow-step:last-child,
+#onb2-step-code .k-flow-step:last-child{flex:0 0 28px!important}
+#onb2-step-welcome .k-flow-step:not(:last-child)::after,
+#onb2-step-role .k-flow-step:not(:last-child)::after,
+#onb2-step-profile .k-flow-step:not(:last-child)::after,
+#onb2-step-code .k-flow-step:not(:last-child)::after{
+  content:""!important;height:2px!important;min-width:20px!important;flex:1!important;margin:0 9px!important;background:var(--kflow-ref-line)!important;border-radius:99px!important;
+}
+#onb2-step-welcome .k-flow-step__dot,
+#onb2-step-role .k-flow-step__dot,
+#onb2-step-profile .k-flow-step__dot,
+#onb2-step-code .k-flow-step__dot{
+  width:28px!important;height:28px!important;flex:0 0 28px!important;border:0!important;border-radius:50%!important;background:var(--kflow-ref-idle)!important;color:#111!important;font-size:14px!important;line-height:1!important;font-weight:600!important;display:grid!important;place-items:center!important;
+}
+#onb2-step-welcome .k-flow-step.is-active .k-flow-step__dot,
+#onb2-step-role .k-flow-step.is-active .k-flow-step__dot,
+#onb2-step-profile .k-flow-step.is-active .k-flow-step__dot,
+#onb2-step-code .k-flow-step.is-active .k-flow-step__dot{background:var(--kflow-ref-orange)!important;color:#fff!important}
+#onb2-step-welcome .k-flow-step.is-done .k-flow-step__dot,
+#onb2-step-role .k-flow-step.is-done .k-flow-step__dot,
+#onb2-step-profile .k-flow-step.is-done .k-flow-step__dot,
+#onb2-step-code .k-flow-step.is-done .k-flow-step__dot{background:var(--kflow-ref-idle)!important;color:#111!important;border:0!important}
+#onb2-step-welcome .k-flow-step.is-done:not(:last-child)::after,
+#onb2-step-role .k-flow-step.is-done:not(:last-child)::after,
+#onb2-step-profile .k-flow-step.is-done:not(:last-child)::after,
+#onb2-step-code .k-flow-step.is-done:not(:last-child)::after{background:var(--kflow-ref-line)!important}
+
+/* Shared copy/body mobile. */
+#onb2-step-role .k-flow-copy,
+#onb2-step-profile .k-flow-copy,
+#onb2-step-code .k-flow-copy{
+  width:var(--kflow-ref-content)!important;max-width:calc(100% - 48px)!important;margin:44px auto 0!important;text-align:left!important;
+}
+#onb2-step-role .k-flow-copy h1,
+#onb2-step-profile .k-flow-copy h1,
+#onb2-step-code .k-flow-copy h1{
+  margin:0!important;color:var(--kflow-ref-text)!important;font-size:28px!important;line-height:34px!important;letter-spacing:0!important;font-weight:700!important;text-align:left!important;
+}
+#onb2-step-role .k-flow-copy p,
+#onb2-step-profile .k-flow-copy p,
+#onb2-step-code .k-flow-copy p{
+  max-width:318px!important;margin:12px 0 0!important;color:var(--kflow-ref-muted)!important;font-size:17px!important;line-height:25px!important;font-weight:400!important;text-align:left!important;
+}
+#onb2-step-role .k-flow-body,
+#onb2-step-profile .k-flow-body,
+#onb2-step-code .k-flow-body{
+  width:var(--kflow-ref-content)!important;max-width:calc(100% - 48px)!important;margin:28px auto 0!important;padding:0!important;overflow:visible!important;background:transparent!important;
+}
+#onb2-step-role .onb2-modal-body,
+#onb2-step-profile .onb2-modal-body,
+#onb2-step-code .onb2-modal-body{background:transparent!important}
+
+/* 01 — Welcome. */
+#onb2-step-welcome .onb2-welcome-card{
+  isolation:isolate!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;background:#fff!important;text-align:left!important;
+}
+#onb2-step-welcome .onb2-welcome-card::before{
+  content:""!important;position:absolute!important;inset:0!important;z-index:-2!important;background-color:#fff!important;background-image:var(--k-welcome-background-image)!important;background-repeat:no-repeat!important;background-position:52% 59%!important;background-size:cover!important;opacity:1!important;pointer-events:none!important;
+}
+#onb2-step-welcome .onb2-welcome-card::after{
+  content:""!important;position:absolute!important;inset:0!important;z-index:-1!important;background:linear-gradient(180deg,rgba(255,255,255,.99) 0%,rgba(255,255,255,.96) 23%,rgba(255,255,255,.56) 39%,rgba(255,255,255,.06) 57%,rgba(255,255,255,.08) 78%,rgba(255,255,255,.68) 100%)!important;pointer-events:none!important;
+}
+#onb2-step-welcome .onb2-flow-brand{
+  width:100%!important;min-height:76px!important;padding:max(18px,env(safe-area-inset-top)) 24px 0!important;display:flex!important;align-items:center!important;justify-content:center!important;
+}
+#onb2-step-welcome .onb2-welcome-logo{display:block!important;width:160px!important;max-width:160px!important;height:auto!important;max-height:38px!important;object-fit:contain!important}
+#onb2-step-welcome .onb2-welcome-copy{
+  width:var(--kflow-ref-content)!important;max-width:calc(100% - 48px)!important;margin:46px auto 0!important;padding:0!important;display:block!important;text-align:left!important;
+}
+#onb2-step-welcome .onb2-welcome-copy h1{
+  margin:0!important;max-width:260px!important;color:#0a0a0a!important;font-size:34px!important;line-height:39px!important;letter-spacing:0!important;font-weight:700!important;text-align:left!important;
+}
+#onb2-step-welcome .onb2-welcome-copy p{
+  margin:13px 0 0!important;max-width:240px!important;color:var(--kflow-ref-muted)!important;font-size:17px!important;line-height:25px!important;font-weight:400!important;text-align:left!important;
+}
+#onb2-step-welcome .onb2-flow-actions{
+  width:var(--kflow-ref-content)!important;max-width:calc(100% - 48px)!important;margin:auto auto max(30px,env(safe-area-inset-bottom))!important;padding:0!important;position:relative!important;z-index:2!important;
+}
+#onb2-step-welcome .onb2-welcome-next{
+  width:100%!important;height:72px!important;min-height:72px!important;border:0!important;border-radius:15px!important;background:linear-gradient(180deg,var(--kflow-ref-orange-top) 0%,var(--kflow-ref-orange-bottom) 100%)!important;color:#fff!important;font-size:20px!important;line-height:24px!important;font-weight:600!important;box-shadow:0 8px 18px rgba(255,59,10,.20)!important;
+}
+
+/* 02 — Role choice. */
+#onb2-step-role .k-flow-body{margin-top:54px!important}
+#onb2-step-role .k-flow-role-grid{
+  display:grid!important;grid-template-columns:repeat(2,150px)!important;gap:12px!important;justify-content:center!important;align-items:start!important;overflow:visible!important;
+}
+#onb2-step-role .k-flow-role-grid::before,
+#onb2-step-role .k-flow-role-grid::after{content:none!important;display:none!important}
+#onb2-step-role .k-flow-role-column{width:150px!important;min-width:0!important;display:grid!important;grid-template-rows:auto auto!important;gap:22px!important}
+#onb2-step-role .k-flow-role-card{
+  width:150px!important;height:220px!important;min-height:220px!important;padding:18px 10px!important;border:1px solid #e3e3e3!important;border-radius:16px!important;background:#fff!important;box-shadow:var(--kflow-ref-shadow)!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;color:#0a0a0a!important;transform:none!important;
+}
+#onb2-step-role .k-flow-role-card:hover{border-color:rgba(255,59,10,.45)!important;transform:translateY(-2px)!important}
+#onb2-step-role .k-flow-role-card:focus-visible{outline:4px solid var(--kflow-ref-focus)!important;outline-offset:2px!important}
+#onb2-step-role .k-flow-role-icon{
+  width:80px!important;height:80px!important;flex:0 0 80px!important;margin:0 0 17px!important;border:1.5px solid var(--kflow-ref-orange)!important;border-radius:50%!important;background:#fff!important;color:#111!important;display:grid!important;place-items:center!important;
+}
+#onb2-step-role .k-flow-role-icon svg{width:46px!important;height:46px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+#onb2-step-role .k-flow-role-card b{font-size:22px!important;line-height:27px!important;font-weight:700!important}
+#onb2-step-role .k-flow-role-card small{display:block!important;margin-top:7px!important;color:var(--kflow-ref-muted)!important;font-size:14px!important;line-height:20px!important;font-weight:400!important}
+#onb2-step-role .k-flow-role-card-direction-wide{display:none!important}
+/* 03 — Identity. */
+#onb2-step-profile .k-flow-body{margin-top:28px!important}
+#onb2-step-profile .onb2-compact-profile{display:grid!important;gap:0!important}
+#onb2-step-profile .onb2-ref-profile-form{display:grid!important;gap:27px!important}
+#onb2-step-profile .k-flow-field{display:grid!important;gap:10px!important;color:#0a0a0a!important;font-size:16px!important;line-height:22px!important;font-weight:500!important}
+#onb2-step-profile .k-flow-field input{
+  width:100%!important;height:60px!important;min-height:60px!important;padding:0 18px!important;border:1px solid var(--kflow-ref-border)!important;border-radius:12px!important;background:#fff!important;color:#0a0a0a!important;font-size:17px!important;line-height:24px!important;font-weight:400!important;outline:none!important;box-shadow:none!important;
+}
+#onb2-step-profile .k-flow-field input:hover{border-color:#bdbdbd!important}
+#onb2-step-profile .k-flow-field input:focus{border-color:var(--kflow-ref-orange)!important;box-shadow:0 0 0 4px rgba(255,59,10,.14)!important}
+#onb2-step-profile .k-flow-actions{width:100%!important;margin:30px auto 0!important;padding:0!important}
+#onb2-step-profile .k-flow-primary,
+#onb2-step-code .k-flow-primary{
+  width:100%!important;height:60px!important;min-height:60px!important;border:0!important;border-radius:14px!important;background:linear-gradient(180deg,var(--kflow-ref-orange-top),var(--kflow-ref-orange-bottom))!important;color:#fff!important;font-size:19px!important;line-height:24px!important;font-weight:600!important;box-shadow:none!important;
+}
+#onb2-step-profile .k-flow-primary:hover,
+#onb2-step-code .k-flow-primary:hover{filter:brightness(1.03);box-shadow:0 8px 18px rgba(255,59,10,.20)!important}
+#onb2-step-profile .k-flow-primary:focus-visible,
+#onb2-step-code .k-flow-primary:focus-visible{outline:0!important;box-shadow:0 0 0 4px var(--kflow-ref-focus)!important}
+#onb2-step-profile .k-flow-trust{display:flex!important;align-items:center!important;gap:12px!important;color:var(--kflow-ref-muted)!important;font-size:14px!important;line-height:20px!important;font-weight:400!important}
+#onb2-step-profile .k-flow-trust svg{width:34px!important;height:34px!important;flex:0 0 34px!important;fill:none!important;stroke:#111!important;stroke-width:1.5!important}
+#onb2-step-profile .k-flow-trust--mobile{margin-top:32px!important;justify-content:flex-start!important}
+#onb2-step-profile .k-flow-trust--wide{display:none!important}
+
+/* 04 — OTP. */
+#onb2-step-code .k-flow-body{margin-top:72px!important}
+#onb2-step-code .k-flow-form{gap:0!important}
+#onb2-step-code .k-flow-otp{display:grid!important;justify-content:center!important;gap:10px!important;margin:0 auto!important}
+#onb2-step-code .k-flow-otp--4{grid-template-columns:repeat(4,65px)!important}
+#onb2-step-code .k-flow-otp--5{grid-template-columns:repeat(5,52px)!important}
+#onb2-step-code .k-flow-otp--6{grid-template-columns:repeat(6,42px)!important}
+#onb2-step-code .k-flow-otp-cell{
+  width:100%!important;height:76px!important;min-width:0!important;padding:0!important;border:1px solid var(--kflow-ref-border)!important;border-radius:12px!important;background:#fff!important;color:#0a0a0a!important;text-align:center!important;font-size:32px!important;line-height:76px!important;font-weight:600!important;font-variant-numeric:tabular-nums!important;outline:none!important;box-shadow:none!important;
+}
+#onb2-step-code .k-flow-otp-cell:focus{border-color:var(--kflow-ref-orange)!important;box-shadow:0 0 0 3px rgba(255,59,10,.08)!important}
+#onb2-step-code .k-flow-code-test{display:none!important}
+#onb2-step-code .k-flow-actions{width:100%!important;margin:96px auto 0!important;padding:0!important}
+#onb2-step-code .k-flow-code-meta{display:grid!important;justify-items:center!important;gap:8px!important;margin-top:20px!important}
+#onb2-step-code .k-flow-code-meta button{min-height:34px!important;padding:0 6px!important;border:0!important;background:transparent!important;font-size:14px!important;line-height:20px!important;font-weight:400!important}
+#onb2-step-code .k-flow-code-meta button:disabled{color:var(--kflow-ref-muted-2)!important}
+#onb2-step-code .k-flow-link{color:var(--kflow-ref-orange)!important;text-decoration:underline!important;text-underline-offset:2px!important}
+
+/* 320–479: phone is the original vertical scene. */
+@media(max-width:479px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{min-width:0!important}
+}
+@media(max-width:359px){
+  :root{--kflow-ref-content:calc(100vw - 40px)}
+  #onb2-step-welcome .onb2-welcome-copy,
+  #onb2-step-welcome .onb2-flow-actions,
+  #onb2-step-role .k-flow-copy,#onb2-step-role .k-flow-body,
+  #onb2-step-profile .k-flow-copy,#onb2-step-profile .k-flow-body,
+  #onb2-step-code .k-flow-copy,#onb2-step-code .k-flow-body{max-width:calc(100% - 40px)!important}
+  #onb2-step-role .k-flow-role-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+  #onb2-step-role .k-flow-role-column,#onb2-step-role .k-flow-role-card{width:100%!important}
+  #onb2-step-role .k-flow-role-card{height:214px!important;min-height:214px!important}
+  #onb2-step-code .k-flow-otp--4{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
+
+/* 480–767: large phone / small tablet — one column, no fake device card. */
+@media(min-width:480px) and (max-width:767px){
+  :root{--kflow-ref-content:min(100% - 56px,460px)}
+  #onb2-step-welcome .onb2-welcome-copy h1{font-size:36px!important;line-height:42px!important}
+  #onb2-step-role .k-flow-role-grid{grid-template-columns:repeat(2,180px)!important;gap:18px!important}
+  #onb2-step-role .k-flow-role-column,#onb2-step-role .k-flow-role-card{width:180px!important}
+  #onb2-step-role .k-flow-role-card{height:228px!important;min-height:228px!important}
+}
+
+/* 768–899 portrait tablet: calm central column, max 560. */
+@media(min-width:768px) and (max-width:899px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{width:min(calc(100% - 80px),var(--kflow-ref-tablet))!important;margin:0 auto!important}
+  #onb2-step-welcome .onb2-welcome-logo,
+  #onb2-step-role .k-flow-logo,#onb2-step-profile .k-flow-logo,#onb2-step-code .k-flow-logo{width:188px!important;max-width:188px!important;max-height:44px!important}
+  #onb2-step-welcome .k-flow-steps,#onb2-step-role .k-flow-steps,#onb2-step-profile .k-flow-steps,#onb2-step-code .k-flow-steps{width:320px!important;margin-top:30px!important}
+  #onb2-step-welcome .k-flow-step__dot,#onb2-step-role .k-flow-step__dot,#onb2-step-profile .k-flow-step__dot,#onb2-step-code .k-flow-step__dot{width:30px!important;height:30px!important;flex-basis:30px!important}
+  #onb2-step-welcome .k-flow-step:not(:last-child)::after,#onb2-step-role .k-flow-step:not(:last-child)::after,#onb2-step-profile .k-flow-step:not(:last-child)::after,#onb2-step-code .k-flow-step:not(:last-child)::after{min-width:32px!important;margin:0 11px!important}
+  #onb2-step-welcome .onb2-welcome-copy,#onb2-step-welcome .onb2-flow-actions,
+  #onb2-step-role .k-flow-copy,#onb2-step-role .k-flow-body,#onb2-step-profile .k-flow-copy,#onb2-step-profile .k-flow-body,#onb2-step-code .k-flow-copy,#onb2-step-code .k-flow-body{width:100%!important;max-width:var(--kflow-ref-tablet)!important}
+  #onb2-step-welcome .onb2-welcome-copy h1{font-size:38px!important;line-height:44px!important}
+  #onb2-step-role .k-flow-copy h1,#onb2-step-profile .k-flow-copy h1,#onb2-step-code .k-flow-copy h1{font-size:30px!important;line-height:37px!important}
+  #onb2-step-role .k-flow-role-grid{grid-template-columns:repeat(2,220px)!important;gap:18px!important}
+  #onb2-step-role .k-flow-role-column,#onb2-step-role .k-flow-role-card{width:220px!important}
+  #onb2-step-role .k-flow-role-card{height:250px!important;min-height:250px!important}
+  #onb2-step-role .k-flow-role-icon{width:88px!important;height:88px!important;flex-basis:88px!important}
+  #onb2-step-profile .k-flow-body,#onb2-step-code .k-flow-body{max-width:460px!important}
+  #onb2-step-profile .k-flow-field input{height:56px!important;min-height:56px!important}
+  #onb2-step-profile .k-flow-primary,#onb2-step-code .k-flow-primary{height:58px!important;min-height:58px!important}
+}
+
+/* 900–1199 landscape tablet / small notebook: true two-column K-Flow. */
+@media(min-width:900px){
+  #onb2-overlay.k-onboarding{background:#fff!important}
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    width:min(calc(100% - 96px),var(--kflow-ref-desktop))!important;min-height:100dvh!important;margin:0 auto!important;
+  }
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    display:grid!important;grid-template-columns:minmax(0,1fr) minmax(420px,1fr)!important;grid-template-rows:auto auto minmax(0,1fr)!important;column-gap:clamp(48px,6vw,80px)!important;align-items:start!important;
+  }
+  #onb2-step-role .k-flow-header,#onb2-step-profile .k-flow-header,#onb2-step-code .k-flow-header{grid-column:1/-1!important;grid-row:1!important;padding:28px 0 0!important;min-height:74px!important;grid-template-columns:48px 1fr 48px!important}
+  #onb2-step-role .k-flow-logo,#onb2-step-profile .k-flow-logo,#onb2-step-code .k-flow-logo{width:176px!important;max-width:176px!important;max-height:42px!important}
+  #onb2-step-role .k-flow-back,#onb2-step-profile .k-flow-back,#onb2-step-code .k-flow-back{width:48px!important;height:48px!important}
+  #onb2-step-role .k-flow-header-spacer,#onb2-step-profile .k-flow-header-spacer,#onb2-step-code .k-flow-header-spacer{width:48px!important;height:48px!important}
+  #onb2-step-welcome .k-flow-steps,#onb2-step-role .k-flow-steps,#onb2-step-profile .k-flow-steps,#onb2-step-code .k-flow-steps{width:340px!important;margin:22px auto 0!important;grid-column:1/-1!important;grid-row:2!important}
+  #onb2-step-welcome .k-flow-step__dot,#onb2-step-role .k-flow-step__dot,#onb2-step-profile .k-flow-step__dot,#onb2-step-code .k-flow-step__dot{width:30px!important;height:30px!important;flex-basis:30px!important;font-size:14px!important}
+  #onb2-step-welcome .k-flow-step:not(:last-child)::after,#onb2-step-role .k-flow-step:not(:last-child)::after,#onb2-step-profile .k-flow-step:not(:last-child)::after,#onb2-step-code .k-flow-step:not(:last-child)::after{min-width:34px!important;margin:0 11px!important}
+  #onb2-step-role .k-flow-copy,#onb2-step-profile .k-flow-copy,#onb2-step-code .k-flow-copy{grid-column:1!important;grid-row:3!important;width:100%!important;max-width:none!important;margin:0!important;align-self:center!important;padding-left:0!important}
+  #onb2-step-role .k-flow-body,#onb2-step-profile .k-flow-body,#onb2-step-code .k-flow-body{grid-column:2!important;grid-row:3!important;width:100%!important;max-width:var(--kflow-ref-form)!important;margin:0!important;align-self:center!important;justify-self:end!important}
+  #onb2-step-role .k-flow-copy h1,#onb2-step-profile .k-flow-copy h1,#onb2-step-code .k-flow-copy h1{font-size:30px!important;line-height:37px!important}
+  #onb2-step-role .k-flow-copy p,#onb2-step-profile .k-flow-copy p,#onb2-step-code .k-flow-copy p{font-size:17px!important;line-height:26px!important;max-width:360px!important}
+
+  /* Welcome is also a wide composition, not a centered phone. */
+  #onb2-step-welcome .onb2-welcome-card{
+    display:grid!important;grid-template-columns:minmax(320px,.42fr) minmax(0,.58fr)!important;grid-template-rows:auto auto minmax(0,1fr)!important;column-gap:48px!important;
+  }
+  #onb2-step-welcome .onb2-flow-brand{grid-column:1/-1!important;grid-row:1!important;min-height:74px!important;padding:28px 0 0!important;justify-content:center!important}
+  #onb2-step-welcome .onb2-welcome-logo{width:176px!important;max-width:176px!important;max-height:42px!important}
+  #onb2-step-welcome .k-flow-steps{grid-column:1/-1!important;grid-row:2!important}
+  #onb2-step-welcome .onb2-welcome-copy{grid-column:1!important;grid-row:3!important;width:100%!important;max-width:390px!important;margin:0!important;align-self:start!important;padding-top:clamp(64px,9vh,104px)!important}
+  #onb2-step-welcome .onb2-welcome-copy h1{font-size:38px!important;line-height:44px!important;max-width:360px!important}
+  #onb2-step-welcome .onb2-welcome-copy p{font-size:18px!important;line-height:27px!important;max-width:300px!important}
+  #onb2-step-welcome .onb2-flow-actions{grid-column:1!important;grid-row:3!important;width:100%!important;max-width:340px!important;margin:0!important;align-self:end!important;justify-self:start!important;padding-bottom:clamp(54px,9vh,92px)!important}
+  #onb2-step-welcome .onb2-welcome-next{height:58px!important;min-height:58px!important;font-size:19px!important;border-radius:14px!important}
+  #onb2-step-welcome .onb2-welcome-card::before{background-position:center center!important;background-size:cover!important}
+  #onb2-step-welcome .onb2-welcome-card::after{background:linear-gradient(90deg,rgba(255,255,255,.26) 0%,rgba(255,255,255,.12) 40%,rgba(255,255,255,.02) 64%,rgba(255,255,255,0) 100%)!important}
+
+  /* Role cards on the right; wide direction is inside each card. */
+  #onb2-step-role .k-flow-body{max-width:520px!important}
+  #onb2-step-role .k-flow-role-grid{grid-template-columns:repeat(2,minmax(210px,230px))!important;gap:20px!important;justify-content:end!important}
+  #onb2-step-role .k-flow-role-column{width:auto!important;display:block!important}
+  #onb2-step-role .k-flow-role-card{width:100%!important;height:260px!important;min-height:260px!important;padding:20px 16px 18px!important;justify-content:flex-start!important}
+  #onb2-step-role .k-flow-role-icon{width:88px!important;height:88px!important;flex-basis:88px!important;margin-bottom:18px!important}
+  #onb2-step-role .k-flow-role-card b{font-size:22px!important;line-height:28px!important}
+  #onb2-step-role .k-flow-role-card small{font-size:15px!important;line-height:21px!important}
+  #onb2-step-role .k-flow-role-card-direction-wide{display:grid!important;place-items:center!important;width:54px!important;height:54px!important;margin-top:auto!important;border:1px solid var(--kflow-ref-orange)!important;border-radius:11px!important;color:var(--kflow-ref-orange)!important;background:#fff!important}
+  #onb2-step-role .k-flow-role-card-direction-wide svg{width:28px!important;height:28px!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+
+  /* Profile: copy/privacy left, form right. */
+  #onb2-step-profile .k-flow-trust--mobile{display:none!important}
+  #onb2-step-profile .k-flow-trust--wide{display:flex!important;margin-top:64px!important;justify-content:flex-start!important}
+  #onb2-step-profile .k-flow-field input{height:56px!important;min-height:56px!important}
+  #onb2-step-profile .k-flow-primary,#onb2-step-code .k-flow-primary{height:58px!important;min-height:58px!important}
+
+  /* OTP: compact right side. */
+  #onb2-step-code .k-flow-body{max-width:460px!important}
+  #onb2-step-code .k-flow-otp{justify-content:start!important}
+  #onb2-step-code .k-flow-otp--4{grid-template-columns:repeat(4,65px)!important}
+  #onb2-step-code .k-flow-actions{margin-top:26px!important}
+  #onb2-step-code .k-flow-code-meta{margin-top:16px!important}
+}
+
+/* Desktop 1200–1599: max 1180. Optional calm form panel only here and above. */
+@media(min-width:1200px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{width:min(calc(100% - 96px),var(--kflow-ref-desktop))!important}
+  #onb2-step-welcome .onb2-welcome-copy h1{font-size:40px!important;line-height:46px!important}
+  #onb2-step-role .k-flow-copy h1,#onb2-step-profile .k-flow-copy h1,#onb2-step-code .k-flow-copy h1{font-size:32px!important;line-height:39px!important}
+  #onb2-step-profile .k-flow-body,#onb2-step-code .k-flow-body{padding:28px!important;border:1px solid var(--kflow-ref-border-soft)!important;border-radius:16px!important;background:#fff!important;box-shadow:0 12px 36px rgba(0,0,0,.07)!important}
+}
+
+@media(min-width:1600px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{width:min(calc(100% - 128px),var(--kflow-ref-wide))!important}
+  #onb2-step-welcome .onb2-welcome-card{grid-template-columns:minmax(360px,.40fr) minmax(0,.60fr)!important;column-gap:64px!important}
+}
+
+/* Short mobile heights: scroll rather than shrinking controls below spec. */
+@media(max-width:899px) and (max-height:700px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{overflow-y:auto!important;min-height:700px!important}
+  #onb2-step-welcome .onb2-welcome-copy{margin-top:30px!important}
+  #onb2-step-role .k-flow-copy,#onb2-step-profile .k-flow-copy,#onb2-step-code .k-flow-copy{margin-top:28px!important}
+  #onb2-step-role .k-flow-body{margin-top:30px!important}
+  #onb2-step-code .k-flow-body{margin-top:44px!important}
+  #onb2-step-code .k-flow-actions{margin-top:48px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #onb2-overlay .k-flow-onboarding-window,#onb2-overlay .onb2-welcome-card{animation-duration:1ms!important;transition:none!important}
+}
+
+
+/* R188.5.5.6.84.119 — balanced desktop onboarding.
+   Mobile geometry stays unchanged; desktop behaves as an application window, not a full-width landing page. */
+.onb2-desktop-benefits,.k-flow-desktop-context{display:none!important}
+@media (min-width:900px){
+  #onb2-step-welcome,#onb2-step-role,#onb2-step-profile,#onb2-step-code{
+    padding:24px 32px!important;
+    align-items:center!important;
+    background:#f6f7f9!important;
+  }
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{
+    width:min(calc(100vw - 64px),1040px)!important;
+  }
+  #onb2-step-profile .onb2-modal.onb2-modal--registration.k-flow-onboarding-window,
+  #onb2-step-code .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{
+    width:min(calc(100vw - 64px),900px)!important;
+  }
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    min-height:min(680px,calc(100dvh - 48px))!important;
+    height:min(780px,calc(100dvh - 48px))!important;
+    max-height:calc(100dvh - 48px)!important;
+    margin:auto!important;
+    border:1px solid #e7e9ed!important;
+    border-radius:24px!important;
+    box-shadow:0 20px 60px rgba(15,23,42,.10)!important;
+    overflow:auto!important;
+  }
+  #onb2-step-role .k-flow-onboarding-window{
+    grid-template-columns:minmax(280px,.86fr) minmax(360px,1.14fr)!important;
+    column-gap:32px!important;
+    padding-inline:36px!important;
+  }
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    grid-template-columns:minmax(260px,.82fr) minmax(350px,1.18fr)!important;
+    column-gap:32px!important;
+    padding-inline:36px!important;
+  }
+  #onb2-step-role .k-flow-body{max-width:520px!important;justify-self:end!important}
+  #onb2-step-profile .k-flow-body,#onb2-step-code .k-flow-body{max-width:440px!important;justify-self:end!important}
+  #onb2-step-role .k-flow-role-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    width:100%!important;
+    max-width:460px!important;
+    gap:16px!important;
+  }
+  #onb2-step-role .k-flow-role-card{width:100%!important;min-width:0!important;height:242px!important;min-height:242px!important}
+
+  #onb2-step-welcome .onb2-welcome-card{
+    grid-template-columns:minmax(340px,400px) minmax(0,1fr)!important;
+    column-gap:40px!important;
+    padding-inline:36px!important;
+  }
+  #onb2-step-welcome .onb2-welcome-copy{max-width:420px!important;padding-top:46px!important}
+  #onb2-step-welcome .onb2-welcome-copy h1{max-width:400px!important}
+  #onb2-step-welcome .onb2-welcome-copy p{max-width:340px!important}
+  #onb2-step-welcome .onb2-flow-actions{max-width:360px!important;padding-bottom:46px!important}
+
+  .onb2-desktop-benefits,.k-flow-desktop-context{display:grid!important}
+  .onb2-desktop-benefits{gap:10px;margin-top:28px}
+  .onb2-desktop-benefits>div,.k-flow-desktop-context>div{
+    display:grid;gap:3px;padding:11px 13px;border:1px solid #e5e7eb;border-radius:12px;
+    background:rgba(255,255,255,.88);backdrop-filter:blur(8px)
+  }
+  .onb2-desktop-benefits b,.k-flow-desktop-context b{font-size:13px;line-height:18px;color:#111}
+  .onb2-desktop-benefits span,.k-flow-desktop-context span{font-size:12px;line-height:17px;color:#666}
+  .k-flow-desktop-context{gap:10px;margin-top:28px;max-width:360px}
+}
+@media (min-width:1200px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{width:1080px!important}
+  #onb2-step-profile .onb2-modal.onb2-modal--registration.k-flow-onboarding-window,
+  #onb2-step-code .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{width:940px!important}
+}
+@media (min-width:1600px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{width:1120px!important}
+  #onb2-step-profile .onb2-modal.onb2-modal--registration.k-flow-onboarding-window,
+  #onb2-step-code .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{width:980px!important}
+}
+
+/* R188.5.5.6.84.177 — canonical compact desktop entry flow. */
+@media(min-width:900px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    min-height:0!important;
+    height:auto!important;
+    max-height:calc(100dvh - 48px)!important;
+    overflow:auto!important;
+    align-content:start!important;
+  }
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    grid-template-rows:auto auto auto!important;
+    padding-bottom:34px!important;
+  }
+  #onb2-step-role .k-flow-header,
+  #onb2-step-profile .k-flow-header,
+  #onb2-step-code .k-flow-header{
+    min-height:62px!important;
+    padding-top:18px!important;
+  }
+  #onb2-step-welcome .k-flow-steps,
+  #onb2-step-role .k-flow-steps,
+  #onb2-step-profile .k-flow-steps,
+  #onb2-step-code .k-flow-steps{
+    width:300px!important;
+    margin:10px auto 0!important;
+  }
+  #onb2-step-role .k-flow-copy,
+  #onb2-step-profile .k-flow-copy,
+  #onb2-step-code .k-flow-copy,
+  #onb2-step-role .k-flow-body,
+  #onb2-step-profile .k-flow-body,
+  #onb2-step-code .k-flow-body{
+    align-self:start!important;
+    margin-top:44px!important;
+  }
+  #onb2-step-role .k-flow-role-grid{
+    max-width:430px!important;
+    gap:14px!important;
+  }
+  #onb2-step-role .k-flow-role-card{
+    height:210px!important;
+    min-height:210px!important;
+    padding:16px 14px!important;
+  }
+  #onb2-step-role .k-flow-role-icon{
+    width:72px!important;
+    height:72px!important;
+    flex-basis:72px!important;
+    margin-bottom:12px!important;
+  }
+  #onb2-step-role .k-flow-role-card-direction-wide{
+    width:46px!important;
+    height:46px!important;
+  }
+  #onb2-step-profile .k-flow-field input{
+    height:50px!important;
+    min-height:50px!important;
+  }
+  #onb2-step-profile .k-flow-primary,
+  #onb2-step-code .k-flow-primary{
+    height:52px!important;
+    min-height:52px!important;
+  }
+  #onb2-step-code .k-flow-actions{margin-top:18px!important}
+  #onb2-step-code .k-flow-code-meta{margin-top:12px!important}
+}

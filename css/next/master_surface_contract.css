@@ -1,0 +1,1077 @@
+/* R188.5.5.6.84.106 — canonical Master Surface Contract.
+   Route/page bridge only. Tokens/components live in master_ui_foundation.css;
+   shared-route role skin lives in master_role_skin.css. */
+html[data-user-role="master"]{
+  /* Kept here as contract assertions for legacy regression tooling. */
+  --k-master-content-max:1420px;
+  --k-master-page-x:clamp(14px,2.2vw,34px);
+  --k-master-page-y:18px;
+  --k-master-section-gap:16px;
+  --k-master-control-radius:12px;
+  --k-master-small-card-radius:16px;
+  --k-master-card-radius:20px;
+  --k-master-dialog-radius:24px;
+  --k-master-line:#e4e7ec;
+  --k-master-surface:#fff;
+  --k-master-page-bg:var(--k-master-bg,#f5f6f8);
+  --k-master-shadow:0 4px 16px rgba(15,23,42,.045);
+}
+
+/* Shell: one position and one density on every Master route. */
+html[data-user-role="master"] #k-shell-header.k-shell-header{
+  min-height:72px;padding:10px clamp(12px,2vw,24px);gap:14px;
+  background:rgba(255,255,255,.96);border-bottom:1px solid rgba(17,24,39,.08);
+  box-shadow:0 6px 22px rgba(15,23,42,.055);backdrop-filter:blur(18px)
+}
+html[data-user-role="master"] #k-shell-header>.k-brand{gap:9px;overflow:visible}
+html[data-user-role="master"] #k-shell-header>.k-brand::after{
+  content:'МАСТЕР';display:inline-flex;align-items:center;min-height:25px;padding:0 9px;border-radius:999px;
+  background:#fff1eb;color:#b9380c;font-size:9px;font-weight:900;letter-spacing:.11em;line-height:1;white-space:nowrap
+}
+html[data-user-role="master"] #k-shell-header .k-brand-logo--full{width:164px;height:44px}
+html[data-user-role="master"] #k-desktop-nav.k-desktop-nav{
+  justify-content:center;gap:4px;min-height:48px;padding:4px;border:1px solid rgba(17,24,39,.07);border-radius:17px;background:#f6f7f8;overflow:visible
+}
+html[data-user-role="master"] #k-desktop-nav .k-nav-link{min-height:40px;height:40px;padding:0 13px;border-radius:13px;color:#555d69;font-size:13px;font-weight:820;box-shadow:none}
+html[data-user-role="master"] #k-desktop-nav .k-nav-link:hover{background:#fff;color:#17191d;border-color:#e7e9ed}
+html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"]){background:var(--k-master-accent);border-color:var(--k-master-accent);color:#fff;box-shadow:0 7px 16px rgba(255,90,31,.22)}
+html[data-user-role="master"] #k-menu-toggle.k-menu-toggle{min-width:44px;height:44px;border:1px solid #e2e5e9;border-radius:14px;background:#fff;color:#1f2937;box-shadow:none}
+
+/* Page contour. */
+html[data-user-role="master"] #k-page-outlet.k-page-outlet{width:100%;max-width:none;margin:0;padding:0;background:transparent}
+html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{
+  width:min(100%,var(--k-master-content-max));max-width:var(--k-master-content-max);margin-inline:auto;
+  padding:var(--k-master-page-y) var(--k-master-page-x) calc(var(--k-mobile-nav-live-height,var(--k-mobile-nav-h,72px)) + 28px + env(safe-area-inset-bottom,0px));
+  box-sizing:border-box;gap:var(--k-master-section-gap)
+}
+html[data-user-role="master"] #k-page-outlet>.k-page:not(.k-master-surface-page){width:min(100%,var(--k-master-content-max));max-width:var(--k-master-content-max);margin-inline:auto}
+
+/* Master Page Header bridge: old page names map to one component contract. */
+html[data-user-role="master"] #k-page-outlet :is(.k-master-page-header,.k-workspace-head,.k-exchange-r71-head,.k-master-owner-hero,.k-master-wall-owner-hero,.k-master-works-hero,.k-master-reviews-head,.k-staff-cabinet-head,.k-master-r81-schedule-toolbar,.k-client-subhead){
+  display:flex;align-items:flex-start;justify-content:space-between;gap:18px;min-height:auto;margin:0 0 4px;padding:4px 0 15px;
+  border:0;border-bottom:1px solid var(--k-master-line);border-radius:0;background:transparent;box-shadow:none
+}
+html[data-user-role="master"] #k-page-outlet :is(.k-master-page-header,.k-workspace-head,.k-exchange-r71-head,.k-master-owner-hero,.k-master-wall-owner-hero,.k-master-works-hero,.k-master-reviews-head,.k-staff-cabinet-head,.k-master-r81-schedule-toolbar) :is(h1,.k-title){margin:0;color:var(--k-master-text);font-size:var(--k-master-title);line-height:1.06;letter-spacing:-.035em}
+html[data-user-role="master"] #k-page-outlet :is(.k-master-page-header,.k-workspace-head,.k-exchange-r71-head,.k-master-owner-hero,.k-master-wall-owner-hero,.k-master-works-hero,.k-master-reviews-head,.k-staff-cabinet-head,.k-master-r81-schedule-toolbar) p{max-width:760px;margin:6px 0 0;color:var(--k-master-muted);font-size:var(--k-master-body);line-height:1.45}
+html[data-user-role="master"] #k-page-outlet :is(.k-master-page-header,.k-workspace-head,.k-exchange-r71-head,.k-master-owner-hero,.k-master-wall-owner-hero,.k-master-works-hero,.k-master-reviews-head,.k-staff-cabinet-head,.k-master-r81-schedule-toolbar) :is(small,span:first-child){color:#a13d16;font-size:var(--k-master-eyebrow);font-weight:900;letter-spacing:.12em}
+
+/* Card language: four radius levels, no card-in-card heavy shadows. */
+html[data-user-role="master"] #k-page-outlet :is(.k-panel,.k-card,.k-master-service-category,.k-master-services-toolbar,.k-master-services-overview article,.k-exchange-r71-toolbar,.k-exchange-r71-grid>*,.k-master-r81-operations,.k-master-native-order,.k-master-native-appointment,.k-staff-cabinet-card,.k-master-owner-section-card,.k-master-owner-linked,.k-master-reviews-summary>article,.k-master-works-section,.k-master-wall-owner-card){border-color:var(--k-master-line);border-radius:var(--k-master-card-radius);box-shadow:none}
+html[data-user-role="master"] #k-page-outlet :is(input,select,textarea){border-color:var(--k-master-line);border-radius:var(--k-master-control-radius)}
+html[data-user-role="master"] #k-page-outlet .k-staff-cabinet--master{width:100%;max-width:none;margin-inline:auto}
+
+/* Workplace: operational surface, no marketing hero. */
+html[data-user-role="master"] #k-page-outlet .k-master-native-workplace-page{gap:14px}
+html[data-user-role="master"] #k-page-outlet .k-master-native-page-tools{padding:12px 14px;border:1px solid var(--k-master-line);border-radius:var(--k-master-small-card-radius);background:var(--k-master-surface);box-shadow:none}
+html[data-user-role="master"] #k-page-outlet .k-master-r81-operations{padding:17px;background:var(--k-master-surface)}
+html[data-user-role="master"] #k-page-outlet .k-master-r81-operation-list{gap:9px}
+html[data-user-role="master"] #k-page-outlet :is(.k-master-native-order,.k-master-native-appointment){background:var(--k-master-surface);box-shadow:none}
+
+/* Exchange. */
+html[data-user-role="master"] #k-page-outlet .k-exchange-r71{gap:12px}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r71-head__icon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#fff0e9;color:#b9380c}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar{padding:9px;background:var(--k-master-surface);box-shadow:none}
+html[data-user-role="master"] #k-page-outlet .k-exchange-service-scope{background:var(--k-master-surface-soft);border-radius:12px;padding:3px}
+html[data-user-role="master"] #k-page-outlet .k-exchange-service-scope button{border-radius:10px}
+html[data-user-role="master"] #k-page-outlet .k-exchange-service-scope button.is-active{background:var(--k-master-text);color:#fff}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r71-tabs{gap:4px;padding:4px;border:1px solid var(--k-master-line);border-radius:var(--k-master-small-card-radius);background:var(--k-master-surface)}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r71-tabs button{border-radius:11px}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r71-tabs button.is-active{background:var(--k-master-text);color:#fff}
+
+/* Services. */
+html[data-user-role="master"] #k-page-outlet .k-master-services-overview{gap:9px}
+html[data-user-role="master"] #k-page-outlet .k-master-services-overview article{background:var(--k-master-surface);box-shadow:none}
+html[data-user-role="master"] #k-page-outlet .k-master-services-toolbar{padding:10px 12px;background:var(--k-master-surface)}
+html[data-user-role="master"] #k-page-outlet .k-master-service-category{overflow:hidden;background:var(--k-master-surface);box-shadow:none}
+html[data-user-role="master"] #k-page-outlet .k-master-service-category>header{background:var(--k-master-surface-soft);border-bottom:1px solid var(--k-master-line)}
+html[data-user-role="master"] #k-page-outlet .k-master-service-row{border-radius:0;border-left:0;border-right:0;box-shadow:none}
+html[data-user-role="master"] #k-page-outlet .k-master-service-row:last-child{border-bottom:0}
+
+/* Account / owner pages. */
+html[data-user-role="master"] #k-page-outlet .k-staff-cabinet--master .k-staff-cabinet-grid{gap:10px}
+html[data-user-role="master"] #k-page-outlet .k-staff-cabinet--master .k-staff-cabinet-card{min-height:104px;padding:15px;background:var(--k-master-surface);box-shadow:none}
+html[data-user-role="master"] #k-page-outlet :is(.k-master-owner-hero,.k-master-wall-owner-hero,.k-master-works-hero,.k-master-reviews-head){padding-inline:0!important}
+
+/* More window follows the same component geometry. */
+html[data-user-role="master"] .k-smart-action-hub[data-context-kind="master"] :is(.k-more-window,.k-more-panel,.k-smart-action-panel){border-radius:var(--k-master-dialog-radius);border-color:var(--k-master-line);background:var(--k-master-surface);box-shadow:0 18px 48px rgba(15,23,42,.14)}
+
+@media(max-width:700px){
+  html[data-user-role="master"]{--k-shell-h:64px;--k-master-page-x:12px;--k-master-page-y:12px}
+  html[data-user-role="master"] #k-shell-header.k-shell-header{min-height:64px;grid-template-columns:minmax(0,1fr) auto;padding:8px 10px;box-shadow:0 4px 16px rgba(15,23,42,.05)}
+  html[data-user-role="master"] #k-shell-header>.k-brand{justify-self:start;gap:7px;max-width:calc(100vw - 70px)}
+  html[data-user-role="master"] #k-shell-header>.k-brand::after{min-height:22px;padding-inline:7px;font-size:8px}
+  html[data-user-role="master"] #k-shell-header .k-brand-logo--full{width:132px;height:38px}
+  html[data-user-role="master"] #k-page-outlet :is(.k-master-page-header,.k-workspace-head,.k-exchange-r71-head,.k-master-owner-hero,.k-master-wall-owner-hero,.k-master-works-hero,.k-master-reviews-head,.k-staff-cabinet-head,.k-master-r81-schedule-toolbar){flex-direction:column;align-items:stretch;padding:4px 0 12px;margin-bottom:0}
+  html[data-user-role="master"] #k-page-outlet :is(.k-master-page-header,.k-workspace-head,.k-exchange-r71-head,.k-master-r81-schedule-toolbar) :is(.k-workspace-head__actions,.k-master-owner-hero-actions,.k-master-wall-owner-hero__actions,.k-master-works-hero__actions,nav){width:100%;align-self:stretch}
+  html[data-user-role="master"] #k-page-outlet .k-master-native-page-tools{padding:10px}
+  html[data-user-role="master"] #k-page-outlet .k-master-r71-toolbar__actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+  html[data-user-role="master"] #k-page-outlet .k-master-r71-toolbar__actions .k-btn{width:100%;padding-inline:8px}
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-tabs{overflow-x:auto;scrollbar-width:none}
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-tabs::-webkit-scrollbar{display:none}
+}
+@media(max-width:380px){
+  html[data-user-role="master"] #k-shell-header>.k-brand::after{display:none}
+  html[data-user-role="master"] #k-shell-header .k-brand-logo--full{width:124px}
+}
+
+/* R188.5.5.6.84.108 — MASTER HEADER CONTRACT.
+   One geometry for Master workspace headers. Route CSS may style page content,
+   but must not change the header band, title metrics, Back placement or brand shell. */
+html[data-user-role="master"]{
+  --k-master-page-header-h:88px;
+  --k-master-page-header-mobile-h:72px;
+}
+html[data-user-role="master"] #k-page-outlet .k-master-page-header{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  align-content:center!important;
+  gap:16px!important;
+  width:100%!important;
+  height:var(--k-master-page-header-h)!important;
+  min-height:var(--k-master-page-header-h)!important;
+  max-height:var(--k-master-page-header-h)!important;
+  margin:0 0 4px!important;
+  padding:10px 0!important;
+  box-sizing:border-box!important;
+  border:0!important;
+  border-bottom:1px solid var(--k-master-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+html[data-user-role="master"] #k-page-outlet .k-master-page-header__copy{
+  display:grid!important;
+  align-content:center!important;
+  gap:2px!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+html[data-user-role="master"] #k-page-outlet .k-master-page-header__copy>small{
+  display:block!important;
+  margin:0!important;
+  color:#a13d16!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  line-height:1.2!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+html[data-user-role="master"] #k-page-outlet .k-master-page-header__copy>h1,
+html[data-user-role="master"] #k-page-outlet .k-master-page-header .k-workspace-head__copy>h1{
+  margin:0!important;
+  color:var(--k-master-text)!important;
+  font-size:24px!important;
+  font-weight:850!important;
+  line-height:1.08!important;
+  letter-spacing:-.03em!important;
+}
+html[data-user-role="master"] #k-page-outlet .k-master-page-header__copy>p,
+html[data-user-role="master"] #k-page-outlet .k-master-page-header .k-workspace-head__copy>p{
+  max-width:760px!important;
+  margin:2px 0 0!important;
+  overflow:hidden!important;
+  color:var(--k-master-muted)!important;
+  font-size:12px!important;
+  line-height:1.3!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html[data-user-role="master"] #k-page-outlet .k-master-page-header__actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  flex-wrap:nowrap!important;
+}
+html[data-user-role="master"] #k-page-outlet .k-master-page-header__actions>.k-btn,
+html[data-user-role="master"] #k-page-outlet .k-master-page-header__back{
+  min-height:40px!important;
+  height:40px!important;
+  margin:0!important;
+  border-radius:12px!important;
+  white-space:nowrap!important;
+}
+/* Legacy Master headers keep the same band even before their inner markup is migrated. */
+html[data-user-role="master"] #k-page-outlet :is(.k-workspace-head,.k-exchange-r71-head,.k-master-owner-hero,.k-master-wall-owner-hero,.k-master-works-hero,.k-master-reviews-head,.k-staff-cabinet-head,.k-master-r81-schedule-toolbar).k-master-page-header{
+  height:var(--k-master-page-header-h)!important;
+  min-height:var(--k-master-page-header-h)!important;
+  max-height:var(--k-master-page-header-h)!important;
+}
+
+@media(max-width:700px){
+  html[data-user-role="master"] #k-shell-header.k-shell-header{
+    height:64px!important;
+    min-height:64px!important;
+    max-height:64px!important;
+    position:relative!important;
+  }
+  html[data-user-role="master"] #k-shell-header>#k-mobile-back.k-mobile-back{
+    left:max(10px,env(safe-area-inset-left,0px))!important;
+    top:50%!important;
+    width:42px!important;
+    min-width:42px!important;
+    height:42px!important;
+    min-height:42px!important;
+  }
+  html[data-user-role="master"] #k-shell-header>.k-brand{
+    position:absolute!important;
+    left:50%!important;
+    top:50%!important;
+    transform:translate(-50%,-50%)!important;
+    justify-self:auto!important;
+    max-width:calc(100vw - 128px)!important;
+    margin:0!important;
+  }
+  html[data-user-role="master"] #k-shell-header>.k-brand::after{display:none!important}
+  html[data-user-role="master"] #k-shell-header .k-brand-logo--full{width:132px!important;height:38px!important}
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:10px!important;
+    height:var(--k-master-page-header-mobile-h)!important;
+    min-height:var(--k-master-page-header-mobile-h)!important;
+    max-height:var(--k-master-page-header-mobile-h)!important;
+    padding:7px 0!important;
+    margin:0!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header__copy>small{font-size:8px!important}
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header__copy>h1,
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header .k-workspace-head__copy>h1{font-size:20px!important;line-height:1.05!important}
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header__copy>p,
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header .k-workspace-head__copy>p{display:none!important}
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header__actions{
+    max-width:min(52vw,320px)!important;
+    overflow-x:auto!important;
+    overscroll-behavior-inline:contain!important;
+    scrollbar-width:none!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header__actions::-webkit-scrollbar{display:none!important}
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header__actions>.k-btn,
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header__back{height:36px!important;min-height:36px!important;padding-inline:11px!important;font-size:12px!important}
+  html[data-user-role="master"] #k-page-outlet :is(.k-workspace-head,.k-exchange-r71-head,.k-master-owner-hero,.k-master-wall-owner-hero,.k-master-works-hero,.k-master-reviews-head,.k-staff-cabinet-head,.k-master-r81-schedule-toolbar).k-master-page-header{
+    height:var(--k-master-page-header-mobile-h)!important;
+    min-height:var(--k-master-page-header-mobile-h)!important;
+    max-height:var(--k-master-page-header-mobile-h)!important;
+    flex-direction:row!important;
+    align-items:center!important;
+  }
+}
+
+/* R188.5.5.6.84.109 — MASTER EXCHANGE STRUCTURE CONTRACT.
+   Exchange reuses the Master page/header/card language; only layout ownership is fixed here. */
+html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar{
+  grid-template-columns:minmax(0,1fr) auto auto auto auto;
+  margin:0;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-r71-tabs{
+  grid-column:1/-1;
+  width:100%;
+  box-sizing:border-box;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r131-filters{
+  position:static;
+  z-index:auto;
+  inset:auto;
+  width:100%;
+  max-width:none;
+  max-height:none;
+  margin:0;
+  box-sizing:border-box;
+  overflow:visible;
+  border-color:var(--k-master-line);
+  border-radius:var(--k-master-small-card-radius);
+  background:var(--k-master-surface);
+  box-shadow:none;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r131-list{display:grid;gap:10px;min-width:0}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r131-pagination{
+  display:flex;align-items:center;justify-content:center;gap:12px;padding:4px 0 2px;color:var(--k-master-muted);font-size:12px
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r131-pagination[hidden],
+html[data-user-role="master"] #k-page-outlet .k-exchange-r131-empty[hidden]{display:none!important}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r131-empty{
+  margin:0;padding:22px;border:1px dashed var(--k-master-line);border-radius:var(--k-master-card-radius);background:var(--k-master-surface)
+}
+@media(max-width:700px){
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar{grid-template-columns:minmax(0,1fr) 44px 44px 44px}
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-search-field{grid-column:1/-1}
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-service-scope{grid-column:1/2;min-width:0}
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-r71-tabs{grid-column:1/-1}
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-filters{position:static;left:auto;right:auto;bottom:auto;width:100%;max-height:none;overflow:visible;border-radius:var(--k-master-small-card-radius)}
+}
+@media(max-width:420px){
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar{grid-template-columns:repeat(3,minmax(0,1fr))}
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-search-field,
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-service-scope,
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-r71-tabs{grid-column:1/-1}
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-filter-button,
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-kpi-button,
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-refresh-button{width:100%;min-width:0}
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-pagination{flex-direction:column}
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-pagination .k-btn{width:100%}
+}
+
+/* R188.5.5.6.84.178 — MASTER responsive navigation: phone dock / tablet rail / desktop workspace sidebar. */
+html[data-user-role="master"]{
+  --k-master-nav-dark:#15181d;
+  --k-master-nav-text:#f4f6f8;
+  --k-master-nav-muted:#9ca3ad;
+  --k-master-nav-accent:#ff5a1f;
+}
+
+/* Phone: operational bottom dock, intentionally distinct from CLIENT. */
+@media(max-width:699px){
+  html[data-user-role="master"] .k-app-shell{
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+  html[data-user-role="master"] #k-desktop-nav{display:none!important}
+  html[data-user-role="master"] #k-mobile-nav.k-mobile-nav{
+    display:grid!important;
+    --k-mobile-nav-count:6!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    left:8px!important;
+    right:8px!important;
+    bottom:max(8px,env(safe-area-inset-bottom,0px))!important;
+    width:auto!important;
+    height:68px!important;
+    min-height:68px!important;
+    padding:5px!important;
+    gap:2px!important;
+    border:1px solid rgba(255,255,255,.08)!important;
+    border-radius:19px!important;
+    background:rgba(21,24,29,.97)!important;
+    box-shadow:0 16px 38px rgba(0,0,0,.27)!important;
+    backdrop-filter:blur(18px)!important;
+    overflow:hidden!important;
+  }
+  html[data-user-role="master"] #k-mobile-nav .k-nav-link{
+    min-width:0!important;
+    min-height:56px!important;
+    height:56px!important;
+    padding:5px 1px!important;
+    gap:3px!important;
+    border:0!important;
+    border-radius:13px!important;
+    background:transparent!important;
+    color:var(--k-master-nav-muted)!important;
+    box-shadow:none!important;
+  }
+  html[data-user-role="master"] #k-mobile-nav .k-nav-icon,
+  html[data-user-role="master"] #k-mobile-nav .k-nav-icon svg{
+    width:21px!important;
+    height:21px!important;
+    color:currentColor!important;
+    stroke:currentColor!important;
+  }
+  html[data-user-role="master"] #k-mobile-nav .k-nav-label,
+  html[data-user-role="master"] #k-mobile-nav .k-nav-link>span:not(.k-nav-icon):not(.k-nav-badge):not(.k-nav-unread){
+    color:currentColor!important;
+    font-size:9.5px!important;
+    font-weight:800!important;
+    line-height:1.05!important;
+    white-space:nowrap!important;
+  }
+  html[data-user-role="master"] #k-mobile-nav .k-nav-link:is(.is-active,[aria-current="page"]),
+  html[data-user-role="master"] #k-mobile-nav .k-nav-more[aria-expanded="true"]{
+    background:var(--k-master-nav-accent)!important;
+    color:#fff!important;
+    box-shadow:0 7px 17px rgba(255,90,31,.32)!important;
+  }
+  html[data-user-role="master"] #k-mobile-nav .k-nav-more-dots i{background:currentColor!important}
+  html[data-user-role="master"] #k-page-outlet{
+    padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))!important;
+  }
+}
+
+/* Tablet: compact icon rail. No bottom nav. */
+@media(min-width:700px) and (max-width:1099px){
+  html[data-user-role="master"]{
+    --k-master-tablet-rail:92px;
+  }
+  html[data-user-role="master"] .k-app-shell{
+    padding-left:var(--k-master-tablet-rail)!important;
+    padding-right:0!important;
+  }
+  html[data-user-role="master"] #k-mobile-nav{display:none!important}
+  html[data-user-role="master"] #k-shell-header.k-shell-header{
+    left:var(--k-master-tablet-rail)!important;
+    right:0!important;
+    width:auto!important;
+    min-height:68px!important;
+    height:68px!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    padding:8px 14px!important;
+  }
+  html[data-user-role="master"] #k-shell-header>.k-brand{
+    position:fixed!important;
+    left:8px!important;
+    top:8px!important;
+    z-index:150!important;
+    width:76px!important;
+    height:54px!important;
+    padding:5px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border-radius:15px!important;
+    background:#fff!important;
+    box-shadow:0 7px 20px rgba(15,23,42,.08)!important;
+  }
+  html[data-user-role="master"] #k-shell-header>.k-brand::after{display:none!important}
+  html[data-user-role="master"] #k-shell-header>.k-brand .k-brand-logo--full{
+    width:66px!important;
+    height:42px!important;
+    object-fit:contain!important;
+  }
+  html[data-user-role="master"] #k-shell-header>#k-desktop-nav.k-desktop-nav{
+    position:fixed!important;
+    inset:0 auto 0 0!important;
+    z-index:140!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:flex-start!important;
+    align-items:stretch!important;
+    width:var(--k-master-tablet-rail)!important;
+    min-width:var(--k-master-tablet-rail)!important;
+    height:100dvh!important;
+    padding:76px 8px 12px!important;
+    gap:5px!important;
+    border:0!important;
+    border-right:1px solid #e6e8eb!important;
+    border-radius:0!important;
+    background:#fff!important;
+    box-shadow:7px 0 24px rgba(15,23,42,.045)!important;
+    overflow-y:auto!important;
+    scrollbar-width:none!important;
+  }
+  html[data-user-role="master"] #k-shell-header>#k-desktop-nav::-webkit-scrollbar{display:none!important}
+  html[data-user-role="master"] #k-desktop-nav .k-nav-link{
+    position:relative!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%!important;
+    min-height:61px!important;
+    height:auto!important;
+    padding:6px 3px!important;
+    gap:4px!important;
+    border:0!important;
+    border-radius:14px!important;
+    background:transparent!important;
+    color:#6c7480!important;
+    text-align:center!important;
+    font-size:10px!important;
+    line-height:1.05!important;
+  }
+  html[data-user-role="master"] #k-desktop-nav .k-nav-icon,
+  html[data-user-role="master"] #k-desktop-nav .k-nav-icon svg{width:23px!important;height:23px!important}
+  html[data-user-role="master"] #k-desktop-nav .k-nav-label{
+    display:block!important;
+    width:100%!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    font-size:9.5px!important;
+    font-weight:800!important;
+  }
+  html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"]){
+    background:#fff1eb!important;
+    color:#c13d10!important;
+    box-shadow:inset 0 0 0 1px #ffd8ca!important;
+  }
+  html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"])::before{
+    content:""!important;
+    position:absolute!important;
+    left:-8px!important;
+    top:12px!important;
+    bottom:12px!important;
+    width:3px!important;
+    border-radius:0 3px 3px 0!important;
+    background:var(--k-master-nav-accent)!important;
+  }
+  html[data-user-role="master"] #k-shell-header>.k-shell-actions{
+    grid-column:2!important;
+    justify-self:end!important;
+  }
+}
+
+/* Desktop: wide dark workspace sidebar. */
+@media(min-width:1100px){
+  html[data-user-role="master"]{
+    --k-master-desktop-rail:232px;
+  }
+  html[data-user-role="master"] .k-app-shell{
+    padding-left:var(--k-master-desktop-rail)!important;
+    padding-right:0!important;
+  }
+  html[data-user-role="master"] #k-mobile-nav{display:none!important}
+  html[data-user-role="master"] #k-shell-header.k-shell-header{
+    left:var(--k-master-desktop-rail)!important;
+    right:0!important;
+    width:auto!important;
+    min-height:72px!important;
+    height:72px!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    padding:10px 20px!important;
+    border-bottom:1px solid #e7e9ec!important;
+    box-shadow:0 4px 18px rgba(15,23,42,.045)!important;
+  }
+  html[data-user-role="master"] #k-shell-header>.k-brand{
+    position:fixed!important;
+    left:16px!important;
+    top:14px!important;
+    z-index:151!important;
+    display:flex!important;
+    width:200px!important;
+    height:54px!important;
+    padding:6px 10px!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    border-radius:14px!important;
+    background:#fff!important;
+    box-shadow:0 8px 20px rgba(0,0,0,.18)!important;
+  }
+  html[data-user-role="master"] #k-shell-header>.k-brand::after{
+    display:inline-flex!important;
+    margin-left:auto!important;
+    background:#fff1eb!important;
+    color:#b9380c!important;
+  }
+  html[data-user-role="master"] #k-shell-header>.k-brand .k-brand-logo--full{
+    width:126px!important;
+    height:40px!important;
+    object-fit:contain!important;
+    object-position:left center!important;
+  }
+  html[data-user-role="master"] #k-shell-header>#k-desktop-nav.k-desktop-nav{
+    position:fixed!important;
+    inset:0 auto 0 0!important;
+    z-index:140!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:flex-start!important;
+    align-items:stretch!important;
+    width:var(--k-master-desktop-rail)!important;
+    min-width:var(--k-master-desktop-rail)!important;
+    max-width:var(--k-master-desktop-rail)!important;
+    height:100dvh!important;
+    padding:88px 12px 18px!important;
+    gap:4px!important;
+    border:0!important;
+    border-radius:0!important;
+    background:var(--k-master-nav-dark)!important;
+    box-shadow:8px 0 28px rgba(15,23,42,.10)!important;
+    overflow-y:auto!important;
+    scrollbar-width:none!important;
+  }
+  html[data-user-role="master"] #k-shell-header>#k-desktop-nav::-webkit-scrollbar{display:none!important}
+  html[data-user-role="master"] #k-desktop-nav .k-nav-link{
+    position:relative!important;
+    display:grid!important;
+    grid-template-columns:34px minmax(0,1fr)!important;
+    align-items:center!important;
+    width:100%!important;
+    min-height:46px!important;
+    height:46px!important;
+    padding:0 12px!important;
+    gap:10px!important;
+    border:1px solid transparent!important;
+    border-radius:12px!important;
+    background:transparent!important;
+    color:var(--k-master-nav-muted)!important;
+    box-shadow:none!important;
+    text-align:left!important;
+    font-size:12.5px!important;
+    font-weight:780!important;
+  }
+  html[data-user-role="master"] #k-desktop-nav .k-nav-icon,
+  html[data-user-role="master"] #k-desktop-nav .k-nav-icon svg{
+    width:21px!important;
+    height:21px!important;
+    color:currentColor!important;
+    stroke:currentColor!important;
+  }
+  html[data-user-role="master"] #k-desktop-nav .k-nav-label{
+    display:block!important;
+    min-width:0!important;
+    color:currentColor!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    text-align:left!important;
+  }
+  html[data-user-role="master"] #k-desktop-nav .k-nav-link:hover{
+    border-color:rgba(255,255,255,.08)!important;
+    background:rgba(255,255,255,.055)!important;
+    color:#fff!important;
+  }
+  html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"]){
+    border-color:rgba(255,90,31,.35)!important;
+    background:#242830!important;
+    color:#fff!important;
+    box-shadow:none!important;
+  }
+  html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"])::before{
+    content:""!important;
+    position:absolute!important;
+    left:0!important;
+    top:10px!important;
+    bottom:10px!important;
+    width:3px!important;
+    border-radius:0 3px 3px 0!important;
+    background:var(--k-master-nav-accent)!important;
+  }
+  html[data-user-role="master"] #k-desktop-nav .k-nav-link:nth-child(5),
+  html[data-user-role="master"] #k-desktop-nav .k-nav-link:nth-child(9){
+    margin-top:9px!important;
+    padding-top:0!important;
+  }
+  html[data-user-role="master"] #k-desktop-nav .k-nav-link:nth-child(5)::after,
+  html[data-user-role="master"] #k-desktop-nav .k-nav-link:nth-child(9)::after{
+    content:""!important;
+    position:absolute!important;
+    left:10px!important;
+    right:10px!important;
+    top:-7px!important;
+    height:1px!important;
+    background:rgba(255,255,255,.08)!important;
+  }
+  html[data-user-role="master"] #k-shell-header>.k-shell-actions{
+    grid-column:2!important;
+    justify-self:end!important;
+  }
+  html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page,
+  html[data-user-role="master"] #k-page-outlet>.k-page:not(.k-master-surface-page){
+    max-width:none!important;
+  }
+}
+
+/* R188.5.5.6.84.180 — MASTER desktop rail starts below full-width header. */
+@media(min-width:1100px){
+  html[data-user-role="master"]{
+    --k-master-desktop-header-h:72px;
+  }
+  html[data-user-role="master"] .k-app-shell{
+    padding-left:0!important;
+    padding-right:var(--k-master-desktop-rail,232px)!important;
+  }
+  html[data-user-role="master"] #k-shell-header.k-shell-header{
+    position:fixed!important;
+    left:0!important;
+    right:0!important;
+    top:0!important;
+    width:100%!important;
+    max-width:none!important;
+    height:var(--k-master-desktop-header-h)!important;
+    min-height:var(--k-master-desktop-header-h)!important;
+    grid-template-columns:auto minmax(0,1fr) auto!important;
+    align-items:center!important;
+    padding:9px 18px!important;
+    z-index:160!important;
+    box-sizing:border-box!important;
+  }
+  html[data-user-role="master"] #k-shell-header>.k-brand{
+    position:static!important;
+    inset:auto!important;
+    grid-column:1!important;
+    grid-row:1!important;
+    width:auto!important;
+    min-width:188px!important;
+    height:52px!important;
+    margin:0!important;
+    padding:4px 8px!important;
+    box-shadow:none!important;
+  }
+  html[data-user-role="master"] #k-shell-header>.k-brand .k-brand-logo--full{
+    width:126px!important;
+    height:40px!important;
+  }
+  html[data-user-role="master"] #k-shell-header>#k-desktop-nav.k-desktop-nav{
+    position:fixed!important;
+    inset:var(--k-master-desktop-header-h) 0 0 auto!important;
+    left:auto!important;
+    right:0!important;
+    top:var(--k-master-desktop-header-h)!important;
+    bottom:0!important;
+    width:var(--k-master-desktop-rail,232px)!important;
+    min-width:var(--k-master-desktop-rail,232px)!important;
+    max-width:var(--k-master-desktop-rail,232px)!important;
+    height:calc(100dvh - var(--k-master-desktop-header-h))!important;
+    min-height:0!important;
+    padding:16px 12px 18px!important;
+    z-index:140!important;
+    box-sizing:border-box!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+  }
+  html[data-user-role="master"] #k-shell-header>.k-shell-actions{
+    position:static!important;
+    grid-column:3!important;
+    grid-row:1!important;
+    justify-self:end!important;
+    align-self:center!important;
+    margin:0!important;
+  }
+}
+
+/* R188.5.5.6.84.181 — MASTER desktop content starts below the full-width header. */
+@media(min-width:1100px){
+  html[data-user-role="master"]:not(.k-master-onboarding-active) #k-page-outlet{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
+    padding-top:var(--k-master-desktop-header-h,72px)!important;
+    box-sizing:border-box!important;
+  }
+  html[data-user-role="master"]:not(.k-master-onboarding-active) #k-page-outlet>.k-page,
+  html[data-user-role="master"]:not(.k-master-onboarding-active) #k-page-outlet>.k-master-page{
+    margin-top:0!important;
+  }
+  html[data-user-role="master"] #k-shell-header.k-shell-header{
+    right:0!important;
+    width:100vw!important;
+    max-width:100vw!important;
+  }
+  html[data-user-role="master"] #k-shell-header>#k-desktop-nav.k-desktop-nav{
+    top:var(--k-master-desktop-header-h,72px)!important;
+    bottom:0!important;
+    height:calc(100dvh - var(--k-master-desktop-header-h,72px))!important;
+  }
+}
+
+/* R188.5.5.6.84.181 — one desktop work-canvas for MASTER pages. */
+@media(min-width:1100px){
+  html[data-user-role="master"]:not(.k-master-onboarding-active){
+    --k-master-page-gutter:clamp(18px,2vw,30px);
+  }
+  html[data-user-role="master"]:not(.k-master-onboarding-active) #k-page-outlet > :is(
+    .k-master-surface-page,
+    .k-exchange-page,
+    [data-page="service-management"],
+    .k-master-dashboard-page,
+    .k-master-workplace-page,
+    .k-master-schedule-page,
+    .k-master-owner-profile-page,
+    .k-master-reviews-page,
+    .k-master-wall-owner-page,
+    .k-master-works-page
+  ){
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
+    padding-left:var(--k-master-page-gutter)!important;
+    padding-right:var(--k-master-page-gutter)!important;
+    box-sizing:border-box!important;
+  }
+  html[data-user-role="master"]:not(.k-master-onboarding-active) #k-page-outlet :is(
+    .k-master-services-matrix,
+    .k-exchange-r71,
+    .k-master-workplace,
+    .k-master-schedule,
+    .k-master-owner-profile,
+    .k-master-reviews-list,
+    .k-master-works
+  ){
+    max-width:none!important;
+    min-width:0!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+}
+
+/* R188.5.5.6.84.182 — canonical UI system: page width, buttons, surfaces, toolbars. */
+:root{
+  --k-ui-page-max:1440px;
+  --k-ui-page-gutter:clamp(18px,2vw,32px);
+  --k-ui-control-h:44px;
+  --k-ui-control-radius:12px;
+  --k-ui-card-radius:18px;
+  --k-ui-panel-radius:20px;
+  --k-ui-line:#e5e7eb;
+  --k-ui-soft:#f7f8fa;
+  --k-ui-text:#171a1f;
+  --k-ui-muted:#747b84;
+  --k-ui-accent:#ff4b0a;
+  --k-ui-accent-hover:#e74308;
+  --k-ui-shadow:0 8px 24px rgba(15,23,42,.055);
+}
+
+/* One desktop canvas. Intentional wizards/onboarding remain independently sized. */
+@media(min-width:1100px){
+  html[data-user-role] #k-page-outlet{
+    --k-page-x:var(--k-ui-page-gutter);
+  }
+  html[data-user-role] #k-page-outlet > :is(
+    .k-page,
+    .k-page-shell--workspace,
+    .k-flow-primary-page,
+    .k-home-reference--app,
+    .k-community-page,
+    .k-masters-page,
+    .k-parts-native-page,
+    .k-client-cabinet,
+    .k-client-cabinet-page,
+    .k-client-orders-native,
+    .k-profile-page,
+    .k-notifications-page,
+    [data-page="service-management"]
+  ):not(.k-master-onboarding-route):not(.k-first-vehicle-page){
+    width:min(100%,var(--k-ui-page-max))!important;
+    max-width:var(--k-ui-page-max)!important;
+    min-width:0!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    padding-left:var(--k-ui-page-gutter)!important;
+    padding-right:var(--k-ui-page-gutter)!important;
+    box-sizing:border-box!important;
+  }
+
+  html[data-user-role] #k-page-outlet > :is(
+    .k-page,
+    .k-page-shell--workspace,
+    .k-flow-primary-page
+  ) > :is(
+    .k-master-reference-inner,
+    .k-services-root,
+    .k-services-catalog-outlet,
+    .k-master-workplace,
+    .k-master-schedule,
+    .k-exchange-r71,
+    .k-master-owner-profile,
+    .k-master-works,
+    .k-client-cabinet,
+    .k-parts-ref-page
+  ){
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+}
+
+/* Canonical action buttons. */
+:where(.k-btn,.k-button){
+  min-height:var(--k-ui-control-h)!important;
+  padding:0 14px!important;
+  border-radius:var(--k-ui-control-radius)!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  box-sizing:border-box!important;
+  font-family:inherit!important;
+  font-size:12.5px!important;
+  line-height:1.1!important;
+  font-weight:800!important;
+  text-decoration:none!important;
+  cursor:pointer!important;
+  transition:background .15s ease,border-color .15s ease,color .15s ease,box-shadow .15s ease,transform .08s ease!important;
+}
+:where(.k-btn,.k-button) svg{
+  flex:0 0 auto!important;
+  width:18px!important;
+  height:18px!important;
+}
+:where(.k-btn-primary,.k-button-primary){
+  border:1px solid var(--k-ui-accent)!important;
+  background:var(--k-ui-accent)!important;
+  color:#fff!important;
+  box-shadow:0 6px 16px rgba(255,75,10,.16)!important;
+}
+:where(.k-btn-primary,.k-button-primary):hover{
+  border-color:var(--k-ui-accent-hover)!important;
+  background:var(--k-ui-accent-hover)!important;
+}
+:where(.k-btn-secondary,.k-button-secondary){
+  border:1px solid var(--k-ui-line)!important;
+  background:#fff!important;
+  color:var(--k-ui-text)!important;
+  box-shadow:none!important;
+}
+:where(.k-btn-secondary,.k-button-secondary):hover{
+  border-color:#ffc3ad!important;
+  background:#fff8f5!important;
+  color:#c73c0a!important;
+}
+:where(.k-btn-ghost,.k-button-ghost){
+  border:1px solid transparent!important;
+  background:transparent!important;
+  color:#535a64!important;
+  box-shadow:none!important;
+}
+:where(.k-btn-ghost,.k-button-ghost):hover{
+  border-color:#e8eaed!important;
+  background:#f6f7f8!important;
+  color:#171a1f!important;
+}
+:where(.k-btn-danger,.k-button-danger,.k-btn.is-danger,.k-button.is-danger){
+  border-color:#ef4444!important;
+  background:#fff!important;
+  color:#c62828!important;
+}
+:where(.k-btn,.k-button):disabled,
+:where(.k-btn,.k-button)[aria-disabled="true"]{
+  opacity:.46!important;
+  cursor:not-allowed!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+:where(.k-btn-icon,.k-button-icon,.k-icon-btn){
+  width:40px!important;
+  min-width:40px!important;
+  height:40px!important;
+  min-height:40px!important;
+  padding:0!important;
+  border-radius:12px!important;
+}
+
+/* Canonical surfaces: same visual family, component-specific internal layout stays intact. */
+:is(
+  .k-card,
+  .k-panel,
+  .k-master-reference-card,
+  .k-parts-ref-card,
+  .k-master-service-card-r84,
+  .k-master-native-state,
+  .k-master-native-queue,
+  .k-master-native-upcoming,
+  .k-exchange-card,
+  .k-schedule-policy,
+  .k-schedule-day,
+  .k-master-owner-section-card,
+  .k-master-review-card,
+  .k-sto-panel,
+  .k-sto-bay,
+  .k-sto-master-card
+){
+  border:1px solid var(--k-ui-line)!important;
+  border-radius:var(--k-ui-card-radius)!important;
+  background:#fff!important;
+  box-shadow:var(--k-ui-shadow)!important;
+}
+
+/* Toolbars/search/filter blocks share one shell. */
+:is(
+  .k-catalog-toolbar,
+  .k-orders-search-toolbar,
+  .k-shop-toolbar,
+  .k-master-services-toolbar,
+  .k-exchange-r71-toolbar,
+  .k-master-r71-toolbar
+){
+  border:1px solid var(--k-ui-line)!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-shadow:0 5px 18px rgba(15,23,42,.035)!important;
+  box-sizing:border-box!important;
+}
+
+/* Empty states: no page-specific giant blank cards. */
+:is(
+  .k-empty,
+  .k-master-empty-r84,
+  .k-schedule-empty,
+  .k-sto-empty-state
+){
+  border-radius:16px!important;
+  border-color:#dde1e6!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+
+/* Form controls visually align with buttons. */
+.k-page :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea){
+  border-radius:12px;
+}
+.k-page :is(input:not([type="checkbox"]):not([type="radio"]),select){
+  min-height:42px;
+}
+
+/* Small phones stay denser without changing the visual language. */
+@media(max-width:699px){
+  :where(.k-btn,.k-button){
+    min-height:42px!important;
+    padding-inline:12px!important;
+    border-radius:11px!important;
+    font-size:11.5px!important;
+  }
+}
+
+/* R188.5.5.6.84.182 — authoritative control specificity. */
+.k-app-shell :is(.k-btn,.k-button):not(.k-nav-link):not(.k-menu-toggle){
+  min-height:var(--k-ui-control-h)!important;
+  padding:0 14px!important;
+  border-radius:var(--k-ui-control-radius)!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  box-sizing:border-box!important;
+  font-size:12.5px!important;
+  line-height:1.1!important;
+  font-weight:800!important;
+}
+.k-app-shell :is(.k-btn-primary,.k-button-primary){
+  border:1px solid var(--k-ui-accent)!important;
+  background:var(--k-ui-accent)!important;
+  color:#fff!important;
+  box-shadow:0 6px 16px rgba(255,75,10,.16)!important;
+}
+.k-app-shell :is(.k-btn-secondary,.k-button-secondary){
+  border:1px solid var(--k-ui-line)!important;
+  background:#fff!important;
+  color:var(--k-ui-text)!important;
+  box-shadow:none!important;
+}
+.k-app-shell :is(.k-btn-ghost,.k-button-ghost){
+  border:1px solid transparent!important;
+  background:transparent!important;
+  color:#535a64!important;
+  box-shadow:none!important;
+}
+.k-app-shell :is(
+  .k-master-reference-card,
+  .k-parts-ref-card,
+  .k-master-service-card-r84,
+  .k-master-native-state,
+  .k-master-native-queue,
+  .k-master-native-upcoming,
+  .k-exchange-card,
+  .k-schedule-policy,
+  .k-schedule-day,
+  .k-master-owner-section-card,
+  .k-master-review-card,
+  .k-sto-panel,
+  .k-sto-bay,
+  .k-sto-master-card
+){
+  border-radius:var(--k-ui-card-radius)!important;
+  border-color:var(--k-ui-line)!important;
+}
+
+/* R188.5.5.6.84.183 — Master shell aligned with canonical CLIENT visual language. */
+html[data-user-role="master"] #k-shell-header.k-shell-header{
+  background:#17191d!important;
+  border-bottom-color:rgba(255,255,255,.08)!important;
+  box-shadow:0 8px 24px rgba(15,23,42,.16)!important;
+  color:#fff!important;
+}
+html[data-user-role="master"] #k-shell-header #k-desktop-nav.k-desktop-nav{
+  background:rgba(255,255,255,.06)!important;
+  border-color:rgba(255,255,255,.08)!important;
+}
+html[data-user-role="master"] #k-shell-header #k-desktop-nav .k-nav-link{color:#d7dbe1!important}
+html[data-user-role="master"] #k-shell-header #k-desktop-nav .k-nav-link:hover{background:rgba(255,255,255,.1)!important;color:#fff!important;border-color:rgba(255,255,255,.08)!important}
+html[data-user-role="master"] #k-shell-header #k-menu-toggle.k-menu-toggle{background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.12)!important;color:#fff!important}
+html[data-user-role="master"] #k-shell-header>.k-brand::after{background:rgba(255,90,31,.16)!important;color:#ffb090!important}
+@media(max-width:700px){html[data-user-role="master"] #k-shell-header.k-shell-header{background:#17191d!important}}

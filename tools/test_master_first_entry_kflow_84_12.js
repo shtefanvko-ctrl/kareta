@@ -1,0 +1,24 @@
+'use strict';
+const fs=require('fs'),path=require('path');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};
+const route=read('js/next/route_registry.js'),app=read('js/next/app_next.js'),gate=read('js/next/master_onboarding_gate.js'),page=read('js/next/pages/master_onboarding.js'),css=read('css/next/master_onboarding.css'),api=read('api/master_onboarding.php'),mig=read('api/migrations/128_master_first_entry_onboarding.php'),config=read('config.php'),registry=read('inc/asset_registry.php'),onboarding=read('js/next/onboarding/onboarding_app.js'),postAuth=read('js/next/onboarding/post_auth_first_entry_resolver.js'),version=read('inc/asset_version.php'),capability=read('api/identity/capability_service.php');
+const dbv=Number((/KARETA_DB_VERSION',\s*(\d+)/.exec(config)||[])[1]||0);expect(dbv>=128,'DB version 128+ required');
+for(const m of ['master_onboarding_state',"'version' => 128","'completed',4,'master-review'",'migrated_master_onboarding_status'])expect(mig.includes(m),`migration 128 missing ${m}`);
+expect(route.includes("masterOnboarding:Object.freeze({ path:'#/onboarding/master'"),'master onboarding route missing');
+expect(route.includes("masterOnboarding:'workspace'"),'master onboarding UX surface missing');
+expect(app.includes("masterOnboarding:{global:'KaretaMasterOnboardingPages',render:'renderMasterOnboarding',mount:'mountMasterOnboarding'}"),'app master onboarding mapping missing');
+expect(onboarding.includes('KaretaPostAuthFirstEntryResolver?.resolve?.')&&postAuth.includes("selectedRole==='master'")&&postAuth.includes("#/onboarding/master?step=1&view=master-profile"),'general onboarding must hand MASTER context into first-entry flow');
+for(const m of ['KaretaMasterOnboardingGate','master_onboarding.php?action=current','shouldOwnRoute','markCompleted','masterOnboarding'])expect(gate.includes(m),`gate missing ${m}`);
+for(const m of ['[1,2,3,4]','Расскажите о себе','Выберите услуги','Где вы работаете?','Проверьте профиль','data-kmo-agreement','data-kmo-mode','data-kmo-custom-add','Idempotency-Key'])expect(page.includes(m),`master onboarding UI missing ${m}`);
+expect(!/\[1,2,3,4,5/.test(page),'master onboarding must never expose step 5+');
+for(const m of ['#k-shell-header','#k-mobile-nav','#k-desktop-nav','k-master-onboarding-active','height:52px','width:28px'])expect(css.includes(m),`master onboarding CSS missing ${m}`);
+for(const m of ["action==='current'","action==='saveDraft'","action==='complete'",'draft_revision_conflict','validation_failed','FOR UPDATE',"idempotent\'=>true",'service_area_required','contacts_not_allowed'])expect(api.includes(m),`master onboarding API missing ${m}`);
+expect(!api.includes('INSERT INTO accounts')&&!api.includes('INSERT INTO persons'),'master onboarding must not create a second account/person');
+for(const m of ['master.onboarding.view','master.onboarding.edit','master.onboarding.complete','master_onboarding_guard'])expect(capability.includes(m),`capability onboarding guard missing ${m}`);
+expect(api.includes("action==='avatar'")&&api.includes("avatarUrl'=>'/api/master_onboarding.php?action=avatar"),'avatar must be referenced by URL/token, not returned as base64 draft data');
+expect(registry.includes('css/next/master_onboarding.css')&&registry.includes('js/next/master_onboarding_gate.js')&&registry.includes('js/next/pages/master_onboarding.js'),'master onboarding assets not registered');
+const vm=/188\.5\.5\.6\.84\.(\d+)/.exec(version);expect(vm&&Number(vm[1])>=12,'asset token 84.12 or newer required');
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}
+console.log('KARETA MASTER first-entry 84.12: 4-step K-Flow + draft + guard + idempotent complete OK');

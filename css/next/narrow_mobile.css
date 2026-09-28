@@ -1,0 +1,281 @@
+/* R74s — narrow mobile safety layer for 320–359 px screens. */
+@media (max-width: 359px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  img,
+  svg,
+  video,
+  canvas,
+  iframe {
+    max-width: 100%;
+  }
+
+  .k-page-outlet,
+  .k-home-simple,
+  .k-home-simple-hero,
+  .k-page-hero,
+  .k-card,
+  .k-panel,
+  .k-request-form,
+  .k-client-cabinet-page,
+  .k-garage-page,
+  .k-masters-page,
+  .k-shop-page,
+  .k-services-page,
+  .k-work-feed-page,
+  .k-news-page,
+  .k-chats-page {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .k-page-outlet {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .k-home-simple {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .k-home-simple-hero {
+    width: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .k-home-simple-hero h1 {
+    font-size: clamp(30px, 10vw, 34px);
+    letter-spacing: -.045em;
+  }
+
+  .k-home-simple-hero p {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .k-home-ai-search {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-top: 16px;
+  }
+
+  .k-home-ai-search__controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    min-width: 0;
+    gap: 5px;
+    padding: 5px;
+    border-radius: 16px;
+  }
+
+  .k-home-ai-search__input {
+    width: 100%;
+    min-width: 0;
+    min-height: 46px !important;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+
+  .k-home-ai-search__button {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 44px !important;
+    padding: 0 11px !important;
+    font-size: 11px !important;
+    border-radius: 12px !important;
+  }
+
+  .k-home-ai-prompts {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .k-home-ai-slide {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 7px 10px;
+  }
+
+  .k-home-ai-slide__text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .k-home-action-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .k-service-categories,
+  .k-product-categories,
+  .k-client-cabinet-grid,
+  .k-garage-category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .k-home-action-tile,
+  .k-service-category,
+  .k-product-category,
+  .k-client-cabinet-card,
+  .k-garage-category-card {
+    min-width: 0;
+    padding: 11px;
+    border-radius: 17px;
+  }
+
+  .k-home-action-tile {
+    min-height: 126px;
+  }
+
+  .k-home-action-copy b {
+    font-size: 14px;
+  }
+
+  .k-home-action-copy small {
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  .k-btn,
+  button,
+  input,
+  select,
+  textarea {
+    max-width: 100%;
+  }
+
+  .k-page-hero {
+    padding: 18px 12px !important;
+    border-radius: 20px !important;
+  }
+
+  .k-page-hero h1,
+  .k-page-hero__title {
+    font-size: clamp(25px, 9vw, 31px) !important;
+  }
+
+  .k-page-hero p,
+  .k-page-hero__subtitle {
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+  }
+
+  .k-page-hero__actions,
+  .k-info-actions,
+  .k-card-actions,
+  .k-request-actions,
+  .k-order-card-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100%;
+  }
+
+  .k-page-hero__actions .k-btn,
+  .k-info-actions .k-btn,
+  .k-card-actions .k-btn,
+  .k-request-actions .k-btn,
+  .k-order-card-actions .k-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .k-mobile-nav {
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    gap: 2px;
+    padding: 4px;
+    border-radius: 17px;
+  }
+
+  .k-mobile-nav .k-nav-link {
+    min-width: 0;
+    min-height: 50px;
+    padding: 3px 0;
+    gap: 2px;
+    font-size: 8px;
+    overflow: hidden;
+  }
+
+  .k-mobile-nav .k-nav-link .k-nav-icon {
+    font-size: 15px;
+  }
+
+  .k-mobile-nav .k-nav-link span:not(.k-nav-icon):not(.k-nav-badge) {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .k-mobile-fab-stack {
+    right: 8px;
+    gap: 7px;
+  }
+
+  .k-mobile-fab {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+  }
+
+  .k-catalog-card-grid,
+  .k-provider-grid,
+  .k-news-grid,
+  .k-work-feed-grid,
+  .k-orders-grid,
+  .k-vehicle-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .k-masters-search,
+  .k-masters-search-toolbar,
+  .k-shop-toolbar,
+  .k-services-toolbar {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .k-masters-search input,
+  .k-shop-toolbar input,
+  .k-services-toolbar input {
+    min-width: 0;
+  }
+
+  .onb2-overlay,
+  .onb2-modal,
+  .onb2-ref-card,
+  .onb2-ref-profile-form,
+  .onb2-ref-profile-form--compact {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+
+/* Final mobile navigation ownership lives in app_next.css. */
+@media (max-width: 430px) {
+  .k-mobile-nav { grid-template-columns: repeat(var(--k-mobile-nav-count, 5), minmax(0, 1fr)) !important; }
+  .k-mobile-nav .k-nav-link > span:not(.k-nav-icon):not(.k-nav-badge) { white-space: nowrap; }
+}

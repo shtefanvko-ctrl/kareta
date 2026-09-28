@@ -1,0 +1,10 @@
+const fs=require('fs'),path=require('path');const root=path.resolve(__dirname,'..');
+const app=fs.readFileSync(path.join(root,'js/next/app_next.js'),'utf8');const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');const asset=fs.readFileSync(path.join(root,'inc/asset_version.php'),'utf8');
+const expect=(c,m)=>{if(!c)throw new Error(m)};
+const release=(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/.exec(asset)||[])[1]||'';
+expect(/^188\.5\.5\.6\.84\.\d+$/.test(release),'short current asset release required');
+expect(sw.includes(`const RELEASE = '${release}';`),'SW release must match current asset release');
+expect(/controller-app-mismatch/.test(app),'controller/app reconciliation required');
+expect(/server-app-mismatch/.test(app),'server/app reconciliation required');
+expect(/unregister\(\)/.test(app),'stale worker unregister required');
+console.log('R188.5.5.6.84.27 service worker reconciliation OK');

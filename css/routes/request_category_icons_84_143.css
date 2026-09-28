@@ -1,0 +1,7 @@
+/* R188.5.5.6.84.143 — category icons in request service selection. */
+.k-request-service-group>header{justify-content:flex-start!important;align-items:center!important}
+.k-request-service-group>header>.k-request-service-group__icon{width:28px;height:28px;display:grid;place-items:center;flex:0 0 28px;color:#ff6b00}
+.k-request-service-group>header>.k-request-service-group__icon svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.k-request-service-group>header>b{min-width:0;flex:1}
+.k-request-service-group>header>small{margin-left:auto}
+.k-request-ref-service-icon svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}

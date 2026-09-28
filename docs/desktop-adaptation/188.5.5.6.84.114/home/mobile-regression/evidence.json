@@ -1,0 +1,360 @@
+{
+  "release": "188.5.5.6.84.114",
+  "url": "http://localhost/#/home",
+  "browser": "Chrome/153.0.8010.53",
+  "generatedAt": "2026-09-25T09:07:58.396Z",
+  "pass": true,
+  "results": [
+    {
+      "width": 390,
+      "height": 844,
+      "state": {
+        "release": "188.5.5.6.84.114",
+        "viewport": {
+          "w": 390,
+          "h": 844
+        },
+        "document": {
+          "clientWidth": 390,
+          "scrollWidth": 390,
+          "overflowX": false
+        },
+        "home": {
+          "x": 12,
+          "y": 86,
+          "w": 366,
+          "h": 1143,
+          "display": "grid",
+          "overflowX": "visible"
+        },
+        "homeCols": 1,
+        "hero": {
+          "x": 26,
+          "y": 232,
+          "w": 338,
+          "h": 194,
+          "display": "grid",
+          "overflowX": "hidden"
+        },
+        "actions": {
+          "x": 26,
+          "y": 438,
+          "w": 338,
+          "h": 128,
+          "display": "grid",
+          "overflowX": "visible"
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "overflowX": "visible"
+        },
+        "mobileNav": {
+          "x": 8,
+          "y": 772,
+          "w": 374,
+          "h": 64,
+          "display": "grid",
+          "overflowX": "hidden"
+        },
+        "feed": {
+          "x": 26,
+          "y": 845,
+          "w": 338,
+          "h": 163,
+          "display": "flex",
+          "overflowX": "auto"
+        },
+        "feedDisplay": "flex",
+        "feedClient": 338,
+        "feedScroll": 489,
+        "pass": true
+      },
+      "screenshot": "home__client__390x844__chrome__mobile-regression.jpg"
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "state": {
+        "release": "188.5.5.6.84.114",
+        "viewport": {
+          "w": 430,
+          "h": 932
+        },
+        "document": {
+          "clientWidth": 430,
+          "scrollWidth": 430,
+          "overflowX": false
+        },
+        "home": {
+          "x": 12,
+          "y": 86,
+          "w": 406,
+          "h": 1154,
+          "display": "grid",
+          "overflowX": "visible"
+        },
+        "homeCols": 1,
+        "hero": {
+          "x": 26,
+          "y": 232,
+          "w": 378,
+          "h": 194,
+          "display": "grid",
+          "overflowX": "hidden"
+        },
+        "actions": {
+          "x": 26,
+          "y": 438,
+          "w": 378,
+          "h": 128,
+          "display": "grid",
+          "overflowX": "visible"
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "overflowX": "visible"
+        },
+        "mobileNav": {
+          "x": 8,
+          "y": 860,
+          "w": 414,
+          "h": 64,
+          "display": "grid",
+          "overflowX": "hidden"
+        },
+        "feed": {
+          "x": 26,
+          "y": 818,
+          "w": 378,
+          "h": 182,
+          "display": "flex",
+          "overflowX": "auto"
+        },
+        "feedDisplay": "flex",
+        "feedClient": 378,
+        "feedScroll": 546,
+        "pass": true
+      },
+      "screenshot": ""
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "state": {
+        "release": "188.5.5.6.84.114",
+        "viewport": {
+          "w": 768,
+          "h": 1024
+        },
+        "document": {
+          "clientWidth": 768,
+          "scrollWidth": 768,
+          "overflowX": false
+        },
+        "home": {
+          "x": 23,
+          "y": 86,
+          "w": 722,
+          "h": 1182,
+          "display": "grid",
+          "overflowX": "visible"
+        },
+        "homeCols": 1,
+        "hero": {
+          "x": 37,
+          "y": 232,
+          "w": 694,
+          "h": 195,
+          "display": "grid",
+          "overflowX": "hidden"
+        },
+        "actions": {
+          "x": 37,
+          "y": 439,
+          "w": 694,
+          "h": 60,
+          "display": "grid",
+          "overflowX": "visible"
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "overflowX": "visible"
+        },
+        "mobileNav": {
+          "x": 8,
+          "y": 952,
+          "w": 752,
+          "h": 64,
+          "display": "grid",
+          "overflowX": "hidden"
+        },
+        "feed": {
+          "x": 37,
+          "y": 751,
+          "w": 694,
+          "h": 230,
+          "display": "flex",
+          "overflowX": "auto"
+        },
+        "feedDisplay": "flex",
+        "feedClient": 694,
+        "feedScroll": 694,
+        "pass": true
+      },
+      "screenshot": "home__client__768x1024__chrome__mobile-regression.jpg"
+    },
+    {
+      "width": 820,
+      "height": 1180,
+      "state": {
+        "release": "188.5.5.6.84.114",
+        "viewport": {
+          "w": 820,
+          "h": 1180
+        },
+        "document": {
+          "clientWidth": 820,
+          "scrollWidth": 820,
+          "overflowX": false
+        },
+        "home": {
+          "x": 25,
+          "y": 86,
+          "w": 771,
+          "h": 1215,
+          "display": "grid",
+          "overflowX": "visible"
+        },
+        "homeCols": 1,
+        "hero": {
+          "x": 39,
+          "y": 232,
+          "w": 743,
+          "h": 195,
+          "display": "grid",
+          "overflowX": "hidden"
+        },
+        "actions": {
+          "x": 39,
+          "y": 439,
+          "w": 743,
+          "h": 60,
+          "display": "grid",
+          "overflowX": "visible"
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "overflowX": "visible"
+        },
+        "mobileNav": {
+          "x": 8,
+          "y": 1108,
+          "w": 804,
+          "h": 64,
+          "display": "grid",
+          "overflowX": "hidden"
+        },
+        "feed": {
+          "x": 39,
+          "y": 751,
+          "w": 743,
+          "h": 247,
+          "display": "flex",
+          "overflowX": "auto"
+        },
+        "feedDisplay": "flex",
+        "feedClient": 743,
+        "feedScroll": 743,
+        "pass": true
+      },
+      "screenshot": ""
+    },
+    {
+      "width": 1023,
+      "height": 768,
+      "state": {
+        "release": "188.5.5.6.84.114",
+        "viewport": {
+          "w": 1023,
+          "h": 768
+        },
+        "document": {
+          "clientWidth": 1023,
+          "scrollWidth": 1023,
+          "overflowX": false
+        },
+        "home": {
+          "x": 28,
+          "y": 107,
+          "w": 967,
+          "h": 1576,
+          "display": "grid",
+          "overflowX": "visible"
+        },
+        "homeCols": 1,
+        "hero": {
+          "x": 52,
+          "y": 319,
+          "w": 919,
+          "h": 286,
+          "display": "grid",
+          "overflowX": "hidden"
+        },
+        "actions": {
+          "x": 52,
+          "y": 625,
+          "w": 919,
+          "h": 60,
+          "display": "grid",
+          "overflowX": "visible"
+        },
+        "sidebar": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "display": "none",
+          "overflowX": "visible"
+        },
+        "mobileNav": {
+          "x": 152,
+          "y": 602,
+          "w": 720,
+          "h": 154,
+          "display": "grid",
+          "overflowX": "visible"
+        },
+        "feed": {
+          "x": 52,
+          "y": 988,
+          "w": 919,
+          "h": 305,
+          "display": "flex",
+          "overflowX": "auto"
+        },
+        "feedDisplay": "flex",
+        "feedClient": 919,
+        "feedScroll": 919,
+        "pass": true
+      },
+      "screenshot": "home__client__1023x768__chrome__mobile-regression.jpg"
+    }
+  ],
+  "events": []
+}

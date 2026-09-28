@@ -1,0 +1,70 @@
+{
+  "schema": "kareta.release-master-plan.stage-check.v1",
+  "stage": 11,
+  "totalStages": 2513,
+  "phase": "00 — BASELINE_TEST_HARNESS",
+  "sourceBaseline": "R188.5.5.6.84.109",
+  "task": "Убрать direct fetch к api/db.php",
+  "local": {
+    "status": "PASS",
+    "directDbFetchCount": 0,
+    "targets": [
+      "js/app.js",
+      "js/modules.js",
+      "js/rbac.js",
+      "js/master_modals.js"
+    ],
+    "apiLayer": "js/next/api_client.js",
+    "generatedRuntime": "js/boot/runtime_ui_bundle.js",
+    "regression": "tools/test_direct_db_api_client_84_109.js",
+    "contract": "DIRECT_DB_API_CLIENT_84_109: PASS targets=4 directFetch=0 auth=central error=central retry=get429 requestId=central duplicateRoleWrites=0",
+    "releaseChecklist": {
+      "status": "PASS",
+      "passed": 22,
+      "total": 22,
+      "failed": 0
+    },
+    "affectedFlowChecks": {
+      "commissioningOtp": "PASS",
+      "roleE2eRecovery": "PASS",
+      "roleContexts": "PASS"
+    }
+  },
+  "externalStaging": {
+    "checkedAtUtc": "2026-09-25T01:37:29.6961363Z",
+    "root": {
+      "url": "https://s.kareta.kz/",
+      "httpStatus": 403,
+      "statusDescription": "Forbidden",
+      "contentType": "text/html; charset=UTF-8"
+    },
+    "apiPing": {
+      "url": "https://s.kareta.kz/api/db.php?action=ping",
+      "httpStatus": 200,
+      "ok": true,
+      "dbReady": false,
+      "databaseState": "configuration_missing",
+      "recoveryAction": "configure_private_database_settings",
+      "diagnosticCode": "84650804048629ff",
+      "assetVersion": "188.5.5.6.84.109"
+    },
+    "status": "BLOCKED_ENVIRONMENT"
+  },
+  "changedFiles": [
+    "js/next/api_client.js",
+    "js/app.js",
+    "js/modules.js",
+    "js/rbac.js",
+    "js/master_modals.js",
+    "js/boot/runtime_ui_bundle.js",
+    "tools/test_direct_db_api_client_84_109.js",
+    "tools/release_checklist.sh",
+    "RELEASE_MASTER_PLAN_STAGE_0011.md",
+    "docs/release-master-plan/stage_0011_staging_check.json"
+  ],
+  "runtimeBusinessCodeChanged": true,
+  "apiBackendChanged": false,
+  "dbSchemaChanged": false,
+  "stageComplete": false,
+  "stageBlocker": "Staging root is HTTP 403 and staging DB reports configuration_missing, so end-to-end staging verification cannot pass."
+}

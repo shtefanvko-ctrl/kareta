@@ -1,0 +1,25 @@
+const fs=require('fs');
+const read=p=>fs.readFileSync(p,'utf8');
+const details=read('js/next/pages/details.js');
+const detailsCss=read('css/next/details.css');
+const homeCss=read('css/next/reference_client_pages.css');
+const core=read('js/next/pages/core.js');
+const version=read('inc/asset_version.php');
+const sw=read('sw.js');
+const errors=[]; const must=(ok,msg)=>{if(!ok)errors.push(msg)};
+must(homeCss.includes('url("/media/kareta_create_request_vehicle_background_r188_5_5_6_84_31.png")'),'Home hero approved background must remain restored');
+must(homeCss.includes('#k-shell-header>.k-brand{grid-column:1!important')||homeCss.includes('.k-shell-header .k-brand{grid-column:1!important'),'Client shell brand must remain in left column');
+must(homeCss.includes('.k-home-reference .k-home-feed-section{display:grid!important'),'Home feed sections must remain visible');
+must(core.includes('data-home-feed="works"')&&core.includes('data-home-feed="community"'),'Works and news/community sliders must both remain rendered');
+must(core.includes('bindHomeSlider(worksRail)')&&core.includes('bindHomeSlider(communityRail)'),'Both home feed rails must preserve slider bindings');
+must(details.includes('class="k-page k-master-ref-profile"'),'Public master profile must use reference profile surface');
+must(details.includes('data-provider-follow-mode="icon"'),'Reference bookmark must preserve icon-mode behavior');
+must(details.includes("x.dataset.providerFollowMode==='icon'"),'Follow wiring must not replace bookmark icon with text');
+must(detailsCss.includes('data-current-route="providerDetail"')&&detailsCss.includes('#k-shell-header'),'Provider detail must suppress generic shell header for reference composition');
+must(detailsCss.includes('width:min(100% - 28px,430px)!important'),'Reference master profile must use phone-reference content width');
+must(detailsCss.includes('grid-template-columns:148px minmax(0,1fr)!important'),'Master identity must preserve reference avatar/content proportions');
+must(detailsCss.includes('aspect-ratio:1.42/1!important'),'Latest work cards must preserve reference landscape ratio');
+must(/188\.5\.5\.6\.84\.(\d+)/.test(version)&&Number((version.match(/188\.5\.5\.6\.84\.(\d+)/)||[])[1]||0)>=40,'Asset version must be at least 84.40');
+must(/const RELEASE = '188\.5\.5\.6\.84\.(\d+)';/.test(sw)&&Number((sw.match(/const RELEASE = '188\.5\.5\.6\.84\.(\d+)';/)||[])[1]||0)>=40,'Service worker release must be at least 84.40');
+if(errors.length){console.error(errors.map(x=>'FAIL: '+x).join('\n'));process.exit(1)}
+console.log('master profile + home recovery 84.40 OK');

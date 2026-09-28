@@ -1,0 +1,11 @@
+const fs=require('fs'),path=require('path');
+const root=path.resolve(__dirname,'..');
+const css=fs.readFileSync(path.join(root,'css/next/community_group_slide_width.css'),'utf8');
+const js=fs.readFileSync(path.join(root,'js/next/pages/community.js'),'utf8');
+const readAsset=()=>fs.readFileSync(path.join(root,'inc/asset_version.php'),'utf8');
+const must=(v,m)=>{if(!v)throw new Error(m)};
+must(/\.swiper-slide\.k-community-group-slide[\s\S]*max-width:150px!important/.test(css),'slide max-width must be 150px');
+must(css.includes('flex:0 0 150px!important'),'fallback/flex width must be 150px');
+const nativeSuperseded=readAsset().includes('r1885609-community-native-ui')&&!js.includes('window.Swiper');
+must(js.includes("slidesPerView:'auto'")||nativeSuperseded,'historical Swiper width contract must exist or be superseded by R188.5.5.6.49 native grid');
+console.log('R188.5.5.6.38 community group slide width OK');

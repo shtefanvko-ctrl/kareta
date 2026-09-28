@@ -1,0 +1,20 @@
+const fs=require('fs'),crypto=require('crypto'),path=require('path');
+const root=path.resolve(__dirname,'..');const read=p=>fs.readFileSync(path.join(root,p),'utf8');const fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};
+const config=read('config.php'),migration=read('api/migrations/125_master_auto_recovery_control_center.php'),backend=read('api/master_recovery_control.php'),ops=read('api/master_day_operations.php'),db=read('api/db.php'),stoBackend=read('api/sto_workplace.php'),schedule=read('js/next/pages/master_schedule.js'),stoPage=read('js/next/pages/sto_workplace.js'),api=read('js/next/work_orders/master_schedule_api.js'),icons=read('js/next/ui_icons.js'),css=read('css/next/master_auto_recovery_control_center.css'),registry=read('inc/asset_registry.php'),asset=read('inc/asset_version.php'),sw=read('sw.js');
+const dbv=Number((/define\('KARETA_DB_VERSION',\s*(\d+)\)/.exec(config)||[])[1]||0);expect(dbv>=125,'R72 requires DB version at least 125');
+expect(migration.includes("'version'=>125")&&migration.includes('auto_recovery_protected'),'R72 migration/protection columns missing');
+for(const name of ['kareta_master_recovery_preview_data','kareta_master_schedule_recovery_preview','kareta_master_schedule_recovery_apply','kareta_master_schedule_recovery_protect','kareta_master_schedule_recovery_notify_resend','kareta_master_recovery_bay_candidate'])expect(backend.includes(`function ${name}`),`R72 backend function missing: ${name}`);
+for(const action of ['masterSchedule.recovery.preview','masterSchedule.recovery.apply','masterSchedule.recovery.protect','masterSchedule.recovery.notifyResend'])expect(db.includes(action),`R72 API route missing: ${action}`);
+expect(ops.includes("!empty($plan['auto_recovery_protected'])"),'automatic recovery does not skip protected bookings');
+expect(ops.includes('kareta_master_recovery_bay_candidate'),'automatic recovery does not check STO bay capacity');
+expect(stoBackend.includes('recoveryControl')&&stoPage.includes('k-sto-r72-recovery'),'STO recovery conflict visibility missing');
+expect(schedule.includes('MASTER_RECOVERY_R72_CONTRACT')&&schedule.includes('k-master-r72-control'),'R72 control center UI missing');
+for(const marker of ['data-recovery-preview','data-recovery-apply-selected','data-recovery-apply-all','data-recovery-protect','data-recovery-resend'])expect(schedule.includes(marker),`R72 UI action missing: ${marker}`);
+for(const method of ['previewRecovery','applyRecovery','protectRecovery','resendRecoveryNotification'])expect(api.includes(method),`R72 API client method missing: ${method}`);
+expect(icons.includes("unlock:'"),'R72 unified unlock icon missing');
+expect(css.includes('.k-master-r72-control')&&css.includes('.k-master-r72-conflict'),'R72 stylesheet contract missing');
+for(const forbidden of ['#k-mobile-nav','#k-desktop-nav','#k-shell-header','.k-menu-drawer','.k-context-switch'])expect(!css.includes(forbidden),`R72 CSS targets frozen shell ${forbidden}`);
+expect(registry.includes('css/next/master_auto_recovery_control_center.css'),'R72 stylesheet missing from registry');
+expect(asset.includes('r1885632-master-auto-recovery-control-center'),'R72 asset tag missing');expect(sw.includes('r1885632-master-auto-recovery-control-center'),'R72 SW tag missing');
+const manifest=JSON.parse(read('tools/shell_freeze_manifest_r1885603.json'));for(const [file,hash] of Object.entries(manifest.files)){const actual=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');expect(actual===hash,`Shell Freeze 2 hash changed: ${file}`)}
+if(fail.length){console.error(fail.join('\n'));process.exit(1)}console.log('R188.5.5.6.72 recovery control center + protected bookings + STO bay guard + Shell Freeze 2 OK');

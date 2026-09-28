@@ -1,0 +1,23 @@
+const fs=require('fs');
+function text(path){return fs.readFileSync(path,'utf8');}
+const core=text('js/next/pages/core.js');
+const home=text('css/next/home_simple.css');
+const mobile=text('css/next/mobile_filters.css');
+const registry=text('inc/asset_registry.php');
+const errors=[];
+const must=(cond,msg)=>{if(!cond)errors.push(msg);};
+must(core.includes('Последние работы мастеров'),'Home must render latest master works section');
+must(core.includes('Последнее в сообществе'),'Home must render latest community section');
+must(core.includes('data-home-feed="works"')&&core.includes('data-home-feed="community"'),'Both independent home rails are required');
+must(core.includes('api.getWorkPosts({limit:4}'),'Works rail must load four latest real work posts');
+must(core.includes("masterSocialWall.community&limit=4")&&core.includes('api.getNews?.({limit:4}'),'Community rail must use real news + master wall sources');
+must(core.includes("rows.slice(0,4)")||core.includes('latest=rows.slice(0,4)'),'Home feed must cap visible dataset to four posts per category');
+must(core.includes('bindHomeSlider'),'Home rails must have native pointer/mouse slider binding');
+must(!core.includes('new Swiper(')&&!core.includes('Swiper('),'Home latest rails must not add a Swiper dependency');
+must(home.includes('flex:0 0 calc(40% - 8px)'),'Phone rail should expose about 2.5 cards');
+must(home.includes('flex-basis:calc((100% - 24px)/3)'),'Tablet rail should expose 3 cards');
+must(home.includes('flex-basis:calc((100% - 36px)/4)'),'Desktop rail should expose 4 cards');
+must(home.includes('aspect-ratio:1/1'),'Feed cards should be square');
+must(mobile.includes('#k-mobile-quick-actions{display:none!important}'),'Mobile quick actions must be temporarily hidden, not deleted');
+must(registry.includes("'css/next/home_simple.css'")&&registry.includes("'css/next/mobile_filters.css'"),'Home/mobile CSS must stay in Asset Registry');
+if(errors.length){console.error(errors.map(x=>'FAIL: '+x).join('\n'));process.exit(1);}console.log('home latest sliders 84.13 OK');

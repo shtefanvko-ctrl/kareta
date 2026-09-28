@@ -1,0 +1,12 @@
+/* R188.5.5.6.38 — community group cards: compact fixed Swiper width */
+.k-community-group-slider .swiper-slide.k-community-group-slide,
+.k-community-group-slider.is-native-fallback .k-community-group-slide{
+  width:150px!important;
+  max-width:150px!important;
+  flex:0 0 150px!important;
+}
+
+.k-community-group-slider .k-community-group-card{
+  width:100%;
+  max-width:150px;
+}

@@ -1,0 +1,790 @@
+/* R84.16 — CLIENT page-surface ownership.
+   The shared outlet is edge-to-edge only for CLIENT. Each CLIENT page owns its own gutters.
+   MASTER/STO/SELLER/ADMIN are intentionally untouched. */
+html[data-user-role="client"] {
+  --k-client-page-gutter: clamp(12px, 3.8vw, 24px);
+  --k-client-page-bottom-gap: 43px;
+}
+
+html[data-user-role="client"] #k-page-outlet {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: 0;
+  overflow-x: clip;
+}
+
+/* Pages that historically borrowed horizontal spacing from #k-page-outlet.
+   Home, Request and Community V2 are excluded because they own their exact K-Flow geometry. */
+html[data-user-role="client"] #k-page-outlet > :is(
+  .k-page-shell--workspace,
+  .k-masters-page.k-flow-primary-page,
+  .k-parts-native-page.k-flow-primary-page,
+  .k-work-feed-page,
+  .k-client-orders-native,
+  .k-client-cabinet,
+  .k-client-cabinet-page,
+  .k-chats-page,
+  .k-notifications-page,
+  .k-detail-page,
+  .k-profile-page
+) {
+  box-sizing: border-box;
+  padding-left: var(--k-client-page-gutter) !important;
+  padding-right: var(--k-client-page-gutter) !important;
+  scroll-padding-inline: var(--k-client-page-gutter);
+  margin-bottom: var(--k-client-page-bottom-gap, 43px) !important;
+}
+
+@media (max-width: 359px) {
+  html[data-user-role="client"] { --k-client-page-gutter: 12px; }
+}
+
+@media (min-width: 600px) {
+  html[data-user-role="client"] { --k-client-page-gutter: clamp(20px, 3vw, 32px); }
+}
+
+@media (min-width: 1100px) {
+  html[data-user-role="client"] { --k-client-page-bottom-gap: 16px; }
+}
+
+@media (min-width: 1200px) {
+  html[data-user-role="client"] { --k-client-page-gutter: 32px; }
+}
+
+/* R188.5.5.6.84.177 — PC surface ownership: one width system, no nested dead space. */
+@media(min-width:1100px){
+  html[data-user-role="client"]{
+    --k-client-pc-gutter:clamp(20px,2vw,34px);
+  }
+  html[data-user-role="client"] .k-shell-main,
+  html[data-user-role="client"] #k-page-outlet{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+  html[data-user-role="client"] #k-page-outlet{
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+  html[data-user-role="client"] #k-page-outlet > :is(
+    [data-page="services"].k-page-shell--workspace,
+    .k-masters-page,
+    .k-parts-native-page,
+    .k-client-orders-native,
+    .k-work-feed-page,
+    .k-client-cabinet,
+    .k-client-cabinet-page,
+    .k-notifications-page,
+    .k-profile-page
+  ){
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding-left:var(--k-client-pc-gutter)!important;
+    padding-right:var(--k-client-pc-gutter)!important;
+    box-sizing:border-box!important;
+  }
+  html[data-user-role="client"] .k-master-reference-inner,
+  html[data-user-role="client"] .k-master-reference-directory,
+  html[data-user-role="client"] [data-page="services"]>.k-services-root,
+  html[data-user-role="client"] [data-page="services"] .k-services-root-categories,
+  html[data-user-role="client"] [data-page="services"] .k-services-catalog-outlet{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+  html[data-user-role="client"] .k-master-reference-directory{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:14px!important;
+  }
+  html[data-user-role="client"] [data-page="services"] .k-services-ref-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:12px!important;
+  }
+  html[data-user-role="client"] .k-community-v2 .k-community-layout-v2{
+    width:100%!important;
+    max-width:none!important;
+    margin-inline:0!important;
+  }
+  html[data-user-role="client"] .k-detail-page{
+    width:100%!important;
+    max-width:none!important;
+  }
+}
+
+/* R188.5.5.6.84.182 — canonical UI system: page width, buttons, surfaces, toolbars. */
+:root{
+  --k-ui-page-max:1440px;
+  --k-ui-page-gutter:clamp(18px,2vw,32px);
+  --k-ui-control-h:44px;
+  --k-ui-control-radius:12px;
+  --k-ui-card-radius:18px;
+  --k-ui-panel-radius:20px;
+  --k-ui-line:#e5e7eb;
+  --k-ui-soft:#f7f8fa;
+  --k-ui-text:#171a1f;
+  --k-ui-muted:#747b84;
+  --k-ui-accent:#ff4b0a;
+  --k-ui-accent-hover:#e74308;
+  --k-ui-shadow:0 8px 24px rgba(15,23,42,.055);
+}
+
+/* One desktop canvas. Intentional wizards/onboarding remain independently sized. */
+@media(min-width:1100px){
+  html[data-user-role] #k-page-outlet{
+    --k-page-x:var(--k-ui-page-gutter);
+  }
+  html[data-user-role] #k-page-outlet > :is(
+    .k-page,
+    .k-page-shell--workspace,
+    .k-flow-primary-page,
+    .k-home-reference--app,
+    .k-community-page,
+    .k-masters-page,
+    .k-parts-native-page,
+    .k-client-cabinet,
+    .k-client-cabinet-page,
+    .k-client-orders-native,
+    .k-profile-page,
+    .k-notifications-page,
+    [data-page="service-management"]
+  ):not(.k-master-onboarding-route):not(.k-first-vehicle-page){
+    width:min(100%,var(--k-ui-page-max))!important;
+    max-width:var(--k-ui-page-max)!important;
+    min-width:0!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    padding-left:var(--k-ui-page-gutter)!important;
+    padding-right:var(--k-ui-page-gutter)!important;
+    box-sizing:border-box!important;
+  }
+
+  html[data-user-role] #k-page-outlet > :is(
+    .k-page,
+    .k-page-shell--workspace,
+    .k-flow-primary-page
+  ) > :is(
+    .k-master-reference-inner,
+    .k-services-root,
+    .k-services-catalog-outlet,
+    .k-master-workplace,
+    .k-master-schedule,
+    .k-exchange-r71,
+    .k-master-owner-profile,
+    .k-master-works,
+    .k-client-cabinet,
+    .k-parts-ref-page
+  ){
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+}
+
+/* Canonical action buttons. */
+:where(.k-btn,.k-button){
+  min-height:var(--k-ui-control-h)!important;
+  padding:0 14px!important;
+  border-radius:var(--k-ui-control-radius)!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  box-sizing:border-box!important;
+  font-family:inherit!important;
+  font-size:12.5px!important;
+  line-height:1.1!important;
+  font-weight:800!important;
+  text-decoration:none!important;
+  cursor:pointer!important;
+  transition:background .15s ease,border-color .15s ease,color .15s ease,box-shadow .15s ease,transform .08s ease!important;
+}
+:where(.k-btn,.k-button) svg{
+  flex:0 0 auto!important;
+  width:18px!important;
+  height:18px!important;
+}
+:where(.k-btn-primary,.k-button-primary){
+  border:1px solid var(--k-ui-accent)!important;
+  background:var(--k-ui-accent)!important;
+  color:#fff!important;
+  box-shadow:0 6px 16px rgba(255,75,10,.16)!important;
+}
+:where(.k-btn-primary,.k-button-primary):hover{
+  border-color:var(--k-ui-accent-hover)!important;
+  background:var(--k-ui-accent-hover)!important;
+}
+:where(.k-btn-secondary,.k-button-secondary){
+  border:1px solid var(--k-ui-line)!important;
+  background:#fff!important;
+  color:var(--k-ui-text)!important;
+  box-shadow:none!important;
+}
+:where(.k-btn-secondary,.k-button-secondary):hover{
+  border-color:#ffc3ad!important;
+  background:#fff8f5!important;
+  color:#c73c0a!important;
+}
+:where(.k-btn-ghost,.k-button-ghost){
+  border:1px solid transparent!important;
+  background:transparent!important;
+  color:#535a64!important;
+  box-shadow:none!important;
+}
+:where(.k-btn-ghost,.k-button-ghost):hover{
+  border-color:#e8eaed!important;
+  background:#f6f7f8!important;
+  color:#171a1f!important;
+}
+:where(.k-btn-danger,.k-button-danger,.k-btn.is-danger,.k-button.is-danger){
+  border-color:#ef4444!important;
+  background:#fff!important;
+  color:#c62828!important;
+}
+:where(.k-btn,.k-button):disabled,
+:where(.k-btn,.k-button)[aria-disabled="true"]{
+  opacity:.46!important;
+  cursor:not-allowed!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+:where(.k-btn-icon,.k-button-icon,.k-icon-btn){
+  width:40px!important;
+  min-width:40px!important;
+  height:40px!important;
+  min-height:40px!important;
+  padding:0!important;
+  border-radius:12px!important;
+}
+
+/* Canonical surfaces: same visual family, component-specific internal layout stays intact. */
+:is(
+  .k-card,
+  .k-panel,
+  .k-master-reference-card,
+  .k-parts-ref-card,
+  .k-master-service-card-r84,
+  .k-master-native-state,
+  .k-master-native-queue,
+  .k-master-native-upcoming,
+  .k-exchange-card,
+  .k-schedule-policy,
+  .k-schedule-day,
+  .k-master-owner-section-card,
+  .k-master-review-card,
+  .k-sto-panel,
+  .k-sto-bay,
+  .k-sto-master-card
+){
+  border:1px solid var(--k-ui-line)!important;
+  border-radius:var(--k-ui-card-radius)!important;
+  background:#fff!important;
+  box-shadow:var(--k-ui-shadow)!important;
+}
+
+/* Toolbars/search/filter blocks share one shell. */
+:is(
+  .k-catalog-toolbar,
+  .k-orders-search-toolbar,
+  .k-shop-toolbar,
+  .k-master-services-toolbar,
+  .k-exchange-r71-toolbar,
+  .k-master-r71-toolbar
+){
+  border:1px solid var(--k-ui-line)!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-shadow:0 5px 18px rgba(15,23,42,.035)!important;
+  box-sizing:border-box!important;
+}
+
+/* Empty states: no page-specific giant blank cards. */
+:is(
+  .k-empty,
+  .k-master-empty-r84,
+  .k-schedule-empty,
+  .k-sto-empty-state
+){
+  border-radius:16px!important;
+  border-color:#dde1e6!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+
+/* Form controls visually align with buttons. */
+.k-page :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea){
+  border-radius:12px;
+}
+.k-page :is(input:not([type="checkbox"]):not([type="radio"]),select){
+  min-height:42px;
+}
+
+/* Small phones stay denser without changing the visual language. */
+@media(max-width:699px){
+  :where(.k-btn,.k-button){
+    min-height:42px!important;
+    padding-inline:12px!important;
+    border-radius:11px!important;
+    font-size:11.5px!important;
+  }
+}
+
+/* R188.5.5.6.84.182 — authoritative control specificity. */
+.k-app-shell :is(.k-btn,.k-button):not(.k-nav-link):not(.k-menu-toggle){
+  min-height:var(--k-ui-control-h)!important;
+  padding:0 14px!important;
+  border-radius:var(--k-ui-control-radius)!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  box-sizing:border-box!important;
+  font-size:12.5px!important;
+  line-height:1.1!important;
+  font-weight:800!important;
+}
+.k-app-shell :is(.k-btn-primary,.k-button-primary){
+  border:1px solid var(--k-ui-accent)!important;
+  background:var(--k-ui-accent)!important;
+  color:#fff!important;
+  box-shadow:0 6px 16px rgba(255,75,10,.16)!important;
+}
+.k-app-shell :is(.k-btn-secondary,.k-button-secondary){
+  border:1px solid var(--k-ui-line)!important;
+  background:#fff!important;
+  color:var(--k-ui-text)!important;
+  box-shadow:none!important;
+}
+.k-app-shell :is(.k-btn-ghost,.k-button-ghost){
+  border:1px solid transparent!important;
+  background:transparent!important;
+  color:#535a64!important;
+  box-shadow:none!important;
+}
+.k-app-shell :is(
+  .k-master-reference-card,
+  .k-parts-ref-card,
+  .k-master-service-card-r84,
+  .k-master-native-state,
+  .k-master-native-queue,
+  .k-master-native-upcoming,
+  .k-exchange-card,
+  .k-schedule-policy,
+  .k-schedule-day,
+  .k-master-owner-section-card,
+  .k-master-review-card,
+  .k-sto-panel,
+  .k-sto-bay,
+  .k-sto-master-card
+){
+  border-radius:var(--k-ui-card-radius)!important;
+  border-color:var(--k-ui-line)!important;
+}
+
+/* R188.5.5.6.84.183 — CLIENT desktop header full-width; rail offset via margin. */
+@media(min-width:1100px){
+  html[data-user-role="client"]{
+    --k-client-desktop-nav-offset:85px;
+  }
+  html[data-user-role="client"] #k-shell-header.k-shell-header{
+    left:0!important;
+    right:0!important;
+    width:100%!important;
+    max-width:none!important;
+  }
+  html[data-user-role="client"] #k-shell-header>#k-desktop-nav.k-desktop-nav{
+    right:0!important;
+    left:auto!important;
+    top:0!important;
+    bottom:auto!important;
+    margin-top:var(--k-client-desktop-nav-offset)!important;
+    height:calc(100dvh - var(--k-client-desktop-nav-offset))!important;
+    min-height:0!important;
+    padding-top:14px!important;
+    padding-bottom:14px!important;
+    box-sizing:border-box!important;
+  }
+}
+@media(min-width:700px) and (max-width:1099px){
+  html[data-user-role="client"] #k-shell-header.k-shell-header{
+    left:0!important;
+    right:0!important;
+    width:100%!important;
+    max-width:none!important;
+  }
+  html[data-user-role="client"] #k-shell-header>#k-desktop-nav.k-desktop-nav{
+    right:0!important;
+  }
+}
+
+/* R188.5.5.6.84.123 — one CLIENT desktop workspace width. */
+@media(min-width:1100px){
+  html[data-user-role="client"]{
+    --k-client-workspace-max:1280px!important;
+    --k-client-workspace-gutter:24px!important;
+  }
+
+  html[data-user-role="client"] #k-page-outlet > :is(
+    .k-home-reference--app,
+    [data-page="services"].k-page-shell--workspace,
+    [data-page="chats"].k-page-shell--workspace,
+    .k-masters-page,
+    .k-community-page,
+    .k-parts-native-page,
+    .k-client-orders-native,
+    .k-client-cabinet,
+    .k-client-cabinet-page,
+    .k-work-feed-page,
+    .k-profile-page,
+    .k-notifications-page
+  ){
+    width:min(100%,var(--k-client-workspace-max))!important;
+    max-width:var(--k-client-workspace-max)!important;
+    min-width:0!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    box-sizing:border-box!important;
+  }
+
+  /* Home must not keep its old 1240px inner cap. */
+  html[data-user-role="client"] #k-page-outlet > .k-home-reference--app{
+    width:min(100%,var(--k-client-workspace-max))!important;
+    max-width:var(--k-client-workspace-max)!important;
+    padding-left:var(--k-client-workspace-gutter)!important;
+    padding-right:var(--k-client-workspace-gutter)!important;
+  }
+  html[data-user-role="client"] #k-page-outlet > .k-home-reference--app > *{
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+  html[data-user-role="client"] #k-page-outlet > .k-home-reference--app .k-home-ref-search{
+    max-width:none!important;
+  }
+
+  /* Services must not inherit --k-flow-content-max (~900px). */
+  html[data-user-role="client"] #k-page-outlet > [data-page="services"].k-page-shell--workspace{
+    width:min(100%,var(--k-client-workspace-max))!important;
+    max-width:var(--k-client-workspace-max)!important;
+    padding-left:var(--k-client-workspace-gutter)!important;
+    padding-right:var(--k-client-workspace-gutter)!important;
+  }
+  html[data-user-role="client"] [data-page="services"] > .k-services-root,
+  html[data-user-role="client"] [data-page="services"] .k-services-root-categories,
+  html[data-user-role="client"] [data-page="services"] .k-services-catalog-outlet{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+
+  /* Chats keep their two-column layout, but inside the same 1280px page canvas. */
+  html[data-user-role="client"] #k-page-outlet > [data-page="chats"].k-page-shell--workspace{
+    width:min(100%,var(--k-client-workspace-max))!important;
+    max-width:var(--k-client-workspace-max)!important;
+    padding:0!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+  html[data-user-role="client"] [data-page="chats"] .k-chat-layout{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
+  }
+}
+
+/* R188.5.5.6.84.124 — CLIENT inner desktop width cleanup. */
+@media(min-width:1100px){
+  html[data-user-role="client"] .k-community-v2 .k-community-layout-v2,
+  html[data-user-role="client"] .k-master-reference-inner,
+  html[data-user-role="client"] .k-master-reference-directory,
+  html[data-user-role="client"] [data-page="services"]>.k-services-root,
+  html[data-user-role="client"] [data-page="services"] .k-services-root-categories,
+  html[data-user-role="client"] [data-page="services"] .k-services-catalog-outlet,
+  html[data-user-role="client"] [data-page="chats"] .k-chat-layout{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    box-sizing:border-box!important;
+  }
+
+  html[data-user-role="client"] :is(
+    .k-home-ref-search,
+    .k-catalog-toolbar,
+    .k-masters-toolbar,
+    .k-master-reference-search,
+    .k-master-reference-filters,
+    .k-parts-native-toolbar,
+    .k-community-toolbar,
+    .k-orders-search-toolbar
+  ){
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+
+  html[data-user-role="client"] .k-home-reference--app>.k-home-ref-search,
+  html[data-user-role="client"] .k-home-reference--app>.k-home-ref-hero,
+  html[data-user-role="client"] .k-home-reference--app>.k-home-ref-actions,
+  html[data-user-role="client"] .k-home-reference--app>.k-home-ref-section{
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+}
+
+/* R188.5.5.6.84.125 — CLIENT desktop vertical rhythm and control density. */
+@media(min-width:1100px){
+  html[data-user-role="client"]{
+    --k-client-page-top:24px;
+    --k-client-section-gap:18px;
+    --k-client-head-gap:14px;
+    --k-client-toolbar-h:48px;
+  }
+
+  html[data-user-role="client"] #k-page-outlet > :is(
+    .k-home-reference--app,
+    [data-page="services"].k-page-shell--workspace,
+    .k-masters-page,
+    .k-community-page,
+    .k-parts-native-page,
+    .k-client-orders-native,
+    .k-client-cabinet,
+    .k-client-cabinet-page,
+    .k-profile-page,
+    .k-notifications-page
+  ):not(.k-detail-page){
+    padding-top:var(--k-client-page-top)!important;
+    padding-bottom:32px!important;
+  }
+
+  html[data-user-role="client"] #k-page-outlet > :is(
+    [data-page="services"].k-page-shell--workspace,
+    .k-masters-page,
+    .k-community-page,
+    .k-parts-native-page,
+    .k-client-orders-native,
+    .k-client-cabinet,
+    .k-client-cabinet-page,
+    .k-profile-page,
+    .k-notifications-page
+  ):not(.k-detail-page){
+    display:grid!important;
+    align-content:start!important;
+    gap:var(--k-client-section-gap)!important;
+  }
+
+  html[data-user-role="client"] :is(
+    .k-workspace-head,
+    .k-r84-workspace-head,
+    .k-provider-ref-titlebar,
+    .k-community-head,
+    .k-community-header
+  ){
+    margin:0!important;
+    padding:0!important;
+    min-height:0!important;
+  }
+
+  html[data-user-role="client"] :is(
+    .k-workspace-head,
+    .k-r84-workspace-head,
+    .k-provider-ref-titlebar,
+    .k-community-head,
+    .k-community-header
+  ) h1{
+    margin:0!important;
+    font-size:30px!important;
+    line-height:36px!important;
+    letter-spacing:-.035em!important;
+    font-weight:850!important;
+  }
+
+  html[data-user-role="client"] :is(
+    .k-workspace-head,
+    .k-r84-workspace-head,
+    .k-community-head,
+    .k-community-header
+  ) p{
+    margin:5px 0 0!important;
+    max-width:760px!important;
+    color:#747b84!important;
+    font-size:12.5px!important;
+    line-height:18px!important;
+  }
+
+  html[data-user-role="client"] :is(
+    .k-home-ref-search__box,
+    .k-master-reference-search,
+    .k-catalog-toolbar,
+    .k-masters-toolbar,
+    .k-parts-native-toolbar,
+    .k-orders-search-toolbar
+  ){
+    min-height:var(--k-client-toolbar-h)!important;
+    height:auto!important;
+    border-radius:14px!important;
+    box-sizing:border-box!important;
+  }
+
+  html[data-user-role="client"] .k-home-ref-search__box{
+    height:var(--k-client-toolbar-h)!important;
+    padding:0 14px!important;
+  }
+
+  html[data-user-role="client"] .k-master-reference-search{
+    height:var(--k-client-toolbar-h)!important;
+    min-height:var(--k-client-toolbar-h)!important;
+    padding:0 14px!important;
+  }
+
+  html[data-user-role="client"] :is(
+    .k-catalog-toolbar,
+    .k-masters-toolbar,
+    .k-parts-native-toolbar,
+    .k-orders-search-toolbar
+  ){
+    padding:6px!important;
+  }
+
+  html[data-user-role="client"] :is(
+    .k-catalog-toolbar,
+    .k-masters-toolbar,
+    .k-parts-native-toolbar,
+    .k-orders-search-toolbar
+  ) :is(input,select,button,.k-btn,.k-button){
+    min-height:36px!important;
+  }
+
+  html[data-user-role="client"] .k-master-reference-filters{
+    margin-top:10px!important;
+    gap:8px!important;
+  }
+
+  html[data-user-role="client"] .k-home-reference--app{
+    gap:var(--k-client-section-gap)!important;
+  }
+
+  html[data-user-role="client"] .k-home-reference--app .k-home-ref-section{
+    gap:12px!important;
+  }
+
+  html[data-user-role="client"] :is(
+    .k-master-reference-directory,
+    .k-services-ref-grid,
+    .k-parts-native-grid
+  ){
+    margin-top:0!important;
+  }
+}
+
+/* R188.5.5.6.84.126 — CLIENT desktop card shell consistency. */
+@media(min-width:1100px){
+  html[data-user-role="client"]{
+    --k-client-card-radius:16px;
+    --k-client-card-border:#e4e7eb;
+    --k-client-card-shadow:0 5px 16px rgba(15,23,42,.045);
+    --k-client-card-shadow-hover:0 10px 24px rgba(15,23,42,.075);
+  }
+
+  html[data-user-role="client"] :is(
+    .k-home-ref-service-card,
+    [data-page="services"] .k-drill-tile,
+    [data-page="services"] .k-service-card,
+    [data-page="services"] .k-catalog-card,
+    .k-master-reference-card,
+    .k-parts-native-card
+  ){
+    border:1px solid var(--k-client-card-border)!important;
+    border-radius:var(--k-client-card-radius)!important;
+    background:#fff!important;
+    box-shadow:var(--k-client-card-shadow)!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+    transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease!important;
+  }
+
+  html[data-user-role="client"] :is(
+    .k-home-ref-service-card,
+    [data-page="services"] .k-drill-tile,
+    [data-page="services"] .k-service-card,
+    [data-page="services"] .k-catalog-card,
+    .k-master-reference-card,
+    .k-parts-native-card
+  ):hover{
+    border-color:#ffc2aa!important;
+    box-shadow:var(--k-client-card-shadow-hover)!important;
+    transform:translateY(-1px)!important;
+  }
+
+  html[data-user-role="client"] .k-master-reference-card{
+    padding:10px 10px 0!important;
+  }
+
+  html[data-user-role="client"] .k-master-reference-actions{
+    min-height:56px!important;
+    margin-top:10px!important;
+    padding:8px 0!important;
+    border-top:1px solid #eceef1!important;
+    align-items:center!important;
+  }
+
+  html[data-user-role="client"] .k-master-reference-actions :is(
+    .k-master-reference-action-icon,
+    .k-master-reference-action-secondary,
+    .k-master-reference-action-primary
+  ){
+    min-height:40px!important;
+    border-radius:11px!important;
+    box-sizing:border-box!important;
+  }
+
+  html[data-user-role="client"] .k-parts-native-card footer{
+    min-height:58px!important;
+    padding:10px 12px 12px!important;
+    border-top:1px solid #eceef1!important;
+    align-items:center!important;
+  }
+
+  html[data-user-role="client"] [data-page="services"] .k-service-card{
+    padding:16px!important;
+    gap:12px!important;
+  }
+
+  html[data-user-role="client"] [data-page="services"] .k-service-card-body{
+    gap:6px!important;
+  }
+
+  html[data-user-role="client"] [data-page="services"] .k-service-card-meta{
+    gap:7px!important;
+  }
+
+  html[data-user-role="client"] [data-page="services"] .k-service-card-meta>div{
+    padding:9px 10px!important;
+    border-radius:11px!important;
+  }
+
+  /* Social feed keeps its own structure; only the outer surface joins the same family. */
+  html[data-user-role="client"] .k-community-v2 .k-community-post{
+    border:1px solid var(--k-client-card-border)!important;
+    border-radius:var(--k-client-card-radius)!important;
+    background:#fff!important;
+    box-shadow:var(--k-client-card-shadow)!important;
+    overflow:hidden!important;
+  }
+}

@@ -1,0 +1,42 @@
+'use strict';
+const fs=require('fs'),path=require('path'),vm=require('vm');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const lifecycle=read('js/next/onboarding/onboarding_lifecycle.js');
+const app=read('js/next/onboarding/onboarding_app.js');
+const resolverSource=read('js/next/onboarding/post_auth_first_entry_resolver.js');
+const firstVehicle=read('js/next/client/first_vehicle_flow.js');
+const masterPage=read('js/next/pages/master_onboarding.js');
+const dynamic=read('js/next/dynamic_navigation.js');
+const auth=read('api/auth_session.php');
+const bridge=read('api/identity/onboarding_identity_bridge.php');
+const contextService=read('api/identity/context_service.php');
+const version=read('inc/asset_version.php');
+let failed=0,total=0;
+const expect=(name,ok)=>{total++;if(ok)console.log('PASS',name);else{failed++;console.error('FAIL',name);}};
+
+expect('pending role selection overrides stale identity role',lifecycle.includes("if (flow?.pending === true && ['client','master'].includes(pendingRole)) return pendingRole"));
+expect('session-confirmed does not race onboarding owner',lifecycle.includes("session-confirmed-deferred-to-onboarding-owner")&&lifecycle.includes('detail?.result?.selectedRole'));
+expect('identity context must match selected CLIENT/MASTER before bootstrap',app.includes('assertEntryContext(user.role,identityPayload)')&&app.includes('client_context_not_selected')&&app.includes('master_context_not_selected'));
+expect('legacy auth refresh cannot overwrite active interface role',app.includes('liveIdentity?.authenticated')&&app.includes('legacy_role:sessionPayload.user.legacy_role||sessionPayload.user.role'));
+expect('master onboarding route is master-profile restricted',dynamic.includes("{ key:'masterOnboarding', section:'work', any:['master.onboarding.view'], contextTypes:['profile'], contextProfiles:['master'] }"));
+expect('master onboarding page rejects foreign role',masterPage.includes('function masterContextReady()')&&masterPage.includes('master-onboarding-role-guard')&&masterPage.includes('if(rejectForeignRole())return()=>{}'));
+expect('first vehicle requires client personal context',firstVehicle.includes('function clientContextReady(detail={})')&&firstVehicle.includes("snap.context?.type||'').toLowerCase()==='personal'")&&firstVehicle.includes('!clientContextReady(detail)'));
+expect('first vehicle respects explicit selected role before shell role',firstVehicle.includes('detail?.result?.selectedRole||detail?.result?.entryRole||detail.user?.entry_role'));
+expect('backend persists selected entry role into live session',auth.includes("$_SESSION['kareta_user']=$existingProfile")&&auth.includes("setcookie('kareta_entry_role',$selectedEntryRole")&&auth.includes("$_SESSION['kareta_user']=$profile")&&auth.includes("setcookie('kareta_entry_role',$requestedRole"));
+expect('identity bridge still switches selected branch context',bridge.includes('activateEntryRoleForOnboarding')&&contextService.includes("$role==='client'&&$type==='personal'")&&contextService.includes("$role==='master'&&$type==='profile'&&$profileType==='master'"));
+expect('release 84.37+',/188\.5\.5\.6\.84\.(?:37|3[89]|[4-9][0-9])/.test(version));
+
+const sandbox={window:{}};vm.createContext(sandbox);vm.runInContext(resolverSource,sandbox);
+const R=sandbox.window.KaretaPostAuthFirstEntryResolver;
+const clientOk=R.resolve({selectedRole:'client',identity:{currentContext:{type:'personal'}}},{entryRole:'client'},{role:'master'});
+expect('CLIENT + PERSONAL -> client flow',clientOk.ok===true&&clientOk.role==='client'&&clientOk.target==='#/home');
+const clientBad=R.resolve({selectedRole:'client',identity:{currentContext:{type:'profile',profileType:'master'}}},{entryRole:'client'},{role:'master'});
+expect('CLIENT + MASTER context fails closed',clientBad.ok===false&&clientBad.error==='client_context_not_selected'&&clientBad.target==='#/home');
+const masterOk=R.resolve({selectedRole:'master',identity:{currentContext:{type:'profile',profileType:'master'}},postAuth:{onboardingStatus:'not_started',step:1,view:'master-profile'}},{entryRole:'master'},{role:'client'});
+expect('MASTER + MASTER context -> master questionnaire',masterOk.ok===true&&masterOk.target==='#/onboarding/master?step=1&view=master-profile');
+const masterBad=R.resolve({selectedRole:'master',identity:{currentContext:{type:'personal'}}},{entryRole:'master'},{role:'client'});
+expect('MASTER + PERSONAL context fails closed',masterBad.ok===false&&masterBad.error==='master_context_not_selected');
+
+console.log(`\n${total-failed}/${total} checks passed`);
+process.exit(failed?1:0);

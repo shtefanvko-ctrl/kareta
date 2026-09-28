@@ -1,0 +1,57 @@
+{
+  "release": "188.5.5.6.84.109",
+  "checkedAtUtc": "2026-09-24T20:09:45Z",
+  "externalStaging": {
+    "url": "https://s.kareta.kz/",
+    "status": "FAIL_WRONG_APPLICATION",
+    "httpReachable": true,
+    "observedTitle": "UKHPC — Высший Политехнический колледж",
+    "observedHeading": "Высший Политехнический колледж",
+    "expectedApplication": "KARETA.KZ",
+    "expectedRelease": "188.5.5.6.84.109",
+    "releaseVerified": false,
+    "evidence": "External fetch reached the host, but the root page identifies itself as UKHPC / Высший Политехнический колледж, not KARETA.KZ. Therefore release 188.5.5.6.84.109 cannot be confirmed on the configured staging URL."
+  },
+  "localStagingEquivalent": {
+    "status": "PASS",
+    "server": "PHP 8.4.23 built-in server on 127.0.0.1:8766",
+    "checks": [
+      {
+        "request": "GET /",
+        "http": 200,
+        "bytes": 30167,
+        "releaseTokenSeen": true
+      },
+      {
+        "request": "GET /inc/asset_version.php",
+        "http": 200
+      },
+      {
+        "request": "GET /css/runtime_boot_bundle.css",
+        "http": 200
+      },
+      {
+        "request": "GET /js/next/route_registry.js",
+        "http": 200
+      },
+      {
+        "request": "GET /js/next/route_asset_loader.js",
+        "http": 200
+      }
+    ],
+    "note": "Equivalent smoke check of the exact extracted source. It does not substitute for external staging verification."
+  },
+  "requiredForStageCompletion": true,
+  "stageComplete": false,
+  "stageStatus": "NOT_OK",
+  "stageBlocker": "Configured staging URL is reachable but serves the wrong application (UKHPC instead of KARETA.KZ); release 188.5.5.6.84.109 is not present/verified there.",
+  "correctivePackage": {
+    "round": 3,
+    "rootCauseLayer": "hosting/vhost/document-root",
+    "hostingEvidence": "PS.kz Plesk host; external hostname serves wrong application",
+    "repairScript": "tools/repair_staging_plesk_84_109.sh",
+    "externalVerifier": "tools/verify_staging_release_84_109.py",
+    "repairAppliedToExternalHost": false,
+    "reasonNotApplied": "No connected shell/Plesk session to the authorized hosting server in this conversation."
+  }
+}

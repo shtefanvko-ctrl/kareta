@@ -1,0 +1,18 @@
+'use strict';
+const fs=require('fs');
+const read=p=>fs.readFileSync(p,'utf8');
+const must=(ok,msg)=>{if(!ok){console.error('FAIL:',msg);process.exit(1);}};
+const css=read('css/next/client_surface_modernization_phase3.css');
+const more=read('js/next/client_surface_modernization_phase3.js');
+const reg=read('inc/asset_registry.php');
+const av=read('inc/asset_version.php').match(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/)?.[1]||'';
+const sw=read('sw.js').match(/const RELEASE\s*=\s*'([^']+)'/)?.[1]||'';
+must(reg.includes("css/next/client_surface_modernization_phase3.css"),'phase3 CSS not registered');
+must(reg.includes("js/next/client_surface_modernization_phase3.js"),'phase3 JS not registered');
+must(more.includes('data-more-close')&&more.includes("setAttribute('aria-modal','true')"),'More close/dialog enhancement missing');
+must(css.includes('--k-visual-viewport-height')&&css.includes('dialog.k-account-window-r79'),'account VisualViewport guard missing');
+must(css.includes('dialog.k-client-orders-dialog')&&css.includes('dialog.k-vehicle-modal'),'orders/vehicle overlay normalization missing');
+must(css.includes('body.k-garage-modal-open #k-mobile-nav'),'garage nav suppression missing');
+must(css.includes('.k-mobile-filter-stack')&&css.includes('--k-client-active-bottom-space'),'floating layer live nav clearance missing');
+const rev=Number(av.split('.').pop()||0); must(rev>=63&&sw===av,'84.63+ version mismatch');
+console.log('R188.5.5.6.84.63 client overlay modernization phase 3: OK');

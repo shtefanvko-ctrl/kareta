@@ -1,0 +1,62 @@
+{
+  "schema": "kareta.release-master-plan.stage-check.v1",
+  "stage": 10,
+  "totalStages": 2513,
+  "phase": "00 — BASELINE_TEST_HARNESS",
+  "sourceBaseline": "R188.5.5.6.84.109",
+  "task": "Собрать CHANGELOG 84.77–84.109",
+  "local": {
+    "status": "PASS",
+    "releaseRange": {
+      "from": "188.5.5.6.84.77",
+      "to": "188.5.5.6.84.109",
+      "count": 33
+    },
+    "sourceCoverage": {
+      "patch": 30,
+      "queue": 1,
+      "recovery": 1,
+      "gap": 1
+    },
+    "migrationManifest": {
+      "version": 129,
+      "files": 129
+    },
+    "changelog": "docs/changelog/RELEASE_NOTES_R188_5_5_6_84_77_TO_84_109.md",
+    "metadata": "docs/changelog/release_notes_84_77_84_109.json",
+    "test": "tools/test_release_notes_84_77_84_109.js",
+    "releaseChecklist": {
+      "status": "PASS",
+      "passed": 21,
+      "total": 21,
+      "finalMarker": "RELEASE_CHECKLIST: PASS"
+    }
+  },
+  "externalStaging": {
+    "checkedAtUtc": "2026-09-25T01:20:42.8705033Z",
+    "root": {
+      "url": "https://s.kareta.kz/",
+      "httpStatus": 403,
+      "statusDescription": "Forbidden",
+      "contentType": "text/html; charset=UTF-8"
+    },
+    "markdown": {
+      "url": "https://s.kareta.kz/docs/changelog/RELEASE_NOTES_R188_5_5_6_84_77_TO_84_109.md",
+      "httpStatus": 403,
+      "statusDescription": "Forbidden",
+      "contentType": "text/html; charset=UTF-8"
+    },
+    "metadata": {
+      "url": "https://s.kareta.kz/docs/changelog/release_notes_84_77_84_109.json",
+      "httpStatus": 403,
+      "statusDescription": "Forbidden",
+      "contentType": "text/html; charset=UTF-8"
+    },
+    "status": "BLOCKED_HTTP_403"
+  },
+  "runtimeBusinessCodeChanged": false,
+  "apiChanged": false,
+  "dbChanged": false,
+  "stageComplete": false,
+  "stageBlocker": "External staging returns HTTP 403 before release notes can be verified there."
+}

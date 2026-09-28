@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "screen": "errors.403",
+  "activeBackground": "closed-entrance",
+  "fallbackBackground": "service-shield",
+  "fit": "cover",
+  "backgrounds": {
+    "closed-entrance": {
+      "title": "Закрытый въезд",
+      "path": "./backgrounds/closed-entrance.png",
+      "position": "center center"
+    },
+    "blocked-route": {
+      "title": "Перекрытый маршрут",
+      "path": "./backgrounds/blocked-route.png",
+      "position": "center center"
+    },
+    "protected-vehicle": {
+      "title": "Защитный контур автомобиля",
+      "path": "./backgrounds/protected-vehicle.png",
+      "position": "center center"
+    },
+    "protected-digital-space": {
+      "title": "Защищённое цифровое пространство",
+      "path": "./backgrounds/protected-digital-space.png",
+      "position": "center center"
+    },
+    "access-pass-denied": {
+      "title": "Отклонённый сервис-пропуск",
+      "path": "./backgrounds/access-pass-denied.png",
+      "position": "center center"
+    },
+    "closed-service-bay": {
+      "title": "Закрытый сервисный бокс",
+      "path": "./backgrounds/closed-service-bay.png",
+      "position": "center center"
+    },
+    "protected-map-zone": {
+      "title": "Защищённая зона на карте",
+      "path": "./backgrounds/protected-map-zone.png",
+      "position": "center center"
+    },
+    "service-shield": {
+      "title": "Сервисный щит",
+      "path": "./backgrounds/service-shield.png",
+      "position": "center center"
+    }
+  }
+}

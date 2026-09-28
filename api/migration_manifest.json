@@ -1,0 +1,651 @@
+{
+  "schemaVersion": 1,
+  "targetDbVersion": 129,
+  "migrations": [
+    {
+      "version": 1,
+      "file": "001_initial_schema.php",
+      "sha256": "15c3088fe6ce7aa6793007ef0efd96757c1880c1c9ddf35349f31c735b293b14"
+    },
+    {
+      "version": 2,
+      "file": "002_schema_columns_indexes.php",
+      "sha256": "6a0444c00d5bb652e8ee25e5689064a96919f4a9df816d358e61532209f66a85"
+    },
+    {
+      "version": 3,
+      "file": "003_seed_core_data.php",
+      "sha256": "a803ff277cf3f29db4e325573ba24d68b4d9bc33a2b55a99a4985a7b015a39b3"
+    },
+    {
+      "version": 4,
+      "file": "004_backfill_relations.php",
+      "sha256": "26a79803be7565738e0d680fec7a5ee7e4d6638c7402a1f61e5d69a3c16c8805"
+    },
+    {
+      "version": 5,
+      "file": "005_reinforce_indexes.php",
+      "sha256": "3e84a757f790f793a720de5bd86ea8cf3afbb2fc7d0e3a00b608c49a43252d71"
+    },
+    {
+      "version": 6,
+      "file": "006_runner_split.php",
+      "sha256": "7ca59bac846ee43375b0e8377d005eedace2a0dda3ec674370145eaf25431d4d"
+    },
+    {
+      "version": 7,
+      "file": "007_unify_user_entities.php",
+      "sha256": "dfc104a2f8998b9ad871b476e3248b33be9b9fb11cdfe7a4804ca55c314e7cf2"
+    },
+    {
+      "version": 8,
+      "file": "008_relations_logs_stats.php",
+      "sha256": "3295c27286654b21545979dbf32de2e3ef5cc462e87f007062b5c5e90ccf2c94"
+    },
+    {
+      "version": 9,
+      "file": "009_user_id_normalization.php",
+      "sha256": "e7dcf392d469626e550d7e0e2dfe79a0b581a9d532fd8636e7311faaa8cf037d"
+    },
+    {
+      "version": 10,
+      "file": "010_catalog_content.php",
+      "sha256": "e10db5e5b170ce2dfe9dc053b484577c3c7424c49bc22f36a82740d103f6d851"
+    },
+    {
+      "version": 11,
+      "file": "011_foreign_keys_hardening.php",
+      "sha256": "06c6378fa6263cf589079038b7dbcb5fed28a271d9e80e6d18585149f03981e3"
+    },
+    {
+      "version": 12,
+      "file": "012_public_content_pages.php",
+      "sha256": "4512be9fb3aac9675c4632a627f7a8a0be31fd743282f6cdfa8fa59dda581cc3"
+    },
+    {
+      "version": 13,
+      "file": "013_server_first_finalize.php",
+      "sha256": "17b8eb48e6ed1c488e2f17962ea2db9f6dd867df24201b92f7d32259e61738c6"
+    },
+    {
+      "version": 14,
+      "file": "014_server_first_integrity.php",
+      "sha256": "c1718ebb159c2185ad753f254dbd513e0b4b59a05e573fdf7b3d6831ff09abb0"
+    },
+    {
+      "version": 15,
+      "file": "015_server_first_soft_delete_visibility.php",
+      "sha256": "5c27b6b1727f9f803cdda998e4f7273f6b9ebc70707635a3128b1c1e945448ca"
+    },
+    {
+      "version": 16,
+      "file": "016_core_seed_integrity.php",
+      "sha256": "fc9bd1b395035b77667d09acb6ebfa512139f84007273ff1873b045b985c8145"
+    },
+    {
+      "version": 17,
+      "file": "017_extended_services.php",
+      "sha256": "c5c872a40923ec841126c4d815199b7511eb804be9480ee54a40e0e674489f9c"
+    },
+    {
+      "version": 18,
+      "file": "018_car_handover_confirmation.php",
+      "sha256": "4cdeea2dc6d54ec0f74a4b6ab64bba9432395d8abe248e2311ce4e8479c0b5e8"
+    },
+    {
+      "version": 19,
+      "file": "019_master_system_tables.php",
+      "sha256": "b10c400d70d12990598a639b63da23be17afb54c1eef16397a0208fb27616d45"
+    },
+    {
+      "version": 20,
+      "file": "020_master_content_seed.php",
+      "sha256": "f324dcf1c616bd180bcfd340dae6648b41bc76b82d584c46bfc2663a84a0d3a7"
+    },
+    {
+      "version": 21,
+      "file": "021_service_categories_extend.php",
+      "sha256": "3647aea767da67997787d21ca1669b90599ef95e8559892043ad81918d419c85"
+    },
+    {
+      "version": 22,
+      "file": "022_entry_flow_roles_geo.php",
+      "sha256": "1ac19d44f2d4927e1996013d5bf9a949eb6dd1ea632c7b74796055b9e9772a76"
+    },
+    {
+      "version": 23,
+      "file": "023_master_geo_fields.php",
+      "sha256": "0ecfee811ba36695d63222bd70e9966a7d9d0afa879d5b050c4c458ec0410889"
+    },
+    {
+      "version": 24,
+      "file": "024_sto_master_link.php",
+      "sha256": "929a6637de59c075ebeab8ed602b0ca7330093fdd899546a3559325f0149ff33"
+    },
+    {
+      "version": 25,
+      "file": "025_schema_autoheal_and_perf.php",
+      "sha256": "53dbafd4bf193e0e07f16ccb253a9dd36ee34b78f6476a295a6d58b7ccfccef0"
+    },
+    {
+      "version": 26,
+      "file": "026_master_exchange_server_state.php",
+      "sha256": "d6c2f8737625550859ba456c3c3f51bc383e0af5b33131da7ef5e7833f3256e2"
+    },
+    {
+      "version": 27,
+      "file": "027_idempotency_keys.php",
+      "sha256": "565127dac5698df0771390918ea83141bee81aae9929f5a7300f0cb46999bcd0"
+    },
+    {
+      "version": 28,
+      "file": "028_unique_duplicate_guards.php",
+      "sha256": "2fd9a960d4d3ef3a9e0137b174133ddf9f082aada395a70104d60f42bb451595"
+    },
+    {
+      "version": 29,
+      "file": "029_sto_client_links.php",
+      "sha256": "471e808566e91b93454920f3b65f48d0e01df94191ca9815cf4c2b7e4ea0e31e"
+    },
+    {
+      "version": 30,
+      "file": "030_orders_vehicle_category_health.php",
+      "sha256": "9b469784fc3d33b717d0dd6671997d93df5f2e204512daa08b2cee7003e3dcb7"
+    },
+    {
+      "version": 31,
+      "file": "031_seller_shop_role.php",
+      "sha256": "9e9288e942623db4d2550818cdb08d5552e7417f76d9e89a5447ada5e16c6186"
+    },
+    {
+      "version": 32,
+      "file": "032_compact_role_profiles.php",
+      "sha256": "a453b5853a08f05becd99e34d1b9d0e90a3d304aed6d7b5a9342aab1e0a1fc2d"
+    },
+    {
+      "version": 33,
+      "file": "033_platform_catalog_shop.php",
+      "sha256": "f47a67f056622b494af3fe4313b456a89dca768315103985abd0cf2c18a5bc25"
+    },
+    {
+      "version": 34,
+      "file": "034_product_catalog_external_source.php",
+      "sha256": "14ef639b4eca74fb81ad8730546c998ea5299e52f95478aa472f5ba9f63d7416"
+    },
+    {
+      "version": 35,
+      "file": "035_service_catalog_external_source.php",
+      "sha256": "ff03c4e1c7e5d79287543c4814a3307d3328f23d384b9b3025d86cba4e9b36e8"
+    },
+    {
+      "version": 36,
+      "file": "036_catalog_images_and_service_reimport.php",
+      "sha256": "6258ac25d1c2a091f2fd062a8f61f184350c4fcf29194c580dc1c6d831223227"
+    },
+    {
+      "version": 37,
+      "file": "037_service_offers_role_management.php",
+      "sha256": "b6c965bcd6f04bd0016efb2d49b13f471fa9434ca7fb79a0787ee3a1c145ca72"
+    },
+    {
+      "version": 38,
+      "file": "038_product_categories.php",
+      "sha256": "a3cb19dec5ba590db6a559781f40f4b88861e38498911a1eafac214c35454f65"
+    },
+    {
+      "version": 39,
+      "file": "039_service_categories_normalized.php",
+      "sha256": "aa1bb3401611009040b9e0b59cf7774786ce61a16af750ff01c4f5b46d9fe0e2"
+    },
+    {
+      "version": 40,
+      "file": "040_service_catalog_active_repair.php",
+      "sha256": "01ae9733603ae5466117df53befd0867e56e62378e8b355fda3ebb60ccde9898"
+    },
+    {
+      "version": 41,
+      "file": "041_service_catalog_dedicated_endpoint.php",
+      "sha256": "98eee68e58d8681c0e916e392f67682fc96223ad55f9c66ad7780695de536878"
+    },
+    {
+      "version": 42,
+      "file": "042_news_for_all_roles.php",
+      "sha256": "7e50453d5d1e79477805741f84e4cfc94d0b0932fa0c3d83ddeed40e954f278f"
+    },
+    {
+      "version": 43,
+      "file": "043_demo_accounts_and_relations.php",
+      "sha256": "b554e24fff6bf2e973c16b883ca0364070c2776d29102c162b8caf69535cd0b3"
+    },
+    {
+      "version": 44,
+      "file": "044_masters_catalog_directory.php",
+      "sha256": "b723b96c28e19ee02f24f6d3d98e8ddd2f80aaed6df070e00771d8c3c10a8531"
+    },
+    {
+      "version": 45,
+      "file": "045_work_order_core.php",
+      "sha256": "1c8dfda2645b95d07976966978f5b5afe19324797b48589dac9d7287606baeae"
+    },
+    {
+      "version": 46,
+      "file": "046_master_workplace.php",
+      "sha256": "91a88706069019f581f9583696f86a9286122b346125162bb698c62429a6890a"
+    },
+    {
+      "version": 47,
+      "file": "047_vehicle_digital_passport.php",
+      "sha256": "8a808e5067e302b802df494112c0484b6252f942a0c925ca3b097edf644b1a11"
+    },
+    {
+      "version": 48,
+      "file": "048_work_posts_ecosystem.php",
+      "sha256": "3c9e5114215780e83f609599e6bc370e16b19500d36e05bcbcf2ebe4e7a5d4c2"
+    },
+    {
+      "version": 49,
+      "file": "049_client_cabinet.php",
+      "sha256": "9c8e5cdb803e2ac195c36f5406ae364ff183190fa16b398eb17eed194caf2b5e"
+    },
+    {
+      "version": 50,
+      "file": "050_communication_requests_reviews.php",
+      "sha256": "c0c0de3bdf7425fb51d13286f4826e395592fa2e160ffcd9101dada5de332674"
+    },
+    {
+      "version": 51,
+      "file": "051_master_schedule_planning.php",
+      "sha256": "9e61e591c3479677507e278dad2d943845a2c9d27328d5b34567adda6887a386"
+    },
+    {
+      "version": 52,
+      "file": "052_sto_workplace_bays.php",
+      "sha256": "c7be4002d8c0558565f24b843e1d884b1686987009607d96c36b42406bc0f642"
+    },
+    {
+      "version": 53,
+      "file": "053_client_orders_support_chat.php",
+      "sha256": "c938927df57e05aa9fca3ba4287b74784fcf05d015614b534571c0a62658489c"
+    },
+    {
+      "version": 54,
+      "file": "054_schema_integrity_chat_attachments.php",
+      "sha256": "abd6536bb26869d1ba483a8d8b97c1055afc123d81dfc73c1625823dfd5cbf97"
+    },
+    {
+      "version": 55,
+      "file": "055_booking_reviews_file_storage.php",
+      "sha256": "4bd1d6432df0561ca5d66ba7ffdb027db4175fbc81afb6c98e37432a9348a841"
+    },
+    {
+      "version": 56,
+      "file": "056_chat_read_status.php",
+      "sha256": "32cd84b7762cc61e2cb536303b61be5d66d29decb93ca4c2e1b3a9ee291391c7"
+    },
+    {
+      "version": 57,
+      "file": "057_vehicle_maintenance_lifecycle.php",
+      "sha256": "fc90b6d223daabae74e4aa29457e7bb4711291cda162596bb3f7559c1630ecb3"
+    },
+    {
+      "version": 58,
+      "file": "058_vehicle_service_reminders.php",
+      "sha256": "72cc66d3ab5ac73fae448544e6e65b76b5c859ac20ca8c1b4415fa444349503d"
+    },
+    {
+      "version": 59,
+      "file": "059_vehicle_legal_documents.php",
+      "sha256": "1154a77fb4aa877cf13f4d178b3e0c8d72f700d414ca0543341c4480af796ddd"
+    },
+    {
+      "version": 60,
+      "file": "060_relation_integrity.php",
+      "sha256": "efe0014afac60a36b267ea090b2336b977eac1480f2ee9595357567395cf59d6"
+    },
+    {
+      "version": 61,
+      "file": "061_organization_core.php",
+      "sha256": "58b771303504aa2f467d6e18ae1be032390e8243490c40be3f7ff82c7c266287"
+    },
+    {
+      "version": 62,
+      "file": "062_work_contexts_capabilities.php",
+      "sha256": "adb1165b1e999b418529c487d542daf38d7136f270b3b4b3955bbbea368abd4e"
+    },
+    {
+      "version": 63,
+      "file": "063_domain_platform_core.php",
+      "sha256": "2056a87e62061d48e70ce6256a3a2d7122744fd1668e3622c8648cbaa29b6b51"
+    },
+    {
+      "version": 64,
+      "file": "064_core_platform_hardening.php",
+      "sha256": "e8656649a5b4df9a562f1f150b3730ef6727fff0c54dbde38fac141fb0541f65"
+    },
+    {
+      "version": 65,
+      "file": "065_domain_integration.php",
+      "sha256": "35343ae909294ce035c78c30e5a45259144ecddfd5d11110a934c758341e2881"
+    },
+    {
+      "version": 66,
+      "file": "066_event_notification_core.php",
+      "sha256": "1b37a25ed2e18b86fa5161b2df48d8ae7e0e44da9c6933e304beb6c04d6a6a1a"
+    },
+    {
+      "version": 67,
+      "file": "067_calendar_booking.php",
+      "sha256": "4e1e92a5fc5d4a281964fd96d87658fa683547ccc37b461a870e56675a3600cf"
+    },
+    {
+      "version": 68,
+      "file": "068_finance_payments.php",
+      "sha256": "9d35fa7de00a376955a39b507c5060d497e81095b006beaf9707aa793ee33c4e"
+    },
+    {
+      "version": 69,
+      "file": "069_marketplace_warehouse.php",
+      "sha256": "92935f5896cd11fa0bedac204cf24fa858b85e034dae369494661067cc83a2f0"
+    },
+    {
+      "version": 70,
+      "file": "070_crm_analytics.php",
+      "sha256": "a0d3a49e71a0223a9dc150b2aa4d949010faa8686cb88e22661149769a1c5dd7"
+    },
+    {
+      "version": 71,
+      "file": "071_realtime_platform.php",
+      "sha256": "6da49d8caa81b1eb54ae3781d5c3bd0d306363781c498976cf1153fb6453c56b"
+    },
+    {
+      "version": 72,
+      "file": "072_identity_core_stage1.php",
+      "sha256": "ed683d40b04977b49495584b81073f52b5b6234674b4ee30407d0917636a34ad"
+    },
+    {
+      "version": 73,
+      "file": "073_identity_context_engine.php",
+      "sha256": "d46ae86c2b83084c94dc186db9422586a3339a314b4ddd42d8881b1b23481363"
+    },
+    {
+      "version": 74,
+      "file": "074_identity_capability_engine.php",
+      "sha256": "dd80530e35170775c652f4a3538af530d9ab39ac270b36239a9ba56f51a90c82"
+    },
+    {
+      "version": 75,
+      "file": "075_identity_session_core.php",
+      "sha256": "50b97dfc6398cb0dd15bc52f58c8e5866b1dd2c82c03b6f0741231a66ce2390a"
+    },
+    {
+      "version": 76,
+      "file": "076_identity_session_rotation.php",
+      "sha256": "6f437b4066efeaf3ef9b68350d428be240cbc0a4aeed64a5aab7b788470b00dd"
+    },
+    {
+      "version": 77,
+      "file": "077_identity_context_switch.php",
+      "sha256": "ce36c63fe6656ed1670c28d600fe7d0495b34da9f480569364af9cd2ee7b9479"
+    },
+    {
+      "version": 78,
+      "file": "078_identity_api_authorization_pipeline.php",
+      "sha256": "96620d951da83de27f61ecc401628fa816171a18330377e52e91606874873cdc"
+    },
+    {
+      "version": 79,
+      "file": "079_identity_domain_ownership.php",
+      "sha256": "a0753dfba5499ef34736d0dcfa40448e241bf6e6f93f1994f4dea5bd63bd174b"
+    },
+    {
+      "version": 80,
+      "file": "080_identity_context_realtime.php",
+      "sha256": "3c0d85d05c8df1c9f06629af575fd6833ee2b81d759cfb8044413e0b4276dce1"
+    },
+    {
+      "version": 81,
+      "file": "081_identity_crm_profile_unification.php",
+      "sha256": "10a60cbf29041c2692dfdedcbf5f7ceda9715a17603a9ba5da73d58c075ab4d8"
+    },
+    {
+      "version": 82,
+      "file": "082_identity_marketplace_organization_membership.php",
+      "sha256": "3a13816ee994f11dba68f5613f9f406acca072888b8e1540e65aca9f722fbc3d"
+    },
+    {
+      "version": 83,
+      "file": "083_identity_migration_engine.php",
+      "sha256": "0b9d80db24618187d7f3fe5cd62049c53badd83ffd5898d931e98ebfcbb7977f"
+    },
+    {
+      "version": 84,
+      "file": "084_identity_migration_control_center.php",
+      "sha256": "be7376709ab122bcae961c0df8c23f3f12a16f57b91af8f636a57bc7b5890bf1"
+    },
+    {
+      "version": 85,
+      "file": "085_identity_auth_resolver_unification.php",
+      "sha256": "b605f3f6eed8d04500d572ca340314f0b2ec176ae0299687a3611faf3fefc75e"
+    },
+    {
+      "version": 86,
+      "file": "086_identity_capability_normalization.php",
+      "sha256": "c775c7e02b9a3b2dbafa5252556438ac670f5591e752350608f81a49b6e73e5c"
+    },
+    {
+      "version": 87,
+      "file": "087_identity_api_legacy_bridge.php",
+      "sha256": "10d6263e6663da6381d0e5d08c17fee5151e6113c6c80f8b7b6d9d4811d2b987"
+    },
+    {
+      "version": 88,
+      "file": "088_identity_production_hardening.php",
+      "sha256": "f4f4df7af22b4f90b6f8be589173587fed1365f65f2b6c1e12156c24147cba3d"
+    },
+    {
+      "version": 89,
+      "file": "089_production_readiness.php",
+      "sha256": "b95e98cadccb93fd06e717796fadca33f096d4d0d621c5b32da74215df2c5f89"
+    },
+    {
+      "version": 90,
+      "file": "090_context_members_status_hotfix.php",
+      "sha256": "1fe08fb73e2f4b0ebfdcd535fcb108725fc07b0a1f59c759791baad28a1d2b9f"
+    },
+    {
+      "version": 91,
+      "file": "091_schema_contract_startup_recovery.php",
+      "sha256": "c686c6ea6993fd7bfb950f79af3735df4282d4143bfdfdae9ed6c78a8e6dc8d9"
+    },
+    {
+      "version": 92,
+      "file": "092_client_smart_action_hub.php",
+      "sha256": "467629452df17109aee2b0e692696f7af653dca2bf621ea57fcc1590999ddde9"
+    },
+    {
+      "version": 93,
+      "file": "093_master_navigation_account_preferences.php",
+      "sha256": "c213e42d5d2dfabb554b976d403a61724a84faf0e5463ba4dbbc606c748fa392"
+    },
+    {
+      "version": 94,
+      "file": "094_sto_workflow_engine.php",
+      "sha256": "024a9fb2d67e30d4f42f87c7b67707c2edb93f6c34eff2238a9c5510fc50ea3a"
+    },
+    {
+      "version": 95,
+      "file": "095_admin_operations_moderation.php",
+      "sha256": "ab04fa2837dc3c09f988523226738e2074782a6980b38456aa3fd5c5f6f864ad"
+    },
+    {
+      "version": 96,
+      "file": "096_universal_dashboard_engine.php",
+      "sha256": "561868da33132f1b7dcf4ef0b433be44848d397cf28adbecd75ce1b04d2da9ff"
+    },
+    {
+      "version": 97,
+      "file": "097_role_operational_navigation.php",
+      "sha256": "7f3a683cbab635b6784aea5f7f01ef92e1e99714150c118a85cc656dc83d1108"
+    },
+    {
+      "version": 98,
+      "file": "098_role_workspaces_completion.php",
+      "sha256": "02a2d591dbc6eb68733177da1b79283f0c0e2b44f66d11ae37f26dd7725c3a0d"
+    },
+    {
+      "version": 99,
+      "file": "099_more_menu_arc_default.php",
+      "sha256": "ae1868cca70c17e7592c74d8ce377b77c539a8f0401e4a563d21cbb8ebb9e06b"
+    },
+    {
+      "version": 100,
+      "file": "100_onboarding_identity_session_bridge.php",
+      "sha256": "9ded88231b73090d14557b28a14cfa72ba30dc24b572804deaa1a903a564b183"
+    },
+    {
+      "version": 101,
+      "file": "101_context_role_chat_state.php",
+      "sha256": "ece0ff40af3385fa30011802534a1e98dc39f1e720ab5fbffb9d14cdafcb93eb"
+    },
+    {
+      "version": 102,
+      "file": "102_security_hardening.php",
+      "sha256": "7cd71c5aedb657a2ff21aebece9457e52c16bee43aee98355631ae81f77f89f9"
+    },
+    {
+      "version": 103,
+      "file": "103_person_profile_legacy_id_string.php",
+      "sha256": "3f78f60b3739a7298b60b2372bf6967ab59bd241a082650e290267b338bf374c"
+    },
+    {
+      "version": 104,
+      "file": "104_master_order_full_lifecycle.php",
+      "sha256": "e3b1ef298439db84fcec2836fdf3b0bf368a4451f5a5023ec7bac3d25a5642da"
+    },
+    {
+      "version": 105,
+      "file": "105_master_aftercare_finance_inventory.php",
+      "sha256": "c2a7a4eff3e2a455a1cf9f3191b932e89a7ab336737c92c9e5ed799f3df30433"
+    },
+    {
+      "version": 106,
+      "file": "106_operational_finance_payroll_receivables.php",
+      "sha256": "d630b9043490239aeab9c9bbc6e2c9be8966e941bba56b8d4339b27b5cfaafc0"
+    },
+    {
+      "version": 107,
+      "file": "107_client_exchange_production_scale.php",
+      "sha256": "09517cd88e5721b85d35e351d121db54790439442cdef98a127d537942f2a385"
+    },
+    {
+      "version": 108,
+      "file": "108_production_dispatch_engine.php",
+      "sha256": "221d45ffe42ffd602f9196884a9948d1a1ae9c1f410445a7d2a69cc4cbdbd0e8"
+    },
+    {
+      "version": 109,
+      "file": "109_master_profile_runtime_repair.php",
+      "sha256": "b7e4242f5363aa2cc070d288db1a4fe8bb577666e325541b20e45d68c1a2d25d"
+    },
+    {
+      "version": 110,
+      "file": "110_work_portfolio_story.php",
+      "sha256": "5010bf7f2d5739331a6f4fff4d1fe42406d03e0f2a7599eeae813108cb3cc6ec"
+    },
+    {
+      "version": 111,
+      "file": "111_master_reviews_social_contract.php",
+      "sha256": "496bc8d2cf62ebe988ccdab85497bc39e47ccff6336cb8a79be963675ba60b51"
+    },
+    {
+      "version": 112,
+      "file": "112_master_social_wall.php",
+      "sha256": "f80f80d341b9035c14daac3364c39384e17b81b8234502f63c2b1653e8099a37"
+    },
+    {
+      "version": 113,
+      "file": "113_master_service_pricing_native.php",
+      "sha256": "91c1fda9a8c1f7966f6cfd5092f90348a57414419bdb675524c6de1096fae43b"
+    },
+    {
+      "version": 114,
+      "file": "114_parts_native_marketplace.php",
+      "sha256": "b4bb2047bfd1fc8e480d6165ac4e03af833714e5ff72201ae290f7b9140d3589"
+    },
+    {
+      "version": 115,
+      "file": "115_used_market_listing_wizard.php",
+      "sha256": "8364f29b6cc20b1fbe2968c33b581c86f9ac7455018138fbeef730cdca4563cc"
+    },
+    {
+      "version": 116,
+      "file": "116_seller_storefront_profile.php",
+      "sha256": "7ae5f673dad10a3dfc2d1751c48cf58b77079ba4c4b126816d51bd0bbd4d9fda"
+    },
+    {
+      "version": 117,
+      "file": "117_master_requests_workplace_services.php",
+      "sha256": "0687bef5310eea9906765c7907e8644cd375bef0b50d4c9a32910142b5d91625"
+    },
+    {
+      "version": 118,
+      "file": "118_master_exchange_acceptance_flow.php",
+      "sha256": "65759e15d569cdcfb6a1297bb7add5a59e2a876515eb00df498fd2218847b462"
+    },
+    {
+      "version": 119,
+      "file": "119_master_order_communication_scheduling.php",
+      "sha256": "6c99990eed2ec987997f78d76ab642af2045680dd2401cd444f0f3c08d39c60d"
+    },
+    {
+      "version": 120,
+      "file": "120_master_capacity_reschedule.php",
+      "sha256": "4f2fe0c451adcc7f3009f6f742d515cb21c012400036e9e170063bb2a41c5dc4"
+    },
+    {
+      "version": 121,
+      "file": "121_account_tariffs_master_capacity.php",
+      "sha256": "0cdf19b246238e50ceb64dbd93d37ad43b0ae5ba21f943be74db4ba9486fdcac"
+    },
+    {
+      "version": 122,
+      "file": "122_master_shift_breaks_arrival.php",
+      "sha256": "0d5ff9c9fa7b960c9f304ec7930e4fef4504723efcddd57b600ef12bce456de1"
+    },
+    {
+      "version": 123,
+      "file": "123_tariff_admin_kareta_pro.php",
+      "sha256": "7faf4aa418c005d2e480e289bc24e097a3788949f9fe24ae3914fa06a2616cb1"
+    },
+    {
+      "version": 124,
+      "file": "124_master_day_operations_auto_recovery.php",
+      "sha256": "dc31f0d7204cfba10cc7ab76cbc997525f9b2caba31ebeb3843e514a64ca7fc7"
+    },
+    {
+      "version": 125,
+      "file": "125_master_auto_recovery_control_center.php",
+      "sha256": "f829acb1b5e90f20f3d4e392dc0ef4041f6a716a19e1007ccb7f27be2adf0ecc"
+    },
+    {
+      "version": 126,
+      "file": "126_master_exchange_capability_recovery.php",
+      "sha256": "f877066136cd794901eec6a1cddb2ec26552a4715a8087e0447b1eabbe1001be"
+    },
+    {
+      "version": 127,
+      "file": "127_sto_schedule_capacity_command_center.php",
+      "sha256": "0d3825cb75f8fb8095e1a4658c975d6a3b3799196de20d1e60e2619db53c9f33"
+    },
+    {
+      "version": 128,
+      "file": "128_master_first_entry_onboarding.php",
+      "sha256": "7dfdb2e67af93b4fb35e69891fa37a5acaaf377bb92cfd4c5d0f91d96d661461"
+    },
+    {
+      "version": 129,
+      "file": "129_client_first_entry_state.php",
+      "sha256": "abdb7189e231efd2b67c0912b4fabe7fea1c8daa7cb5acd5ac6ea096fcb7c292"
+    }
+  ]
+}

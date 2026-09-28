@@ -1,0 +1,2 @@
+<?php
+declare(strict_types=1);$root=dirname(__DIR__);$required=['api/migrations/089_production_readiness.php','tools/release_gate.php','tools/verify_backup.php','docs/operations/R187_PRODUCTION_READINESS.md','docs/releases/changelog/CHANGELOG_R187.md'];foreach($required as $f){if(!is_file($root.'/'.$f)){fwrite(STDERR,"Missing $f\n");exit(1);}}$v=file_get_contents($root.'/inc/asset_version.php');if(!preg_match('/r(?:187(?:-production-readiness|[0-9]+-[a-z0-9-]+)|18[8-9][0-9]*-[a-z0-9-]+)/i',$v)){fwrite(STDERR,"Bad version\n");exit(1);}echo "R187 verifier OK\n";

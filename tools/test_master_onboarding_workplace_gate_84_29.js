@@ -1,0 +1,43 @@
+const fs=require('fs');
+const path=require('path');
+const vm=require('vm');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+let failed=0,passed=0;
+const check=(name,cond)=>{if(cond){passed++;console.log('[PASS]',name);}else{failed++;console.error('[FAIL]',name);}};
+const gate=read('js/next/master_onboarding_gate.js');
+const app=read('js/next/onboarding/onboarding_app.js');
+const role=read('js/next/onboarding/pages/role_page.js');
+const page=read('js/next/pages/master_workplace.js');
+const api=read('js/next/work_orders/master_workplace_api.js');
+const backend=read('api/master_workplace.php');
+const db=read('api/db.php');
+const complete=read('js/next/pages/master_onboarding.js');
+const next=read('js/next/app_next.js');
+check('gate exposes authoritative ensureCompleted',/async function ensureCompleted\(options=\{\}\)/.test(gate)&&/workAccessAllowed/.test(gate));
+check('gate redirects incomplete master to onboarding',/if\(!ok&&options\.redirect!==false\)moveToOnboarding/.test(gate));
+check('post-auth has authoritative MASTER target resolver',/async function authoritativeTargetAfterAuth/.test(app)&&/await gate\.ensureCompleted/.test(app));
+check('new-account finalize awaits authoritative target',/await authoritativeTargetAfterAuth\(result,flow,user\)/.test(app));
+check('existing-account OTP path awaits authoritative target',/await app\.authoritativeTargetAfterAuth/.test(role));
+check('master workplace render does not present work content while blocked',/Рабочее место откроется после завершения обязательной анкеты/.test(page)&&/data-phase="\$\{allowed\?'loading':'guard'\}"/.test(page));
+check('master workplace mount awaits onboarding gate before API',/if\(!\(await ensureAccess\(\)\)\)return;[\s\S]{0,180}apiModule\.get/.test(page));
+check('low-level workplace API has local no-network fence',/localBlocked/.test(api)&&/if\(gate\?\.workAccessAllowed\?\.\(\)===false\)return Promise\.resolve\(localBlocked\(\)\)/.test(api));
+{
+  const sandbox={window:{KaretaMasterOnboardingGate:{workAccessAllowed:()=>false}},Promise};
+  vm.createContext(sandbox);vm.runInContext(api,sandbox);
+  let requests=0;
+  const fakeApi={request:()=>{requests++;return Promise.resolve({ok:true});}};
+  const r=sandbox.window.KaretaMasterWorkplaceApi.get(fakeApi);
+  check('blocked workplace API performs zero network requests',requests===0&&r&&typeof r.then==='function');
+}
+check('backend has explicit onboarding completion guard',/function kareta_master_workplace_require_onboarding_completed/.test(backend)&&/master_onboarding_required/.test(backend));
+check('backend guard reads person profile lifecycle',/SELECT onboarding_status FROM person_profiles/.test(backend));
+check('backend guard reads first-entry state',/SELECT status,current_step,current_view FROM master_onboarding_state/.test(backend));
+check('backend returns redirect route on blocked workplace',/redirectRoute.*#\/onboarding\/master/.test(backend));
+check('db dispatch checks onboarding before work capability and data',/masterWorkplace\.get'\) \{ if \(!\$pdo\) _no_db\(\); kareta_master_workplace_require_onboarding_completed\(\$pdo\); kareta_require_api_capability/.test(db));
+// .84.85 wraps the same awaited check in the boot profiler and loads lazy assets before transition.
+check('app boot awaits master gate before first route transition', /await profilePromise\('onboarding\.gate',[^\n]+KaretaMasterOnboardingGate/.test(next)&&next.indexOf("await profilePromise('onboarding.gate'")<next.indexOf("routeRuntime.transition(targetRoute, { source:'boot' })"));
+check('successful step 4 marks gate complete before master transition',/markCompleted[\s\S]{0,450}transition\?\.\('masterDashboard'/.test(complete));
+check('direct route guard still owns blocked MASTER routes',/shouldOwnRoute/.test(gate)&&/return ALLOWED_WHILE_BLOCKED\.has/.test(gate));
+console.log(`MASTER_ONBOARDING_WORKPLACE_GATE_84_29 ${passed}/${passed+failed}`);
+process.exit(failed?1:0);

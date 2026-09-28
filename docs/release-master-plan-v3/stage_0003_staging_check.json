@@ -1,0 +1,41 @@
+{
+  "schema": "kareta.release-master-plan-v3.stage-check.v1",
+  "stage": 3,
+  "totalStages": 2513,
+  "phase": "00 — BASELINE_TEST_HARNESS",
+  "sourceBaseline": "R188.5.5.6.84.109",
+  "task": "Убрать жёсткую привязку project audit к 84.14",
+  "localContractCheck": {
+    "status": "PASS",
+    "release": "188.5.5.6.84.109",
+    "command": "node tools/test_project_audit_r188558410.js",
+    "output": "PROJECT_AUDIT_CONTRACTS: OK (release 188.5.5.6.84.109)"
+  },
+  "futureReleaseCompatibilityCheck": {
+    "status": "PASS",
+    "simulatedRelease": "188.5.5.6.84.999",
+    "output": "PROJECT_AUDIT_CONTRACTS: OK (release 188.5.5.6.84.999)",
+    "sourceRestoredAfterCheck": true,
+    "assetVersionSha256Before": "4d22da1a3436dad47bd2699cb8bd239f8fe4caf90cac2486fe0655eff50e1717",
+    "assetVersionSha256After": "4d22da1a3436dad47bd2699cb8bd239f8fe4caf90cac2486fe0655eff50e1717"
+  },
+  "externalStaging": {
+    "url": "https://s.kareta.kz/",
+    "checkedAtUtc": "2026-09-24T23:45:49.9157865Z",
+    "status": "BLOCKED_HTTP_403",
+    "httpStatus": 403,
+    "statusDescription": "Forbidden",
+    "remoteDesktopOnlineDevices": 2,
+    "testExecutedOnExternalStaging": false
+  },
+  "regression": {
+    "masterExchange84109": "PASS",
+    "routeLazyLoader8466": "PASS",
+    "routeSessionPreservation": "PASS",
+    "phpSyntax": "PASS",
+    "nodeSyntax": "PASS"
+  },
+  "runtimeChanged": false,
+  "apiChanged": false,
+  "dbChanged": false
+}

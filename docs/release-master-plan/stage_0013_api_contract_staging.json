@@ -1,0 +1,144 @@
+{
+  "schema": "kareta.api-contract-smoke.staging.v1",
+  "baseline": "R188.5.5.6.84.109",
+  "baseUrl": "https://s.kareta.kz",
+  "checkedAt": "2026-09-25T02:14:44.241Z",
+  "probes": [
+    {
+      "name": "schema.happy",
+      "method": "GET",
+      "path": "/api/schema_health.php",
+      "expectedStatus": 200,
+      "actualStatus": 503,
+      "ok": false,
+      "reason": "",
+      "json": {
+        "ok": false,
+        "status": "unavailable",
+        "error": "database_unavailable",
+        "code": "DATABASE_UNAVAILABLE",
+        "message": "Не удалось выполнить операцию",
+        "errors": [],
+        "meta": {
+          "httpStatus": 503,
+          "requestId": "9d87cf0249fde8f2",
+          "traceId": ""
+        }
+      },
+      "requestId": "9d87cf0249fde8f2",
+      "ms": 1122
+    },
+    {
+      "name": "status.happy",
+      "method": "GET",
+      "path": "/api/runtime_health.php",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "ok": true,
+      "reason": "",
+      "json": {
+        "ok": false,
+        "status": "degraded",
+        "version": "188.5.5.6.84.109",
+        "time": "2026-09-25T02:14:44+00:00"
+      },
+      "requestId": "",
+      "ms": 56
+    },
+    {
+      "name": "status.error",
+      "method": "POST",
+      "path": "/api/release_status.php",
+      "expectedStatus": 405,
+      "actualStatus": 405,
+      "ok": true,
+      "reason": "",
+      "json": {
+        "ok": false,
+        "error": "method_not_allowed",
+        "code": "METHOD_NOT_ALLOWED",
+        "message": "Не удалось выполнить операцию",
+        "errors": [],
+        "meta": {
+          "httpStatus": 405,
+          "requestId": "32aa9674a0d1954d",
+          "traceId": ""
+        }
+      },
+      "requestId": "32aa9674a0d1954d",
+      "ms": 71
+    },
+    {
+      "name": "auth.happy",
+      "method": "POST",
+      "path": "/api/auth_session.php",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "ok": true,
+      "reason": "",
+      "json": {
+        "ok": true,
+        "loggedOut": true,
+        "code": "OK",
+        "message": "Операция выполнена",
+        "meta": {
+          "httpStatus": 200,
+          "requestId": "d3fefea1092c0e17",
+          "traceId": ""
+        }
+      },
+      "requestId": "d3fefea1092c0e17",
+      "ms": 81
+    },
+    {
+      "name": "auth.error",
+      "method": "PUT",
+      "path": "/api/auth_session.php",
+      "expectedStatus": 405,
+      "actualStatus": 405,
+      "ok": true,
+      "reason": "",
+      "json": {
+        "ok": false,
+        "error": "Method not allowed",
+        "code": "METHOD_NOT_ALLOWED",
+        "message": "Не удалось выполнить операцию",
+        "errors": [],
+        "meta": {
+          "httpStatus": 405,
+          "requestId": "78811c66df3157ac",
+          "traceId": ""
+        }
+      },
+      "requestId": "78811c66df3157ac",
+      "ms": 97
+    },
+    {
+      "name": "error.happy",
+      "method": "GET",
+      "path": "/api/release_status.php",
+      "expectedStatus": 403,
+      "actualStatus": 403,
+      "ok": true,
+      "reason": "",
+      "json": {
+        "ok": false,
+        "error": "diagnostics_authorization_required",
+        "code": "DIAGNOSTICS_AUTHORIZATION_REQUIRED",
+        "message": "Не удалось выполнить операцию",
+        "errors": [],
+        "meta": {
+          "httpStatus": 403,
+          "requestId": "c0d077680e14c494",
+          "traceId": ""
+        }
+      },
+      "requestId": "c0d077680e14c494",
+      "ms": 68
+    }
+  ],
+  "passed": 5,
+  "failed": 1,
+  "status": "FAIL",
+  "note": "idempotency happy/error is verified locally in the release gate because remote mutation smoke must not create business data."
+}
