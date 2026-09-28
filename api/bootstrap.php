@@ -428,7 +428,7 @@ function kareta_safe_sync_user_entity(?PDO $pdo, string $phone): void
 
 function kareta_runtime_maintenance_due(): bool
 {
-    $dir = dirname(__DIR__) . '/storage/runtime'; // PLESK_SAFE_RUNTIME_V2
+    $dir = defined('KARETA_STORAGE_ROOT') ? KARETA_STORAGE_ROOT . '/runtime' : dirname(__DIR__) . '/storage/runtime';
     if (!is_dir($dir)) @mkdir($dir, 0775, true);
     $marker = $dir . '/maintenance.marker';
     $interval = defined('KARETA_RUNTIME_MAINTENANCE_INTERVAL') ? KARETA_RUNTIME_MAINTENANCE_INTERVAL : 900;
@@ -750,7 +750,7 @@ function kareta_db_public_failure_meta(?array $diagnostic = null): array
 
 function kareta_db_diagnostic_path(): string
 {
-    $dir = dirname(__DIR__) . '/storage/runtime'; // PLESK_SAFE_RUNTIME_V2
+    $dir = defined('KARETA_STORAGE_ROOT') ? KARETA_STORAGE_ROOT . '/runtime' : dirname(__DIR__) . '/storage/runtime';
     if (!is_dir($dir)) @mkdir($dir, 0775, true);
     return $dir . '/db_diagnostic.json';
 }
