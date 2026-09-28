@@ -1,4 +1,10 @@
 <?php
+$karetaHttpNotFound = isset($_GET['kareta_route_fallback']) && (string)$_GET['kareta_route_fallback'] === '1';
+$karetaHttpNotFoundPath = '';
+if ($karetaHttpNotFound) {
+    $karetaHttpNotFoundPath = (string)($_SERVER['REQUEST_URI'] ?? '/');
+    http_response_code(404);
+}
 declare(strict_types=1);
 
 require_once __DIR__ . '/inc/web_guard.php';
@@ -102,6 +108,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
     (() => {
       const release = <?= json_encode($assetVersion, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
       const errorCatalog = <?= json_encode($errorCodeCatalog, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>;
+      window.KARETA_HTTP_NOT_FOUND_PATH = <?= json_encode($karetaHttpNotFoundPath, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>;
       window.KARETA_BOOT_RELEASE=release;
       console.info('[KARETA][boot.release]',{release,pipeline:'single-pass-v2'});
       const recoveryKey = `kareta_asset_recovery:${release}`;
