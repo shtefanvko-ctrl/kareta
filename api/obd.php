@@ -12,8 +12,8 @@ if ($action === 'config' && $method === 'GET') {
         'feature'=>'obd',
         'transport'=>'bluetooth_classic_spp',
         'nativeRequired'=>true,
-        'nativeApiVersion'=>5,
-        'commands'=>['ATZ','ATE0','ATL0','ATS0','ATH0','ATSP0','010C','010D','0105','03','0902','ATRV'],
+        'nativeApiVersion'=>6,
+        'commands'=>['ATI','ATZ','ATE0','ATL0','ATS0','ATH0','ATSP0','ATDP','0100','010C','010D','0105','03','0902','ATRV'],
         'offlineSync'=>true,
         'liveData'=>true,
         'reconnectLast'=>true,
@@ -56,26 +56,7 @@ function kareta_obd_vehicle_access(PDO $pdo,string $vehicleId,int $userId,string
     return false;
 }
 
-$pdo->exec("CREATE TABLE IF NOT EXISTS obd_diagnostic_sessions(
-  id VARCHAR(80) NOT NULL PRIMARY KEY,
-  account_id BIGINT UNSIGNED NOT NULL,
-  vehicle_id VARCHAR(80) NULL,
-  sync_key VARCHAR(120) NOT NULL,
-  adapter_name VARCHAR(120) NOT NULL DEFAULT '',
-  adapter_address VARCHAR(32) NOT NULL DEFAULT '',
-  vin VARCHAR(32) NOT NULL DEFAULT '',
-  protocol_label VARCHAR(80) NOT NULL DEFAULT '',
-  dtc_json LONGTEXT NULL,
-  snapshot_json LONGTEXT NULL,
-  raw_json LONGTEXT NULL,
-  source VARCHAR(24) NOT NULL DEFAULT 'android',
-  captured_at DATETIME NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uq_obd_sync_key(account_id,sync_key),
-  KEY idx_obd_account_captured(account_id,captured_at),
-  KEY idx_obd_vehicle_captured(vehicle_id,captured_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
 
 if ($action === 'history' && $method === 'GET') {
     if (!kareta_table_exists($pdo,'obd_diagnostic_sessions')) {
