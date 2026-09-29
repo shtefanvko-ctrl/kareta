@@ -1,0 +1,56 @@
+{
+  "schema": "kareta.feature-map.v1",
+  "status": "TARGET_UNTIL_VERIFIED",
+  "coverage": "PARTIAL",
+  "policy": {
+    "routeMustHaveContext": true,
+    "readyRequiresEvidence": true,
+    "crossContextWriteRequiresOwnerContract": true,
+    "unverifiedFeatureMustNotBeTreatedAsCanonical": true
+  },
+  "features": [
+    {
+      "featureId": "master.schedule",
+      "route": "#/master/schedule",
+      "boundedContext": "Booking",
+      "verificationStatus": "TARGET_UNTIL_VERIFIED",
+      "primaryAggregate": "Booking",
+      "commands": [],
+      "queries": [],
+      "apiOwner": null,
+      "capabilities": ["booking.read","booking.manage"],
+      "invariants": ["slot cannot be double-booked","foreign master schedule cannot be modified"],
+      "tests": [],
+      "evidence": []
+    },
+    {
+      "featureId": "client.garage",
+      "route": "#/garage",
+      "boundedContext": "Garage",
+      "verificationStatus": "TARGET_UNTIL_VERIFIED",
+      "primaryAggregate": "GarageVehicle",
+      "commands": [],
+      "queries": [],
+      "apiOwner": null,
+      "capabilities": ["garage.read","garage.manage"],
+      "invariants": ["vehicle ownership must be enforced","one canonical create/edit flow"],
+      "tests": [],
+      "evidence": []
+    },
+    {
+      "featureId": "service.request",
+      "route": "#/orders/new",
+      "boundedContext": "Service",
+      "verificationStatus": "TARGET_UNTIL_VERIFIED",
+      "primaryAggregate": "ServiceRequest",
+      "commands": [],
+      "queries": [],
+      "apiOwner": null,
+      "capabilities": ["service.request.create"],
+      "invariants": ["ServiceRequest is not RepairOrder","Booking must not imply repair acceptance"],
+      "tests": [],
+      "evidence": []
+    }
+  ],
+  "nextInventoryOrder": ["Identity","Vehicle/Garage","Service/Booking/Repair","Organization","Marketplace","Communication","Finance","Community"]
+}
