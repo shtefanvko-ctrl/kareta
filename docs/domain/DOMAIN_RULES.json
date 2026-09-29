@@ -196,6 +196,19 @@
       "severity": "P1",
       "status": "REQUIRED_CONSTRAINT",
       "rule": "Liveness/readiness health checks SHOULD be observational and MUST NOT silently become schema/business repair commands."
+    },
+    {
+      "id": "BOUNDARY-BOOKING-SERVICE-001",
+      "severity": "P1",
+      "status": "REQUIRED_CONSTRAINT",
+      "rule": "Booking/Master scheduling MAY own plan/slot state but MUST NOT directly mutate Service order schedule fields. Cross-context schedule updates MUST pass through a Service-owned contract while preserving caller transaction and resource authorization.",
+      "evidence": [
+        "api/work_orders.php",
+        "api/master_day_operations.php",
+        "api/master_workplace.php",
+        "api/master_recovery_control.php",
+        "tools/test_booking_service_boundary_84_153.js"
+      ]
     }
   ]
 }
