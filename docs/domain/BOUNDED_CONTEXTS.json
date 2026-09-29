@@ -1519,7 +1519,22 @@
           "id": "PLATFORM-AUDIT-001",
           "severity": "P1",
           "finding": "Internal architecture audit is report-only and searches patterns, but the current guide/rules are not yet wired as mandatory CI/release enforcement.",
-          "target": "Convert stable P0/P1 rules into machine-enforced checks only after false-positive baselines and exception mechanics are defined."
+          "target": "Convert stable P0/P1 rules into machine-enforced checks only after false-positive baselines and exception mechanics are defined.",
+          "status": "PARTIALLY_IMPLEMENTED_STATIC_GUARDS_ACTIVE",
+          "implementation": [
+            "Existing .github/workflows/verify.yml verification-gate now runs deterministic architecture/domain guardrails.",
+            "CI runs tools/test_notification_center_bridge_84_152.js.",
+            "CI runs tools/test_health_readonly_boundary_84_154.js.",
+            "CI runs tools/test_runtime_maintenance_boundary_84_154.js.",
+            "CI parses DOMAIN_GLOSSARY.json, BOUNDED_CONTEXTS.json, FEATURE_MAP.json and DOMAIN_RULES.json."
+          ],
+          "remaining": [
+            "P0 DB-backed audits cannot become blocking CI until a deterministic disposable database fixture exists.",
+            "DOMAIN_RULES.json is not yet compiled into generic rule checks; current enforcement is explicit test-by-test.",
+            "Need exception/baseline mechanics before turning broad architecture pattern scans into blocking gates."
+          ],
+          "implementationCommit": "e44a223cecfdcbc7140b5f9c9db9787ddc3242f1",
+          "nextAction": "Add deterministic database fixture for P0 audit tests, then promote proven P0 invariants into blocking CI one at a time."
         }
       ],
       "unverified": [
