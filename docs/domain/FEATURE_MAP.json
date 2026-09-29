@@ -797,6 +797,160 @@
         "api/migrations/048_work_posts_ecosystem.php",
         "api/db.php"
       ]
+    },
+    {
+      "featureId": "platform.domain-projection",
+      "route": "#/core",
+      "boundedContext": "Platform",
+      "supportingContexts": [
+        "Identity",
+        "Garage",
+        "Service",
+        "Booking",
+        "Organization",
+        "Marketplace",
+        "Communication",
+        "Finance",
+        "Community"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED_WITH_P0_DEBT",
+      "primaryAggregate": "DomainProjection",
+      "runtimeStores": [
+        "domain_entities",
+        "domain_relations",
+        "domain_events",
+        "domain_entity_acl"
+      ],
+      "commands": [
+        "projection/backfill maintenance",
+        "domain event delivery"
+      ],
+      "queries": [
+        "snapshot",
+        "entity.get",
+        "entities.list"
+      ],
+      "apiOwner": "api/domain.php + migration/backfill helpers",
+      "capabilities": [
+        "domain.read",
+        "RESOURCE_SCOPE_REQUIRED"
+      ],
+      "invariants": [
+        "domain projection is not a mutable business source of truth",
+        "projected aggregate existence must not exceed facts proven by the owning domain",
+        "authorization projection must preserve owner/context/ACL parity with source ownership",
+        "projection rows require provenance/version semantics"
+      ],
+      "knownDebt": [
+        "PLATFORM-PROJECTION-001"
+      ],
+      "tests": [
+        "tools/verify_r1865_internal_audit.php"
+      ],
+      "evidence": [
+        "api/migrations/063_domain_platform_core.php",
+        "api/migrations/064_core_platform_hardening.php",
+        "api/migrations/065_domain_integration.php",
+        "api/migrations/079_identity_domain_ownership.php",
+        "api/identity/domain_ownership_service.php",
+        "api/domain.php",
+        "js/next/pages/core_platform.js"
+      ]
+    },
+    {
+      "featureId": "platform.realtime",
+      "route": null,
+      "boundedContext": "Platform",
+      "supportingContexts": [
+        "Identity",
+        "Communication"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "primaryAggregate": "RealtimeDelivery",
+      "runtimeStores": [
+        "domain_events",
+        "domain_event_recipients",
+        "realtime_user_cursors",
+        "realtime_context_cursors",
+        "notification_center"
+      ],
+      "commands": [
+        "advance realtime cursor"
+      ],
+      "queries": [
+        "SSE stream",
+        "poll"
+      ],
+      "apiOwner": "api/realtime.php",
+      "capabilities": [
+        "AUTHENTICATED_IDENTITY_CONTEXT_REQUIRED_FOR_IDENTITY_MODE"
+      ],
+      "invariants": [
+        "Identity-mode realtime is scoped to Account + active Context",
+        "event cursor advances monotonically",
+        "SSE and poll share the same event-recipient source",
+        "client context change reconnects with a fresh context-scoped cursor"
+      ],
+      "knownDebt": [
+        "PLATFORM-PROJECTION-001"
+      ],
+      "tests": [],
+      "evidence": [
+        "api/migrations/071_realtime_platform.php",
+        "api/migrations/080_identity_context_realtime.php",
+        "api/realtime.php",
+        "js/next/core/realtime_client.js"
+      ]
+    },
+    {
+      "featureId": "platform.reliability",
+      "route": null,
+      "boundedContext": "Platform",
+      "verificationStatus": "PARTIALLY_VERIFIED_WITH_P0_DEBT",
+      "primaryAggregate": "ReliabilityGuard",
+      "runtimeStores": [
+        "idempotency_keys",
+        "db_migrations",
+        "db_meta"
+      ],
+      "commands": [
+        "idempotency.begin",
+        "idempotency.complete",
+        "schema bootstrap/recovery"
+      ],
+      "queries": [
+        "runtime_health",
+        "schema_health",
+        "identity_health"
+      ],
+      "apiOwner": "api/bootstrap.php + health endpoints",
+      "capabilities": [
+        "diagnostics token/admin-owner for detailed diagnostics"
+      ],
+      "invariants": [
+        "same idempotency key in the same stable actor/action scope must represent one request payload",
+        "health probes should be observational and not trigger business/schema mutation",
+        "production schema migration should be deterministic and serialized"
+      ],
+      "knownDebt": [
+        "PLATFORM-IDEMPOTENCY-001",
+        "PLATFORM-IDEMPOTENCY-002",
+        "PLATFORM-HEALTH-001",
+        "PLATFORM-RUNTIME-DDL-001",
+        "PLATFORM-AUDIT-001"
+      ],
+      "tests": [
+        "tools/test_project_audit_r188558410.js",
+        "tools/verify_r1865_internal_audit.php"
+      ],
+      "evidence": [
+        "api/migrations/027_idempotency_keys.php",
+        "api/bootstrap.php",
+        "api/runtime_health.php",
+        "api/schema_health.php",
+        "api/identity_health.php",
+        "tools/internal_architecture_audit.php"
+      ]
     }
   ],
   "nextInventoryOrder": [
@@ -809,5 +963,5 @@
     "Finance",
     "Community"
   ],
-  "notes": "Feature entries are promoted only from repository evidence. Community is modeled as a typed feed/read projection over distinct source aggregates; social-interaction duplication is tracked separately."
+  "notes": "All major contexts have factual partial verification. Platform features are explicitly projections/infrastructure and may not become alternate business owners."
 }
