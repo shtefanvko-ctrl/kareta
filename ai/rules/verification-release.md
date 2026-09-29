@@ -4,6 +4,8 @@ Load this file for PASS/DONE decisions, regression checks, release/staging/deplo
 
 `MB_MONITORING.md` is the authoritative project contract for material-change monitoring, baseline semantics, evidence priority, and KARETA release/verification binding. This file does not duplicate it.
 
+For executable gate selection and PASS/FAIL interpretation, load `ai/VERIFICATION_GATES.md`.
+
 ## Evidence ladder
 Prefer evidence tied to the exact candidate, strongest first:
 1. required automated checks for the affected surface;
@@ -11,7 +13,7 @@ Prefer evidence tied to the exact candidate, strongest first:
 3. staging evidence for the exact candidate/release;
 4. deployment evidence where deployment is part of DoD.
 
-A commit, PR description, screenshot, changelog entry, or visually correct UI is supporting information, not a substitute for a required gate.
+A commit, PR description, screenshot, changelog entry, endpoint existence, or visually correct UI is supporting information, not a substitute for a required gate.
 
 ## PASS semantics
 - PASS: the named gate actually ran and passed for the relevant candidate.
