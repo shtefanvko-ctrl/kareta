@@ -88,11 +88,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p .artifacts
+          mkdir -p artifacts
           RELEASE="$(php -r "require 'inc/asset_version.php'; echo KARETA_ASSET_VERSION;")"
           SUFFIX="$(printf '%s' "$RELEASE" | sed 's/^188\.5\.5\.6\.//; s/\./_/g')"
-          FULL=".artifacts/KARETA_KZ_FULL_${SUFFIX}.zip"
-          FILES=".artifacts/KARETA_KZ_NAVIGATION_FIX_${SUFFIX}_FILES.zip"
+          FULL="artifacts/KARETA_KZ_FULL_${SUFFIX}.zip"
+          FILES="artifacts/KARETA_KZ_NAVIGATION_FIX_${SUFFIX}_FILES.zip"
           git archive --format=zip --output="$FULL" HEAD
           printf '%s\n' \
             '.github/workflows/verify.yml' \
@@ -119,6 +119,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.package.outputs.artifact_name }}
-          path: .artifacts/*.zip
+          path: artifacts/*.zip
           if-no-files-found: error
           retention-days: 7
