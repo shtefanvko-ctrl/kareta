@@ -28,6 +28,17 @@ expect(relationBody.includes('kareta_rebuild_user_stats($pdo);'),'relation backf
 expect(config.includes("KARETA_DB_RUNTIME_MIGRATION_WINDOW"),'production runtime migration must require explicit maintenance window');
 expect(config.includes("KARETA_DB_AUTO_MIGRATE"),'auto-migrate configuration must remain explicit');
 
+const bootstrapStart=bootstrap.indexOf('function kareta_bootstrap_runtime(PDO $pdo): void');
+const bootstrapEnd=bootstrap.indexOf('function kareta_log_error',bootstrapStart);
+const bootstrapRuntime=bootstrap.slice(bootstrapStart,bootstrapEnd);
+const prodGuard=bootstrapRuntime.indexOf("$production && !$autoMigrate");
+const createSchema=bootstrapRuntime.indexOf('kareta_create_schema($pdo)');
+const ensureSchema=bootstrapRuntime.indexOf('kareta_ensure_schema_columns($pdo)');
+expect(prodGuard>=0,'production runtime DDL guard missing');
+expect(createSchema>prodGuard,'production guard must run before create_schema');
+expect(ensureSchema>prodGuard,'production guard must run before ensure_schema_columns');
+expect(bootstrapRuntime.includes("bootstrap.migration_required"),'schema mismatch must expose migration-required failure context');
+
 if(fail.length){
   console.error(fail.join('\n'));
   process.exit(1);
