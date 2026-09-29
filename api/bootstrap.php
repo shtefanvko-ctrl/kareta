@@ -339,6 +339,15 @@ function kareta_idempotency_begin(?PDO $pdo, string $action, array $body): void
         $st = $pdo->prepare("SELECT * FROM `idempotency_keys` WHERE `action`=? AND `actor_hash`=? AND `key_hash`=? LIMIT 1");
         $st->execute([$action, $actorHash, $keyHash]);
         $row = $st->fetch(PDO::FETCH_ASSOC);
+        $storedRequestHash = $row ? (string)($row['request_hash'] ?? '') : '';
+        if ($row && ($storedRequestHash === '' || !hash_equals($storedRequestHash, $requestHash))) {
+            kareta_json([
+                'ok' => false,
+                'error' => 'idempotency_conflict',
+                'code' => 'IDEMPOTENCY_CONFLICT',
+                'message' => 'Этот ключ идемпотентности уже использован для другого запроса.',
+            ], 409);
+        }
         if ($row && (string)($row['status'] ?? '') === 'completed' && (string)($row['response_json'] ?? '') !== '') {
             header('X-Idempotency-Replayed: 1');
             http_response_code((int)($row['response_status'] ?? 200));
