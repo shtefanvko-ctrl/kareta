@@ -235,6 +235,64 @@
         "api/migrations/104_master_order_full_lifecycle.php",
         "js/next/work_orders/work_order_api.js"
       ]
+    },
+    {
+      "featureId": "organization.sto-workplace",
+      "route": "#/sto",
+      "boundedContext": "Organization",
+      "supportingContexts": [
+        "Identity",
+        "Master",
+        "Service",
+        "Booking"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "primaryAggregate": "Organization",
+      "runtimeStores": [
+        "organizations",
+        "organization_members",
+        "organization_units",
+        "sto_profiles",
+        "sto_master_links",
+        "sto_service_bays",
+        "sto_bay_assignments"
+      ],
+      "commands": [
+        "stoOrders.assignMaster",
+        "stoBays.assign",
+        "stoBays.release",
+        "stoSchedule.preferencesSave"
+      ],
+      "queries": [
+        "stoWorkplace.get",
+        "organization members/contexts"
+      ],
+      "apiOwner": "api/sto_workplace.php behind legacy api/db.php plus api/organizations.php",
+      "capabilities": [
+        "PARTIAL_ACTION_BY_ACTION_INVENTORY"
+      ],
+      "invariants": [
+        "selected organization context must resolve the STO scope",
+        "assigned master must be an active linked STO master",
+        "completed/cancelled orders cannot be reassigned as active work",
+        "legacy STO profile is a compatibility mirror, not a second authorization source"
+      ],
+      "knownDebt": [
+        "ORG-LEGACY-001",
+        "ORG-MEMBERSHIP-001",
+        "ORG-API-001"
+      ],
+      "tests": [
+        "tools/test_r1885634_sto_schedule_capacity_command_center.js",
+        "tools/test_r1885635_sto_native_surface_audit.js",
+        "tools/test_r1885642_sto_workspace_window_architecture.js"
+      ],
+      "evidence": [
+        "api/migrations/061_organization_core.php",
+        "api/organizations.php",
+        "api/sto_workplace.php",
+        "js/next/work_orders/sto_workplace_api.js"
+      ]
     }
   ],
   "nextInventoryOrder": [
