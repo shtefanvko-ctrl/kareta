@@ -2,7 +2,7 @@
   "schema": "kareta.bounded-contexts.v1",
   "status": "TARGET_UNTIL_VERIFIED",
   "coverage": "IN_PROGRESS",
-  "notes": "Context ownership becomes VERIFIED only from repository evidence. Identity, Garage, Master, Booking and Service have partial factual inventories against current main; unresolved ownership and physical model debt are kept explicit instead of promoted to canon.",
+  "notes": "Context ownership becomes VERIFIED only from repository evidence. Identity, Garage, Master, Booking, Service and Organization have partial factual inventories against current main; unresolved ownership and authority overlap are kept explicit instead of promoted to canon.",
   "contexts": [
     {
       "id": "Identity",
@@ -174,7 +174,49 @@
         "api/domain.php"
       ]
     },
-    {"id":"Organization","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Organization","OrganizationMembership","Workplace","OrganizationSettings"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity"],"forbiddenWrites":["accounts","garage_vehicles"],"evidence":[]},
+    {
+      "id": "Organization",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "ownershipStatus": "AUTHORITY_OVERLAP",
+      "targetOwns": ["Organization", "OrganizationMembership", "OrganizationUnit", "OrganizationRelation", "Workplace", "OrganizationSettings"],
+      "verifiedRuntimeStores": ["organizations", "organization_members", "organization_units", "organization_relations", "sto_service_bays"],
+      "observedCrossDomainStores": ["sto_bay_assignments", "contexts", "context_members", "capability_sets", "user_context_preferences", "user_capabilities"],
+      "commands": ["selectOrganizationContext"],
+      "queries": ["listOrganizationContexts", "listOrganizationMembers", "readOrganizationCapabilities"],
+      "events": ["organization.context.select audit"],
+      "apis": ["api/organizations.php", "api/context_access.php"],
+      "dependencies": ["Identity for account/person/context/capability authority", "Master for organization master memberships", "Service for bay/order assignments", "Marketplace for parts-store organizations"],
+      "forbiddenWrites": ["accounts", "persons", "client_vehicles", "orders"],
+      "verifiedInvariants": [
+        "organizations is the physical organization store and supports service_station and parts_store organizations migrated from legacy STO and seller profiles.",
+        "organization_members stores business membership semantics including member role, position, branch unit, status and organization-local permissions.",
+        "organization_units and organization_relations are separate organization-owned structural stores.",
+        "STO workplace bays are organization/service-station resources, while sto_bay_assignments link those resources to Service orders and therefore cross the Organization-Service boundary.",
+        "Marketplace organization membership links explicitly reference Identity contexts/persons while preserving organization_id as the business organization key."
+      ],
+      "domainDebt": [
+        "Membership/capability authority currently overlaps: legacy organization_members.permissions_json plus user_capabilities/context_access coexist with Identity contexts/context_members/capability_sets.",
+        "api/organizations.php still exposes legacy context selection through context_access.php while newer Identity APIs maintain current context in auth_sessions/context state.",
+        "Identity context reconciliation can materialize organizations and organization_members for STO/seller compatibility, which is a cross-context write if Organization is the intended owner.",
+        "Do not declare OrganizationMembership ownership fully VERIFIED until one authoritative membership write path and one capability authority are selected."
+      ],
+      "unverified": [
+        "Complete create/update/archive Organization command surface",
+        "Final owner of membership materialization between Identity and Organization",
+        "Migration/retirement plan for user_context_preferences and user_capabilities legacy context layer",
+        "Complete OrganizationSettings persistence model",
+        "All STO workplace writes and frontend callers"
+      ],
+      "evidence": [
+        "api/migrations/061_organization_core.php",
+        "api/migrations/062_work_contexts_capabilities.php",
+        "api/migrations/052_sto_workplace_bays.php",
+        "api/migrations/082_identity_marketplace_organization_membership.php",
+        "api/organizations.php",
+        "api/context_access.php",
+        "api/identity/context_service.php"
+      ]
+    },
     {"id":"Marketplace","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Product","PartProduct","SellerOffer","Stock","PartOrder"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Organization"],"forbiddenWrites":["repair_orders","accounts"],"evidence":[]},
     {"id":"Community","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Post","WorkPublication","Subscription","Like","Comment"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Master"],"forbiddenWrites":["master_profiles","accounts"],"evidence":[]},
     {"id":"Communication","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Thread","Message","Notification","DeliveryState"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity"],"forbiddenWrites":["accounts","repair_orders"],"evidence":[]},
