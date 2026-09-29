@@ -2,7 +2,7 @@
   "schema": "kareta.bounded-contexts.v1",
   "status": "TARGET_UNTIL_VERIFIED",
   "coverage": "IN_PROGRESS",
-  "notes": "Identity, Garage, Master and Booking have repository-backed partial verification. Ownership remains partial where legacy scheduling/service coupling has not yet been split.",
+  "notes": "Identity, Garage, Master, Booking and Service have repository-backed partial verification. Legacy stores/actions are documented as debt where target boundaries are not yet physically separated.",
   "contexts": [
     {
       "id": "Identity",
@@ -233,15 +233,21 @@
     {
       "id": "Service",
       "verificationStatus": "PARTIALLY_VERIFIED",
-      "ownershipStatus": "PHYSICAL_MODEL_MIXED",
       "targetOwns": [
         "ServiceRequest",
         "RepairOrder",
         "RepairStatus",
-        "RepairPause"
+        "RepairPause",
+        "Diagnostics",
+        "QualityCheck",
+        "Handover",
+        "Warranty"
       ],
       "verifiedRuntimeStores": [
         "orders",
+        "sto_workflows",
+        "sto_workflow_transitions",
+        "sto_workflow_approvals",
         "work_order_checklist_items",
         "work_order_media",
         "master_order_diagnostics",
@@ -249,85 +255,106 @@
         "work_order_quality_checks",
         "work_order_handovers",
         "work_order_warranties",
-        "work_order_publication_policies",
-        "work_order_dispatch_state",
-        "work_order_dispatch_events"
-      ],
-      "observedRequestStores": [
-        "orders",
-        "master_exchange_responses"
+        "work_order_publication_policies"
       ],
       "commands": [
-        "republishExchangeRequest",
-        "acceptRepairOrder",
-        "saveDiagnostics",
-        "toggleWorkOrderChecklist",
-        "saveWorkOrderMedia"
+        "orders.create",
+        "orders.clientEdit",
+        "orders.cancelByClient",
+        "orders.setStatus",
+        "stoWorkflow.transition",
+        "stoWorkflow.approval",
+        "masterOrder.accept",
+        "masterOrder.diagnostics.save",
+        "masterOrder.extraWork.request",
+        "masterOrder.parts.reserve",
+        "masterOrder.work.complete",
+        "masterOrder.quality.save",
+        "masterOrder.warranty.configure",
+        "masterOrder.handover.prepare",
+        "clientOrder.handover.confirm"
       ],
       "queries": [
-        "readClientExchangeDashboard",
-        "readWorkOrderDetail",
-        "readRepairLifecycleSnapshot",
-        "resolveOrderScope"
+        "orders.getAll",
+        "orders.get",
+        "workOrders.detail",
+        "master order lifecycle snapshot"
       ],
       "events": [
-        "exchange_republished",
-        "master_order_accepted",
-        "diagnostics_saved",
-        "diagnostics_completed",
-        "checklist_updated",
-        "media_added"
+        "order status notifications",
+        "repair_completed_for_quality",
+        "quality_pass / quality_fail",
+        "handover_ready",
+        "handover_accepted"
       ],
       "apis": [
-        "api/client_exchange_scale.php",
-        "api/work_orders.php",
-        "api/master_order_lifecycle.php",
+        "api/db.php legacy action dispatcher",
         "api/order_scope.php",
-        "api/production_dispatch.php"
+        "api/work_orders.php",
+        "api/master_order_lifecycle.php"
       ],
       "dependencies": [
-        "Identity for current actor/context",
+        "Identity for current actor/context and capabilities",
         "Garage through orders.client_vehicle_id",
-        "Master for assignment and execution",
-        "Booking/scheduling through master_order_plans and date/time",
-        "Marketplace through work_order_part_reservations",
-        "Organization through STO/bay dispatch"
+        "Master for assigned master business entity",
+        "Booking for planned time/reschedule projections",
+        "Marketplace for part reservations/inventory",
+        "Finance for payment/receivables",
+        "Community for optional work publication after consent"
       ],
       "forbiddenWrites": [
-        "accounts",
-        "persons",
-        "person_profiles",
-        "client_vehicles"
+        "accounts/persons/person_profiles",
+        "client_vehicles ownership data",
+        "service_bookings/calendar_events except through Booking contract",
+        "market stock except through Marketplace contract"
       ],
       "verifiedInvariants": [
-        "The current physical model uses orders for both an open client exchange request and the later active/completed service order lifecycle.",
-        "Open request state is represented on orders by statuses such as new/waiting_responses plus exchange_status, exchange_round, exchange deadline and response limits; master_exchange_responses are keyed to the same orders.id as request_id.",
-        "After professional acceptance, the same order_id is enriched by diagnostics, checklist/media, parts reservations, quality checks, handover, warranty and dispatch state rather than being materialized as a separate RepairOrder row.",
-        "Repair execution is stage-gated; accepting an order can transition workflow from intake to diagnostics and updates orders.status to process.",
-        "Order visibility/write scope is resolved from the authoritative Identity context with staged legacy fallback: client by ownership, master by master_id, STO by sto_id.",
-        "Service scheduling and dispatch write order date/time/master/resource planning state, creating explicit cross-domain coupling with Master, Booking and Organization."
+        "Order access is scoped to the current client, assigned master, STO, admin or owner through order_scope checks.",
+        "The safe work-order lifecycle is stage-gated by sto_workflows and records transitions separately.",
+        "A successful quality-control result requires the mandatory quality checks before progression.",
+        "Handover cannot be prepared as ready before quality has passed.",
+        "Client handover confirmation marks the order done, accepts the handover and advances the workflow toward completed.",
+        "Lifecycle child records are keyed by order_id and do not become independent ownership roots."
       ],
-      "domainDebt": [
-        "Target semantic invariant ServiceRequest != RepairOrder is not physically represented today: the same orders aggregate spans request/exchange and repair lifecycle.",
-        "Because request and repair share orders.id, ownership boundaries for scheduling, dispatch and exchange acceptance are coupled and must be separated by contracts before any physical split.",
-        "Do not rename orders to RepairOrder or declare ServiceRequest separately VERIFIED until a migration/compatibility plan exists."
+      "knownBoundaryDebt": [
+        {
+          "id": "SERVICE-MODEL-001",
+          "severity": "P1",
+          "finding": "The physical orders table currently carries both request/intake semantics and accepted repair lifecycle semantics.",
+          "target": "Preserve the domain distinction ServiceRequest != RepairOrder even while the legacy physical store remains shared.",
+          "migrationPolicy": "Do not split the table merely for naming; introduce a contract/projection split only with complete call-site and regression coverage."
+        },
+        {
+          "id": "SERVICE-AUTH-001",
+          "severity": "P1",
+          "finding": "orders.create and several legacy order actions are still dispatched through role checks, while newer work-order actions use capability checks or Identity-aware ownership scope.",
+          "target": "Move remaining Service writes to backend capability + resource-scope authorization without changing behavior.",
+          "migrationPolicy": "Inventory action-by-action first; preserve legacy fallback until verified replacement coverage exists."
+        },
+        {
+          "id": "SERVICE-LEGACY-001",
+          "severity": "P1",
+          "finding": "api/db.php remains the primary action router for Service/WorkOrder operations.",
+          "target": "Strangle one verified Service contract at a time; no new business actions should be added to the monolith."
+        }
       ],
       "unverified": [
-        "Exact current orders.create handler and every creation path that initializes exchange/request state",
-        "Exact exchange response acceptance command that assigns master/STO and closes the exchange",
-        "Complete RepairPause persistence and transition model",
-        "All Service capability checks and frontend callers",
-        "Whether a later migration already introduces a separate request aggregate outside inspected files"
+        "Exact canonical transition map for every historical order status",
+        "Complete action-by-action capability coverage for all orders.* and masterOrder.* actions",
+        "Complete create path semantics for service_order versus request before acceptance",
+        "All cross-domain writes from Service into Finance, Marketplace, Booking and Community",
+        "All frontend callers and stale legacy order flows"
       ],
       "evidence": [
-        "api/migrations/107_client_exchange_production_scale.php",
-        "api/client_exchange_scale.php",
-        "api/migrations/045_work_order_core.php",
-        "api/migrations/104_master_order_full_lifecycle.php",
-        "api/master_order_lifecycle.php",
-        "api/work_orders.php",
+        "api/db.php",
         "api/order_scope.php",
-        "api/migrations/108_production_dispatch_engine.php"
+        "api/work_orders.php",
+        "api/master_order_lifecycle.php",
+        "api/migrations/045_work_order_core.php",
+        "api/migrations/094_sto_workflow_engine.php",
+        "api/migrations/104_master_order_full_lifecycle.php",
+        "js/next/orders/orders_api.js",
+        "js/next/work_orders/work_order_api.js"
       ]
     },
     {
