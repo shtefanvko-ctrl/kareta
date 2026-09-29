@@ -1,7 +1,7 @@
 {
   "schema": "kareta.feature-map.v1",
   "status": "TARGET_UNTIL_VERIFIED",
-  "coverage": "PARTIAL",
+  "coverage": "PARTIAL_FACTUAL_CORE",
   "policy": {
     "routeMustHaveContext": true,
     "readyRequiresEvidence": true,
@@ -211,8 +211,43 @@
       "knownDebt": ["FIN-AUTH-001", "FIN-API-001", "FIN-PROJECTION-001"],
       "tests": ["tools/test_r1885579_master_aftercare_finance_inventory.js", "tools/test_r1885580_operational_finance.js"],
       "evidence": ["api/migrations/105_master_aftercare_finance_inventory.php", "api/migrations/106_operational_finance_payroll_receivables.php", "api/operational_finance.php", "api/db.php", "js/next/pages/finance.js"]
+    },
+    {
+      "featureId": "community.feed",
+      "route": "#/community",
+      "boundedContext": "Community",
+      "supportingContexts": ["Identity", "Master", "Service", "Marketplace"],
+      "verificationStatus": "PARTIALLY_VERIFIED_WITH_OVERLAP",
+      "primaryProjection": "CommunityFeed",
+      "runtimeSources": ["community_posts", "work_posts", "master_wall_posts", "news"],
+      "socialStateStores": ["work_post_likes", "work_post_comments", "work_post_saved", "master_wall_reactions", "master_wall_comments_social", "master_wall_saved"],
+      "commands": ["communityGroups.join", "community post creation path", "work post like/comment/save", "masterSocialWall.like", "masterSocialWall.comment", "masterSocialWall.saveState"],
+      "queries": ["communityPosts.list", "work posts feed", "masterSocialWall.community", "news feed", "communityGroups.list", "communityGroups.members"],
+      "apiOwner": "aggregated frontend projection over legacy api/db.php community/master-wall actions plus WorkPost/News APIs",
+      "capabilities": ["ACTION_BY_ACTION_CAPABILITY_INVENTORY_INCOMPLETE", "RESOURCE_SCOPE_REQUIRED_FOR_MUTATIONS"],
+      "invariants": ["production feed must use server-backed sources and must not merge development fixtures", "Community feed aggregation must not transfer ownership of Service work orders or Master profile state", "social mutation must be routed to the source-specific interaction contract for the published entity", "no third reaction/comment store may be introduced while work_post_* and master_wall_* overlap remains unresolved"],
+      "knownDebt": ["COMMUNITY-SOCIAL-001", "COMMUNITY-PUBLICATION-001"],
+      "tests": [],
+      "evidence": ["api/community_posts.php", "api/work_posts.php", "api/migrations/048_work_posts_ecosystem.php", "api/migrations/112_master_social_wall.php", "js/next/pages/community.js", "js/next/community/community_api.js", "js/next/route_registry.js"]
+    },
+    {
+      "featureId": "platform.search",
+      "route": "#/platform",
+      "boundedContext": "Platform",
+      "supportingContexts": ["Service", "Master", "Marketplace", "Community", "Communication", "Garage"],
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "primaryProjection": "PlatformSearchSnapshot",
+      "runtimeSources": ["frontend apiSnapshot services/serviceOffers", "masters/providers", "parts/products", "orders/workOrders", "news/posts", "workPosts/works"],
+      "commands": [],
+      "queries": ["platform.search", "platform.metrics"],
+      "apiOwner": "read-only frontend projection over the current application API snapshot",
+      "capabilities": ["NO_SEPARATE_WRITE_CAPABILITY", "inherits visibility of source snapshot"],
+      "invariants": ["Platform search is read-only and must not mutate source business aggregates", "search results link back to owner-context routes instead of becoming Platform-owned entities", "domain_entities/domain_relations must not be used as a shortcut business source of truth", "Platform UI metrics/search may aggregate source data but must not redefine ownership"],
+      "knownDebt": ["PLATFORM-SOT-001", "PLATFORM-CROSS-001"],
+      "tests": [],
+      "evidence": ["js/next/route_registry.js", "js/next/pages/platform.js", "js/next/platform_search.js", "api/runtime_health.php", "api/migrations/063_domain_platform_core.php", "api/migrations/065_domain_integration.php"]
     }
   ],
-  "nextInventoryOrder": ["Community", "Platform", "Garage remaining create/archive/restore", "Identity remaining auth-challenge/frontends"],
-  "notes": "Feature entries are promoted only from repository evidence. Garage now uses the factual route #/cabinet/garage, runtime store client_vehicles and backend capabilities vehicles.read/vehicles.update."
+  "nextInventoryOrder": ["Garage create/archive/restore", "Identity AuthChallenge and frontend callers", "Service action-by-action capability migration", "Organization membership synchronization", "Marketplace writer/reader parity between market_* and seller_*", "Communication notification-store convergence"],
+  "notes": "Core feature contracts are repository-backed but remain partial where legacy compatibility or multiple runtime stores exist. Garage factual route/capabilities are corrected; Community is explicitly an aggregated projection; Platform search is explicitly read-only and not a business aggregate owner."
 }
