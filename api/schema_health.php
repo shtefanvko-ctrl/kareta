@@ -24,15 +24,20 @@ try{
 
     $name=(string)($db['database']??$db['dbname']??'');
     if($name==='')throw new RuntimeException('Database name is empty');
-
-    $pdo=new PDO(
-        sprintf(
+    $charset=trim((string)($db['charset']??'utf8mb4'))?:'utf8mb4';
+    $socket=trim((string)($db['socket']??''));
+    $dsn=$socket!==''
+        ? 'mysql:unix_socket='.$socket.';dbname='.$name.';charset='.$charset
+        : sprintf(
             'mysql:host=%s;port=%d;dbname=%s;charset=%s',
             (string)($db['host']??'localhost'),
             (int)($db['port']??3306),
             $name,
-            (string)($db['charset']??'utf8mb4')
-        ),
+            $charset
+        );
+
+    $pdo=new PDO(
+        $dsn,
         (string)($db['username']??$db['user']??''),
         (string)($db['password']??$db['pass']??''),
         [
