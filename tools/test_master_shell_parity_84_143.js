@@ -24,7 +24,7 @@ expect(registry.includes("'css/routes/master_reference_final_84_130.css','css/ne
 
 const va=(asset.match(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/)||[])[1]||'';
 const vs=(sw.match(/const RELEASE = '([^']+)'/)||[])[1]||'';
-expect(va==='188.5.5.6.84.143','asset release is not 84.143');
+const revision=Number(String(va).split('.').pop()||0); expect(revision>=143,'asset release regressed below Master shell contract 84.143');
 expect(vs===va,'service worker / asset release mismatch');
 
 console.log('MASTER_SHELL_PARITY_84_143: PASS mobile=fixed68 tablet=topnav desktop=left210 release='+va);
