@@ -305,3 +305,12 @@ Liveness/readiness проверяет состояние. Repair/migration из�
 Критическое различие — stock/order semantics. `market_*` разделяет warehouse, quantity, reserved и stock movements; checkout сначала резервирует, fulfillment списывает. `seller_*` хранит `stock_qty` прямо в product и уменьшает его уже при создании заказа. Жизненные циклы заказов также различаются.
 
 Поэтому физический canonical store пока не выбирается. Сначала используется `docs/domain/MARKETPLACE_PARITY_MATRIX.json` и read-only `tools/audit_marketplace_dual_sot.php`. SKU без owner не является идентификатором. Автоматическое копирование/слияние stock и order запрещено до явного identity/lifecycle mapping и regression parity.
+
+
+### Operational Finance authorization
+
+У operational Finance один canonical capability key: `finance.manage`. Текущие aliases `finance.manageOwn` и `finance.manageOrganization` сводятся к нему, поэтому они пока не являются отдельными permission semantics.
+
+GET `operationalFinance.dashboard` уже capability-gated, но шесть POST mutation actions пока проходят только внутренние role/resource/STO checks. Нельзя просто добавить gate и считать задачу закрытой: сначала нужно проверить реальные deployed capability sets. В частности, `profile.master` в просмотренных seed migrations не имеет доказанного `finance.manage`.
+
+Порядок: `docs/domain/FINANCE_AUTH_MATRIX.json` → read-only `tools/audit_operational_finance_authorization.php` → минимальный capability seed для допустимых контекстов → dispatcher gates → regression для master/STO/admin/owner. `organization.member` не получает finance.manage автоматически.
