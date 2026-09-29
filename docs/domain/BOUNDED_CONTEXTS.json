@@ -2,7 +2,7 @@
   "schema": "kareta.bounded-contexts.v1",
   "status": "TARGET_UNTIL_VERIFIED",
   "coverage": "IN_PROGRESS",
-  "notes": "Identity, Garage, Master, Booking, Service, Organization, Marketplace and Communication have repository-backed partial verification. Duplicate stores/read-state representations are recorded as debt instead of silently canonized.",
+  "notes": "Identity, Garage, Master, Booking, Service, Organization, Marketplace, Communication and Finance have repository-backed partial verification. Canonical facts, compatibility projections and authorization debt are kept distinct.",
   "contexts": [
     {
       "id": "Identity",
@@ -835,28 +835,125 @@
     },
     {
       "id": "Finance",
-      "verificationStatus": "TARGET_UNTIL_VERIFIED",
+      "verificationStatus": "PARTIALLY_VERIFIED",
       "targetOwns": [
-        "Payment",
+        "Estimate",
         "Invoice",
+        "Payment",
         "Transaction",
-        "Commission",
-        "Settlement"
+        "Refund",
+        "LedgerEntry",
+        "Receivable",
+        "CashMovement",
+        "PayrollRule",
+        "PayrollPeriod",
+        "PayrollAccrual",
+        "FinancialResult"
       ],
-      "commands": [],
-      "queries": [],
+      "verifiedCoreRuntimeStores": [
+        "payment_records",
+        "finance_estimates",
+        "finance_estimate_items",
+        "finance_invoices",
+        "finance_transactions",
+        "finance_refunds",
+        "finance_ledger"
+      ],
+      "verifiedOperationalRuntimeStores": [
+        "work_order_financial_results",
+        "work_order_cost_entries",
+        "work_order_receivables",
+        "sto_cash_accounts",
+        "sto_cash_movements",
+        "sto_master_payroll_rules",
+        "sto_payroll_periods",
+        "sto_payroll_accruals"
+      ],
+      "commands": [
+        "payment.create",
+        "estimate.create",
+        "invoice.create",
+        "invoice.send",
+        "payment.record",
+        "refund.create",
+        "operationalFinance.orderPayment.record",
+        "operationalFinance.expense.record",
+        "operationalFinance.payrollRule.save",
+        "operationalFinance.payroll.close",
+        "operationalFinance.payroll.pay",
+        "operationalFinance.receivable.due"
+      ],
+      "queries": [
+        "finance.view",
+        "operationalFinance.dashboard"
+      ],
       "events": [],
-      "apis": [],
+      "apis": [
+        "api/domain.php finance/payment actions",
+        "api/operational_finance.php",
+        "legacy api/db.php operationalFinance.* dispatcher"
+      ],
       "dependencies": [
-        "Identity",
-        "Service",
-        "Marketplace"
+        "Identity for actor/context/capabilities",
+        "Organization for STO financial scope",
+        "Service for order financial result and receivables",
+        "Marketplace for cost/stock-linked parts economics"
       ],
       "forbiddenWrites": [
-        "repair_orders",
-        "bookings"
+        "Service order workflow/lifecycle except explicit payment-status projection contract",
+        "Marketplace stock except Marketplace contract",
+        "Identity account/profile state"
       ],
-      "evidence": []
+      "verifiedInvariants": [
+        "Finance estimates, invoices, transactions, refunds and ledger entries are separate records with explicit references rather than one mutable balance row.",
+        "Invoice payment recording writes payment_records, finance_transactions, invoice paid state and balanced ledger entries transactionally.",
+        "Operational order payment also updates the Finance invoice/transaction/payment/ledger model plus the order receivable and STO cash projection in one transaction.",
+        "work_order_receivables is derived/synchronized from Service financial result plus completed payment_records rather than acting as an independent payment source of truth.",
+        "Refunds are bounded by the remaining refundable amount of the original transaction and reverse invoice/ledger state.",
+        "Domain finance actions use finance.manageOwn or finance.manageOrganization; payment intent creation uses payment.intent.create."
+      ],
+      "knownBoundaryDebt": [
+        {
+          "id": "FIN-AUTH-001",
+          "severity": "P0",
+          "finding": "operationalFinance.dashboard is capability-gated at the dispatcher, but operationalFinance POST mutations are dispatched without explicit capability checks and rely on internal role/context checks.",
+          "impact": "Authorization policy is inconsistent between reads and writes and can drift from the Capability Engine.",
+          "target": "Every operational Finance mutation must require an explicit backend Finance capability plus the existing resource/STO/order scope checks.",
+          "migrationPolicy": "Inventory each action and add capability checks with regression tests before removing role compatibility."
+        },
+        {
+          "id": "FIN-API-001",
+          "severity": "P1",
+          "finding": "Domain billing uses api/domain.php while operational finance commands are routed through legacy api/db.php.",
+          "target": "Keep one Finance owner contract and strangle operationalFinance actions out of db.php incrementally."
+        },
+        {
+          "id": "FIN-PROJECTION-001",
+          "severity": "P1",
+          "finding": "Payment state is projected into finance_invoices, work_order_receivables, sto_cash_movements and work_order_handovers.",
+          "impact": "Any payment writer that updates only a subset can create divergent balances/statuses.",
+          "target": "One atomic Finance payment command/event contract owns fan-out to projections.",
+          "migrationPolicy": "Do not collapse the tables; enforce one writer path and idempotency across projections."
+        }
+      ],
+      "unverified": [
+        "All payment writers outside api/domain.php and api/operational_finance.php",
+        "Idempotency guarantees for every operational Finance POST action",
+        "Whether payment_records pending intents are completed by an external acquiring/provider flow",
+        "Complete reconciliation rules between ledger, invoices, cash movements and receivables",
+        "Finance permissions for master versus STO versus organization contexts across every mutation"
+      ],
+      "evidence": [
+        "api/migrations/063_domain_platform_core.php",
+        "api/migrations/068_finance_payments.php",
+        "api/migrations/105_master_aftercare_finance_inventory.php",
+        "api/migrations/106_operational_finance_payroll_receivables.php",
+        "api/domain.php",
+        "api/operational_finance.php",
+        "api/db.php",
+        "js/next/api_client.js",
+        "js/next/pages/finance.js"
+      ]
     },
     {
       "id": "Platform",
