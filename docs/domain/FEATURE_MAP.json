@@ -13,15 +13,62 @@
       "featureId": "master.schedule",
       "route": "#/master/schedule",
       "boundedContext": "Booking",
-      "verificationStatus": "TARGET_UNTIL_VERIFIED",
-      "primaryAggregate": "Booking",
-      "commands": [],
-      "queries": [],
-      "apiOwner": null,
-      "capabilities": ["booking.read","booking.manage"],
-      "invariants": ["slot cannot be double-booked","foreign master schedule cannot be modified"],
-      "tests": [],
-      "evidence": []
+      "supportingContexts": [
+        "Master",
+        "Service"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "primaryAggregate": "SchedulePlan",
+      "runtimeStores": [
+        "master_order_plans",
+        "master_schedule_preferences",
+        "master_shift_extensions",
+        "master_reschedule_proposals"
+      ],
+      "commands": [
+        "masterSchedule.preferences.save",
+        "masterSchedules.save",
+        "masterSchedule.freeSlots",
+        "masterSchedule.reschedule.propose",
+        "masterSchedule.recovery.run",
+        "masterSchedule.recovery.preview",
+        "masterSchedule.recovery.apply",
+        "masterSchedule.recovery.protect",
+        "masterShift.weekly.save",
+        "masterShift.extension.save",
+        "masterShift.extension.delete"
+      ],
+      "queries": [
+        "masterSchedule.get",
+        "masterSchedule.freeSlots"
+      ],
+      "apiOwner": "legacy api/db.php masterSchedule.* with api/master_day_operations.php helpers",
+      "capabilities": [
+        "REQUIRES_FINAL_ACTION_BY_ACTION_INVENTORY"
+      ],
+      "invariants": [
+        "slot conflicts must be checked before applying a schedule move",
+        "protected work must not be moved by automatic recovery",
+        "Master preferences/availability must not become ownership of Service order lifecycle",
+        "direct updates to orders scheduling fields are legacy boundary debt, not the target contract"
+      ],
+      "knownDebt": [
+        "BOOKING-SERVICE-001"
+      ],
+      "tests": [
+        "tools/test_r1885627_master_capacity_reschedule.js",
+        "tools/test_r1885630_master_day_operations_auto_recovery.js",
+        "tools/test_master_recovery_behavior_84_97.js"
+      ],
+      "evidence": [
+        "api/migrations/051_master_schedule_planning.php",
+        "api/migrations/119_master_order_communication_scheduling.php",
+        "api/migrations/120_master_capacity_reschedule.php",
+        "api/migrations/124_master_day_operations_auto_recovery.php",
+        "api/master_day_operations.php",
+        "js/next/work_orders/master_schedule_api.js",
+        "js/next/pages/master_schedule.js"
+      ]
     },
     {
       "featureId": "client.garage",
@@ -32,8 +79,14 @@
       "commands": [],
       "queries": [],
       "apiOwner": null,
-      "capabilities": ["garage.read","garage.manage"],
-      "invariants": ["vehicle ownership must be enforced","one canonical create/edit flow"],
+      "capabilities": [
+        "garage.read",
+        "garage.manage"
+      ],
+      "invariants": [
+        "vehicle ownership must be enforced",
+        "one canonical create/edit flow"
+      ],
       "tests": [],
       "evidence": []
     },
@@ -46,11 +99,66 @@
       "commands": [],
       "queries": [],
       "apiOwner": null,
-      "capabilities": ["service.request.create"],
-      "invariants": ["ServiceRequest is not RepairOrder","Booking must not imply repair acceptance"],
+      "capabilities": [
+        "service.request.create"
+      ],
+      "invariants": [
+        "ServiceRequest is not RepairOrder",
+        "Booking must not imply repair acceptance"
+      ],
       "tests": [],
       "evidence": []
+    },
+    {
+      "featureId": "calendar.booking",
+      "route": "#/calendar",
+      "boundedContext": "Booking",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "primaryAggregate": "Booking",
+      "runtimeStores": [
+        "calendar_events",
+        "service_bookings"
+      ],
+      "commands": [
+        "calendar.create",
+        "booking.create",
+        "booking.cancel"
+      ],
+      "queries": [
+        "calendar.view",
+        "booking.availability"
+      ],
+      "apiOwner": "api/domain.php",
+      "capabilities": [
+        "domain.read",
+        "calendar.manageOwn",
+        "calendar.manageOrganization"
+      ],
+      "invariants": [
+        "booking creation rejects overlapping busy intervals",
+        "booking cancellation updates booking and calendar event atomically",
+        "owner/organization scope is enforced on cancellation",
+        "legacy booking_save endpoint must remain disabled"
+      ],
+      "tests": [],
+      "evidence": [
+        "api/migrations/067_calendar_booking.php",
+        "api/domain.php",
+        "api/booking_save.php",
+        "js/next/api_client.js",
+        "js/next/pages/calendar_booking.js"
+      ]
     }
   ],
-  "nextInventoryOrder": ["Identity","Vehicle/Garage","Service/Booking/Repair","Organization","Marketplace","Communication","Finance","Community"]
+  "nextInventoryOrder": [
+    "Identity",
+    "Vehicle/Garage",
+    "Service/Booking/Repair",
+    "Organization",
+    "Marketplace",
+    "Communication",
+    "Finance",
+    "Community"
+  ],
+  "notes": "Feature entries are promoted only from repository evidence. master.schedule and calendar.booking are partially verified; ownership boundaries with Service remain explicit debt."
 }
