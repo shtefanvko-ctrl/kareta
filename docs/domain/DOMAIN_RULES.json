@@ -1,0 +1,29 @@
+{
+  "schema": "kareta.domain-rules.v1",
+  "status": "IN_PROGRESS",
+  "enforcement": "DOCUMENTATION_ONLY",
+  "notes": "Required engineering constraints derived from target architecture plus repository-backed factual inventory. They are not claimed to be automatically enforced until CI/release integration exists.",
+  "rules": [
+    {"id":"IDENTITY-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"MasterProfile creation MUST NOT create a second Account.","evidence":["api/identity/account_service.php","api/identity/profile_service.php"]},
+    {"id":"IDENTITY-002","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"SellerProfile creation MUST NOT create a second Account."},
+    {"id":"AUTH-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"Authorization MUST use effective backend capabilities for the active Identity Context; compatibility role checks MUST NOT become a new authorization source.","evidence":["api/identity/capability_service.php","api/identity/authorization_pipeline.php"]},
+    {"id":"CTX-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"Cross-context writes MUST go through the verified owner contract."},
+    {"id":"CTX-002","severity":"P1","status":"REQUIRED_CONSTRAINT","rule":"Each mutable business entity MUST resolve to one owner after factual inventory."},
+    {"id":"API-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"New business actions MUST NOT be added directly to api/db.php."},
+    {"id":"API-002","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"New frontend business code MUST NOT introduce direct fetches to legacy api/db.php."},
+    {"id":"FEATURE-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"A feature MUST NOT be promoted to READY without required evidence."},
+    {"id":"LEGACY-001","severity":"P1","status":"REQUIRED_CONSTRAINT","rule":"Legacy code MUST NOT be removed until replacement usage, data parity and regression safety are proven."},
+    {"id":"AGENT-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"Agent MUST identify factual domain evidence, target owner and invariants before implementation."},
+    {"id":"DOC-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"Unverified ownership MUST be labeled TARGET_UNTIL_VERIFIED and MUST NOT be presented as canonical fact."},
+
+    {"id":"SERVICE-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"ServiceRequest and RepairOrder MUST remain distinct domain concepts even while the legacy physical model shares orders.id. No rename or physical split is allowed without an explicit compatibility/data-migration plan and regression coverage.","evidence":["api/migrations/107_client_exchange_production_scale.php","api/master_order_lifecycle.php","api/migrations/065_domain_integration.php"]},
+    {"id":"BOOKING-001","severity":"P1","status":"REQUIRED_CONSTRAINT","rule":"New Booking/Master scheduling code MUST NOT directly mutate Service-owned RepairOrder lifecycle fields. Scheduling changes to an accepted order require an explicit Service scheduling contract.","evidence":["api/master_day_operations.php","api/migrations/051_master_schedule_planning.php"]},
+    {"id":"GARAGE-001","severity":"P1","status":"REQUIRED_CONSTRAINT","rule":"Garage owns vehicle state and vehicle_id child records; it MUST NOT own Service order lifecycle merely because orders reference client_vehicle_id.","evidence":["api/client_cabinet.php","api/vehicle_passport.php"]},
+    {"id":"ORG-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"Do not introduce another Organization membership/capability authority while organization_members permissions and Identity contexts/context_members/capability_sets overlap. New authorization must converge toward one backend authority.","evidence":["api/context_access.php","api/identity/context_service.php","api/identity/capability_service.php"]},
+    {"id":"MARKET-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"While market_* and seller_* are both active, no third Product/Order/Stock source of truth may be introduced. Migration MUST inventory readers/writers and prove ID/data/command parity before retiring either model.","evidence":["api/migrations/069_marketplace_warehouse.php","api/seller_shop.php","api/domain.php"]},
+    {"id":"FINANCE-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"Finance ledger/invoice/transaction records and Service-linked operational financial projections MUST have explicit write authority. Payment flows that update both MUST remain transactional and reconciled; operational projections MUST NOT become an independent payment truth.","evidence":["api/migrations/068_finance_payments.php","api/operational_finance.php"]},
+    {"id":"COMM-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"Internal KARETA chat/message state remains the conversation source of truth. Telegram/WhatsApp/provider delivery and inbound transport records MUST NOT become a second canonical message store.","evidence":["api/messaging_core.php","api/migrations/101_context_role_chat_state.php"]},
+    {"id":"COMMUNITY-001","severity":"P1","status":"REQUIRED_CONSTRAINT","rule":"Do not introduce a new social reaction/comment store while work_post_* and master_wall_* interaction stores overlap. Canonical social interaction ownership must be selected before consolidation.","evidence":["api/work_posts.php","api/community_posts.php","api/migrations/112_master_social_wall.php"]},
+    {"id":"PLATFORM-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"domain_entities/domain_relations/domain_events are integration/projection infrastructure and MUST NOT be treated as the business aggregate owner or used to bypass the owning bounded-context command contract.","evidence":["api/migrations/063_domain_platform_core.php","api/migrations/064_core_platform_hardening.php","api/migrations/065_domain_integration.php"]}
+  ]
+}

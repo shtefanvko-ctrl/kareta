@@ -1,0 +1,978 @@
+{
+  "schema": "kareta.bounded-contexts.v1",
+  "status": "TARGET_UNTIL_VERIFIED",
+  "coverage": "IN_PROGRESS",
+  "notes": "Identity, Garage, Master, Booking, Service, Organization, Marketplace, Communication and Finance have repository-backed partial verification. Canonical facts, compatibility projections and authorization debt are kept distinct.",
+  "contexts": [
+    {
+      "id": "Identity",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "targetOwns": [
+        "Account",
+        "Person",
+        "PersonProfile",
+        "AuthSession",
+        "AuthChallenge",
+        "Context",
+        "Capability"
+      ],
+      "verifiedOwns": [
+        "Account",
+        "Person",
+        "PersonProfile",
+        "AuthSession",
+        "Context",
+        "Capability"
+      ],
+      "commands": [
+        "ensureAccount",
+        "ensureClientProfile",
+        "selectContext",
+        "selectContextByKey",
+        "requestAccountType",
+        "activateEntryRoleForOnboarding",
+        "rotateSession",
+        "revokeSession"
+      ],
+      "queries": [
+        "resolveAuth",
+        "listContexts",
+        "currentContext",
+        "listAccountTypes",
+        "effectiveCapabilities",
+        "checkCapability"
+      ],
+      "events": [],
+      "apis": [
+        "api/context.php",
+        "api/capabilities.php"
+      ],
+      "dependencies": [
+        "legacy users/role_applications compatibility during migration"
+      ],
+      "forbiddenWrites": [
+        "garage",
+        "repair",
+        "marketplace"
+      ],
+      "verifiedInvariants": [
+        "One Account is resolved by phone and linked to one Person; profile activation does not create a second Account.",
+        "AuthSession stores current_context_id and session rotation/revocation state.",
+        "Contexts are selected only from contexts available to the current Account directly or through active context_members membership.",
+        "Effective authorization is calculated by backend capability allow/deny rules for the active Context.",
+        "AuthorizationPipeline performs a separate resource-ownership/access check after capability authorization."
+      ],
+      "unverified": [
+        "Full AuthChallenge lifecycle and persistence contract",
+        "Complete migration history for every Identity table",
+        "All frontend callers of Identity APIs",
+        "All legacy api/db.php Identity entry points and their retirement status"
+      ],
+      "evidence": [
+        "api/identity/schema_contract.php",
+        "api/identity/account_service.php",
+        "api/identity/profile_service.php",
+        "api/identity/session_service.php",
+        "api/identity/context_service.php",
+        "api/identity/capability_service.php",
+        "api/identity/auth_resolver.php",
+        "api/identity/authorization_pipeline.php",
+        "api/context.php",
+        "api/capabilities.php"
+      ]
+    },
+    {
+      "id": "Garage",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "targetOwns": [
+        "GarageVehicle",
+        "VehicleProfile",
+        "VehicleHistory",
+        "VehicleDocument",
+        "VehicleIssue",
+        "VehicleRecommendation",
+        "VehicleMaintenanceItem",
+        "VehicleExpense",
+        "VehicleWarranty"
+      ],
+      "verifiedRuntimeStores": [
+        "client_vehicles",
+        "vehicle_history_events",
+        "vehicle_documents",
+        "vehicle_issues",
+        "vehicle_recommendations",
+        "vehicle_maintenance_items",
+        "vehicle_expenses",
+        "vehicle_warranties"
+      ],
+      "commands": [
+        "updateVehicleMileage",
+        "saveVehicleIssue",
+        "saveVehicleRecommendation",
+        "saveVehicleDocument",
+        "deleteVehicleDocument"
+      ],
+      "queries": [
+        "listOwnedVehicles",
+        "readVehicleDetail",
+        "listVehicleHistory",
+        "listVehicleOrders",
+        "listInstalledParts"
+      ],
+      "events": [
+        "vehicle_service_due notification is emitted from vehicle reminder state"
+      ],
+      "apis": [
+        "api/client_cabinet.php",
+        "api/vehicle_passport.php"
+      ],
+      "dependencies": [
+        "Identity for actor/context/capability checks",
+        "Service read dependency through orders.client_vehicle_id",
+        "Marketplace/Service read dependency through work_order_part_reservations"
+      ],
+      "forbiddenWrites": [
+        "accounts",
+        "persons",
+        "person_profiles",
+        "orders",
+        "work_order_part_reservations"
+      ],
+      "verifiedInvariants": [
+        "The current runtime vehicle record is client_vehicles; the target term GarageVehicle is a domain name, not yet a physical table name.",
+        "Vehicle-owned child data is keyed by vehicle_id and access is scoped to an owned/authorized client_vehicles row.",
+        "Service orders reference the vehicle through orders.client_vehicle_id; Garage reads those orders but does not own their lifecycle.",
+        "Garage write flows in client_cabinet require the vehicles.update capability; read flows use vehicles.read.",
+        "Mileage updates cannot decrease the stored mileage and append a vehicle history event when changed."
+      ],
+      "unverified": [
+        "Complete create/archive/restore vehicle command inventory",
+        "All frontend routes and callers for Garage",
+        "Whether every vehicle mutation has been migrated from legacy role checks to capability-only authorization",
+        "Final physical rename/migration from client_vehicles to a domain-native store, if any"
+      ],
+      "evidence": [
+        "api/client_cabinet.php",
+        "api/vehicle_passport.php"
+      ]
+    },
+    {
+      "id": "Master",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "targetOwns": [
+        "MasterProfile",
+        "MasterSkill",
+        "MasterService",
+        "MasterWorkingStatus",
+        "MasterSchedulePreferences",
+        "MasterShiftTemplate"
+      ],
+      "verifiedRuntimeStores": [
+        "masters",
+        "master_onboarding_state",
+        "master_schedule_preferences",
+        "master_shift_extensions"
+      ],
+      "commands": [
+        "completeMasterOnboarding",
+        "saveMasterSchedulePreferences",
+        "saveMasterShiftExtension",
+        "deleteMasterShiftExtension"
+      ],
+      "queries": [
+        "resolveMasterProfileFromIdentityContext",
+        "readMasterWorkplace",
+        "readMasterSchedulePreferences"
+      ],
+      "events": [],
+      "apis": [
+        "api/master_onboarding.php",
+        "api/master_workplace.php",
+        "api/master_day_operations.php",
+        "legacy api/db.php masterSchedule.* / masterShift.* actions"
+      ],
+      "dependencies": [
+        "Identity is authoritative for active master profile/context/capabilities",
+        "Booking/Service scheduling projections for accepted work"
+      ],
+      "forbiddenWrites": [
+        "accounts",
+        "persons",
+        "person_profiles authorization state",
+        "service_bookings",
+        "calendar_events",
+        "orders lifecycle"
+      ],
+      "verifiedInvariants": [
+        "An active Identity master profile is the authorization source; the masters row is a business/runtime entity linked through person_profiles.legacy_entity_id.",
+        "Repairing/materializing a masters row does not create a second Account.",
+        "Master onboarding is scoped by the selected master Identity context and requires an active master profile.",
+        "Master schedule preferences and one-off shift extensions are stored separately from Service order lifecycle."
+      ],
+      "knownBoundaryDebt": [
+        "Master scheduling still uses legacy api/db.php actions and shares scheduling state with Service order plans.",
+        "Some legacy role compatibility remains in master workplace/profile recovery and must not be mistaken for canonical authorization."
+      ],
+      "unverified": [
+        "Complete ownership inventory for service_offers/master skills/pricing",
+        "All master_schedules write paths and their capability gates",
+        "All frontend callers of master workplace and schedule APIs",
+        "Final removal status of legacy role fallbacks"
+      ],
+      "evidence": [
+        "api/migrations/019_master_system_tables.php",
+        "api/migrations/051_master_schedule_planning.php",
+        "api/migrations/109_master_profile_runtime_repair.php",
+        "api/migrations/128_master_first_entry_onboarding.php",
+        "api/master_onboarding.php",
+        "api/master_workplace.php",
+        "api/master_day_operations.php",
+        "js/next/work_orders/master_schedule_api.js"
+      ]
+    },
+    {
+      "id": "Service",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "targetOwns": [
+        "ServiceRequest",
+        "RepairOrder",
+        "RepairStatus",
+        "RepairPause",
+        "Diagnostics",
+        "QualityCheck",
+        "Handover",
+        "Warranty"
+      ],
+      "verifiedRuntimeStores": [
+        "orders",
+        "sto_workflows",
+        "sto_workflow_transitions",
+        "sto_workflow_approvals",
+        "work_order_checklist_items",
+        "work_order_media",
+        "master_order_diagnostics",
+        "work_order_part_reservations",
+        "work_order_quality_checks",
+        "work_order_handovers",
+        "work_order_warranties",
+        "work_order_publication_policies"
+      ],
+      "commands": [
+        "orders.create",
+        "orders.clientEdit",
+        "orders.cancelByClient",
+        "orders.setStatus",
+        "stoWorkflow.transition",
+        "stoWorkflow.approval",
+        "masterOrder.accept",
+        "masterOrder.diagnostics.save",
+        "masterOrder.extraWork.request",
+        "masterOrder.parts.reserve",
+        "masterOrder.work.complete",
+        "masterOrder.quality.save",
+        "masterOrder.warranty.configure",
+        "masterOrder.handover.prepare",
+        "clientOrder.handover.confirm"
+      ],
+      "queries": [
+        "orders.getAll",
+        "orders.get",
+        "workOrders.detail",
+        "master order lifecycle snapshot"
+      ],
+      "events": [
+        "order status notifications",
+        "repair_completed_for_quality",
+        "quality_pass / quality_fail",
+        "handover_ready",
+        "handover_accepted"
+      ],
+      "apis": [
+        "api/db.php legacy action dispatcher",
+        "api/order_scope.php",
+        "api/work_orders.php",
+        "api/master_order_lifecycle.php"
+      ],
+      "dependencies": [
+        "Identity for current actor/context and capabilities",
+        "Garage through orders.client_vehicle_id",
+        "Master for assigned master business entity",
+        "Booking for planned time/reschedule projections",
+        "Marketplace for part reservations/inventory",
+        "Finance for payment/receivables",
+        "Community for optional work publication after consent"
+      ],
+      "forbiddenWrites": [
+        "accounts/persons/person_profiles",
+        "client_vehicles ownership data",
+        "service_bookings/calendar_events except through Booking contract",
+        "market stock except through Marketplace contract"
+      ],
+      "verifiedInvariants": [
+        "Order access is scoped to the current client, assigned master, STO, admin or owner through order_scope checks.",
+        "The safe work-order lifecycle is stage-gated by sto_workflows and records transitions separately.",
+        "A successful quality-control result requires the mandatory quality checks before progression.",
+        "Handover cannot be prepared as ready before quality has passed.",
+        "Client handover confirmation marks the order done, accepts the handover and advances the workflow toward completed.",
+        "Lifecycle child records are keyed by order_id and do not become independent ownership roots."
+      ],
+      "knownBoundaryDebt": [
+        {
+          "id": "SERVICE-MODEL-001",
+          "severity": "P1",
+          "finding": "The physical orders table currently carries both request/intake semantics and accepted repair lifecycle semantics.",
+          "target": "Preserve the domain distinction ServiceRequest != RepairOrder even while the legacy physical store remains shared.",
+          "migrationPolicy": "Do not split the table merely for naming; introduce a contract/projection split only with complete call-site and regression coverage."
+        },
+        {
+          "id": "SERVICE-AUTH-001",
+          "severity": "P1",
+          "finding": "orders.create and several legacy order actions are still dispatched through role checks, while newer work-order actions use capability checks or Identity-aware ownership scope.",
+          "target": "Move remaining Service writes to backend capability + resource-scope authorization without changing behavior.",
+          "migrationPolicy": "Inventory action-by-action first; preserve legacy fallback until verified replacement coverage exists."
+        },
+        {
+          "id": "SERVICE-LEGACY-001",
+          "severity": "P1",
+          "finding": "api/db.php remains the primary action router for Service/WorkOrder operations.",
+          "target": "Strangle one verified Service contract at a time; no new business actions should be added to the monolith."
+        }
+      ],
+      "unverified": [
+        "Exact canonical transition map for every historical order status",
+        "Complete action-by-action capability coverage for all orders.* and masterOrder.* actions",
+        "Complete create path semantics for service_order versus request before acceptance",
+        "All cross-domain writes from Service into Finance, Marketplace, Booking and Community",
+        "All frontend callers and stale legacy order flows"
+      ],
+      "evidence": [
+        "api/db.php",
+        "api/order_scope.php",
+        "api/work_orders.php",
+        "api/master_order_lifecycle.php",
+        "api/migrations/045_work_order_core.php",
+        "api/migrations/094_sto_workflow_engine.php",
+        "api/migrations/104_master_order_full_lifecycle.php",
+        "js/next/orders/orders_api.js",
+        "js/next/work_orders/work_order_api.js"
+      ]
+    },
+    {
+      "id": "Booking",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "targetOwns": [
+        "Booking",
+        "CalendarEvent",
+        "CalendarSlot",
+        "Availability",
+        "RescheduleProposal"
+      ],
+      "verifiedRuntimeStores": [
+        "calendar_events",
+        "service_bookings"
+      ],
+      "boundaryRuntimeStores": [
+        {
+          "store": "master_order_plans",
+          "status": "BOUNDARY_REQUIRES_FINAL_SPLIT",
+          "reason": "Schedules accepted Service orders and is mutated by master schedule/recovery flows."
+        },
+        {
+          "store": "master_reschedule_proposals",
+          "status": "BOUNDARY_REQUIRES_FINAL_SPLIT",
+          "reason": "Represents schedule changes for Service orders but is implemented in the legacy master scheduling contour."
+        }
+      ],
+      "commands": [
+        "calendar.create",
+        "booking.create",
+        "booking.cancel",
+        "masterSchedule.reschedule.propose",
+        "masterSchedule.recovery.apply"
+      ],
+      "queries": [
+        "calendar.view",
+        "booking.availability",
+        "masterSchedule.get",
+        "masterSchedule.freeSlots"
+      ],
+      "events": [
+        "booking.confirmed"
+      ],
+      "apis": [
+        "api/domain.php",
+        "api/booking_save.php (disabled legacy endpoint, HTTP 410)",
+        "api/master_day_operations.php",
+        "legacy api/db.php masterSchedule.* actions"
+      ],
+      "dependencies": [
+        "Identity for actor/context/capability checks",
+        "Master for master availability/preferences",
+        "Service for accepted orders being scheduled"
+      ],
+      "forbiddenWrites": [
+        "accounts",
+        "persons",
+        "master profile authorization",
+        "RepairOrder lifecycle fields except through an explicit Service contract"
+      ],
+      "verifiedInvariants": [
+        "The canonical domain booking flow creates calendar_events and service_bookings transactionally.",
+        "booking.create checks overlap before insert and returns booking_conflict on collision.",
+        "booking.cancel scopes the booking to the current owner/organization and cancels both service_bookings and calendar_events in one transaction.",
+        "Booking and calendar writes require backend calendar.manageOwn or calendar.manageOrganization capability; availability/calendar reads require backend authorization.",
+        "Legacy api/booking_save.php is disabled with HTTP 410 and points callers to the unified flow.",
+        "Booking is not equivalent to RepairOrder."
+      ],
+      "knownBoundaryViolations": [
+        {
+          "id": "BOOKING-SERVICE-001",
+          "severity": "P1",
+          "evidence": "api/master_day_operations.php",
+          "finding": "Automatic schedule recovery directly updates orders.date and orders.time while mutating master_order_plans.",
+          "target": "Replace direct Service order write with an explicit Service scheduling contract after regression coverage exists.",
+          "migrationPolicy": "Do not delete or rewrite the legacy path until behavior and regression tests prove the replacement."
+        }
+      ],
+      "unverified": [
+        "Complete capability inventory for every legacy masterSchedule.* action",
+        "Whether master_order_plans should remain a Booking projection or move behind a Service scheduling contract",
+        "Full calendar resource model and organization resource ownership",
+        "All frontend routes that can create or mutate bookings"
+      ],
+      "evidence": [
+        "api/migrations/051_master_schedule_planning.php",
+        "api/migrations/067_calendar_booking.php",
+        "api/migrations/119_master_order_communication_scheduling.php",
+        "api/migrations/120_master_capacity_reschedule.php",
+        "api/migrations/124_master_day_operations_auto_recovery.php",
+        "api/domain.php",
+        "api/booking_save.php",
+        "api/master_day_operations.php",
+        "js/next/api_client.js",
+        "js/next/pages/calendar_booking.js",
+        "js/next/work_orders/master_schedule_api.js"
+      ]
+    },
+    {
+      "id": "Organization",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "targetOwns": [
+        "Organization",
+        "OrganizationMembership",
+        "OrganizationUnit",
+        "OrganizationRelation",
+        "Workplace",
+        "OrganizationSettings"
+      ],
+      "verifiedRuntimeStores": [
+        "organizations",
+        "organization_members",
+        "organization_units",
+        "organization_relations"
+      ],
+      "legacyMirrors": [
+        "sto_profiles",
+        "seller_profiles",
+        "sto_master_links"
+      ],
+      "commands": [
+        "select organization context",
+        "assign STO master to order",
+        "assign/release STO bay",
+        "save STO schedule preferences"
+      ],
+      "queries": [
+        "list organization contexts",
+        "list organization members",
+        "read STO workplace",
+        "read STO masters/bays/queue"
+      ],
+      "events": [
+        "organization.context.select audit"
+      ],
+      "apis": [
+        "api/organizations.php",
+        "api/sto_workplace.php",
+        "legacy api/db.php stoWorkplace.* / stoOrders.* / stoBays.* / stoSchedule.* actions"
+      ],
+      "dependencies": [
+        "Identity for selected organization context and effective capabilities",
+        "Master for member master profiles",
+        "Service for organization-owned/assigned orders",
+        "Booking for calendar/schedule views",
+        "Marketplace for parts-store organizations"
+      ],
+      "forbiddenWrites": [
+        "accounts/persons/person_profiles",
+        "Service order lifecycle except through Service contract",
+        "Master profile authorization",
+        "Marketplace product/stock lifecycle except through Marketplace contract"
+      ],
+      "verifiedInvariants": [
+        "Organizations have separate membership, unit and relation stores.",
+        "Legacy STO and seller entities are backfilled/mirrored into organizations using legacy_entity_type + legacy_entity_id.",
+        "Organization member listing requires organization context access with team-management capability or admin/owner compatibility.",
+        "STO workplace resolves the selected organization context before falling back to legacy profile lookup.",
+        "A master assigned by an STO must be linked to that STO and active before assignment succeeds."
+      ],
+      "knownBoundaryDebt": [
+        {
+          "id": "ORG-LEGACY-001",
+          "severity": "P1",
+          "finding": "organizations coexists with sto_profiles and seller_profiles; STO workplace still resolves and operates on the legacy profile after organization-context resolution.",
+          "target": "Organization becomes the stable business identity while legacy profile tables are compatibility projections/bridges.",
+          "migrationPolicy": "Do not delete legacy profiles until all operational callers are inventoried and migrated."
+        },
+        {
+          "id": "ORG-MEMBERSHIP-001",
+          "severity": "P1",
+          "finding": "organization_members and Identity context_members both represent organizational participation for different concerns.",
+          "target": "Identity context_members remains authorization membership; organization_members remains business membership/projection with an explicit synchronization contract.",
+          "migrationPolicy": "Do not merge tables by name alone; first map all readers/writers and capability-set semantics."
+        },
+        {
+          "id": "ORG-API-001",
+          "severity": "P1",
+          "finding": "Many STO operational writes still route through legacy api/db.php actions.",
+          "target": "Move verified organization commands behind dedicated owner contracts incrementally."
+        }
+      ],
+      "unverified": [
+        "Complete organization create/update/deactivate command inventory",
+        "Exact synchronization rules between organization_members and Identity context_members",
+        "All STO workplace action capability gates",
+        "Final ownership of bays/capacity scheduling versus Booking",
+        "Complete seller/parts-store organization migration status"
+      ],
+      "evidence": [
+        "api/migrations/061_organization_core.php",
+        "api/migrations/082_identity_marketplace_organization_membership.php",
+        "api/organizations.php",
+        "api/sto_workplace.php",
+        "js/next/work_orders/sto_workplace_api.js"
+      ]
+    },
+    {
+      "id": "Marketplace",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "targetOwns": [
+        "Product",
+        "PartProduct",
+        "SellerOffer",
+        "Warehouse",
+        "Stock",
+        "Cart",
+        "PartOrder",
+        "StockMovement"
+      ],
+      "verifiedDomainRuntimeStores": [
+        "market_products",
+        "market_warehouses",
+        "market_stock",
+        "market_carts",
+        "market_cart_items",
+        "market_orders",
+        "market_order_items",
+        "market_stock_movements"
+      ],
+      "parallelSellerRuntimeStores": [
+        "seller_profiles",
+        "seller_products",
+        "seller_orders",
+        "seller_order_items",
+        "used_market_listings"
+      ],
+      "commands": [
+        "market.product.create",
+        "market.warehouse.create",
+        "market.stock.adjust",
+        "market.cart.add",
+        "market.cart.remove",
+        "market.checkout",
+        "market.order.fulfill",
+        "seller.products.save",
+        "seller.products.delete",
+        "seller.products.restore",
+        "seller.products.stock",
+        "seller.orders.updateStatus"
+      ],
+      "queries": [
+        "market.view",
+        "seller.dashboard"
+      ],
+      "events": [],
+      "apis": [
+        "api/domain.php market.*",
+        "api/seller_shop.php",
+        "legacy api/db.php seller.* actions"
+      ],
+      "dependencies": [
+        "Identity for actor/context/capabilities",
+        "Organization for seller/parts-store ownership",
+        "Service for part reservations/repair consumption",
+        "Finance for invoices/payments associated with market orders",
+        "Garage for used-part source vehicle references where applicable"
+      ],
+      "forbiddenWrites": [
+        "accounts/persons/person_profiles",
+        "Service RepairOrder lifecycle",
+        "Garage vehicle ownership",
+        "Finance ledger/invoice lifecycle except through Finance contract"
+      ],
+      "verifiedInvariants": [
+        "Domain-native market products and warehouses can be organization-scoped and carry owner context identifiers.",
+        "Domain-native stock is separated from product identity and records stock movements.",
+        "Seller shop actions resolve an Identity seller/parts-store context and require seller capabilities before product operations.",
+        "Seller product updates are owner-scoped by seller_user_id.",
+        "Marketplace organization membership links bind organization context/person membership to marketplace ownership."
+      ],
+      "knownBoundaryDebt": [
+        {
+          "id": "MARKET-SOT-001",
+          "severity": "P0",
+          "finding": "Two active marketplace data models coexist: domain-native market_* tables and seller_* tables used by the seller workplace/native parts flow.",
+          "target": "Establish one canonical Product/Order/Stock ownership model and treat the other as adapter/projection during migration.",
+          "migrationPolicy": "Do not bulk-merge or delete either model. First inventory every reader/writer, map IDs, ownership and lifecycle semantics, then migrate one command/query at a time."
+        },
+        {
+          "id": "MARKET-ORG-001",
+          "severity": "P1",
+          "finding": "Seller identity can resolve through profile or organization context, while seller_profiles remains a legacy business entity behind both.",
+          "target": "Organization/Profile contexts authorize access; legacy seller profile becomes a compatibility business projection rather than an authorization source."
+        },
+        {
+          "id": "MARKET-API-001",
+          "severity": "P1",
+          "finding": "Seller workplace still routes through legacy api/db.php while domain-native marketplace uses api/domain.php.",
+          "target": "Converge on explicit marketplace contracts without introducing new db.php business actions."
+        }
+      ],
+      "unverified": [
+        "Which product/order store is authoritative for every current user-facing route",
+        "Complete synchronization/import relationship between market_products and seller_products",
+        "Checkout/fulfillment linkage to seller_orders and finance invoices",
+        "Used-market listing ownership and whether it is a Marketplace aggregate or separate resale subdomain",
+        "All stock mutation paths and reservation semantics from Service work orders"
+      ],
+      "evidence": [
+        "api/migrations/069_marketplace_warehouse.php",
+        "api/migrations/082_identity_marketplace_organization_membership.php",
+        "api/migrations/114_parts_native_marketplace.php",
+        "api/domain.php",
+        "api/seller_shop.php",
+        "js/next/pages/market.js",
+        "js/next/seller/seller_api.js"
+      ]
+    },
+    {
+      "id": "Community",
+      "verificationStatus": "TARGET_UNTIL_VERIFIED",
+      "targetOwns": [
+        "Post",
+        "WorkPublication",
+        "Subscription",
+        "Like",
+        "Comment"
+      ],
+      "commands": [],
+      "queries": [],
+      "events": [],
+      "apis": [],
+      "dependencies": [
+        "Identity",
+        "Master"
+      ],
+      "forbiddenWrites": [
+        "master_profiles",
+        "accounts"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "Communication",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "targetOwns": [
+        "Thread",
+        "Message",
+        "ChatParticipant",
+        "MessageRead",
+        "Notification",
+        "DeliveryState"
+      ],
+      "verifiedChatRuntimeStores": [
+        "chats",
+        "messages",
+        "chat_participants",
+        "chat_message_reads"
+      ],
+      "notificationRuntimeStores": [
+        {
+          "store": "notification_center",
+          "status": "CURRENT_DOMAIN_UI_STORE",
+          "readers": [
+            "api/domain.php notifications.list",
+            "js/next/pages/notifications.js"
+          ],
+          "writers": [
+            "api/domain.php domain-event delivery"
+          ]
+        },
+        {
+          "store": "notifications",
+          "status": "ACTIVE_LEGACY_EVENT_STORE",
+          "readers": [
+            "api/db.php notifications.getMine"
+          ],
+          "writers": [
+            "api/db.php kareta_notification_insert",
+            "legacy Service/Garage/Chat operational flows"
+          ]
+        }
+      ],
+      "commands": [
+        "chats.openDirect",
+        "chats.create",
+        "chats.supportOpen",
+        "chats.markRead",
+        "messages.add",
+        "messages.update",
+        "messages.delete",
+        "notification.read",
+        "notification.readAll",
+        "legacy notifications.markRead",
+        "legacy notifications.markAllRead"
+      ],
+      "queries": [
+        "chats.getAll",
+        "chats.contacts",
+        "messages.get",
+        "notifications.list",
+        "legacy notifications.getMine"
+      ],
+      "events": [
+        "message.new",
+        "domain event notification delivery"
+      ],
+      "apis": [
+        "api/domain.php notifications.*",
+        "api/chat_attachment.php",
+        "legacy api/db.php chats.* / messages.* / notifications.* actions"
+      ],
+      "dependencies": [
+        "Identity for effective actor/context",
+        "Service for order-linked chats",
+        "Master/Organization/Marketplace for participant resolution",
+        "Platform domain_events for domain-event notification delivery",
+        "external messaging outbox/provider adapters for asynchronous fan-out"
+      ],
+      "forbiddenWrites": [
+        "Service order lifecycle",
+        "Identity profile/account state",
+        "Marketplace order lifecycle",
+        "Finance state"
+      ],
+      "verifiedInvariants": [
+        "Chat reads and message mutations require resource access through chat participants or legacy role/entity ownership checks.",
+        "Direct chat creation uses chat_participants and context-scoped chat identity to avoid one global direct-chat identity across contexts.",
+        "Message retries are idempotency-guarded by chat_id + from_role + client_message_id.",
+        "Chat attachments are stored outside public paths and are returned only after chat access verification.",
+        "Message read state is recorded in participant/read tables while legacy per-role unread/read columns are still maintained for compatibility.",
+        "The current Notifications page reads notification_center and marks notification_center rows read through capability-protected api/domain.php actions."
+      ],
+      "knownBoundaryDebt": [
+        {
+          "id": "COMM-NOTIFY-SOT-001",
+          "severity": "P0",
+          "finding": "Two active notification stores coexist. Current UI reads notification_center, while many legacy business/chat flows write notifications through kareta_notification_insert.",
+          "impact": "A notification written only to notifications can be absent from the current Notifications page; read state can also diverge between the two stores.",
+          "target": "One canonical notification store/contract with adapters for legacy producers.",
+          "migrationPolicy": "Do not delete either table. Inventory every producer first, introduce one dual-write/outbox or migration adapter with idempotent keys, verify UI/read-state parity, then retire legacy reads/writes incrementally."
+        },
+        {
+          "id": "COMM-READSTATE-001",
+          "severity": "P1",
+          "finding": "Unread/read state is represented both in chats/messages per-role columns and in chat_participants/chat_message_reads.",
+          "impact": "Partial writers can desynchronize unread counters and delivery/read labels.",
+          "target": "Select one canonical participant/message read model after all readers/writers are mapped; keep compatibility projection for legacy UI during migration.",
+          "migrationPolicy": "No column/table removal until parity tests prove counters and read receipts for client/master/STO/seller/admin."
+        },
+        {
+          "id": "COMM-AUTH-001",
+          "severity": "P1",
+          "finding": "Chat/message actions rely on Identity-aware resource access plus legacy role/entity fallbacks, but dispatcher actions are not uniformly capability-gated.",
+          "target": "Define explicit chat read/write capabilities while preserving participant/resource ownership checks.",
+          "migrationPolicy": "Add capability checks only after action-by-action compatibility and participant scenarios are covered."
+        },
+        {
+          "id": "COMM-API-001",
+          "severity": "P1",
+          "finding": "Chats/messages and legacy notifications still route through api/db.php while notification_center uses api/domain.php.",
+          "target": "Move Communication commands/queries behind explicit owner contracts without creating another duplicate API layer."
+        }
+      ],
+      "unverified": [
+        "Complete producer inventory for notifications and notification_center",
+        "Whether any synchronization already exists between notifications and notification_center outside inspected files",
+        "All chat actions and role/capability combinations",
+        "External Telegram/WhatsApp delivery outbox ownership and retry semantics",
+        "All old js/chat.js readers/writers that still depend on legacy unread columns"
+      ],
+      "evidence": [
+        "api/db.php",
+        "api/domain.php",
+        "api/chat_attachment.php",
+        "api/migrations/053_client_orders_support_chat.php",
+        "api/migrations/054_schema_integrity_chat_attachments.php",
+        "api/migrations/056_chat_read_status.php",
+        "api/migrations/063_domain_platform_core.php",
+        "api/migrations/066_event_notification_core.php",
+        "api/migrations/101_context_role_chat_state.php",
+        "js/next/pages/chats.js",
+        "js/next/pages/notifications.js",
+        "js/chat.js"
+      ]
+    },
+    {
+      "id": "Finance",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "targetOwns": [
+        "Estimate",
+        "Invoice",
+        "Payment",
+        "Transaction",
+        "Refund",
+        "LedgerEntry",
+        "Receivable",
+        "CashMovement",
+        "PayrollRule",
+        "PayrollPeriod",
+        "PayrollAccrual",
+        "FinancialResult"
+      ],
+      "verifiedCoreRuntimeStores": [
+        "payment_records",
+        "finance_estimates",
+        "finance_estimate_items",
+        "finance_invoices",
+        "finance_transactions",
+        "finance_refunds",
+        "finance_ledger"
+      ],
+      "verifiedOperationalRuntimeStores": [
+        "work_order_financial_results",
+        "work_order_cost_entries",
+        "work_order_receivables",
+        "sto_cash_accounts",
+        "sto_cash_movements",
+        "sto_master_payroll_rules",
+        "sto_payroll_periods",
+        "sto_payroll_accruals"
+      ],
+      "commands": [
+        "payment.create",
+        "estimate.create",
+        "invoice.create",
+        "invoice.send",
+        "payment.record",
+        "refund.create",
+        "operationalFinance.orderPayment.record",
+        "operationalFinance.expense.record",
+        "operationalFinance.payrollRule.save",
+        "operationalFinance.payroll.close",
+        "operationalFinance.payroll.pay",
+        "operationalFinance.receivable.due"
+      ],
+      "queries": [
+        "finance.view",
+        "operationalFinance.dashboard"
+      ],
+      "events": [],
+      "apis": [
+        "api/domain.php finance/payment actions",
+        "api/operational_finance.php",
+        "legacy api/db.php operationalFinance.* dispatcher"
+      ],
+      "dependencies": [
+        "Identity for actor/context/capabilities",
+        "Organization for STO financial scope",
+        "Service for order financial result and receivables",
+        "Marketplace for cost/stock-linked parts economics"
+      ],
+      "forbiddenWrites": [
+        "Service order workflow/lifecycle except explicit payment-status projection contract",
+        "Marketplace stock except Marketplace contract",
+        "Identity account/profile state"
+      ],
+      "verifiedInvariants": [
+        "Finance estimates, invoices, transactions, refunds and ledger entries are separate records with explicit references rather than one mutable balance row.",
+        "Invoice payment recording writes payment_records, finance_transactions, invoice paid state and balanced ledger entries transactionally.",
+        "Operational order payment also updates the Finance invoice/transaction/payment/ledger model plus the order receivable and STO cash projection in one transaction.",
+        "work_order_receivables is derived/synchronized from Service financial result plus completed payment_records rather than acting as an independent payment source of truth.",
+        "Refunds are bounded by the remaining refundable amount of the original transaction and reverse invoice/ledger state.",
+        "Domain finance actions use finance.manageOwn or finance.manageOrganization; payment intent creation uses payment.intent.create."
+      ],
+      "knownBoundaryDebt": [
+        {
+          "id": "FIN-AUTH-001",
+          "severity": "P0",
+          "finding": "operationalFinance.dashboard is capability-gated at the dispatcher, but operationalFinance POST mutations are dispatched without explicit capability checks and rely on internal role/context checks.",
+          "impact": "Authorization policy is inconsistent between reads and writes and can drift from the Capability Engine.",
+          "target": "Every operational Finance mutation must require an explicit backend Finance capability plus the existing resource/STO/order scope checks.",
+          "migrationPolicy": "Inventory each action and add capability checks with regression tests before removing role compatibility."
+        },
+        {
+          "id": "FIN-API-001",
+          "severity": "P1",
+          "finding": "Domain billing uses api/domain.php while operational finance commands are routed through legacy api/db.php.",
+          "target": "Keep one Finance owner contract and strangle operationalFinance actions out of db.php incrementally."
+        },
+        {
+          "id": "FIN-PROJECTION-001",
+          "severity": "P1",
+          "finding": "Payment state is projected into finance_invoices, work_order_receivables, sto_cash_movements and work_order_handovers.",
+          "impact": "Any payment writer that updates only a subset can create divergent balances/statuses.",
+          "target": "One atomic Finance payment command/event contract owns fan-out to projections.",
+          "migrationPolicy": "Do not collapse the tables; enforce one writer path and idempotency across projections."
+        }
+      ],
+      "unverified": [
+        "All payment writers outside api/domain.php and api/operational_finance.php",
+        "Idempotency guarantees for every operational Finance POST action",
+        "Whether payment_records pending intents are completed by an external acquiring/provider flow",
+        "Complete reconciliation rules between ledger, invoices, cash movements and receivables",
+        "Finance permissions for master versus STO versus organization contexts across every mutation"
+      ],
+      "evidence": [
+        "api/migrations/063_domain_platform_core.php",
+        "api/migrations/068_finance_payments.php",
+        "api/migrations/105_master_aftercare_finance_inventory.php",
+        "api/migrations/106_operational_finance_payroll_receivables.php",
+        "api/domain.php",
+        "api/operational_finance.php",
+        "api/db.php",
+        "js/next/api_client.js",
+        "js/next/pages/finance.js"
+      ]
+    },
+    {
+      "id": "Platform",
+      "verificationStatus": "TARGET_UNTIL_VERIFIED",
+      "targetOwns": [
+        "Audit",
+        "FeatureRegistry",
+        "RuntimeConfig",
+        "IntegrationHealth",
+        "IdempotencyRecord",
+        "Trace"
+      ],
+      "commands": [],
+      "queries": [],
+      "events": [],
+      "apis": [],
+      "dependencies": [],
+      "forbiddenWrites": [],
+      "evidence": []
+    }
+  ]
+}
