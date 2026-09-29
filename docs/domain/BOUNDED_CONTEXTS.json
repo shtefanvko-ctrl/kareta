@@ -325,7 +325,10 @@
         "A successful quality-control result requires the mandatory quality checks before progression.",
         "Handover cannot be prepared as ready before quality has passed.",
         "Client handover confirmation marks the order done, accepts the handover and advances the workflow toward completed.",
-        "Lifecycle child records are keyed by order_id and do not become independent ownership roots."
+        "Lifecycle child records are keyed by order_id and do not become independent ownership roots.",
+        "ServiceRequest existence is limited to service-like orders; parts_request is not a Service aggregate.",
+        "Legacy orders.status=process alone is not proof that a RepairOrder exists.",
+        "RepairOrder existence requires explicit acceptance/lifecycle evidence such as accepted_at, provider/master acceptance event or workflow progress beyond intake."
       ],
       "knownBoundaryDebt": [
         {
@@ -1214,28 +1217,38 @@
           "impact": "The generic projection can assert a RepairOrder that does not yet exist semantically, contradict ServiceRequest != RepairOrder. If projection ownership is stale, resource authorization can also diverge from the owning domain.",
           "target": "domain_entities/domain_relations are projection/ACL indexes only. Business aggregate existence and transitions come from the owning domain contract; projection updates carry source/version evidence and never create stronger business facts than the owner.",
           "migrationPolicy": "Do not delete the projection. Correct projection semantics incrementally: distinguish request-only versus accepted repair state, add provenance/revision checks, backfill safely, then verify authorization parity before changing readers.",
-          "investigationStatus": "BLOCKED_ON_ACCEPTANCE_PREDICATE_AUDIT",
+          "investigationStatus": "ACCEPTANCE_PREDICATE_DEFINED_AUDIT_ADDED",
           "rootCause": [
             "Migration 065 materializes both work_request and work_order projection rows for every legacy orders row and links them with produces.",
             "orders is a shared legacy store for request/intake and accepted repair lifecycle, so one physical row does not prove both domain aggregates exist.",
             "Representative runtime Service lifecycle mutations update orders, sto_workflows and order_events but do not synchronously update domain_entities/domain_relations.",
             "kareta_write_event writes order_events; it does not refresh domain_events/domain_entities.",
-            "api/domain.php and KaretaDomainOwnershipService consume domain_entities/domain_relations for Core reads, event recipient resolution and resource authorization."
+            "api/domain.php and KaretaDomainOwnershipService consume domain_entities/domain_relations for Core reads, event recipient resolution and resource authorization.",
+            "Migration 065 does not filter non-Service order types; parts_request rows are also projected into work_request/work_order.",
+            "Direct client/STO selection can set orders.status=process before explicit provider/master acceptance, so status is not an acceptance predicate."
           ],
           "acceptancePredicateEvidence": {
-            "provenSignals": [
-              "orders_master_claim sets master_id/master_user_id, status=process and accepted_at when a master claims an available request.",
-              "kareta_master_order_accept transitions sto_workflows from intake to diagnostics and sets orders.status=process.",
-              "kareta_sto_workflow_ensure can create an intake workflow for any accessed order, therefore sto_workflows existence alone is not an acceptance signal."
+            "serviceRequestExists": "orders.type IN ('service_order','request','service')",
+            "repairOrderExistsWhenAny": [
+              "orders.accepted_at IS NOT NULL",
+              "order_events contains explicit provider/master acceptance event",
+              "sto_workflows.current_stage has advanced beyond intake"
             ],
-            "insufficientSignals": [
+            "acceptanceEvents": [
+              "master_accepted",
+              "master_assigned",
+              "executor_assigned",
+              "sto_master_assigned",
+              "sto_lead_accepted",
+              "master_order_accepted"
+            ],
+            "notSufficient": [
               "orders row exists",
-              "orders.status=process by itself",
-              "sto_workflows row exists by itself"
+              "orders.status='process'",
+              "orders.sto_id is non-empty",
+              "sto_workflows row exists with current_stage='intake'"
             ],
-            "unresolved": [
-              "Direct STO-created orders can enter process without the same accepted_at path; this must be classified before defining one canonical RepairOrder-exists predicate."
-            ]
+            "additionalFinding": "orders.type='parts_request' is not a ServiceRequest or RepairOrder, but migration 065 projected every orders row into both work_request and work_order."
           },
           "verifiedRisk": [
             "Projection aggregate existence can be stronger than the owning Service fact.",
@@ -1245,10 +1258,10 @@
           "remediationContract": {
             "canonicalOwner": "Service owns ServiceRequest/RepairOrder lifecycle. Platform owns projection/index/ACL mechanics only.",
             "phase1": [
-              "Inventory every transition that converts request/intake into an accepted repair, including master claim, masterOrder.accept, STO-created orders and admin/STO assignment flows.",
-              "Define one Service-owned RepairOrder existence predicate from explicit acceptance/lifecycle evidence.",
-              "Add a read-only consistency audit comparing orders + sto_workflows + acceptance signals against domain_entities/domain_relations.",
-              "Do not change projection-backed authorization readers until mismatch counts and affected entity types are known."
+              "Run tools/audit_service_projection_consistency.php against a production/staging snapshot and save mismatch counts/examples.",
+              "Separate definite ServiceRequest-only, definite RepairOrder and ambiguous legacy rows.",
+              "Treat parts_request as non-Service for this projection audit.",
+              "Do not mutate projection-backed authorization until ambiguous legacy rows are classified."
             ],
             "phase2": [
               "Add source/provenance and source revision semantics to projection updates.",
@@ -1267,8 +1280,12 @@
             "STO direct-create/assignment path classified and covered",
             "status transitions refresh projection revision without changing owner",
             "resource authorization result remains identical before/after migration for legitimate actors",
-            "event recipient set remains identical for legitimate actors"
-          ]
+            "event recipient set remains identical for legitimate actors",
+            "parts_request never creates work_request/work_order Service projections",
+            "direct STO selection without explicit acceptance remains ServiceRequest-only even if legacy status=process",
+            "STO lead acceptance without master can instantiate RepairOrder through explicit sto_lead_accepted evidence"
+          ],
+          "auditTool": "tools/audit_service_projection_consistency.php"
         },
         {
           "id": "PLATFORM-IDEMPOTENCY-001",
