@@ -1,0 +1,50 @@
+{
+  "version": "2026-09-29",
+  "branch": "docs/domain-first-verification-84-151",
+  "status": "P0_REMEDIATION_INVENTORY_IN_PROGRESS",
+  "principle": "No P0 implementation starts until owner, root cause, migration/compatibility contract, regression scope and rollback evidence are explicit.",
+  "queue": [
+    {
+      "id": "PLATFORM-PROJECTION-001",
+      "priority": 1,
+      "status": "BLOCKED_ON_ACCEPTANCE_PREDICATE_AUDIT",
+      "ownerContext": "Platform",
+      "sourceOwner": "Service",
+      "nextAction": "Complete Service acceptance-predicate inventory across master claim, masterOrder.accept, STO direct-create and assignment paths; then add a read-only projection consistency audit.",
+      "codeChangeAllowedNow": false
+    },
+    {
+      "id": "PLATFORM-IDEMPOTENCY-001",
+      "priority": 2,
+      "status": "READY_FOR_IMPLEMENTATION",
+      "ownerContext": "Platform",
+      "sourceOwner": "Platform",
+      "nextAction": "Implement request_hash mismatch conflict in kareta_idempotency_begin and add regression tests before changing actor scope.",
+      "codeChangeAllowedNow": true
+    },
+    {
+      "id": "COMM-NOTIFY-SOT-001",
+      "priority": 3,
+      "status": "INVENTORY_READY_NEXT",
+      "ownerContext": "Communication",
+      "nextAction": "Inventory every producer/reader of notifications and notification_center and define one semantic notification adapter.",
+      "codeChangeAllowedNow": false
+    },
+    {
+      "id": "MARKET-SOT-001",
+      "priority": 4,
+      "status": "INVENTORY_READY_NEXT",
+      "ownerContext": "Marketplace",
+      "nextAction": "Build reader/writer/ID/lifecycle parity matrix for market_* versus seller_*.",
+      "codeChangeAllowedNow": false
+    },
+    {
+      "id": "FIN-AUTH-001",
+      "priority": 5,
+      "status": "INVENTORY_READY_NEXT",
+      "ownerContext": "Finance",
+      "nextAction": "Map each operationalFinance POST action to required capability + resource/STO/order scope.",
+      "codeChangeAllowedNow": false
+    }
+  ]
+}
