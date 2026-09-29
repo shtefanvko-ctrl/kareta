@@ -628,6 +628,175 @@
         "api/db.php",
         "js/next/pages/finance.js"
       ]
+    },
+    {
+      "featureId": "community.feed",
+      "route": "#/community",
+      "boundedContext": "Community",
+      "supportingContexts": [
+        "Identity",
+        "Service",
+        "Master",
+        "Organization",
+        "Marketplace"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "primaryAggregate": "CommunityFeedProjection",
+      "sourceAggregates": [
+        "CommunityPost",
+        "WorkPublication",
+        "MasterWallPost",
+        "NewsPublication"
+      ],
+      "runtimeStores": [
+        "community_posts",
+        "work_posts",
+        "master_wall_posts",
+        "news_articles"
+      ],
+      "commands": [
+        "source-specific interaction commands"
+      ],
+      "queries": [
+        "communityPosts.list",
+        "workPosts.list",
+        "masterSocialWall.community",
+        "news.list",
+        "masterSocial.following"
+      ],
+      "apiOwner": "client-side aggregator in js/next/community/community_api.js over legacy api/db.php source queries",
+      "capabilities": [
+        "READ_POLICY_SOURCE_DEPENDENT",
+        "WRITE_CAPABILITY_POLICY_INCOMPLETE"
+      ],
+      "invariants": [
+        "feed aggregation must preserve source identity and source ownership",
+        "typed source aggregates must not be physically merged merely because the UI renders them as posts",
+        "subscription and nearby filters operate on the normalized feed without mutating source records",
+        "partial source failure must not be mistaken for authoritative absence"
+      ],
+      "knownDebt": [
+        "COMMUNITY-FEED-001",
+        "COMMUNITY-SOCIAL-SOT-001",
+        "COMMUNITY-AUTH-001",
+        "COMMUNITY-API-001"
+      ],
+      "tests": [
+        "tools/test_community_social_platform_84_49.js",
+        "tools/test_r1885609_community_native_ui.js",
+        "tools/test_runtime_ux_84_123_master_community.js"
+      ],
+      "evidence": [
+        "js/next/community/community_api.js",
+        "api/community_posts.php",
+        "api/work_posts.php",
+        "api/master_social_wall.php",
+        "api/db.php"
+      ]
+    },
+    {
+      "featureId": "community.post",
+      "route": "#/community/post/:id",
+      "boundedContext": "Community",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "primaryAggregate": "CommunityPost",
+      "runtimeStores": [
+        "community_posts",
+        "master_wall_reactions",
+        "master_wall_saved",
+        "master_wall_comments_social"
+      ],
+      "commands": [
+        "communityPosts.save",
+        "masterSocialWall.like",
+        "masterSocialWall.saveState",
+        "masterSocialWall.comment",
+        "masterSocialWall.commentDelete"
+      ],
+      "queries": [
+        "communityPosts.list",
+        "masterSocialWall.comments"
+      ],
+      "apiOwner": "api/community_posts.php + shared social helpers in api/master_social_wall.php behind api/db.php",
+      "capabilities": [
+        "SESSION_REQUIRED",
+        "EXPLICIT_COMMUNITY_CAPABILITIES_NOT_YET_DEFINED"
+      ],
+      "invariants": [
+        "post author identity is derived from the active Identity session/context",
+        "social interactions use typed entity_key community:<id>",
+        "comment ownership/moderation rules apply before delete"
+      ],
+      "knownDebt": [
+        "COMMUNITY-SOCIAL-SOT-001",
+        "COMMUNITY-AUTH-001",
+        "COMMUNITY-API-001"
+      ],
+      "tests": [
+        "tools/test_r1885609_community_native_ui.js"
+      ],
+      "evidence": [
+        "api/community_posts.php",
+        "api/master_social_wall.php",
+        "js/next/community/community_api.js"
+      ]
+    },
+    {
+      "featureId": "community.work-publication",
+      "route": "#/works/item/:id",
+      "boundedContext": "Community",
+      "supportingContexts": [
+        "Service",
+        "Master",
+        "Organization",
+        "Garage"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "primaryAggregate": "WorkPublication",
+      "runtimeStores": [
+        "work_posts",
+        "work_post_media",
+        "work_post_likes",
+        "work_post_saved",
+        "work_post_comments"
+      ],
+      "commands": [
+        "workPosts.publish",
+        "workPosts.like",
+        "workPosts.save",
+        "workPosts.comment",
+        "workPosts.commentDelete"
+      ],
+      "queries": [
+        "workPosts.list",
+        "workPosts.detail",
+        "workPosts.comments",
+        "workPosts.socialState"
+      ],
+      "apiOwner": "api/work_posts.php behind api/db.php",
+      "capabilities": [
+        "RESOURCE_SCOPE_REQUIRED",
+        "EXPLICIT_COMMUNITY_PUBLISH_CAPABILITY_INCOMPLETE"
+      ],
+      "invariants": [
+        "publication requires verified client consent",
+        "publication requires completed repair or accepted handover",
+        "publication preserves Service as source and does not own the RepairOrder lifecycle",
+        "comment deletion is owner/admin scoped"
+      ],
+      "knownDebt": [
+        "COMMUNITY-SOCIAL-SOT-001",
+        "COMMUNITY-AUTH-001",
+        "COMMUNITY-API-001"
+      ],
+      "tests": [
+        "tools/test_r1885614_master_social_wall.js"
+      ],
+      "evidence": [
+        "api/work_posts.php",
+        "api/migrations/048_work_posts_ecosystem.php",
+        "api/db.php"
+      ]
     }
   ],
   "nextInventoryOrder": [
@@ -640,5 +809,5 @@
     "Finance",
     "Community"
   ],
-  "notes": "Feature entries are promoted only from repository evidence. Finance now separates core billing/payment records from operational projections and flags capability/write-path debt."
+  "notes": "Feature entries are promoted only from repository evidence. Community is modeled as a typed feed/read projection over distinct source aggregates; social-interaction duplication is tracked separately."
 }
