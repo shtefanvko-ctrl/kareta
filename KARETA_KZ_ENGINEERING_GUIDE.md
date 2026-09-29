@@ -347,3 +347,10 @@ Static guard: `tools/test_health_readonly_boundary_84_154.js`.
 - Статус: `IMPLEMENTED_PENDING_RUNTIME_REGRESSION`; runtime-проверка ждёт доступной среды.
 
 Runtime DDL считается только частично смягчённым: production auto-migrate закрыт maintenance-window gate, но обычный bootstrap всё ещё может запускать throttled content/relation/stats maintenance. Следующий шаг — инвентаризация этих writes и перенос repair/backfill из request path.
+
+
+### CI enforcement — текущий статус
+
+Первый machine-enforced слой включён в существующий `verification-gate`, без создания второго CI pipeline.
+
+Сейчас CI блокирует regressions по notification bridge, read-only health, bounded runtime maintenance и синтаксической валидности четырёх domain SoT JSON. DB-backed P0 audits пока не являются blocking: для этого сначала нужен детерминированный disposable DB fixture. Общий `DOMAIN_CHECK` остаётся `PARTIALLY_IMPLEMENTED`, а не `DONE`.
