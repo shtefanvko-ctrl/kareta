@@ -1,10 +1,46 @@
 {
   "schema": "kareta.bounded-contexts.v1",
   "status": "TARGET_UNTIL_VERIFIED",
-  "coverage": "PROVISIONAL",
-  "notes": "Each context requires factual inventory before ownership can be marked VERIFIED.",
+  "coverage": "IN_PROGRESS",
+  "notes": "Context ownership becomes VERIFIED only from repository evidence. Identity has been partially verified against current main; other contexts remain target-only until their inventories are completed.",
   "contexts": [
-    {"id":"Identity","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Account","Person","AuthSession","AuthChallenge","Context","Capability"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":[],"forbiddenWrites":["garage","repair","marketplace"],"evidence":[]},
+    {
+      "id": "Identity",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "targetOwns": ["Account", "Person", "PersonProfile", "AuthSession", "AuthChallenge", "Context", "Capability"],
+      "verifiedOwns": ["Account", "Person", "PersonProfile", "AuthSession", "Context", "Capability"],
+      "commands": ["ensureAccount", "ensureClientProfile", "selectContext", "selectContextByKey", "requestAccountType", "activateEntryRoleForOnboarding", "rotateSession", "revokeSession"],
+      "queries": ["resolveAuth", "listContexts", "currentContext", "listAccountTypes", "effectiveCapabilities", "checkCapability"],
+      "events": [],
+      "apis": ["api/context.php", "api/capabilities.php"],
+      "dependencies": ["legacy users/role_applications compatibility during migration"],
+      "forbiddenWrites": ["garage", "repair", "marketplace"],
+      "verifiedInvariants": [
+        "One Account is resolved by phone and linked to one Person; profile activation does not create a second Account.",
+        "AuthSession stores current_context_id and session rotation/revocation state.",
+        "Contexts are selected only from contexts available to the current Account directly or through active context_members membership.",
+        "Effective authorization is calculated by backend capability allow/deny rules for the active Context.",
+        "AuthorizationPipeline performs a separate resource-ownership/access check after capability authorization."
+      ],
+      "unverified": [
+        "Full AuthChallenge lifecycle and persistence contract",
+        "Complete migration history for every Identity table",
+        "All frontend callers of Identity APIs",
+        "All legacy api/db.php Identity entry points and their retirement status"
+      ],
+      "evidence": [
+        "api/identity/schema_contract.php",
+        "api/identity/account_service.php",
+        "api/identity/profile_service.php",
+        "api/identity/session_service.php",
+        "api/identity/context_service.php",
+        "api/identity/capability_service.php",
+        "api/identity/auth_resolver.php",
+        "api/identity/authorization_pipeline.php",
+        "api/context.php",
+        "api/capabilities.php"
+      ]
+    },
     {"id":"Garage","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["GarageVehicle","VehicleProfile"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity"],"forbiddenWrites":["accounts","master_profiles","repair_orders"],"evidence":[]},
     {"id":"Master","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["MasterProfile","MasterSkill","MasterService","MasterWorkingStatus"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Organization","Booking"],"forbiddenWrites":["accounts","garage_vehicles","repair_orders"],"evidence":[]},
     {"id":"Service","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["ServiceRequest","RepairOrder","RepairStatus","RepairPause"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Garage","Master","Booking","Marketplace"],"forbiddenWrites":["accounts","garage_vehicles","marketplace_stock"],"evidence":[]},
