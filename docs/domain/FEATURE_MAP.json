@@ -914,7 +914,8 @@
         "PLATFORM-PROJECTION-001"
       ],
       "tests": [
-        "tools/verify_r1865_internal_audit.php"
+        "tools/verify_r1865_internal_audit.php",
+        "tools/audit_service_domain_projection.php --strict"
       ],
       "evidence": [
         "api/migrations/063_domain_platform_core.php",
@@ -927,7 +928,8 @@
       ],
       "auditTools": [
         "tools/audit_service_projection_consistency.php"
-      ]
+      ],
+      "remediationReadiness": "AUDIT_TOOL_READY_PENDING_DB_RUN"
     },
     {
       "featureId": "platform.realtime",
