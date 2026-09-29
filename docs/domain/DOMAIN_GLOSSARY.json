@@ -1,7 +1,7 @@
 {
   "schema": "kareta.domain-glossary.v1",
-  "status": "IN_PROGRESS",
-  "notes": "Ubiquitous language combines target terms with repository-backed distinctions. targetOwner is architectural ownership; physical table names may remain legacy during migration.",
+  "status": "PARTIALLY_VERIFIED",
+  "notes": "Ubiquitous language combines repository-backed distinctions with target ownership terms. targetOwner is architectural ownership; physical table names may remain legacy during migration.",
   "terms": [
     {
       "term": "Account",
