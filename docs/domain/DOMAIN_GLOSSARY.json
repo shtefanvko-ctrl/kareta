@@ -1,17 +1,106 @@
 {
   "schema": "kareta.domain-glossary.v1",
-  "status": "TARGET_UNTIL_VERIFIED",
-  "notes": "Definitions are target language. Ownership becomes VERIFIED only after factual inventory against current DB/API/PHP/JS/routes/tests.",
+  "status": "IN_PROGRESS",
+  "notes": "Definitions remain the target ubiquitous language, but verificationStatus now records repository-backed evidence. PARTIALLY_VERIFIED does not imply clean physical ownership; physicalStatus and domainDebt describe known legacy coupling.",
   "terms": [
-    {"term":"Account","definition":"Контейнер авторизации и жизненного цикла входа.","targetOwner":"Identity","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Person","MasterProfile","OrganizationMembership"]},
-    {"term":"Person","definition":"Физическое лицо, связанное с Account.","targetOwner":"Identity","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Account","Profile"]},
-    {"term":"Context","definition":"Текущая рабочая область пользователя.","targetOwner":"Identity","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Role","Capability"]},
-    {"term":"Capability","definition":"Разрешённая операция/возможность, проверяемая backend.","targetOwner":"Identity","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Role","Context"]},
-    {"term":"MasterProfile","definition":"Профессиональный профиль мастера, не отдельный Account.","targetOwner":"Master","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Account","Person"]},
-    {"term":"GarageVehicle","definition":"Автомобиль в гараже конкретного владельца/контекста.","targetOwner":"Garage","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Vehicle"]},
-    {"term":"ServiceRequest","definition":"Запрос клиента на услугу до фактического принятия ремонта.","targetOwner":"Service","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["RepairOrder"]},
-    {"term":"Booking","definition":"Резервирование времени/слота; не означает принятый ремонт.","targetOwner":"Booking","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["RepairOrder"]},
-    {"term":"RepairOrder","definition":"Принятый процесс диагностики/ремонта.","targetOwner":"Service","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["ServiceRequest","Booking"]},
-    {"term":"OrganizationMembership","definition":"Связь Person с Organization.","targetOwner":"Organization","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Account Role"]}
+    {
+      "term": "Account",
+      "definition": "Контейнер авторизации и жизненного цикла входа, идентифицируемый независимо от Person и профессиональных профилей.",
+      "targetOwner": "Identity",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "runtimeEvidence": ["accounts", "api/identity/account_service.php", "api/identity/schema_contract.php"],
+      "verifiedFacts": ["Account разрешается по phone.", "Создание/активация Person/Profile не требует второго Account."],
+      "forbiddenAliases": ["Person", "MasterProfile", "OrganizationMembership"]
+    },
+    {
+      "term": "Person",
+      "definition": "Физическое лицо, связанное с Account и являющееся носителем профилей.",
+      "targetOwner": "Identity",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "runtimeEvidence": ["persons", "person_profiles", "api/identity/account_service.php", "api/identity/profile_service.php"],
+      "verifiedFacts": ["Person хранится отдельно от Account.", "Профили привязаны к person_id."],
+      "forbiddenAliases": ["Account", "Profile"]
+    },
+    {
+      "term": "Context",
+      "definition": "Текущая рабочая область Account/Person, используемая backend для выбора эффективных возможностей и business scope.",
+      "targetOwner": "Identity",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "runtimeEvidence": ["contexts", "context_members", "auth_sessions.current_context_id", "api/identity/context_service.php"],
+      "verifiedFacts": ["Текущий context сохраняется в Identity session.", "Доступный context определяется прямым владением или активным context_members membership."],
+      "forbiddenAliases": ["Role", "Capability"]
+    },
+    {
+      "term": "Capability",
+      "definition": "Разрешённая backend-операция в конкретном Context; allow/deny вычисляется сервером.",
+      "targetOwner": "Identity",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "runtimeEvidence": ["capabilities", "capability_sets", "context_capability_overrides", "api/identity/capability_service.php", "api/identity/authorization_pipeline.php"],
+      "verifiedFacts": ["deny имеет приоритет над allow.", "После capability check backend отдельно проверяет resource access/ownership."],
+      "forbiddenAliases": ["Role", "Context"]
+    },
+    {
+      "term": "MasterProfile",
+      "definition": "Профессиональный профиль мастера, связанный с тем же Person/Account и имеющий отдельное business/runtime представление мастера.",
+      "targetOwner": "Master",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "runtimeEvidence": ["person_profiles(profile_type=master)", "masters", "master_onboarding_state", "api/master_onboarding.php", "api/master_workplace.php"],
+      "verifiedFacts": ["MasterProfile не создаёт второй Account.", "Identity master profile/context является источником авторизационного scope; masters остаётся business/runtime entity."],
+      "forbiddenAliases": ["Account", "Person"]
+    },
+    {
+      "term": "GarageVehicle",
+      "definition": "Доменное имя автомобиля в гараже владельца; текущий physical/runtime store называется client_vehicles.",
+      "targetOwner": "Garage",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "physicalStatus": "LEGACY_RUNTIME_NAME",
+      "runtimeEvidence": ["client_vehicles", "vehicle_history_events", "vehicle_documents", "vehicle_issues", "vehicle_recommendations", "api/client_cabinet.php", "api/vehicle_passport.php"],
+      "verifiedFacts": ["Garage child records ссылаются на vehicle_id.", "Service orders только ссылаются на автомобиль через orders.client_vehicle_id."],
+      "forbiddenAliases": ["generic Vehicle without owner/context semantics"]
+    },
+    {
+      "term": "ServiceRequest",
+      "definition": "Запрос клиента на услугу до фактического принятия профессионалом.",
+      "targetOwner": "Service",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "physicalStatus": "CONFLATED_WITH_REPAIR_ORDER_IN_ORDERS",
+      "runtimeEvidence": ["orders exchange fields", "master_exchange_responses", "api/client_exchange_scale.php"],
+      "verifiedFacts": ["До принятия orders используется как exchange/request с open/new/waiting_responses состояниями.", "master_exchange_responses.request_id ссылается на тот же orders.id."],
+      "domainDebt": ["Отдельный ServiceRequest aggregate физически не выделен: request и дальнейший repair lifecycle используют один orders.id."],
+      "forbiddenAliases": ["RepairOrder"]
+    },
+    {
+      "term": "Booking",
+      "definition": "Резервирование времени/календарного ресурса; само по себе не означает принятый ремонт.",
+      "targetOwner": "Booking",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "physicalStatus": "BOUNDARY_MIXED_WITH_SERVICE_SCHEDULING",
+      "runtimeEvidence": ["calendar_events", "service_bookings", "master_order_plans", "api/domain.php", "api/master_day_operations.php"],
+      "verifiedFacts": ["calendar_events и service_bookings существуют как отдельные stores.", "Legacy api/booking_save.php отключён.", "Master scheduling всё ещё меняет Service scheduling state через master_order_plans/orders."],
+      "domainDebt": ["Граница Booking/Service требует явного scheduling contract; прямые изменения Service order date/time из scheduling path не являются целевой ownership-моделью."],
+      "forbiddenAliases": ["RepairOrder"]
+    },
+    {
+      "term": "RepairOrder",
+      "definition": "Принятый процесс диагностики/ремонта с исполнительским lifecycle.",
+      "targetOwner": "Service",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "physicalStatus": "CONFLATED_WITH_SERVICE_REQUEST_IN_ORDERS",
+      "runtimeEvidence": ["orders", "master_order_diagnostics", "work_order_checklist_items", "work_order_part_reservations", "work_order_quality_checks", "work_order_handovers", "work_order_warranties", "api/master_order_lifecycle.php"],
+      "verifiedFacts": ["После принятия тот же orders.id обрастает diagnostics/checklist/parts/QC/handover/warranty state.", "Repair execution stage-gated и использует тот же физический orders record, который ранее был request."],
+      "domainDebt": ["Целевой инвариант ServiceRequest != RepairOrder семантически подтверждён, но физически пока не реализован отдельными aggregates."],
+      "forbiddenAliases": ["ServiceRequest", "Booking"]
+    },
+    {
+      "term": "OrganizationMembership",
+      "definition": "Бизнес-связь Person/User с Organization: роль в организации, позиция, подразделение и статус участия; не Account role.",
+      "targetOwner": "Organization",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "physicalStatus": "AUTHORITY_OVERLAP",
+      "runtimeEvidence": ["organization_members", "context_members", "user_capabilities", "api/context_access.php", "api/identity/context_service.php"],
+      "verifiedFacts": ["organization_members хранит бизнес-атрибуты членства.", "Identity context_members/capability_sets отдельно участвуют в authorization scope."],
+      "domainDebt": ["Нужно выбрать единственный authoritative write path для membership и capability authority; legacy organization permissions и Identity capabilities пока перекрываются."],
+      "forbiddenAliases": ["Account Role", "Context", "Capability"]
+    }
   ]
 }
