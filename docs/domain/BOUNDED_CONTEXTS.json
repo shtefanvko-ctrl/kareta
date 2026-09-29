@@ -1513,10 +1513,10 @@
         {
           "id": "PLATFORM-RUNTIME-DDL-001",
           "severity": "P1",
-          "finding": "Normal bootstrap can perform schema-changing work when migration history does not match the expected version.",
-          "impact": "Application traffic can enter a DDL/recovery path; the database lock prevents duplicate work but does not eliminate request latency or deployment coupling.",
-          "target": "Production releases run deterministic migrations before serving normal traffic; runtime auto-repair remains an explicit emergency compatibility path.",
-          "status": "PARTIALLY_MITIGATED",
+          "finding": "Production web traffic previously could enter create_schema/ensure_schema_columns on schema mismatch even when KARETA_DB_AUTO_MIGRATE was disabled.",
+          "impact": "A normal production request could mutate schema outside an explicit deployment/maintenance window.",
+          "target": "Production request path fails closed with migration_required when schema is stale; DDL is allowed only when explicit migration configuration/window enables it.",
+          "status": "IMPLEMENTED_PENDING_RUNTIME_REGRESSION",
           "verifiedMitigation": [
             "config.php sets KARETA_DB_VERSION=129.",
             "Production forces KARETA_DB_AUTO_MIGRATE=false unless KARETA_DB_RUNTIME_MIGRATION_WINDOW is explicitly enabled.",
@@ -1532,7 +1532,21 @@
           ],
           "nextAction": "Inventory every write performed by kareta_runtime_maintenance and split mandatory request-time reads from deployment/repair jobs before disabling runtime maintenance.",
           "implementationCommit": "5f3feb6abde55235acf310936017110a753dcb84",
-          "regressionGuard": "tools/test_runtime_maintenance_boundary_84_154.js"
+          "regressionGuard": "tools/test_runtime_maintenance_boundary_84_154.js",
+          "implementation": [
+            "config.php forces KARETA_DB_AUTO_MIGRATE=false in production outside KARETA_DB_RUNTIME_MIGRATION_WINDOW.",
+            "kareta_bootstrap_runtime now checks production + autoMigrate before kareta_create_schema/kareta_ensure_schema_columns and throws migration-required instead of applying DDL.",
+            "tools/test_runtime_maintenance_boundary_84_154.js guards ordering of the production gate before DDL calls."
+          ],
+          "implementationCommits": [
+            "66883bd2a616056eb1c17914be81170b0b455df1",
+            "8f52e53a91786b4f919275662d38de16ea3bd93d"
+          ],
+          "remainingVerification": [
+            "Staging/prod-like schema-behind test must return diagnostic migration_required without DDL.",
+            "Explicit maintenance-window migration path must still migrate successfully.",
+            "Normal up-to-date production requests must remain unaffected."
+          ]
         },
         {
           "id": "PLATFORM-AUDIT-001",
@@ -1554,6 +1568,25 @@
           ],
           "implementationCommit": "e44a223cecfdcbc7140b5f9c9db9787ddc3242f1",
           "nextAction": "Add deterministic database fixture for P0 audit tests, then promote proven P0 invariants into blocking CI one at a time."
+        },
+        {
+          "id": "PLATFORM-MAINTENANCE-001",
+          "severity": "P1",
+          "status": "PARTIALLY_MITIGATED",
+          "finding": "Ordinary bootstrap requests still trigger throttled cross-domain repair/backfill through kareta_runtime_maintenance.",
+          "impact": "A user request can write clients/orders/masters/chats/messages/audit linkage and rebuild user_stats, increasing latency and coupling unrelated domains to request traffic.",
+          "target": "Move repair/backfill to an explicit maintenance/deployment/worker command. Normal request path should only perform business-command writes.",
+          "implementation": [
+            "Removed undefined runtime calls to kareta_ensure_catalog_content and kareta_ensure_public_content.",
+            "Removed nested/repeated relation and user_stats rebuilds; one maintenance cycle now performs at most demo seed plus one relation repair pass.",
+            "tools/test_runtime_maintenance_boundary_84_154.js prevents duplicate maintenance work from returning."
+          ],
+          "implementationCommit": "5f3feb6abde55235acf310936017110a753dcb84",
+          "remaining": [
+            "Inventory which legacy writers still depend on periodic relation repair.",
+            "Provide explicit CLI/worker maintenance entry point.",
+            "Disable request-time maintenance only after those dependency regressions are covered."
+          ]
         }
       ],
       "unverified": [
