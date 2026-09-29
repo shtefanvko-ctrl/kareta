@@ -71,6 +71,7 @@ jobs:
           node tools/test_notification_center_bridge_84_152.js
           node tools/test_health_readonly_boundary_84_154.js
           node tools/test_runtime_maintenance_boundary_84_154.js
+          node tools/test_idempotency_scope_84_154.js
           node -e "const fs=require('fs'); for (const f of ['docs/domain/DOMAIN_GLOSSARY.json','docs/domain/BOUNDED_CONTEXTS.json','docs/domain/FEATURE_MAP.json','docs/domain/DOMAIN_RULES.json']) JSON.parse(fs.readFileSync(f,'utf8')); console.log('DOMAIN_SOT_JSON: PASS')"
 
 
