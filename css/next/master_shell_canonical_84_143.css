@@ -286,6 +286,9 @@ html[data-user-role="master"] #k-menu-toggle .k-menu-toggle-label{
     justify-items:center!important;
     transition:opacity .16s ease,visibility .16s ease,transform .16s ease!important;
   }
+  html[data-user-role="master"] #k-mobile-fab-stack[hidden]{
+    display:none!important;
+  }
   html[data-user-role="master"] #k-mobile-fab-stack .k-mobile-fab{
     width:44px!important;
     height:44px!important;
