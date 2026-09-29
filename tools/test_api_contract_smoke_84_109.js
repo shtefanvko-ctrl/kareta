@@ -232,6 +232,15 @@ async function runLocal() {
     assert(code > conflict, 'IDEMPOTENCY_CONFLICT code missing');
     assert(status > code, 'idempotency conflict HTTP 409 missing');
     assert(replay > status, 'idempotency conflict must be checked before replay');
+    const actorStart = src.indexOf('function kareta_idempotency_actor_hash');
+    const actorEnd = src.indexOf('function kareta_idempotency_request_hash', actorStart);
+    const actorScope = src.slice(actorStart, actorEnd);
+    assert(actorScope.includes("|account|") && actorScope.includes("|context|"), 'authenticated idempotency scope must use stable Account+Context identity');
+    assert(actorScope.includes("|legacy|"), 'legacy authenticated fallback must remain stable without PHP session binding');
+    assert(actorScope.includes("|anonymous|") && actorScope.includes("session_id()"), 'session_id may remain only as anonymous discriminator');
+    assert(src.includes('function kareta_idempotency_legacy_actor_hash'), 'legacy session-bound hash compatibility helper missing');
+    assert(src.includes('$actorHash = kareta_idempotency_actor_hash($action, $pdo);'), 'idempotency begin must use stable actor scope');
+    assert(src.includes('$foundLegacyScope'), 'legacy idempotency row migration fallback missing');
   });
 
   const failed = checks.filter(x => !x.ok);
