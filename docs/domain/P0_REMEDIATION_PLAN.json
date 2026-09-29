@@ -60,10 +60,12 @@
     {
       "id": "MARKET-SOT-001",
       "priority": 4,
-      "status": "INVENTORY_READY_NEXT",
+      "status": "PARITY_MATRIX_READY_AUDIT_READY",
       "ownerContext": "Marketplace",
-      "nextAction": "Build reader/writer/ID/lifecycle parity matrix for market_* versus seller_*.",
-      "codeChangeAllowedNow": false
+      "nextAction": "Run the read-only Marketplace audit on staging/production data. Do not choose or merge a canonical physical store until owner+SKU overlap, stock divergence and route usage are measured.",
+      "codeChangeAllowedNow": false,
+      "parityMatrix": "docs/domain/MARKETPLACE_PARITY_MATRIX.json",
+      "auditTool": "tools/audit_marketplace_dual_sot.php"
     },
     {
       "id": "FIN-AUTH-001",
