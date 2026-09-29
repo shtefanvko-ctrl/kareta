@@ -17,7 +17,7 @@ html[data-user-role="master"]{
   --k-master-busy:#b54708;
   --k-master-paused:#7a5af8;
 
-  --k-master-content-max:1420px;
+  --k-master-content-max:var(--k-route-frame-max,1280px);
   --k-master-page-x:clamp(14px,2.2vw,34px);
   --k-master-page-y:18px;
   --k-master-section-gap:16px;
