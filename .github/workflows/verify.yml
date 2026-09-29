@@ -94,22 +94,22 @@ jobs:
           FULL=".artifacts/KARETA_KZ_FULL_${SUFFIX}.zip"
           FILES=".artifacts/KARETA_KZ_NAVIGATION_FIX_${SUFFIX}_FILES.zip"
           git archive --format=zip --output="$FULL" HEAD
-          cat > /tmp/kareta_changed_files.txt <<'EOF'
-.github/workflows/verify.yml
-docs/changelog/RELEASE_NOTES_84_150.md
-docs/release/current.json
-inc/asset_registry.php
-inc/asset_version.php
-js/boot/runtime_shell_bundle.js
-js/next/navigation_core.js
-js/next/route_asset_loader.js
-js/next/shell_nav.js
-sw.js
-tools/test_current_release_84_150.js
-tools/test_master_shell_parity_84_143.js
-tools/test_navigation_integrity_84_150.js
-tools/test_r1885602_contextual_desktop_navigation.js
-EOF
+          printf '%s\n' \
+            '.github/workflows/verify.yml' \
+            'docs/changelog/RELEASE_NOTES_84_150.md' \
+            'docs/release/current.json' \
+            'inc/asset_registry.php' \
+            'inc/asset_version.php' \
+            'js/boot/runtime_shell_bundle.js' \
+            'js/next/navigation_core.js' \
+            'js/next/route_asset_loader.js' \
+            'js/next/shell_nav.js' \
+            'sw.js' \
+            'tools/test_current_release_84_150.js' \
+            'tools/test_master_shell_parity_84_143.js' \
+            'tools/test_navigation_integrity_84_150.js' \
+            'tools/test_r1885602_contextual_desktop_navigation.js' \
+            > /tmp/kareta_changed_files.txt
           zip -q "$FILES" -@ < /tmp/kareta_changed_files.txt
           echo "artifact_name=kareta-release-${SUFFIX}" >> "$GITHUB_OUTPUT"
 
