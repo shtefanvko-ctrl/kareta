@@ -70,10 +70,12 @@
     {
       "id": "FIN-AUTH-001",
       "priority": 5,
-      "status": "INVENTORY_READY_NEXT",
+      "status": "ACTION_MATRIX_READY_CAPABILITY_DATA_AUDIT_READY",
       "ownerContext": "Finance",
-      "nextAction": "Map each operationalFinance POST action to required capability + resource/STO/order scope.",
-      "codeChangeAllowedNow": false
+      "nextAction": "Run deployed Finance capability audit. If profile.master or organization.owner lacks finance.manage, seed only intended sets; then gate all operationalFinance POST actions while preserving internal resource/STO checks.",
+      "codeChangeAllowedNow": false,
+      "actionMatrix": "docs/domain/FINANCE_AUTH_MATRIX.json",
+      "auditTool": "tools/audit_operational_finance_authorization.php"
     }
   ]
 }
