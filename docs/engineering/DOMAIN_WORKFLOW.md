@@ -29,6 +29,12 @@ Before editing, put these answers in the issue/PR description or a nearby featur
 
 Keep the note short enough to review. Update it when implementation exposes a wrong assumption. A plan is a working model, not a generated essay that replaces inspection.
 
+## Verification budget and functional safety
+
+Make a small map: **invariant → existing current check → uncovered failure → one proposed check**. Reuse the current CI gate and a focused behavioral test; do not add another assertion that merely searches for the same function name or form selector. Historical test files can be useful evidence, but their count is not a reason to run all of them after every edit.
+
+For a refactor or visual replacement, record old and new entry points and prove the same authorized save, error, edit, return, and account-switch outcomes. Keep a distinct old test only if it protects a different behavior. If a test encodes an obsolete screen, reconcile its intent with the approved product decision and replace its coverage; do not delete runtime functionality to make it green. Documentation-only changes do not require device smoke, and code-only verification never certifies a deployment.
+
 ## Worked example: adding a Client vehicle
 
 At the 84.151 candidate PR, these are distinct concepts and paths:
