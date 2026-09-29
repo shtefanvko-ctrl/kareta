@@ -1,0 +1,19 @@
+{
+  "schema": "kareta.bounded-contexts.v1",
+  "status": "TARGET_UNTIL_VERIFIED",
+  "coverage": "PROVISIONAL",
+  "notes": "Each context requires factual inventory before ownership can be marked VERIFIED.",
+  "contexts": [
+    {"id":"Identity","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Account","Person","AuthSession","AuthChallenge","Context","Capability"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":[],"forbiddenWrites":["garage","repair","marketplace"],"evidence":[]},
+    {"id":"Garage","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["GarageVehicle","VehicleProfile"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity"],"forbiddenWrites":["accounts","master_profiles","repair_orders"],"evidence":[]},
+    {"id":"Master","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["MasterProfile","MasterSkill","MasterService","MasterWorkingStatus"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Organization","Booking"],"forbiddenWrites":["accounts","garage_vehicles","repair_orders"],"evidence":[]},
+    {"id":"Service","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["ServiceRequest","RepairOrder","RepairStatus","RepairPause"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Garage","Master","Booking","Marketplace"],"forbiddenWrites":["accounts","garage_vehicles","marketplace_stock"],"evidence":[]},
+    {"id":"Booking","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Booking","CalendarSlot"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Master"],"forbiddenWrites":["repair_orders","accounts"],"evidence":[]},
+    {"id":"Organization","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Organization","OrganizationMembership","Workplace","OrganizationSettings"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity"],"forbiddenWrites":["accounts","garage_vehicles"],"evidence":[]},
+    {"id":"Marketplace","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Product","PartProduct","SellerOffer","Stock","PartOrder"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Organization"],"forbiddenWrites":["repair_orders","accounts"],"evidence":[]},
+    {"id":"Community","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Post","WorkPublication","Subscription","Like","Comment"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Master"],"forbiddenWrites":["master_profiles","accounts"],"evidence":[]},
+    {"id":"Communication","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Thread","Message","Notification","DeliveryState"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity"],"forbiddenWrites":["accounts","repair_orders"],"evidence":[]},
+    {"id":"Finance","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Payment","Invoice","Transaction","Commission","Settlement"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Service","Marketplace"],"forbiddenWrites":["repair_orders","bookings"],"evidence":[]},
+    {"id":"Platform","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Audit","FeatureRegistry","RuntimeConfig","IntegrationHealth","IdempotencyRecord","Trace"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":[],"forbiddenWrites":[],"evidence":[]}
+  ]
+}
