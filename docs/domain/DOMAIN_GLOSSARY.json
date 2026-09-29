@@ -1,0 +1,17 @@
+{
+  "schema": "kareta.domain-glossary.v1",
+  "status": "TARGET_UNTIL_VERIFIED",
+  "notes": "Definitions are target language. Ownership becomes VERIFIED only after factual inventory against current DB/API/PHP/JS/routes/tests.",
+  "terms": [
+    {"term":"Account","definition":"Контейнер авторизации и жизненного цикла входа.","targetOwner":"Identity","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Person","MasterProfile","OrganizationMembership"]},
+    {"term":"Person","definition":"Физическое лицо, связанное с Account.","targetOwner":"Identity","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Account","Profile"]},
+    {"term":"Context","definition":"Текущая рабочая область пользователя.","targetOwner":"Identity","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Role","Capability"]},
+    {"term":"Capability","definition":"Разрешённая операция/возможность, проверяемая backend.","targetOwner":"Identity","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Role","Context"]},
+    {"term":"MasterProfile","definition":"Профессиональный профиль мастера, не отдельный Account.","targetOwner":"Master","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Account","Person"]},
+    {"term":"GarageVehicle","definition":"Автомобиль в гараже конкретного владельца/контекста.","targetOwner":"Garage","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Vehicle"]},
+    {"term":"ServiceRequest","definition":"Запрос клиента на услугу до фактического принятия ремонта.","targetOwner":"Service","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["RepairOrder"]},
+    {"term":"Booking","definition":"Резервирование времени/слота; не означает принятый ремонт.","targetOwner":"Booking","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["RepairOrder"]},
+    {"term":"RepairOrder","definition":"Принятый процесс диагностики/ремонта.","targetOwner":"Service","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["ServiceRequest","Booking"]},
+    {"term":"OrganizationMembership","definition":"Связь Person с Organization.","targetOwner":"Organization","verificationStatus":"TARGET_UNTIL_VERIFIED","forbiddenAliases":["Account Role"]}
+  ]
+}
