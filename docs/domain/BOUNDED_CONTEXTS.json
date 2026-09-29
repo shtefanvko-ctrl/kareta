@@ -2,7 +2,7 @@
   "schema": "kareta.bounded-contexts.v1",
   "status": "TARGET_UNTIL_VERIFIED",
   "coverage": "IN_PROGRESS",
-  "notes": "Context ownership becomes VERIFIED only from repository evidence. Identity and Garage are partially verified against current main; other contexts remain target-only until their inventories are completed.",
+  "notes": "Context ownership becomes VERIFIED only from repository evidence. Identity, Garage, Master and Booking have partial factual inventories against current main; unresolved ownership is kept explicit instead of promoted to canon.",
   "contexts": [
     {
       "id": "Identity",
@@ -67,9 +67,70 @@
       ],
       "evidence": ["api/client_cabinet.php", "api/vehicle_passport.php"]
     },
-    {"id":"Master","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["MasterProfile","MasterSkill","MasterService","MasterWorkingStatus"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Organization","Booking"],"forbiddenWrites":["accounts","garage_vehicles","repair_orders"],"evidence":[]},
+    {
+      "id": "Master",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "targetOwns": ["MasterProfile", "MasterSkill", "MasterService", "MasterWorkingStatus"],
+      "verifiedRuntimeStores": ["masters", "master_schedule_preferences", "master_shift_extensions"],
+      "observedCrossDomainStores": ["master_order_plans", "orders", "work_order_timers", "sto_bay_assignments"],
+      "commands": ["changeMasterSchedulePreferences", "extendShift", "autoRecoverSchedule"],
+      "queries": ["readMasterSchedulePreferences", "readShiftExtension", "calculateScheduleConflicts", "findFreeSlotsForOrder"],
+      "events": ["order.schedule.auto_rescheduled", "schedule_auto_recovered"],
+      "apis": ["api/master_day_operations.php", "api/master_workplace.php"],
+      "dependencies": ["Identity for master profile/context authorization", "Service because master scheduling operates on orders", "Organization for STO bay/resource allocation"],
+      "forbiddenWrites": ["accounts", "persons", "client_vehicles"],
+      "verifiedInvariants": [
+        "Master working preferences are persisted separately from Identity Account/Person state.",
+        "Scheduling code validates conflicts before moving planned work and rechecks conflicts under transaction/lock during auto-recovery.",
+        "Master scheduling operates on an existing order and may update order date/time; this is a cross-domain write and must not be treated as proof that Master owns the Order lifecycle.",
+        "Operational scheduling may depend on STO bay availability and tariff capacity guards."
+      ],
+      "unverified": [
+        "Complete ownership of MasterSkill and MasterService stores",
+        "Whether master_order_plans belongs to Master, Booking, or Service in the final bounded-context model",
+        "All Master capabilities and frontend callers",
+        "All writes from master_workplace/master_day_operations into Service-owned order state"
+      ],
+      "evidence": [
+        "api/master_day_operations.php",
+        "api/migrations/051_master_schedule_planning.php",
+        "api/migrations/122_master_shift_breaks_arrival.php",
+        "api/migrations/124_master_day_operations_auto_recovery.php"
+      ]
+    },
     {"id":"Service","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["ServiceRequest","RepairOrder","RepairStatus","RepairPause"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Garage","Master","Booking","Marketplace"],"forbiddenWrites":["accounts","garage_vehicles","marketplace_stock"],"evidence":[]},
-    {"id":"Booking","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Booking","CalendarSlot"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Master"],"forbiddenWrites":["repair_orders","accounts"],"evidence":[]},
+    {
+      "id": "Booking",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "ownershipStatus": "AMBIGUOUS",
+      "targetOwns": ["Booking", "CalendarSlot"],
+      "verifiedRuntimeStores": ["service_bookings", "calendar_events"],
+      "observedRelatedStores": ["master_order_plans", "orders"],
+      "commands": [],
+      "queries": ["calendar/schedule reads are present through domain and master scheduling layers"],
+      "events": [],
+      "apis": ["api/booking_save.php", "api/domain.php"],
+      "dependencies": ["Identity", "Master", "Service"],
+      "forbiddenWrites": ["accounts", "persons", "client_vehicles"],
+      "verifiedInvariants": [
+        "A physical service_bookings store exists and links a booking_key to a calendar_event_id with optional organization, master, resource and related entity references.",
+        "The legacy public booking_save endpoint is disabled with HTTP 410 and redirects booking creation to the unified orders.create flow.",
+        "Master operational scheduling currently uses master_order_plans keyed one-to-one by order_id, so current booking/scheduling ownership is not cleanly isolated."
+      ],
+      "unverified": [
+        "Whether service_bookings is actively written by the current production order flow",
+        "The current command/API that creates service_bookings/calendar_events",
+        "Whether Booking remains a standalone bounded context or becomes a scheduling subdomain of Service",
+        "Frontend callers and lifecycle transitions for current booking state"
+      ],
+      "evidence": [
+        "api/booking_save.php",
+        "api/migrations/067_calendar_booking.php",
+        "api/migrations/051_master_schedule_planning.php",
+        "api/master_day_operations.php",
+        "api/domain.php"
+      ]
+    },
     {"id":"Organization","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Organization","OrganizationMembership","Workplace","OrganizationSettings"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity"],"forbiddenWrites":["accounts","garage_vehicles"],"evidence":[]},
     {"id":"Marketplace","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Product","PartProduct","SellerOffer","Stock","PartOrder"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Organization"],"forbiddenWrites":["repair_orders","accounts"],"evidence":[]},
     {"id":"Community","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Post","WorkPublication","Subscription","Like","Comment"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Master"],"forbiddenWrites":["master_profiles","accounts"],"evidence":[]},
