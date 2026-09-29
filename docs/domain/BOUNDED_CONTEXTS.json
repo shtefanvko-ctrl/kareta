@@ -2,7 +2,7 @@
   "schema": "kareta.bounded-contexts.v1",
   "status": "TARGET_UNTIL_VERIFIED",
   "coverage": "IN_PROGRESS",
-  "notes": "Identity, Garage, Master, Booking, Service, Organization, Marketplace, Communication, Finance and Community have repository-backed partial verification. Similar-looking publication stores are not collapsed unless they represent the same aggregate; the Community feed is treated as a typed read model.",
+  "notes": "All listed bounded contexts now have repository-backed partial verification. Platform is explicitly a projection/infrastructure context: generic domain_entities/relations/events may compose business data but must not become a second mutable business source of truth.",
   "contexts": [
     {
       "id": "Identity",
@@ -1121,22 +1121,154 @@
     },
     {
       "id": "Platform",
-      "verificationStatus": "TARGET_UNTIL_VERIFIED",
+      "verificationStatus": "PARTIALLY_VERIFIED_WITH_P0_DEBT",
       "targetOwns": [
-        "Audit",
-        "FeatureRegistry",
-        "RuntimeConfig",
-        "IntegrationHealth",
+        "DomainEventEnvelope",
+        "EventRecipient",
         "IdempotencyRecord",
-        "Trace"
+        "RealtimeCursor",
+        "SchemaContractResult",
+        "RuntimeHealthResult",
+        "RequestTrace",
+        "ProjectionACL"
       ],
-      "commands": [],
-      "queries": [],
-      "events": [],
-      "apis": [],
-      "dependencies": [],
-      "forbiddenWrites": [],
-      "evidence": []
+      "projectionStores": [
+        "domain_entities",
+        "domain_relations"
+      ],
+      "infrastructureStores": [
+        "domain_events",
+        "domain_event_recipients",
+        "domain_entity_acl",
+        "idempotency_keys",
+        "realtime_user_cursors",
+        "realtime_context_cursors"
+      ],
+      "composedReadStores": [
+        "calendar_events",
+        "payment_records",
+        "notification_center"
+      ],
+      "commands": [
+        "idempotency.begin/complete",
+        "domain event delivery",
+        "realtime cursor advance",
+        "schema contract record",
+        "runtime schema bootstrap/recovery"
+      ],
+      "queries": [
+        "snapshot",
+        "entity.get",
+        "entities.list",
+        "realtime poll/stream",
+        "runtime_health",
+        "schema_health",
+        "identity_health"
+      ],
+      "events": [
+        "domain_events delivered through context/user recipient projections"
+      ],
+      "apis": [
+        "api/domain.php",
+        "api/realtime.php",
+        "api/runtime_health.php",
+        "api/schema_health.php",
+        "api/identity_health.php",
+        "api/bootstrap.php"
+      ],
+      "dependencies": [
+        "All business contexts as read/projection sources",
+        "Identity for account/context/capability and projection ownership",
+        "Communication for notification presentation",
+        "Booking/Finance for composed Core snapshot panels"
+      ],
+      "forbiddenWrites": [
+        "Direct ownership of Account/Person/GarageVehicle/ServiceRequest/RepairOrder/Booking/Organization/Product/Payment/Message/CommunityPost business lifecycle",
+        "Inventing a business aggregate solely because a generic domain projection row can be created",
+        "Using projection state as an unsynchronized second business source of truth"
+      ],
+      "verifiedInvariants": [
+        "api/domain.php Core snapshot and entity queries read domain_entities/domain_relations/domain_events as a cross-domain projection.",
+        "KaretaDomainOwnershipService scopes projected entities by active context, organization, legacy owner and explicit ACL.",
+        "Realtime delivery is Identity-context scoped when an Identity session/context is available and falls back to legacy user cursor mode for compatibility.",
+        "Idempotency records are uniquely scoped by action + actor_hash + key_hash and successful responses can be replayed.",
+        "Runtime health deliberately avoids bootstrap.php so a monitoring request does not run schema maintenance.",
+        "Schema bootstrap is serialized with a database lock and checks canonical migration history before running DDL/recovery."
+      ],
+      "knownBoundaryDebt": [
+        {
+          "id": "PLATFORM-PROJECTION-001",
+          "severity": "P0",
+          "finding": "domain_entities/domain_relations mirror business-domain state and are also used by resource authorization. Migration 065 materializes both work_request and work_order from every legacy orders row and adds a produces relation without verifying that a request was actually accepted into a RepairOrder.",
+          "impact": "The generic projection can assert a RepairOrder that does not yet exist semantically, contradict ServiceRequest != RepairOrder. If projection ownership is stale, resource authorization can also diverge from the owning domain.",
+          "target": "domain_entities/domain_relations are projection/ACL indexes only. Business aggregate existence and transitions come from the owning domain contract; projection updates carry source/version evidence and never create stronger business facts than the owner.",
+          "migrationPolicy": "Do not delete the projection. Correct projection semantics incrementally: distinguish request-only versus accepted repair state, add provenance/revision checks, backfill safely, then verify authorization parity before changing readers."
+        },
+        {
+          "id": "PLATFORM-IDEMPOTENCY-001",
+          "severity": "P0",
+          "finding": "idempotency_keys stores request_hash, but kareta_idempotency_begin does not compare an existing row's request_hash with the incoming request before replaying/reusing the key.",
+          "impact": "The same idempotency key can be reused for a different payload in the same action/actor scope and receive the previous response or reuse the processing slot instead of an explicit conflict.",
+          "target": "Bind action + stable actor/context + idempotency key to exactly one canonical request hash. A different payload for an existing key returns an explicit 409 IDEMPOTENCY_CONFLICT.",
+          "migrationPolicy": "Add request-hash comparison and regression tests before broadening idempotency coverage."
+        },
+        {
+          "id": "PLATFORM-IDEMPOTENCY-002",
+          "severity": "P1",
+          "finding": "actor_hash includes PHP session_id, so idempotency scope changes after session rotation even for the same Account/context.",
+          "impact": "A legitimate retry after session renewal can bypass the previous idempotency record.",
+          "target": "Use stable authenticated Account/context identity in the actor scope, with legacy fallback only where Identity is unavailable."
+        },
+        {
+          "id": "PLATFORM-HEALTH-001",
+          "severity": "P1",
+          "finding": "runtime_health.php is intentionally non-mutating, but schema_health.php and identity_health.php load bootstrap.php; bootstrap can run schema bootstrap/migrations and throttled repair/backfill maintenance.",
+          "impact": "A health/readiness probe can have side effects, increased latency or couple availability checks to repair work.",
+          "target": "Separate pure liveness/readiness inspection from explicit repair/migration commands. Health endpoints may record telemetry only through a bounded non-disruptive path.",
+          "migrationPolicy": "Keep current recovery behavior until deployment/startup migration flow is proven; first add pure read-only probes and tests."
+        },
+        {
+          "id": "PLATFORM-RUNTIME-DDL-001",
+          "severity": "P1",
+          "finding": "Normal bootstrap can perform schema-changing work when migration history does not match the expected version.",
+          "impact": "Application traffic can enter a DDL/recovery path; the database lock prevents duplicate work but does not eliminate request latency or deployment coupling.",
+          "target": "Production releases run deterministic migrations before serving normal traffic; runtime auto-repair remains an explicit emergency compatibility path."
+        },
+        {
+          "id": "PLATFORM-AUDIT-001",
+          "severity": "P1",
+          "finding": "Internal architecture audit is report-only and searches patterns, but the current guide/rules are not yet wired as mandatory CI/release enforcement.",
+          "target": "Convert stable P0/P1 rules into machine-enforced checks only after false-positive baselines and exception mechanics are defined."
+        }
+      ],
+      "unverified": [
+        "Complete set of runtime writers that refresh domain_entities/domain_relations after business mutations",
+        "Projection freshness guarantees and ownership_revision update semantics for every domain",
+        "All actions currently protected by idempotency and all actions that should be",
+        "Full domain_event producer inventory and delivery retry semantics",
+        "Release/deployment migration orchestration outside PHP runtime bootstrap",
+        "Whether any external monitor currently calls schema_health/identity_health frequently"
+      ],
+      "evidence": [
+        "api/migrations/027_idempotency_keys.php",
+        "api/migrations/063_domain_platform_core.php",
+        "api/migrations/064_core_platform_hardening.php",
+        "api/migrations/065_domain_integration.php",
+        "api/migrations/066_event_notification_core.php",
+        "api/migrations/071_realtime_platform.php",
+        "api/migrations/079_identity_domain_ownership.php",
+        "api/migrations/080_identity_context_realtime.php",
+        "api/identity/domain_ownership_service.php",
+        "api/domain.php",
+        "api/realtime.php",
+        "api/runtime_health.php",
+        "api/schema_health.php",
+        "api/identity_health.php",
+        "api/bootstrap.php",
+        "js/next/core/realtime_client.js",
+        "js/next/pages/core_platform.js",
+        "tools/internal_architecture_audit.php"
+      ]
     }
   ]
 }
