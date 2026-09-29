@@ -956,7 +956,9 @@
         "Message retries are idempotency-guarded by chat_id + from_role + client_message_id.",
         "Chat attachments are stored outside public paths and are returned only after chat access verification.",
         "Message read state is recorded in participant/read tables while legacy per-role unread/read columns are still maintained for compatibility.",
-        "The current Notifications page reads notification_center and marks notification_center rows read through capability-protected api/domain.php actions."
+        "The current Notifications page reads notification_center and marks notification_center rows read through capability-protected api/domain.php actions.",
+        "New resolvable legacy notifications are mirrored idempotently into notification_center without changing the legacy id used by Messaging.",
+        "Canonical notification read state is notification_center; compatibility read-state updates are synchronized in both directions for bridged per-user notifications."
       ],
       "knownBoundaryDebt": [
         {
@@ -965,7 +967,29 @@
           "finding": "Two active notification stores coexist. Current UI reads notification_center, while many legacy business/chat flows write notifications through kareta_notification_insert.",
           "impact": "A notification written only to notifications can be absent from the current Notifications page; read state can also diverge between the two stores.",
           "target": "One canonical notification store/contract with adapters for legacy producers.",
-          "migrationPolicy": "Do not delete either table. Inventory every producer first, introduce one dual-write/outbox or migration adapter with idempotent keys, verify UI/read-state parity, then retire legacy reads/writes incrementally."
+          "migrationPolicy": "Keep notifications as compatibility producer/outbox source while notification_center is canonical in-app read model. Backfill only user/phone-resolvable rows first; role-only rows require explicit recipient expansion semantics. Retire legacy reads/writes only after parity and external messaging migration.",
+          "investigationStatus": "BRIDGE_IMPLEMENTED_BACKFILL_DRY_RUN_READY",
+          "canonicalContract": {
+            "inAppStore": "notification_center",
+            "compatibilityProducerStore": "notifications",
+            "externalDelivery": "messaging_deliveries remains fed from the legacy notification id during transition",
+            "canonicalReadState": "notification_center.status/read_at",
+            "compatibilityReadState": "notifications.is_read/read_at synchronized for resolvable per-user bridge rows"
+          },
+          "implementationEvidence": [
+            "api/db.php mirrors new resolvable per-user legacy notifications into notification_center with key legacy:<legacyId>:user:<userId>.",
+            "The legacy notification id is captured before the center insert so Telegram/WhatsApp delivery keys remain stable.",
+            "api/domain.php notification.read/readAll synchronize canonical read state back to resolvable legacy rows.",
+            "Legacy notifications.markRead/markAllRead synchronize bridged rows toward notification_center.",
+            "tools/backfill_notification_center_from_legacy.php is dry-run by default and can backfill historical user/phone-resolvable notifications with --apply.",
+            "tools/test_notification_center_bridge_84_152.js guards bridge identity, messaging id stability and read-state synchronization."
+          ],
+          "unresolved": [
+            "Historical role-only notifications have shared role-level read state and cannot be safely expanded into per-user canonical rows without a separate recipient policy.",
+            "Historical backfill has not been executed against staging/production data.",
+            "Producer inventory outside inspected legacy/API/messaging paths still needs runtime/audit confirmation.",
+            "Legacy notifications table cannot be retired until external messaging and any remaining readers no longer depend on its ids."
+          ]
         },
         {
           "id": "COMM-READSTATE-001",
