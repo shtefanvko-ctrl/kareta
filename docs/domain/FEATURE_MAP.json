@@ -50,7 +50,7 @@
         "slot conflicts must be checked before applying a schedule move",
         "protected work must not be moved by automatic recovery",
         "Master preferences/availability must not become ownership of Service order lifecycle",
-        "direct updates to orders scheduling fields are legacy boundary debt, not the target contract"
+        "Booking/Master planning writes must call Service-owned schedule projection contract instead of directly updating orders scheduling fields."
       ],
       "knownDebt": [
         "BOOKING-SERVICE-001"
@@ -58,7 +58,8 @@
       "tests": [
         "tools/test_r1885627_master_capacity_reschedule.js",
         "tools/test_r1885630_master_day_operations_auto_recovery.js",
-        "tools/test_master_recovery_behavior_84_97.js"
+        "tools/test_master_recovery_behavior_84_97.js",
+        "tools/test_booking_service_boundary_84_153.js"
       ],
       "evidence": [
         "api/migrations/051_master_schedule_planning.php",
@@ -67,8 +68,14 @@
         "api/migrations/124_master_day_operations_auto_recovery.php",
         "api/master_day_operations.php",
         "js/next/work_orders/master_schedule_api.js",
-        "js/next/pages/master_schedule.js"
-      ]
+        "js/next/pages/master_schedule.js",
+        "api/work_orders.php",
+        "api/master_workplace.php",
+        "api/master_recovery_control.php"
+      ],
+      "boundaryStatus": {
+        "BOOKING-SERVICE-001": "IMPLEMENTED_PENDING_RUNTIME_REGRESSION"
+      }
     },
     {
       "featureId": "client.garage",
@@ -234,7 +241,8 @@
         "masterOrder.work.complete",
         "masterOrder.quality.save",
         "masterOrder.handover.prepare",
-        "clientOrder.handover.confirm"
+        "clientOrder.handover.confirm",
+        "internal:serviceOrder.scheduleProjection.update"
       ],
       "queries": [
         "workOrders.detail",
@@ -250,7 +258,8 @@
         "workflow stage gates lifecycle commands",
         "quality pass requires mandatory checks",
         "handover ready requires quality pass",
-        "client confirmation closes the order and completes handover"
+        "client confirmation closes the order and completes handover",
+        "schedule compatibility fields on orders are written only through the Service-owned projection contract from audited Booking/Master paths"
       ],
       "knownDebt": [
         "SERVICE-AUTH-001",
@@ -259,7 +268,8 @@
       ],
       "tests": [
         "tools/test_r1885578_master_order_lifecycle.js",
-        "tools/test_r1885637_work_order_native_lifecycle.js"
+        "tools/test_r1885637_work_order_native_lifecycle.js",
+        "tools/test_booking_service_boundary_84_153.js"
       ],
       "evidence": [
         "api/master_order_lifecycle.php",
