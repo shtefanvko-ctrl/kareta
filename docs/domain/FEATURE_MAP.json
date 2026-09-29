@@ -293,6 +293,110 @@
         "api/sto_workplace.php",
         "js/next/work_orders/sto_workplace_api.js"
       ]
+    },
+    {
+      "featureId": "market.domain",
+      "route": "#/market",
+      "boundedContext": "Marketplace",
+      "supportingContexts": [
+        "Identity",
+        "Organization",
+        "Finance"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "primaryAggregate": "Product",
+      "runtimeStores": [
+        "market_products",
+        "market_warehouses",
+        "market_stock",
+        "market_carts",
+        "market_orders"
+      ],
+      "commands": [
+        "market.product.create",
+        "market.warehouse.create",
+        "market.stock.adjust",
+        "market.cart.add",
+        "market.cart.remove",
+        "market.checkout",
+        "market.order.fulfill"
+      ],
+      "queries": [
+        "market.view"
+      ],
+      "apiOwner": "api/domain.php",
+      "capabilities": [
+        "market.manage",
+        "warehouse.manage",
+        "domain.read"
+      ],
+      "invariants": [
+        "organization-scoped product/warehouse writes require organization context",
+        "stock belongs to warehouse + product, not embedded product quantity",
+        "checkout/fulfillment must preserve stock and order consistency"
+      ],
+      "knownDebt": [
+        "MARKET-SOT-001"
+      ],
+      "tests": [],
+      "evidence": [
+        "api/migrations/069_marketplace_warehouse.php",
+        "api/domain.php",
+        "js/next/pages/market.js"
+      ]
+    },
+    {
+      "featureId": "seller.marketplace",
+      "route": "#/seller",
+      "boundedContext": "Marketplace",
+      "supportingContexts": [
+        "Identity",
+        "Organization"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "primaryAggregate": "SellerProduct",
+      "runtimeStores": [
+        "seller_profiles",
+        "seller_products",
+        "seller_orders",
+        "seller_order_items"
+      ],
+      "commands": [
+        "seller.products.save",
+        "seller.products.delete",
+        "seller.products.restore",
+        "seller.products.stock",
+        "seller.orders.updateStatus"
+      ],
+      "queries": [
+        "seller.dashboard"
+      ],
+      "apiOwner": "api/seller_shop.php behind legacy api/db.php",
+      "capabilities": [
+        "market.products.manage",
+        "market.orders.read",
+        "warehouse.stock.manage",
+        "profile.manage"
+      ],
+      "invariants": [
+        "seller context/capability is required before seller operations",
+        "product writes are scoped to seller_user_id",
+        "archiving/restoring does not create duplicate SKU ownership"
+      ],
+      "knownDebt": [
+        "MARKET-SOT-001",
+        "MARKET-ORG-001",
+        "MARKET-API-001"
+      ],
+      "tests": [
+        "tools/test_r1885618_parts_native_marketplace.js",
+        "tools/test_r1885643_seller_marketplace_window_architecture.js"
+      ],
+      "evidence": [
+        "api/migrations/114_parts_native_marketplace.php",
+        "api/seller_shop.php",
+        "js/next/seller/seller_api.js"
+      ]
     }
   ],
   "nextInventoryOrder": [
