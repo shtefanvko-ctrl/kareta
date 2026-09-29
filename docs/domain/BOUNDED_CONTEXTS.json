@@ -1,8 +1,8 @@
 {
   "schema": "kareta.bounded-contexts.v1",
-  "status": "TARGET_UNTIL_VERIFIED",
-  "coverage": "IN_PROGRESS",
-  "notes": "All listed bounded contexts now have repository-backed partial verification. Platform is explicitly a projection/infrastructure context: generic domain_entities/relations/events may compose business data but must not become a second mutable business source of truth.",
+  "status": "PARTIALLY_VERIFIED",
+  "coverage": "CONTEXT_FIRST_PASS_COMPLETE",
+  "notes": "First repository-backed inventory pass is complete for all listed bounded contexts. Every context is partially verified; remaining legacy paths, P0/P1 debt and unverified details stay explicit per context.",
   "contexts": [
     {
       "id": "Identity",
