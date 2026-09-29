@@ -194,8 +194,14 @@
     {
       "id": "HEALTH-001",
       "severity": "P1",
-      "status": "REQUIRED_CONSTRAINT",
-      "rule": "Liveness/readiness health checks SHOULD be observational and MUST NOT silently become schema/business repair commands."
+      "status": "PARTIALLY_ENFORCED_BY_STATIC_GUARD",
+      "rule": "Liveness/readiness health checks SHOULD be observational and MUST NOT silently become schema/business repair commands.",
+      "evidence": [
+        "api/runtime_health.php",
+        "api/schema_health.php",
+        "api/identity_health.php",
+        "tools/test_health_readonly_boundary_84_154.js"
+      ]
     },
     {
       "id": "BOUNDARY-BOOKING-SERVICE-001",
