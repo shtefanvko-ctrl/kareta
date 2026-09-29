@@ -101,6 +101,7 @@ jobs:
             'inc/asset_registry.php' \
             'inc/asset_version.php' \
             'js/boot/runtime_shell_bundle.js' \
+            'js/boot/runtime_ui_bundle.js' \
             'js/next/navigation_core.js' \
             'js/next/route_asset_loader.js' \
             'js/next/shell_nav.js' \
