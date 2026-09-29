@@ -7,11 +7,31 @@
     {
       "id": "PLATFORM-PROJECTION-001",
       "priority": 1,
-      "status": "BLOCKED_ON_ACCEPTANCE_PREDICATE_AUDIT",
+      "status": "AUDIT_READY",
       "ownerContext": "Platform",
       "sourceOwner": "Service",
-      "nextAction": "Complete Service acceptance-predicate inventory across master claim, masterOrder.accept, STO direct-create and assignment paths; then add a read-only projection consistency audit.",
-      "codeChangeAllowedNow": false
+      "nextAction": "Run tools/audit_service_projection_consistency.php against staging/production snapshot; classify ambiguous legacy rows before any repair/backfill.",
+      "codeChangeAllowedNow": false,
+      "auditTool": "tools/audit_service_projection_consistency.php",
+      "repairOrderPredicate": {
+        "serviceTypes": [
+          "service_order",
+          "request",
+          "service"
+        ],
+        "acceptedAt": true,
+        "acceptanceEvents": [
+          "master_accepted",
+          "master_assigned",
+          "executor_assigned",
+          "sto_master_assigned",
+          "sto_lead_accepted",
+          "master_order_accepted"
+        ],
+        "workflowBeyondIntake": true,
+        "statusProcessAlone": false,
+        "stoIdAlone": false
+      }
     },
     {
       "id": "PLATFORM-IDEMPOTENCY-001",
