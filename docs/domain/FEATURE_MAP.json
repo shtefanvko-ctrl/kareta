@@ -873,7 +873,9 @@
         "domain projection is not a mutable business source of truth",
         "projected aggregate existence must not exceed facts proven by the owning domain",
         "authorization projection must preserve owner/context/ACL parity with source ownership",
-        "projection rows require provenance/version semantics"
+        "projection rows require provenance/version semantics",
+        "parts_request must not be projected as ServiceRequest/RepairOrder",
+        "orders.status=process alone must not instantiate RepairOrder"
       ],
       "knownDebt": [
         "PLATFORM-PROJECTION-001"
@@ -889,6 +891,9 @@
         "api/identity/domain_ownership_service.php",
         "api/domain.php",
         "js/next/pages/core_platform.js"
+      ],
+      "auditTools": [
+        "tools/audit_service_projection_consistency.php"
       ]
     },
     {
