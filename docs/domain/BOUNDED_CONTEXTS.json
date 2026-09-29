@@ -1467,7 +1467,19 @@
           "finding": "runtime_health.php is intentionally non-mutating, but schema_health.php and identity_health.php load bootstrap.php; bootstrap can run schema bootstrap/migrations and throttled repair/backfill maintenance.",
           "impact": "A health/readiness probe can have side effects, increased latency or couple availability checks to repair work.",
           "target": "Separate pure liveness/readiness inspection from explicit repair/migration commands. Health endpoints may record telemetry only through a bounded non-disruptive path.",
-          "migrationPolicy": "Keep current recovery behavior until deployment/startup migration flow is proven; first add pure read-only probes and tests."
+          "migrationPolicy": "Keep current recovery behavior until deployment/startup migration flow is proven; first add pure read-only probes and tests.",
+          "status": "PARTIALLY_IMPLEMENTED",
+          "implementation": [
+            "api/runtime_health.php already avoids bootstrap.php and is observational.",
+            "api/schema_health.php now opens a direct PDO connection, runs KaretaSchemaContract::inspect only, does not record schema_contract_audit, and does not load bootstrap.php.",
+            "tools/test_health_readonly_boundary_84_154.js guards runtime_health + schema_health against bootstrap and SQL mutation."
+          ],
+          "remaining": [
+            "api/identity_health.php still loads bootstrap.php.",
+            "KaretaAuthResolver used by identity_health can create Account/Profile for legacy-compatible identity and writes auth_resolver_audit, so it is not a pure readiness probe.",
+            "Identity needs a separate read-only resolver/probe contract before identity_health can be made observational."
+          ],
+          "nextAction": "Introduce a read-only Identity readiness resolver that never ensures accounts/profiles, never switches context and never writes audits; only then refactor identity_health."
         },
         {
           "id": "PLATFORM-RUNTIME-DDL-001",
