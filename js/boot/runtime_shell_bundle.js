@@ -75,7 +75,12 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
   function contextKind(snapshot=identity()){
     if (!snapshot.authenticated) {
       const role = legacyRole();
-      if (hasLegacySession() && ['client','customer','user'].includes(role)) return 'personal';
+      if (hasLegacySession()) {
+        if (['client','customer','user'].includes(role)) return 'personal';
+        if (role === 'master') return 'master';
+        if (role === 'seller') return 'seller';
+        if (['sto','service'].includes(role)) return 'organization_service';
+      }
       return 'anonymous';
     }
     if (window.KaretaIdentity?.has?.('*') === true) return 'admin';
@@ -403,11 +408,22 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
       node.dataset.overflowing=overflowing?'1':'0';
     });
   }
+  function itemsFor(surface){
+    const identity=window.KaretaIdentity?.snapshot?.()||{};
+    if(identity.mode==='identity'){
+      const core=window.KaretaNavigationCore;
+      const contextual=surface==='desktop'?core?.desktopItems?.():core?.mobileItems?.();
+      if(Array.isArray(contextual)&&contextual.length)return contextual;
+    }
+    const legacy=access?.keys?.(surface);
+    if(Array.isArray(legacy)&&legacy.length)return legacy;
+    return navigation.items(surface);
+  }
   function render(){
     if(!state.desktopNode||!state.mobileNode)return false;
-    const desktop=window.KaretaNavigationCore?.desktopItems?.()||navigation.items('desktop');const mobile=window.KaretaNavigationCore?.mobileItems?.()||navigation.items('mobile');
+    const desktop=itemsFor('desktop');const mobile=itemsFor('mobile');
     const identity=window.KaretaIdentity?.snapshot?.()||{};
-    const signature=`${identity.context?.key||'anon'}|${desktop.join(',')}|${mobile.join(',')}|${state.unreadChats}`;
+    const signature=`${identity.mode||'legacy'}|${identity.context?.key||access?.currentRole?.()||'anon'}|${desktop.join(',')}|${mobile.join(',')}|${state.unreadChats}`;
     if(signature===state.signature)return true;
     state.desktopNode.replaceChildren(...nodes(desktop.map(key=>linkHtml(key,'desktop')).join('')));
     state.mobileNode.replaceChildren(...nodes(mobile.map(key=>linkHtml(key,'mobile')).join('')));state.mobileNode.style.setProperty('--k-mobile-nav-count',String(Math.max(1,mobile.length)));state.mobileNode.querySelector('[data-mobile-more]')?.addEventListener('click',()=>window.KaretaSmartActionHub?.toggle?.());
@@ -460,7 +476,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     }
   }
   function setUnreadChats(count){const next=Math.max(0,Number(count)||0);if(next===state.unreadChats)return;state.unreadChats=next;refresh();}
-  function audit(){const desktop=window.KaretaNavigationCore?.desktopItems?.()||navigation.items('desktop');const mobile=window.KaretaNavigationCore?.mobileItems?.()||navigation.items('mobile');const result={ok:state.mounted&&desktop.every(registry.has)&&mobile.every(key=>key==='__more__'||registry.has(key)),mounted:state.mounted,mountCount:state.mountCount,renderCount:state.renderCount,activeKey:state.activeKey,desktopKeys:desktop,mobileKeys:mobile,at:Date.now()};window.KaretaShellNavAudit=result;return result;}
+  function audit(){const desktop=itemsFor('desktop');const mobile=itemsFor('mobile');const result={ok:state.mounted&&desktop.every(registry.has)&&mobile.every(key=>key==='__more__'||registry.has(key)),mounted:state.mounted,mountCount:state.mountCount,renderCount:state.renderCount,activeKey:state.activeKey,desktopKeys:desktop,mobileKeys:mobile,navigationMode:(window.KaretaIdentity?.snapshot?.()?.mode==='identity'?'identity':'role-access'),at:Date.now()};window.KaretaShellNavAudit=result;return result;}
   ['kareta:identity-ready','kareta:capabilities-changed','kareta:context-changed','kareta:navigation-changed'].forEach(name=>window.addEventListener(name,()=>refresh()));
   window.addEventListener('kareta:chat-unread',event=>setUnreadChats(event.detail?.count));
   window.addEventListener('resize',syncDesktopLayout,{passive:true});
@@ -841,7 +857,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     'chats','notifications','works','masterExchange','realWorks','workDetail','vehicle','orders','workflow',
     'news','masterNews','masterNewsCreate','masterNewsEdit',
     'about','rules','help','privacy','contacts','lawyer','towTruck',
-    'masterOnboarding','masterDashboard','masterSchedule','masterWorkplaceSettings','masterProfileOwner','masterWallOwner','masterWorks','masterReviews','providerReviews',
+    'masterOnboarding','masterDashboard','masterSchedule','cabinetSettings','masterProfileOwner','masterWallOwner','masterWorks','masterReviews','providerReviews',
     'platform','corePlatform','calendarBooking','finance','market','crm','assistant','diagnostics',
   ]);
 
