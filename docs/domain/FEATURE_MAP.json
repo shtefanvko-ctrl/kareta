@@ -72,23 +72,57 @@
     },
     {
       "featureId": "client.garage",
-      "route": "#/garage",
+      "route": "#/cabinet/garage",
+      "detailRoute": "#/garage/car/:id",
       "boundedContext": "Garage",
-      "verificationStatus": "TARGET_UNTIL_VERIFIED",
+      "supportingContexts": [
+        "Identity",
+        "Service"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED",
       "primaryAggregate": "GarageVehicle",
-      "commands": [],
-      "queries": [],
-      "apiOwner": null,
+      "runtimeStores": [
+        "client_vehicles",
+        "vehicle_history_events",
+        "vehicle_documents",
+        "vehicle_issues",
+        "vehicle_recommendations",
+        "vehicle_maintenance_items",
+        "vehicle_expenses",
+        "vehicle_warranties"
+      ],
+      "commands": [
+        "updateVehicleMileage",
+        "saveVehicleIssue",
+        "saveVehicleRecommendation",
+        "saveVehicleDocument",
+        "deleteVehicleDocument"
+      ],
+      "queries": [
+        "listOwnedVehicles",
+        "readVehicleDetail",
+        "listVehicleHistory",
+        "listVehicleOrders",
+        "listInstalledParts"
+      ],
+      "apiOwner": "api/client_cabinet.php + api/vehicle_passport.php",
       "capabilities": [
-        "garage.read",
-        "garage.manage"
+        "vehicles.read",
+        "vehicles.update"
       ],
       "invariants": [
-        "vehicle ownership must be enforced",
-        "one canonical create/edit flow"
+        "vehicle and child records are scoped to the authorized owner",
+        "Garage does not own orders merely because orders.client_vehicle_id references a vehicle",
+        "mileage cannot decrease and changes append vehicle history",
+        "the current physical vehicle store is client_vehicles; GarageVehicle is the domain term, not an assumed table rename"
       ],
+      "knownDebt": [],
       "tests": [],
-      "evidence": []
+      "evidence": [
+        "api/client_cabinet.php",
+        "api/vehicle_passport.php",
+        "js/next/route_registry.js"
+      ]
     },
     {
       "featureId": "service.request",
@@ -954,14 +988,9 @@
     }
   ],
   "nextInventoryOrder": [
-    "Identity",
-    "Vehicle/Garage",
-    "Service/Booking/Repair",
-    "Organization",
-    "Marketplace",
-    "Communication",
-    "Finance",
-    "Community"
+    "P0 remediation inventory",
+    "P1 boundary/action inventory",
+    "CI guardrail design"
   ],
   "notes": "All major contexts have factual partial verification. Platform features are explicitly projections/infrastructure and may not become alternate business owners."
 }
