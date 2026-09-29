@@ -2,7 +2,7 @@
   "schema": "kareta.bounded-contexts.v1",
   "status": "TARGET_UNTIL_VERIFIED",
   "coverage": "IN_PROGRESS",
-  "notes": "Identity, Garage, Master, Booking and Service have repository-backed partial verification. Legacy stores/actions are documented as debt where target boundaries are not yet physically separated.",
+  "notes": "Identity, Garage, Master, Booking, Service and Organization have repository-backed partial verification. Transitional legacy mirrors are documented instead of being declared canonical.",
   "contexts": [
     {
       "id": "Identity",
@@ -457,7 +457,6 @@
     {
       "id": "Organization",
       "verificationStatus": "PARTIALLY_VERIFIED",
-      "ownershipStatus": "AUTHORITY_OVERLAP",
       "targetOwns": [
         "Organization",
         "OrganizationMembership",
@@ -470,72 +469,88 @@
         "organizations",
         "organization_members",
         "organization_units",
-        "organization_relations",
-        "sto_service_bays"
+        "organization_relations"
       ],
-      "observedCrossDomainStores": [
-        "sto_bay_assignments",
-        "contexts",
-        "context_members",
-        "capability_sets",
-        "user_context_preferences",
-        "user_capabilities"
+      "legacyMirrors": [
+        "sto_profiles",
+        "seller_profiles",
+        "sto_master_links"
       ],
       "commands": [
-        "selectOrganizationContext"
+        "select organization context",
+        "assign STO master to order",
+        "assign/release STO bay",
+        "save STO schedule preferences"
       ],
       "queries": [
-        "listOrganizationContexts",
-        "listOrganizationMembers",
-        "readOrganizationCapabilities"
+        "list organization contexts",
+        "list organization members",
+        "read STO workplace",
+        "read STO masters/bays/queue"
       ],
       "events": [
         "organization.context.select audit"
       ],
       "apis": [
         "api/organizations.php",
-        "api/context_access.php"
+        "api/sto_workplace.php",
+        "legacy api/db.php stoWorkplace.* / stoOrders.* / stoBays.* / stoSchedule.* actions"
       ],
       "dependencies": [
-        "Identity for account/person/context/capability authority",
-        "Master for organization master memberships",
-        "Service for bay/order assignments",
+        "Identity for selected organization context and effective capabilities",
+        "Master for member master profiles",
+        "Service for organization-owned/assigned orders",
+        "Booking for calendar/schedule views",
         "Marketplace for parts-store organizations"
       ],
       "forbiddenWrites": [
-        "accounts",
-        "persons",
-        "client_vehicles",
-        "orders"
+        "accounts/persons/person_profiles",
+        "Service order lifecycle except through Service contract",
+        "Master profile authorization",
+        "Marketplace product/stock lifecycle except through Marketplace contract"
       ],
       "verifiedInvariants": [
-        "organizations is the physical organization store and supports service_station and parts_store organizations migrated from legacy STO and seller profiles.",
-        "organization_members stores business membership semantics including member role, position, branch unit, status and organization-local permissions.",
-        "organization_units and organization_relations are separate organization-owned structural stores.",
-        "STO workplace bays are organization/service-station resources, while sto_bay_assignments link those resources to Service orders and therefore cross the Organization-Service boundary.",
-        "Marketplace organization membership links explicitly reference Identity contexts/persons while preserving organization_id as the business organization key."
+        "Organizations have separate membership, unit and relation stores.",
+        "Legacy STO and seller entities are backfilled/mirrored into organizations using legacy_entity_type + legacy_entity_id.",
+        "Organization member listing requires organization context access with team-management capability or admin/owner compatibility.",
+        "STO workplace resolves the selected organization context before falling back to legacy profile lookup.",
+        "A master assigned by an STO must be linked to that STO and active before assignment succeeds."
       ],
-      "domainDebt": [
-        "Membership/capability authority currently overlaps: legacy organization_members.permissions_json plus user_capabilities/context_access coexist with Identity contexts/context_members/capability_sets.",
-        "api/organizations.php still exposes legacy context selection through context_access.php while newer Identity APIs maintain current context in auth_sessions/context state.",
-        "Identity context reconciliation can materialize organizations and organization_members for STO/seller compatibility, which is a cross-context write if Organization is the intended owner.",
-        "Do not declare OrganizationMembership ownership fully VERIFIED until one authoritative membership write path and one capability authority are selected."
+      "knownBoundaryDebt": [
+        {
+          "id": "ORG-LEGACY-001",
+          "severity": "P1",
+          "finding": "organizations coexists with sto_profiles and seller_profiles; STO workplace still resolves and operates on the legacy profile after organization-context resolution.",
+          "target": "Organization becomes the stable business identity while legacy profile tables are compatibility projections/bridges.",
+          "migrationPolicy": "Do not delete legacy profiles until all operational callers are inventoried and migrated."
+        },
+        {
+          "id": "ORG-MEMBERSHIP-001",
+          "severity": "P1",
+          "finding": "organization_members and Identity context_members both represent organizational participation for different concerns.",
+          "target": "Identity context_members remains authorization membership; organization_members remains business membership/projection with an explicit synchronization contract.",
+          "migrationPolicy": "Do not merge tables by name alone; first map all readers/writers and capability-set semantics."
+        },
+        {
+          "id": "ORG-API-001",
+          "severity": "P1",
+          "finding": "Many STO operational writes still route through legacy api/db.php actions.",
+          "target": "Move verified organization commands behind dedicated owner contracts incrementally."
+        }
       ],
       "unverified": [
-        "Complete create/update/archive Organization command surface",
-        "Final owner of membership materialization between Identity and Organization",
-        "Migration/retirement plan for user_context_preferences and user_capabilities legacy context layer",
-        "Complete OrganizationSettings persistence model",
-        "All STO workplace writes and frontend callers"
+        "Complete organization create/update/deactivate command inventory",
+        "Exact synchronization rules between organization_members and Identity context_members",
+        "All STO workplace action capability gates",
+        "Final ownership of bays/capacity scheduling versus Booking",
+        "Complete seller/parts-store organization migration status"
       ],
       "evidence": [
         "api/migrations/061_organization_core.php",
-        "api/migrations/062_work_contexts_capabilities.php",
-        "api/migrations/052_sto_workplace_bays.php",
         "api/migrations/082_identity_marketplace_organization_membership.php",
         "api/organizations.php",
-        "api/context_access.php",
-        "api/identity/context_service.php"
+        "api/sto_workplace.php",
+        "js/next/work_orders/sto_workplace_api.js"
       ]
     },
     {
