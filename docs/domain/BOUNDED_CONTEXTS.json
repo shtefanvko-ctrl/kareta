@@ -2,7 +2,7 @@
   "schema": "kareta.bounded-contexts.v1",
   "status": "TARGET_UNTIL_VERIFIED",
   "coverage": "IN_PROGRESS",
-  "notes": "Context ownership becomes VERIFIED only from repository evidence. Identity has been partially verified against current main; other contexts remain target-only until their inventories are completed.",
+  "notes": "Context ownership becomes VERIFIED only from repository evidence. Identity and Garage are partially verified against current main; other contexts remain target-only until their inventories are completed.",
   "contexts": [
     {
       "id": "Identity",
@@ -41,7 +41,32 @@
         "api/capabilities.php"
       ]
     },
-    {"id":"Garage","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["GarageVehicle","VehicleProfile"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity"],"forbiddenWrites":["accounts","master_profiles","repair_orders"],"evidence":[]},
+    {
+      "id": "Garage",
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "targetOwns": ["GarageVehicle", "VehicleProfile", "VehicleHistory", "VehicleDocument", "VehicleIssue", "VehicleRecommendation", "VehicleMaintenanceItem", "VehicleExpense", "VehicleWarranty"],
+      "verifiedRuntimeStores": ["client_vehicles", "vehicle_history_events", "vehicle_documents", "vehicle_issues", "vehicle_recommendations", "vehicle_maintenance_items", "vehicle_expenses", "vehicle_warranties"],
+      "commands": ["updateVehicleMileage", "saveVehicleIssue", "saveVehicleRecommendation", "saveVehicleDocument", "deleteVehicleDocument"],
+      "queries": ["listOwnedVehicles", "readVehicleDetail", "listVehicleHistory", "listVehicleOrders", "listInstalledParts"],
+      "events": ["vehicle_service_due notification is emitted from vehicle reminder state"],
+      "apis": ["api/client_cabinet.php", "api/vehicle_passport.php"],
+      "dependencies": ["Identity for actor/context/capability checks", "Service read dependency through orders.client_vehicle_id", "Marketplace/Service read dependency through work_order_part_reservations"],
+      "forbiddenWrites": ["accounts", "persons", "person_profiles", "orders", "work_order_part_reservations"],
+      "verifiedInvariants": [
+        "The current runtime vehicle record is client_vehicles; the target term GarageVehicle is a domain name, not yet a physical table name.",
+        "Vehicle-owned child data is keyed by vehicle_id and access is scoped to an owned/authorized client_vehicles row.",
+        "Service orders reference the vehicle through orders.client_vehicle_id; Garage reads those orders but does not own their lifecycle.",
+        "Garage write flows in client_cabinet require the vehicles.update capability; read flows use vehicles.read.",
+        "Mileage updates cannot decrease the stored mileage and append a vehicle history event when changed."
+      ],
+      "unverified": [
+        "Complete create/archive/restore vehicle command inventory",
+        "All frontend routes and callers for Garage",
+        "Whether every vehicle mutation has been migrated from legacy role checks to capability-only authorization",
+        "Final physical rename/migration from client_vehicles to a domain-native store, if any"
+      ],
+      "evidence": ["api/client_cabinet.php", "api/vehicle_passport.php"]
+    },
     {"id":"Master","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["MasterProfile","MasterSkill","MasterService","MasterWorkingStatus"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Organization","Booking"],"forbiddenWrites":["accounts","garage_vehicles","repair_orders"],"evidence":[]},
     {"id":"Service","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["ServiceRequest","RepairOrder","RepairStatus","RepairPause"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Garage","Master","Booking","Marketplace"],"forbiddenWrites":["accounts","garage_vehicles","marketplace_stock"],"evidence":[]},
     {"id":"Booking","verificationStatus":"TARGET_UNTIL_VERIFIED","targetOwns":["Booking","CalendarSlot"],"commands":[],"queries":[],"events":[],"apis":[],"dependencies":["Identity","Master"],"forbiddenWrites":["repair_orders","accounts"],"evidence":[]},
