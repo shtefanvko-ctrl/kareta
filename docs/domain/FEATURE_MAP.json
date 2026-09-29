@@ -975,7 +975,8 @@
       ],
       "tests": [
         "tools/test_project_audit_r188558410.js",
-        "tools/verify_r1865_internal_audit.php"
+        "tools/verify_r1865_internal_audit.php",
+        "tools/test_api_contract_smoke_84_109.js"
       ],
       "evidence": [
         "api/migrations/027_idempotency_keys.php",
@@ -987,7 +988,7 @@
       ],
       "remediationReadiness": {
         "PLATFORM-PROJECTION-001": "BLOCKED_ON_ACCEPTANCE_PREDICATE_AUDIT",
-        "PLATFORM-IDEMPOTENCY-001": "READY_FOR_IMPLEMENTATION",
+        "PLATFORM-IDEMPOTENCY-001": "IMPLEMENTED_PENDING_RUNTIME_REGRESSION",
         "PLATFORM-IDEMPOTENCY-002": "DESIGN_READY_AFTER_IDEMPOTENCY_001",
         "PLATFORM-HEALTH-001": "INVENTORY_PENDING",
         "PLATFORM-RUNTIME-DDL-001": "INVENTORY_PENDING",
