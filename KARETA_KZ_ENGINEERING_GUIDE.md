@@ -346,7 +346,7 @@ Static guard: `tools/test_health_readonly_boundary_84_154.js`.
 - Regression guard: `tools/test_health_readonly_boundary_84_154.js`.
 - Статус: `IMPLEMENTED_PENDING_RUNTIME_REGRESSION`; runtime-проверка ждёт доступной среды.
 
-Runtime DDL считается только частично смягчённым: production auto-migrate закрыт maintenance-window gate, но обычный bootstrap всё ещё может запускать throttled content/relation/stats maintenance. Следующий шаг — инвентаризация этих writes и перенос repair/backfill из request path.
+Production runtime DDL теперь отделён от maintenance: при устаревшей схеме обычный production request вне разрешённого migration window прекращает bootstrap с `migration_required` до `create_schema/ensure_schema_columns`. Отдельный P1 `PLATFORM-MAINTENANCE-001` остаётся: обычный bootstrap пока может запускать throttled relation/user-stats repair; он переносится из request path только после инвентаризации legacy-зависимостей.
 
 
 ### CI enforcement — текущий статус
