@@ -870,12 +870,13 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_ui_bundle","js/boot/runtime_ui
   }
   function start(event){
     const identity=window.KaretaIdentity?.snapshot?.()||{};
-    const legacyConfirmed=event?.detail?.legacy===true;
-    if(!identity.authenticated&&!legacyConfirmed){setStatus('waiting',{reason:'session_not_verified'});return;}
-    const nextUserId=Number(identity.account?.id||event?.detail?.user?.id||window.KaretaAppState?.user?.id||0);
+    // Realtime is context-scoped. Do not open SSE from a temporary legacy PHP
+    // session: realtime.php requires a resolved Identity account + context and
+    // otherwise responds with an auth/context conflict.
+    const nextUserId=Number(identity.account?.id||0);
     const nextContextId=Number(identity.context?.id||0);
     const nextRevision=Number(identity.revision||0);
-    if(!nextUserId)return;
+    if(identity.authenticated!==true||nextUserId<=0||nextContextId<=0){setStatus('waiting',{reason:'identity_context_not_ready'});return;}
     if(started&&userId===nextUserId&&contextId===nextContextId&&contextRevision===nextRevision)return;
     stop();userId=nextUserId;contextId=nextContextId;contextRevision=nextRevision;lastDelivered=0;started=true;failures=0;
     renewLeadership();
