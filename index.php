@@ -83,7 +83,10 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
   <?= kareta_render_styles() ?>
   <style id="k-critical-recovery-css">
     html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:#f4f6f9;color:#111827}
-    .k-app-preloader{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#fff7f1}
+    .k-app-preloader{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background-color:#fff7f1;background-image:linear-gradient(rgba(255,247,241,.18),rgba(255,247,241,.18)),url('/assets/onboarding/backgrounds/welcome/city-calm/city-calm-mobile.png');background-size:cover;background-position:center;background-repeat:no-repeat}
+    @media (min-width:768px){.k-app-preloader{background-image:linear-gradient(rgba(255,247,241,.18),rgba(255,247,241,.18)),url('/assets/onboarding/backgrounds/welcome/city-calm/city-calm-desktop-narrow.png')}}
+    @media (min-width:1280px){.k-app-preloader{background-image:linear-gradient(rgba(255,247,241,.18),rgba(255,247,241,.18)),url('/assets/onboarding/backgrounds/welcome/city-calm/city-calm-desktop-standard.png')}}
+    @media (min-width:1920px){.k-app-preloader{background-image:linear-gradient(rgba(255,247,241,.18),rgba(255,247,241,.18)),url('/assets/onboarding/backgrounds/welcome/city-calm/city-calm-desktop-ultrawide.png')}}
     .k-app-preloader__panel{width:min(88vw,420px);text-align:center;padding:28px;border-radius:24px;background:#fff;box-shadow:0 18px 60px rgba(15,23,42,.14)}
     .k-app-preloader__logo{display:block;max-width:260px;width:78%;height:auto;margin:0 auto 20px}
     .k-app-preloader__slogan{font-size:20px;font-weight:700;margin:0 0 40px}
