@@ -305,9 +305,23 @@
     if(label)label.textContent=routeLoadingStageLabel(detail.phase);
   }
   function routeLoadErrorHtml(route,error){
-    const label=String(route?.label||'раздел');
-    const message=String(error?.message||'Не удалось загрузить файлы раздела').replace(/[<>&]/g,'');
-    return `<section class="k-page k-route-load-error"><div class="k-empty"><h1>${label} временно недоступен</h1><p>${message}</p><button type="button" class="k-btn k-btn-primary" data-next-action="route-assets-retry">Повторить</button></div></section>`;
+    const label=routeLoadingText(route?.label||'Раздел');
+    const raw=String(error?.message||error||'');
+    const offline=navigator.onLine===false||/(?:failed to fetch|network|offline|internet|connection)/i.test(raw);
+    const title=offline?'Нет соединения':`${label} временно недоступен`;
+    const copy=offline
+      ? 'Проверьте интернет. Уже загруженные разделы останутся доступны, а этот раздел можно повторить после восстановления сети.'
+      : 'Интерфейс раздела не загрузился полностью. Повторите загрузку; техническая диагностика уже записана в журнал приложения.';
+    return `<section class="k-page k-route-load-error" data-route-load-error data-route-error-kind="${offline?'offline':'asset'}">
+      <div class="k-route-load-error__panel">
+        <span class="k-route-load-error__mark" aria-hidden="true">!</span>
+        <div class="k-route-load-error__copy"><small>KARETA.KZ</small><h1>${title}</h1><p>${copy}</p></div>
+        <div class="k-route-load-error__actions">
+          <button type="button" class="k-btn k-btn-primary" data-next-action="route-assets-retry">Повторить</button>
+          <button type="button" class="k-btn k-btn-secondary" data-next-action="route-assets-back">Назад</button>
+        </div>
+      </div>
+    </section>`;
   }
 
   function renderResolvedRoute(key,route,outlet,lifecycle){
@@ -383,6 +397,10 @@
       if(!window.KaretaRequestWindow?.open?.('#/orders/new'))location.hash='#/orders/new';
     });
     routeRuntime.onAction('route-assets-retry',()=>routeRuntime.transition(state.routeKey,{source:'route-assets-retry',force:true}));
+    routeRuntime.onAction('route-assets-back',()=>{
+      if(history.length>1){history.back();return;}
+      routeRuntime.navigate(window.KaretaNavigationCore?.defaultRoute?.()||'home',{source:'route-assets-back',replace:true});
+    });
   }
 
 
