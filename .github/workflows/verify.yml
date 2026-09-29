@@ -58,12 +58,13 @@ jobs:
         run: |
           php tools/test_migration_contract.php
           php tools/test_release_migration_manifest.php
+          php tools/test_migration_collision_bridge_84_149.php
 
       - name: Legacy authorization no-growth
         run: node tools/audit_legacy_role_authorization_current.js
 
       - name: Current release contract
-        run: node tools/test_current_release_84_148.js
+        run: node tools/test_current_release_84_149.js
 
       - name: Staging verifier syntax
         run: python3 -m py_compile tools/verify_staging_current.py
