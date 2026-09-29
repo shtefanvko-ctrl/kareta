@@ -2,7 +2,7 @@
   "schema": "kareta.bounded-contexts.v1",
   "status": "TARGET_UNTIL_VERIFIED",
   "coverage": "IN_PROGRESS",
-  "notes": "Identity, Garage, Master, Booking, Service and Organization have repository-backed partial verification. Transitional legacy mirrors are documented instead of being declared canonical.",
+  "notes": "Identity, Garage, Master, Booking, Service, Organization and Marketplace have repository-backed partial verification. Parallel legacy/native stores are explicitly flagged until a single canonical owner is proven.",
   "contexts": [
     {
       "id": "Identity",
@@ -556,15 +556,17 @@
     {
       "id": "Marketplace",
       "verificationStatus": "PARTIALLY_VERIFIED",
-      "ownershipStatus": "MULTIPLE_RUNTIME_STORES",
       "targetOwns": [
         "Product",
         "PartProduct",
         "SellerOffer",
+        "Warehouse",
         "Stock",
-        "PartOrder"
+        "Cart",
+        "PartOrder",
+        "StockMovement"
       ],
-      "verifiedRuntimeStores": [
+      "verifiedDomainRuntimeStores": [
         "market_products",
         "market_warehouses",
         "market_stock",
@@ -572,72 +574,95 @@
         "market_cart_items",
         "market_orders",
         "market_order_items",
-        "market_stock_movements",
+        "market_stock_movements"
+      ],
+      "parallelSellerRuntimeStores": [
         "seller_profiles",
         "seller_products",
         "seller_orders",
         "seller_order_items",
-        "parts_catalog",
         "used_market_listings"
       ],
       "commands": [
-        "saveSellerProduct",
-        "changeSellerOrderStatus",
-        "syncPlatformCatalog"
+        "market.product.create",
+        "market.warehouse.create",
+        "market.stock.adjust",
+        "market.cart.add",
+        "market.cart.remove",
+        "market.checkout",
+        "market.order.fulfill",
+        "seller.products.save",
+        "seller.products.delete",
+        "seller.products.restore",
+        "seller.products.stock",
+        "seller.orders.updateStatus"
       ],
       "queries": [
-        "readSellerDashboard",
-        "readSellerStorefront",
-        "readSellerProducts",
-        "readSellerOrders"
+        "market.view",
+        "seller.dashboard"
       ],
-      "events": [
-        "seller.orders.status audit"
-      ],
+      "events": [],
       "apis": [
-        "api/seller_shop.php"
+        "api/domain.php market.*",
+        "api/seller_shop.php",
+        "legacy api/db.php seller.* actions"
       ],
       "dependencies": [
-        "Identity for seller profile/context/capabilities",
-        "Organization for parts-store ownership",
-        "Garage for used listing source vehicle",
-        "Service for repair part reservations"
+        "Identity for actor/context/capabilities",
+        "Organization for seller/parts-store ownership",
+        "Service for part reservations/repair consumption",
+        "Finance for invoices/payments associated with market orders",
+        "Garage for used-part source vehicle references where applicable"
       ],
       "forbiddenWrites": [
-        "accounts",
-        "persons",
-        "orders",
-        "client_vehicles",
-        "work_order_part_reservations"
+        "accounts/persons/person_profiles",
+        "Service RepairOrder lifecycle",
+        "Garage vehicle ownership",
+        "Finance ledger/invoice lifecycle except through Finance contract"
       ],
       "verifiedInvariants": [
-        "The normalized market_* model defines products, warehouses, stock, carts, orders, order items and immutable-style stock movement records.",
-        "Seller runtime APIs currently operate primarily on seller_profiles, seller_products, seller_orders and seller_order_items rather than market_products/market_orders.",
-        "The platform parts_catalog is synchronized into seller_products for the KARETA.KZ platform seller; current seller catalog reads are therefore not backed directly by market_products.",
-        "Seller access resolves the Identity context and requires a seller profile or parts-store organization context plus seller marketplace capabilities, with legacy seller fallback retained for migration compatibility.",
-        "Migration 82 attaches market_products, market_warehouses and market_orders to Identity organization contexts through owner/seller context IDs.",
-        "New/restored seller products and used/exchange listings are still represented in separate seller_products and used_market_listings stores."
+        "Domain-native market products and warehouses can be organization-scoped and carry owner context identifiers.",
+        "Domain-native stock is separated from product identity and records stock movements.",
+        "Seller shop actions resolve an Identity seller/parts-store context and require seller capabilities before product operations.",
+        "Seller product updates are owner-scoped by seller_user_id.",
+        "Marketplace organization membership links bind organization context/person membership to marketplace ownership."
       ],
-      "domainDebt": [
-        "Marketplace has parallel product/order models: seller_* is an active runtime path while market_* is a normalized newer model; neither can be declared the sole SoT until write/read migration is proven.",
-        "parts_catalog -> seller_products synchronization creates an additional catalog copy and must have one explicitly documented source-of-truth direction.",
-        "Service-owned work_order_part_reservations must remain a consumer/reference of Marketplace stock/product contracts, not a second stock authority.",
-        "Do not delete seller_* or switch consumers to market_* until data parity, command parity and regression coverage are demonstrated."
+      "knownBoundaryDebt": [
+        {
+          "id": "MARKET-SOT-001",
+          "severity": "P0",
+          "finding": "Two active marketplace data models coexist: domain-native market_* tables and seller_* tables used by the seller workplace/native parts flow.",
+          "target": "Establish one canonical Product/Order/Stock ownership model and treat the other as adapter/projection during migration.",
+          "migrationPolicy": "Do not bulk-merge or delete either model. First inventory every reader/writer, map IDs, ownership and lifecycle semantics, then migrate one command/query at a time."
+        },
+        {
+          "id": "MARKET-ORG-001",
+          "severity": "P1",
+          "finding": "Seller identity can resolve through profile or organization context, while seller_profiles remains a legacy business entity behind both.",
+          "target": "Organization/Profile contexts authorize access; legacy seller profile becomes a compatibility business projection rather than an authorization source."
+        },
+        {
+          "id": "MARKET-API-001",
+          "severity": "P1",
+          "finding": "Seller workplace still routes through legacy api/db.php while domain-native marketplace uses api/domain.php.",
+          "target": "Converge on explicit marketplace contracts without introducing new db.php business actions."
+        }
       ],
       "unverified": [
-        "Current production writers/readers of market_* tables",
-        "Exact mapping or synchronization between seller_orders and market_orders",
-        "Stock reservation/commit/release contract between Marketplace and Service repairs",
-        "Complete used_market_listings lifecycle and ownership",
-        "All marketplace frontend callers and capability gates"
+        "Which product/order store is authoritative for every current user-facing route",
+        "Complete synchronization/import relationship between market_products and seller_products",
+        "Checkout/fulfillment linkage to seller_orders and finance invoices",
+        "Used-market listing ownership and whether it is a Marketplace aggregate or separate resale subdomain",
+        "All stock mutation paths and reservation semantics from Service work orders"
       ],
       "evidence": [
         "api/migrations/069_marketplace_warehouse.php",
         "api/migrations/082_identity_marketplace_organization_membership.php",
-        "api/migrations/031_seller_shop_role.php",
-        "api/migrations/033_platform_catalog_shop.php",
         "api/migrations/114_parts_native_marketplace.php",
-        "api/seller_shop.php"
+        "api/domain.php",
+        "api/seller_shop.php",
+        "js/next/pages/market.js",
+        "js/next/seller/seller_api.js"
       ]
     },
     {
