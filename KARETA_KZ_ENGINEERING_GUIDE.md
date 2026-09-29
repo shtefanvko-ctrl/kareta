@@ -296,3 +296,12 @@ Liveness/readiness проверяет состояние. Repair/migration из�
 Новые legacy notifications с конкретным user (или разрешимым phone) зеркалятся в `notification_center` идемпотентно. Ключ bridge: `legacy:<legacyNotificationId>:user:<userId>`. Legacy ID захватывается до mirror insert и не меняется, потому что на него уже опирается Messaging.
 
 Исторические role-only строки нельзя механически размножать по пользователям: у них общий read-state. Для них сначала определяется recipient-expansion policy. Backfill запускается dry-run инструментом `tools/backfill_notification_center_from_legacy.php`; `--apply` допустим только после проверки отчёта и regression.
+
+
+### Marketplace dual-model rule
+
+В Marketplace подтверждены два одновременно активных контура: `seller_*` обслуживает текущие `#/parts` и `#/seller`, а `market_*` обслуживает отдельный `#/market` и domain API. Это не простой дубль таблиц.
+
+Критическое различие — stock/order semantics. `market_*` разделяет warehouse, quantity, reserved и stock movements; checkout сначала резервирует, fulfillment списывает. `seller_*` хранит `stock_qty` прямо в product и уменьшает его уже при создании заказа. Жизненные циклы заказов также различаются.
+
+Поэтому физический canonical store пока не выбирается. Сначала используется `docs/domain/MARKETPLACE_PARITY_MATRIX.json` и read-only `tools/audit_marketplace_dual_sot.php`. SKU без owner не является идентификатором. Автоматическое копирование/слияние stock и order запрещено до явного identity/lifecycle mapping и regression parity.
