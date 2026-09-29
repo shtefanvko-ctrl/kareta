@@ -64,7 +64,7 @@ jobs:
         run: node tools/audit_legacy_role_authorization_current.js
 
       - name: Current release contract
-        run: node tools/test_current_release_84_150.js
+        run: node tools/test_current_release.js
 
       - name: Master and WebView UI contract
         run: node tools/test_master_ui_contract_84_150.js
