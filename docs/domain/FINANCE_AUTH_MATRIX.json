@@ -1,0 +1,131 @@
+{
+  "schema": "kareta.operational-finance-auth-matrix.v1",
+  "status": "FACTUAL_ACTION_MATRIX_READY_CAPABILITY_DATA_AUDIT_REQUIRED",
+  "canonicalCapability": "finance.manage",
+  "aliasFacts": {
+    "finance.manageOwn": "finance.manage",
+    "finance.manageOrganization": "finance.manage",
+    "source": "api/identity/capability_registry.php"
+  },
+  "currentCapabilitySeedFacts": [
+    "profile.master receives operational work/calendar/request capabilities but no verified finance.manage grant in inspected Identity migrations.",
+    "personal.client receives finance.read_own, which is not finance.manage.",
+    "operationalFinance.dashboard is already dispatcher-gated by finance.manage for master/sto/admin/owner."
+  ],
+  "actions": [
+    {
+      "action": "operationalFinance.dashboard",
+      "method": "GET",
+      "mutation": false,
+      "dispatcherGate": "finance.manage",
+      "legacyRoles": [
+        "master",
+        "sto",
+        "admin",
+        "owner"
+      ],
+      "internalScope": "actor role/context; master view is own scope, STO view is STO scope",
+      "state": "GATED"
+    },
+    {
+      "action": "operationalFinance.orderPayment.record",
+      "method": "POST",
+      "mutation": true,
+      "dispatcherGate": null,
+      "internalRoles": [
+        "master",
+        "sto",
+        "admin",
+        "owner"
+      ],
+      "internalScope": "kareta_master_order_lifecycle_order(..., true) + order/STO/master resolution",
+      "targetGate": "finance.manage + existing order resource scope",
+      "state": "P0_UNGATED"
+    },
+    {
+      "action": "operationalFinance.receivable.due",
+      "method": "POST",
+      "mutation": true,
+      "dispatcherGate": null,
+      "internalRoles": [
+        "master",
+        "sto",
+        "admin",
+        "owner"
+      ],
+      "internalScope": "kareta_master_order_lifecycle_order(..., true)",
+      "targetGate": "finance.manage + existing order resource scope",
+      "state": "P0_UNGATED"
+    },
+    {
+      "action": "operationalFinance.expense.record",
+      "method": "POST",
+      "mutation": true,
+      "dispatcherGate": null,
+      "internalRoles": [
+        "sto",
+        "admin",
+        "owner"
+      ],
+      "internalScope": "requires actor.stoId",
+      "targetGate": "finance.manage + existing STO scope",
+      "state": "P0_UNGATED"
+    },
+    {
+      "action": "operationalFinance.payrollRule.save",
+      "method": "POST",
+      "mutation": true,
+      "dispatcherGate": null,
+      "internalRoles": [
+        "sto",
+        "admin",
+        "owner"
+      ],
+      "internalScope": "requires actor.stoId and active sto_master_links membership",
+      "targetGate": "finance.manage + existing STO/master membership scope",
+      "state": "P0_UNGATED"
+    },
+    {
+      "action": "operationalFinance.payroll.close",
+      "method": "POST",
+      "mutation": true,
+      "dispatcherGate": null,
+      "internalRoles": [
+        "sto",
+        "admin",
+        "owner"
+      ],
+      "internalScope": "requires actor.stoId; period is STO-scoped",
+      "targetGate": "finance.manage + existing STO scope",
+      "state": "P0_UNGATED"
+    },
+    {
+      "action": "operationalFinance.payroll.pay",
+      "method": "POST",
+      "mutation": true,
+      "dispatcherGate": null,
+      "internalRoles": [
+        "sto",
+        "admin",
+        "owner"
+      ],
+      "internalScope": "requires actor.stoId; accrual query is STO + master + period scoped",
+      "targetGate": "finance.manage + existing STO scope",
+      "state": "P0_UNGATED"
+    }
+  ],
+  "implementationPrecondition": [
+    "Verify which active capability sets/overrides grant finance.manage in the deployed DB.",
+    "Ensure profile.master retains intended own-order finance access before adding dispatcher gates.",
+    "Ensure STO organization owner/admin contexts have finance.manage without granting it to ordinary organization members.",
+    "Ensure global admin/owner operational context can intentionally select a target STO and pass capability authorization.",
+    "Then add dispatcher gates; do not remove existing role/resource/STO checks."
+  ],
+  "forbiddenShortcut": [
+    "Do not grant finance.manage to organization.member globally.",
+    "Do not replace resource checks with capability-only authorization.",
+    "Do not use legacy role as the canonical authorization source.",
+    "Do not create separate finance.manageOwn/manageOrganization semantics while the registry aliases both to finance.manage unless the capability model is intentionally versioned."
+  ],
+  "auditTool": "tools/audit_operational_finance_authorization.php"
+}
