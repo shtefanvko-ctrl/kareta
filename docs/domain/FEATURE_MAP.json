@@ -984,7 +984,15 @@
         "api/schema_health.php",
         "api/identity_health.php",
         "tools/internal_architecture_audit.php"
-      ]
+      ],
+      "remediationReadiness": {
+        "PLATFORM-PROJECTION-001": "BLOCKED_ON_ACCEPTANCE_PREDICATE_AUDIT",
+        "PLATFORM-IDEMPOTENCY-001": "READY_FOR_IMPLEMENTATION",
+        "PLATFORM-IDEMPOTENCY-002": "DESIGN_READY_AFTER_IDEMPOTENCY_001",
+        "PLATFORM-HEALTH-001": "INVENTORY_PENDING",
+        "PLATFORM-RUNTIME-DDL-001": "INVENTORY_PENDING",
+        "PLATFORM-AUDIT-001": "INVENTORY_PENDING"
+      }
     }
   ],
   "nextInventoryOrder": [
