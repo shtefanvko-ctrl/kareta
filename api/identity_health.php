@@ -85,8 +85,8 @@ try{
     $legacyRole=strtolower(trim((string)($legacyUser['role']??'')));
     $detailAuthorized=$tokenAuthorized||in_array($legacyRole,['admin','owner'],true);
 
-    // Observe the Identity cookie directly. Unlike KaretaSessionService::current(),
-    // this SELECT does not touch last_seen_at/idle expiry and never rotates/clears cookies.
+    // Observe the Identity cookie directly. The health probe does not call the runtime
+    // session resolver, touch last_seen_at/idle expiry, rotate sessions or clear cookies.
     $identity=null;
     $identityToken=trim((string)($_COOKIE['kareta_identity_session']??''));
     if($identityToken!==''){
