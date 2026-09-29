@@ -685,7 +685,16 @@
         "api/operational_finance.php",
         "api/db.php",
         "js/next/pages/finance.js"
-      ]
+      ],
+      "authorization": {
+        "status": "P0_ACTION_MATRIX_READY_CAPABILITY_DATA_AUDIT_REQUIRED",
+        "canonicalCapability": "finance.manage",
+        "matrix": "docs/domain/FINANCE_AUTH_MATRIX.json",
+        "audit": "tools/audit_operational_finance_authorization.php",
+        "currentReadGate": "operationalFinance.dashboard is finance.manage gated",
+        "currentWriteGap": "six POST mutations lack dispatcher capability gate",
+        "preserveScope": "existing internal role + order/STO resource checks remain mandatory"
+      }
     },
     {
       "featureId": "community.feed",
