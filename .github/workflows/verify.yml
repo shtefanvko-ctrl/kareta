@@ -69,5 +69,10 @@ jobs:
       - name: Master and WebView UI contract
         run: node tools/test_master_ui_contract_84_150.js
 
+      - name: WebView logout and garage regression
+        run: |
+          node tools/build_boot_js_bundles.js --check
+          node tools/test_webview_logout_garage_84_151.js
+
       - name: Staging verifier syntax
         run: python3 -m py_compile tools/verify_staging_current.py

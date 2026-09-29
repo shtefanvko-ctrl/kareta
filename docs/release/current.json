@@ -1,6 +1,6 @@
 {
   "schema": "kareta.release.current.v1",
-  "release": "188.5.5.6.84.150",
+  "release": "188.5.5.6.84.151",
   "sourceBranch": "import/kareta-current-84.142",
   "targetBranch": "main",
   "branchState": {
@@ -30,7 +30,7 @@
   "verification": {
     "ciWorkflow": ".github/workflows/verify.yml",
     "stagingWorkflow": ".github/workflows/staging-verify.yml",
-    "stagingStatus": "NOT_VERIFIED_AFTER_84_150"
+    "stagingStatus": "NOT_VERIFIED_AFTER_84_151"
   },
   "ui": {
     "notFound": "first_class_spa_route",

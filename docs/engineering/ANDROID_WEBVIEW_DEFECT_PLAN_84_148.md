@@ -36,6 +36,15 @@ The reconciliation must preserve the 84.148 WebView/runtime/cache work and the A
 | WV-11 | Header/menu control geometry is inconsistent between ordinary page and open drawer | shell UI contract | Menu/open/close/location/back states change size and emphasis without one canonical mobile control token. | P2 | Canonical 48px touch target, one radius/icon weight system, stable header height. |
 | WV-12 | System volume overlay visible in screenshots | Android OS overlay, not SPA | The grey volume/notification/moon controls are outside the WebView DOM. | NOT APP BUG | Do not "fix" with CSS. Exclude from app visual regression judgments unless the app itself causes it to open. |
 | WV-13 | Small red touch/overlay marker appears near bottom-right | test/device overlay until proven otherwise | It persists across unrelated pages and is not yet mapped to a product component. | TRIAGE | Identify with WebView inspector/Android test settings before changing SPA CSS. |
+| WV-14 | Cannot log out and enter with another account from «Ещё» | Identity session + WebView shell | The Identity server supports a combined logout, but the More surface had no control and Account Security depended on legacy `App.logout`. | P1 | 84.151 wires both controls to the server-confirmed Identity logout, clears per-account client caches and returns to onboarding. Await deployed two-account smoke. |
+| WV-15 | Garage may show a raw brand/model/year form | WebView garage route | The old create fallback and passport edit form bypassed the modern vehicle picker. | P2 | 84.151 routes create and edit to `KaretaFirstVehicleFlow`; missing flow is a dependency error rather than a different form. Await deployed smoke. |
+
+## 29 September 2026 evidence and release boundary
+
+- The failed `verify` at commit `7d6a900` checked for asset release 84.150 while the asset and Service Worker tokens were 84.149. The working branch now has matching tokens and a release parity regression check; `verify` run `36513375955` passed. This is a repository/CI issue, not proof of the screenshot-time Android failure.
+- The inspected staging responses advertised 84.144 for the shell, asset manifest, Service Worker and DB ping. The three screenshot-named lazy assets returned HTTP 200 with appropriate MIME during that later check. This does not explain why they failed on the device earlier; deploy history, cache state and device network logs are needed.
+- No Android APK or native source is present in this web checkout. Native API 6 JavaScript/PHP contracts passed CI, but APK packaging, WebView configuration and device behavior remain separate verification tasks.
+- The new 84.151 changes must pass `verify`, then be deployed together with the matching asset/Service Worker release token before the staging asset walk and two-account Android smoke can confirm them. The connected test host was offline during this inspection, so no host logs or device smoke are claimed.
 
 ## Execution order
 

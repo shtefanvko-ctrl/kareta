@@ -323,6 +323,13 @@
 
   window.addEventListener('kareta:session-confirmed',event=>{window.setTimeout(()=>maybeScheduleFirstEntry(event.detail||{}),0);});
 
+  window.addEventListener('kareta:session-anonymous',()=>{
+    deactivateSurface();
+    try{sessionStorage.removeItem(PENDING_KEY);}catch(_error){}
+    if(state.serverSaveTimer)clearTimeout(state.serverSaveTimer);
+    Object.assign(state,{data:null,success:null,autoScheduled:false,editVehicleId:'',editLegacyBrandName:'',serverLoaded:false,serverRevision:0,serverStatus:'',serverSavePending:false,serverSaveTimer:0});
+  });
+
   window.addEventListener('hashchange',()=>{if(!String(location.hash||'').startsWith('#/cabinet/garage'))deactivateSurface();});
   window.addEventListener('kareta:context-changed',event=>{if(currentRole(event.detail||{})!=='client')deactivateSurface();window.setTimeout(()=>maybeScheduleFirstEntry(event.detail||{}),80);});
 
