@@ -178,7 +178,18 @@
       "id": "IDEMPOTENCY-001",
       "severity": "P0",
       "status": "REQUIRED_CONSTRAINT",
-      "rule": "An idempotency key in one action + stable actor/context scope MUST bind to exactly one canonical request hash; a different payload MUST conflict instead of replaying a previous response."
+      "rule": "An idempotency key in one action + stable actor/context scope MUST bind to exactly one canonical request hash; a different payload MUST conflict instead of replaying a previous response.",
+      "evidence": [
+        "api/bootstrap.php",
+        "api/db.php",
+        "api/domain.php",
+        "api/identity/session_service.php"
+      ],
+      "acceptance": [
+        "existing key with different request hash returns HTTP 409 IDEMPOTENCY_CONFLICT",
+        "stored request hash is never overwritten by a different payload",
+        "completed same-payload request replays the original response"
+      ]
     },
     {
       "id": "HEALTH-001",
