@@ -210,8 +210,19 @@
         "Master schedule preferences and one-off shift extensions are stored separately from Service order lifecycle."
       ],
       "knownBoundaryDebt": [
-        "Master scheduling still uses legacy api/db.php actions and shares scheduling state with Service order plans.",
-        "Some legacy role compatibility remains in master workplace/profile recovery and must not be mistaken for canonical authorization."
+        {
+          "id": "MASTER-SCHEDULE-001",
+          "severity": "P1",
+          "finding": "Master scheduling still uses legacy api/db.php actions and shares scheduling state with Service order plans.",
+          "target": "Master owns availability/preferences; Booking owns scheduling reservation/projection; Service owns accepted RepairOrder lifecycle.",
+          "migrationPolicy": "Move one verified schedule command at a time without changing accepted-order behavior."
+        },
+        {
+          "id": "MASTER-AUTH-001",
+          "severity": "P1",
+          "finding": "Legacy role compatibility remains in master workplace/profile recovery.",
+          "target": "Identity active profile/context/capabilities remain the authorization authority; legacy role is compatibility-only."
+        }
       ],
       "unverified": [
         "Complete ownership inventory for service_offers/master skills/pricing",
