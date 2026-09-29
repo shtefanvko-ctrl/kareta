@@ -529,7 +529,9 @@
         "user may read/mark only own notification_center rows",
         "domain-event notification delivery uses idempotent notification_key",
         "legacy notification recipient scoping may target user, phone or role",
-        "current UI and producers must converge on one canonical store before legacy retirement"
+        "current UI and producers must converge on one canonical store before legacy retirement",
+        "legacy notification id must be captured before notification_center insert because messaging_deliveries uses that legacy id",
+        "role-only historical rows must not be silently expanded because their read-state is shared rather than per-user"
       ],
       "knownDebt": [
         "COMM-NOTIFY-SOT-001",
@@ -542,7 +544,16 @@
         "api/migrations/063_domain_platform_core.php",
         "api/migrations/066_event_notification_core.php",
         "js/next/pages/notifications.js"
-      ]
+      ],
+      "canonicalStore": "notification_center",
+      "compatibilityStore": "notifications",
+      "bridge": {
+        "status": "IMPLEMENTED_PENDING_RUNTIME_AND_BACKFILL",
+        "runtimeWriter": "api/db.php kareta_notification_insert",
+        "readSync": "api/domain.php notification.read / notification.readAll + legacy mark-read actions",
+        "backfillTool": "tools/backfill_notification_center_from_legacy.php",
+        "regressionGuard": "tools/test_notification_center_bridge_84_152.js"
+      }
     },
     {
       "featureId": "finance.billing",
