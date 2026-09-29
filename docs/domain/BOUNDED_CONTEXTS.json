@@ -1454,12 +1454,31 @@
           "finding": "actor_hash includes PHP session_id, so idempotency scope changes after session rotation even for the same Account/context.",
           "impact": "A legitimate retry after session renewal can bypass the previous idempotency record.",
           "target": "Use stable authenticated Account/context identity in the actor scope, with legacy fallback only where Identity is unavailable.",
-          "investigationStatus": "DESIGN_READY_AFTER_IDEMPOTENCY_001",
+          "investigationStatus": "IMPLEMENTED_PENDING_RUNTIME_REGRESSION",
           "stableScopeEvidence": [
             "Identity sessions expose stable account_id and current_context_id.",
             "PHP session_id rotates independently and is therefore not a business actor identity."
           ],
-          "targetScope": "action + AccountId + ContextId + key; legacy user/phone fallback only when Identity resolution is unavailable."
+          "targetScope": "action + AccountId + ContextId + key; legacy user/phone fallback only when Identity resolution is unavailable.",
+          "status": "IMPLEMENTED_PENDING_RUNTIME_REGRESSION",
+          "implementation": [
+            "Identity-authenticated requests use action + AccountId + current ContextId as stable actor scope.",
+            "Legacy-authenticated requests resolve Account by phone when possible and otherwise use stable legacy user identity without PHP session_id.",
+            "session_id remains only as an anonymous caller discriminator.",
+            "Old session-bound rows from the current PHP session are looked up as compatibility fallback and lazily migrated only after request_hash equality is proven.",
+            "Concurrent stable-row collisions are re-read and request_hash is revalidated before replay."
+          ],
+          "implementationCommits": [
+            "a978389ceb2d34fd542f5eee8bb7d51d0349f4e8",
+            "8f0dbb5031cff6cd7dc7241b4f211e352fc18b58",
+            "3bfc103b664cd3c287669fbcfa52d5f3617309dc"
+          ],
+          "remainingVerification": [
+            "Retry same key/payload after PHP session rotation.",
+            "Retry same key/payload after Identity session token rotation with unchanged Account/Context.",
+            "Verify Context switch intentionally creates a distinct idempotency actor scope.",
+            "Verify old current-session row migrates once without duplicate operation."
+          ]
         },
         {
           "id": "PLATFORM-HEALTH-001",
