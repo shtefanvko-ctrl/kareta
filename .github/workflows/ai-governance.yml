@@ -9,6 +9,7 @@ on:
       - 'ai/**'
       - '.github/copilot-instructions.md'
       - '.github/workflows/ai-governance.yml'
+      - '.github/workflows/php-syntax.yml'
   push:
     branches: [main]
     paths:
@@ -18,6 +19,7 @@ on:
       - 'ai/**'
       - '.github/copilot-instructions.md'
       - '.github/workflows/ai-governance.yml'
+      - '.github/workflows/php-syntax.yml'
 
 jobs:
   context-contract:
@@ -35,10 +37,12 @@ jobs:
             MB_MONITORING.md
             ai/CONTEXT_ROUTER.md
             ai/WORKFLOW.md
+            ai/VERIFICATION_GATES.md
             ai/rules/architecture.md
             ai/rules/security.md
             ai/rules/verification-release.md
             .github/copilot-instructions.md
+            .github/workflows/php-syntax.yml
           )
           for file in "${required[@]}"; do
             test -s "$file" || { echo "Missing or empty: $file"; exit 1; }
@@ -64,4 +68,7 @@ jobs:
           grep -q 'AGENTS.md' CLAUDE.md
           grep -q 'AGENTS.md' .github/copilot-instructions.md
           grep -q 'MB_MONITORING.md' ai/rules/verification-release.md
-          echo 'AI context routing contract is internally linked.'
+          grep -q 'ai/VERIFICATION_GATES.md' ai/rules/verification-release.md
+          grep -q 'MB_MONITORING.md' ai/VERIFICATION_GATES.md
+          grep -q '.github/workflows/php-syntax.yml' ai/VERIFICATION_GATES.md
+          echo 'AI context routing and executable gate contracts are internally linked.'
