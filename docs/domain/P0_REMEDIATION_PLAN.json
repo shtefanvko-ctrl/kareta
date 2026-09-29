@@ -1,7 +1,7 @@
 {
   "version": "2026-09-29",
   "branch": "docs/domain-first-verification-84-151",
-  "status": "P0_REMEDIATION_INVENTORY_IN_PROGRESS",
+  "status": "P0_REMEDIATION_ACTIVE",
   "principle": "No P0 implementation starts until owner, root cause, migration/compatibility contract, regression scope and rollback evidence are explicit.",
   "queue": [
     {
@@ -16,11 +16,12 @@
     {
       "id": "PLATFORM-IDEMPOTENCY-001",
       "priority": 2,
-      "status": "READY_FOR_IMPLEMENTATION",
+      "status": "IMPLEMENTED_PENDING_RUNTIME_REGRESSION",
       "ownerContext": "Platform",
       "sourceOwner": "Platform",
-      "nextAction": "Implement request_hash mismatch conflict in kareta_idempotency_begin and add regression tests before changing actor scope.",
-      "codeChangeAllowedNow": true
+      "nextAction": "Run API contract smoke and database-backed replay/conflict regression; close only after execution evidence.",
+      "codeChangeAllowedNow": false,
+      "implementationCommit": "29477a503ba98805b44db3d1481ecc4319b1a59f"
     },
     {
       "id": "COMM-NOTIFY-SOT-001",
