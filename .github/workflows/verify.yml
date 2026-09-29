@@ -73,6 +73,8 @@ jobs:
         run: |
           node tools/build_boot_js_bundles.js --check
           node tools/test_webview_logout_garage_84_151.js
+          node tools/test_first_vehicle_account_isolation_84_151.js
+          node tools/test_cabinet_session_isolation_84_151.js
 
       - name: Staging verifier syntax
         run: python3 -m py_compile tools/verify_staging_current.py

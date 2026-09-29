@@ -29,6 +29,8 @@
 
   const memoryCache = new Map();
   const inFlight = new Map();
+  const keyGenerations = new Map();
+  let cacheGeneration = 0;
   const PERSIST_PREFIX='kareta.api.cache.v2:';
 
   // Shared safe-request gate for the monolithic DB endpoint. Some production hosts
@@ -151,6 +153,9 @@
     const force = options.force === true;
     const dbSafeReplay = options.dbSafeReplay === true;
     const key = requestKey(requestUrl, method, String(options.cacheKey || ''));
+    const generation = cacheGeneration;
+    const keyGeneration = keyGenerations.get(key) || 0;
+    const currentGeneration = () => generation === cacheGeneration && keyGeneration === (keyGenerations.get(key) || 0);
 
     const fetchOptions = { ...options };
     delete fetchOptions.cacheTtlMs;
@@ -176,11 +181,11 @@
 
     const transport = (isDbRead(requestUrl, method) || dbSafeReplay) ? executeDbRead(requestUrl, fetchOptions) : execute(requestUrl, fetchOptions);
     const promise = transport.then(result => {
-      if (dedupe && result.ok && cacheTtlMs > 0) { const record={ at:Date.now(), result }; memoryCache.set(key,record); writePersistent(key,record); }
-      if(dedupe && !result.ok){const stale=memoryCache.get(key)||readPersistent(key);if(stale?.result)return cloneResult(stale.result,{fromCache:true,stale:true});}
+      if (dedupe && currentGeneration() && result.ok && cacheTtlMs > 0) { const record={ at:Date.now(), result }; memoryCache.set(key,record); writePersistent(key,record); }
+      if(dedupe && currentGeneration() && !result.ok){const stale=memoryCache.get(key)||readPersistent(key);if(stale?.result)return cloneResult(stale.result,{fromCache:true,stale:true});}
       return result;
-    }).catch(error=>{const stale=dedupe?(memoryCache.get(key)||readPersistent(key)):null;if(stale?.result)return cloneResult(stale.result,{fromCache:true,stale:true,networkError:String(error?.message||error)});throw error;}).finally(() => {
-      if (dedupe) inFlight.delete(key);
+    }).catch(error=>{const stale=dedupe&&currentGeneration()?(memoryCache.get(key)||readPersistent(key)):null;if(stale?.result)return cloneResult(stale.result,{fromCache:true,stale:true,networkError:String(error?.message||error)});throw error;}).finally(() => {
+      if (dedupe && inFlight.get(key) === promise) inFlight.delete(key);
     });
 
     if (dedupe) inFlight.set(key, promise);
@@ -333,6 +338,8 @@
   function updateReceivableDue(payload,options={}){return operationalFinanceRequest('operationalFinance.receivable.due',payload,options);}
 
   function invalidate(prefix = ''){
+    if (!prefix) { cacheGeneration++; keyGenerations.clear(); inFlight.clear(); }
+    else Array.from(inFlight.keys()).forEach(key => { if (key.includes(prefix)) { keyGenerations.set(key, (keyGenerations.get(key) || 0) + 1); inFlight.delete(key); } });
     Array.from(memoryCache.keys()).forEach(key => { if (!prefix || key.includes(prefix)) memoryCache.delete(key); });
     try{for(let i=sessionStorage.length-1;i>=0;i--){const k=sessionStorage.key(i);if(k&&k.startsWith(PERSIST_PREFIX)&&(!prefix||k.includes(prefix)))sessionStorage.removeItem(k);}}catch(_e){}
   }

@@ -71,6 +71,7 @@
   ]);
 
   const state={root:null,sourceRoot:null,data:null,step:0,success:null,onReturn:null,mode:'manual',saving:false,autoScheduled:false,editVehicleId:'',editLegacyBrandName:'',serverRevision:0,serverStatus:'',serverUpdatedAt:0,serverLoaded:false,serverSaving:false,serverSavePending:false,serverSaveTimer:0,serverConflict:false,serverDraftSignature:'',serverBackoffUntil:0};
+  let sessionEpoch=0;
 
   function identity(){return window.KaretaIdentity?.snapshot?.()||{};}
   function scopeKey(detail={}){
@@ -79,6 +80,7 @@
     const raw=snap.person?.id||snap.account?.id||snap.context?.personId||snap.context?.accountId||user.id||user.phone||'client';
     return String(raw).replace(/[^a-zA-Z0-9._-]/g,'_').slice(0,120)||'client';
   }
+  const sameSession=(epoch,owner)=>epoch===sessionEpoch&&owner===scopeKey();
   const draftKey=()=>state.editVehicleId?`${EDIT_DRAFT_PREFIX}${scopeKey()}:${state.editVehicleId}`:DRAFT_PREFIX+scopeKey();
   const promptKey=()=>PROMPT_PREFIX+scopeKey();
   function readJson(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(_e){return null}}
@@ -105,7 +107,8 @@
   }
   async function loadServerFirstEntry(options={}){
     if(typeof api.firstEntryCurrent!=='function')return null;
-    try{const result=await api.firstEntryCurrent({force:true,dedupe:false,...options});if(result?.ok){return applyServerState(serverPayload(result)||{});}return null;}catch(_e){return null;}
+    const epoch=sessionEpoch,owner=scopeKey();
+    try{const result=await api.firstEntryCurrent({force:true,dedupe:false,...options});if(result?.ok&&sameSession(epoch,owner)){return applyServerState(serverPayload(result)||{});}return null;}catch(_e){return null;}
   }
   function scheduleServerDraft(delay=1400){
     if(state.editVehicleId||typeof api.saveFirstEntryDraft!=='function')return;
@@ -117,24 +120,26 @@
     if(state.editVehicleId||typeof api.saveFirstEntryDraft!=='function')return false;
     if(Date.now()<state.serverBackoffUntil){scheduleServerDraft(state.serverBackoffUntil-Date.now());return false;}
     if(state.serverSaving){state.serverSavePending=true;return false;}
-    const draft=readDraft(),signature=draftSignature(draft);
+    const epoch=sessionEpoch,owner=scopeKey(),draft=readDraft(),signature=draftSignature(draft);
     if(signature===state.serverDraftSignature){state.serverSavePending=false;return true;}
     state.serverSaving=true;state.serverSavePending=false;
     try{
       const result=await api.saveFirstEntryDraft({expectedRevision:state.serverRevision,currentStep:Math.max(1,Math.min(3,Number(draft.step||state.step||2)||2)),draft});
+      if(!sameSession(epoch,owner))return false;
       const data=serverPayload(result);
       if(result?.ok&&data){applyServerState(data,{restoreDraft:false});state.serverDraftSignature=signature;state.serverBackoffUntil=0;return true;}
       if(Number(result?.status||result?.payload?.meta?.httpStatus||0)===429){state.serverBackoffUntil=Date.now()+Math.max(5000,Number(result?.retryAfter||0)*1000);state.serverSavePending=true;return false;}
       if(result?.payload?.error==='revision_conflict'&&data){applyServerState(data,{restoreDraft:false});state.serverConflict=true;state.serverSavePending=true;return false;}
       return false;
-    }catch(_e){return false;}finally{state.serverSaving=false;if(state.serverSavePending)scheduleServerDraft(Math.max(1800,state.serverBackoffUntil-Date.now()));}
+    }catch(_e){return false;}finally{if(sameSession(epoch,owner)){state.serverSaving=false;if(state.serverSavePending)scheduleServerDraft(Math.max(1800,state.serverBackoffUntil-Date.now()));}}
   }
   async function dismissServerFirstEntry(){
     if(typeof api.dismissFirstEntry!=='function')return false;
+    const epoch=sessionEpoch,owner=scopeKey();
     try{
       const result=await api.dismissFirstEntry({});
       const data=serverPayload(result);
-      if(result?.ok&&data){applyServerState(data,{restoreDraft:false});return true;}
+      if(result?.ok&&data&&sameSession(epoch,owner)){applyServerState(data,{restoreDraft:false});return true;}
     }catch(_e){}
     return false;
   }
@@ -153,14 +158,17 @@
   }
   async function maybeScheduleFirstEntry(detail={}){
     if(state.autoScheduled||!clientContextReady(detail))return false;
+    const epoch=sessionEpoch,owner=scopeKey(detail);
     state.autoScheduled=true;
     const server=await loadServerFirstEntry();
+    if(!sameSession(epoch,owner))return false;
     if(server){
       if(server.hasVehicles||server.status==='completed'){markPrompt('completed');state.autoScheduled=false;return false;}
       if(server.status==='dismissed'){markPrompt('dismissed');state.autoScheduled=false;return false;}
     }else if(promptStatus()){state.autoScheduled=false;return false;}
     let result;
-    try{result=await api.get({cacheTtlMs:0,force:true,dedupe:false});}catch(_e){state.autoScheduled=false;return false;}
+    try{result=await api.get({cacheTtlMs:0,force:true,dedupe:false});}catch(_e){if(sameSession(epoch,owner))state.autoScheduled=false;return false;}
+    if(!sameSession(epoch,owner))return false;
     if(!result?.ok){state.autoScheduled=false;return false;}
     const payload=result.payload?.data||result.payload||{},vehicles=payload.vehicles||[],archived=payload.archivedVehicles||[];
     if(payload.firstEntry&&typeof payload.firstEntry==='object')applyServerState(payload.firstEntry);
@@ -168,6 +176,7 @@
     if(state.serverStatus==='dismissed'){markPrompt('dismissed');state.autoScheduled=false;return false;}
     setPendingIntro();
     window.setTimeout(()=>{
+      if(!sameSession(epoch,owner))return;
       if(!clientContextReady()){state.autoScheduled=false;return;}
       if(window.KaretaRouteRuntime?.navigate)window.KaretaRouteRuntime.navigate('cabinetGarage',{source:'first-vehicle-entry',force:true});
       else location.hash='#/cabinet/garage';
@@ -295,7 +304,7 @@
   function go(step){state.step=Math.max(1,Math.min(3,Number(step)||1));writeDraft({step:state.step});render();state.root?.scrollTo?.({top:0,behavior:'smooth'});}
   function leaveToGarage(){deactivateSurface();state.onReturn?.();}
   function navigate(hash){deactivateSurface();if(String(location.hash)!==hash)location.hash=hash;else window.KaretaRouteRuntime?.transition?.(window.KaretaRouteRegistry?.keyFromHash?.(hash)||'home',{source:'first-vehicle',force:true});}
-  async function save(){if(state.saving)return;const draft=readDraft();if(!validateBasicFallback(draft)){go(2);return;}state.saving=true;render();const editing=Boolean(state.editVehicleId),vehicle={flowVersion:RELEASE,id:state.editVehicleId||undefined,brandId:draft.brandId,modelId:draft.modelId,brand:draft.brandName,model:finalModel(draft),title:vehicleTitle(draft),year:Number(draft.year),generation:draft.generation,bodyType:draft.bodyType,vin:draft.vin,plate:draft.plateNumber,mileageKm:Number(draft.mileage||0),engineType:draft.fuelType,engineVolume:draft.engineVolume,fuelType:draft.fuelType,isDefault:(state.data?.vehicles||[]).length===0||Boolean(draft.isDefault)};let result;try{result=await api.saveVehicle(vehicle);}catch(error){result={ok:false,payload:{message:error?.message||`Не удалось ${editing?'сохранить':'добавить'} автомобиль`}};}state.saving=false;if(!result?.ok){render();const error=result?.payload?.error||'';const message=result?.payload?.message||({vehicle_duplicate_vin:'Этот автомобиль уже добавлен в ваш гараж',vehicle_duplicate_plate:'Автомобиль с таким госномером уже есть в гараже',invalid_vehicle_vin:'VIN должен содержать 17 символов'}[error]||`Не удалось ${editing?'сохранить':'добавить'} автомобиль`);const out=state.root?.querySelector('[data-fv-submit-error]');if(out)out.textContent=message;return;}const created=result.payload?.vehicle||vehicle;state.success={...draft,id:created.id||state.editVehicleId||'',brandName:created.brand||draft.brandName,modelName:created.model||draft.modelName,year:created.year||created.year_label||draft.year,generation:created.generation||draft.generation,bodyType:created.bodyType??created.body_type??draft.bodyType,plateNumber:created.plate||draft.plateNumber,vin:created.vin||draft.vin,mileage:created.mileageKm??created.mileage_km??draft.mileage,engineVolume:created.engineVolume??created.engine_volume??draft.engineVolume,fuelType:created.fuelType??created.fuel_type??draft.fuelType,isDefault:Boolean(Number(created.isDefault??created.is_default??vehicle.isDefault))};clearDraft();if(!editing){markPrompt('completed');state.serverStatus='completed';state.serverConflict=false;}window.KaretaApiClient?.invalidate?.('client.cabinet');window.KaretaApiClient?.invalidate?.('client.first-entry');render();window.KaretaToast?.success?.(editing?'Автомобиль обновлён':'Автомобиль добавлен');}
+  async function save(){if(state.saving)return;const epoch=sessionEpoch,owner=scopeKey(),draft=readDraft();if(!validateBasicFallback(draft)){go(2);return;}state.saving=true;render();const editing=Boolean(state.editVehicleId),vehicle={flowVersion:RELEASE,id:state.editVehicleId||undefined,brandId:draft.brandId,modelId:draft.modelId,brand:draft.brandName,model:finalModel(draft),title:vehicleTitle(draft),year:Number(draft.year),generation:draft.generation,bodyType:draft.bodyType,vin:draft.vin,plate:draft.plateNumber,mileageKm:Number(draft.mileage||0),engineType:draft.fuelType,engineVolume:draft.engineVolume,fuelType:draft.fuelType,isDefault:(state.data?.vehicles||[]).length===0||Boolean(draft.isDefault)};let result;try{result=await api.saveVehicle(vehicle);}catch(error){result={ok:false,payload:{message:error?.message||`Не удалось ${editing?'сохранить':'добавить'} автомобиль`}};}if(!sameSession(epoch,owner))return;state.saving=false;if(!result?.ok){render();const error=result?.payload?.error||'';const message=result?.payload?.message||({vehicle_duplicate_vin:'Этот автомобиль уже добавлен в ваш гараж',vehicle_duplicate_plate:'Автомобиль с таким госномером уже есть в гараже',invalid_vehicle_vin:'VIN должен содержать 17 символов'}[error]||`Не удалось ${editing?'сохранить':'добавить'} автомобиль`);const out=state.root?.querySelector('[data-fv-submit-error]');if(out)out.textContent=message;return;}const created=result.payload?.vehicle||vehicle;state.success={...draft,id:created.id||state.editVehicleId||'',brandName:created.brand||draft.brandName,modelName:created.model||draft.modelName,year:created.year||created.year_label||draft.year,generation:created.generation||draft.generation,bodyType:created.bodyType??created.body_type??draft.bodyType,plateNumber:created.plate||draft.plateNumber,vin:created.vin||draft.vin,mileage:created.mileageKm??created.mileage_km??draft.mileage,engineVolume:created.engineVolume??created.engine_volume??draft.engineVolume,fuelType:created.fuelType??created.fuel_type??draft.fuelType,isDefault:Boolean(Number(created.isDefault??created.is_default??vehicle.isDefault))};clearDraft();if(!editing){markPrompt('completed');state.serverStatus='completed';state.serverConflict=false;}window.KaretaApiClient?.invalidate?.('client.cabinet');window.KaretaApiClient?.invalidate?.('client.first-entry');render();window.KaretaToast?.success?.(editing?'Автомобиль обновлён':'Автомобиль добавлен');}
   function validateBasicFallback(d){const brand=brandById(d.brandId),legacyBrand=isLegacyEditBrand(d),model=finalModel(d),year=Number(d.year);return Boolean((brand||legacyBrand)&&model&&/^\d{4}$/.test(String(d.year))&&year>=1950&&year<=currentYear()+1);}
 
   function bind(){const root=state.root;if(!root||root.dataset.firstVehicleBound==='1')return;root.dataset.firstVehicleBound='1';const click=async event=>{
@@ -304,7 +313,7 @@
     const yearButton=event.target.closest('[data-fv-year]');if(yearButton){writeDraft({year:String(yearButton.dataset.fvYear||''),generation:''});render();return;}
     const bodyButton=event.target.closest('[data-fv-body]');if(bodyButton){writeDraft({bodyType:String(bodyButton.dataset.fvBody||'')});render();return;}
     const generationButton=event.target.closest('[data-fv-generation]');if(generationButton){writeDraft({generation:String(generationButton.dataset.fvGeneration||'')});render();return;}
-    if(event.target.closest('[data-first-vehicle-later]')){markPrompt('dismissed');clearDraft();await dismissServerFirstEntry();navigate('#/home');return;}
+    if(event.target.closest('[data-first-vehicle-later]')){const epoch=sessionEpoch,owner=scopeKey();markPrompt('dismissed');clearDraft();await dismissServerFirstEntry();if(sameSession(epoch,owner))navigate('#/home');return;}
     if(event.target.closest('[data-first-vehicle-next]')){if(state.step===1){go(2);return;}return;}
     if(event.target.closest('[data-first-vehicle-confirm]')){if(state.step===2&&validateBasic()){go(3);return;}return;}
     if(event.target.closest('[data-first-vehicle-edit-basic]')){go(2);return;}
@@ -319,15 +328,16 @@
     root.addEventListener('click',click);root.addEventListener('input',input);root.addEventListener('change',input);
   }
 
-  function start({root,startStep=2,data={},onReturn=null,mode='manual',vehicle=null}={}){state.sourceRoot=root||null;state.root=ensureSurfaceRoot();if(!state.root)return false;state.data=data||{};state.onReturn=typeof onReturn==='function'?onReturn:null;state.mode=mode;state.success=null;state.saving=false;state.editVehicleId=mode==='edit'?String(vehicle?.id||''):'';const flowRoot=state.root;if(!state.editVehicleId&&!state.serverLoaded)loadServerFirstEntry().then(()=>{if(state.root===flowRoot&&state.step>=2)render();});state.editLegacyBrandName=state.editVehicleId&&!brandByName(vehicle?.brand||'')?normalizeText(vehicle?.brand):'';state.step=startStep===1&&!state.editVehicleId?1:2;if(state.editVehicleId){const stored=readJson(draftKey());if(!stored)writeDraft({...vehicleToDraft(vehicle),step:state.step});else writeDraft({step:state.step});}else writeDraft({step:state.step});render();return true;}
+  function start({root,startStep=2,data={},onReturn=null,mode='manual',vehicle=null}={}){state.sourceRoot=root||null;state.root=ensureSurfaceRoot();if(!state.root)return false;state.data=data||{};state.onReturn=typeof onReturn==='function'?onReturn:null;state.mode=mode;state.success=null;state.saving=false;state.editVehicleId=mode==='edit'?String(vehicle?.id||''):'';const flowRoot=state.root,epoch=sessionEpoch,owner=scopeKey();if(!state.editVehicleId&&!state.serverLoaded)loadServerFirstEntry().then(()=>{if(sameSession(epoch,owner)&&state.root===flowRoot&&state.step>=2)render();});state.editLegacyBrandName=state.editVehicleId&&!brandByName(vehicle?.brand||'')?normalizeText(vehicle?.brand):'';state.step=startStep===1&&!state.editVehicleId?1:2;if(state.editVehicleId){const stored=readJson(draftKey());if(!stored)writeDraft({...vehicleToDraft(vehicle),step:state.step});else writeDraft({step:state.step});}else writeDraft({step:state.step});render();return true;}
 
   window.addEventListener('kareta:session-confirmed',event=>{window.setTimeout(()=>maybeScheduleFirstEntry(event.detail||{}),0);});
 
   window.addEventListener('kareta:session-anonymous',()=>{
+    sessionEpoch+=1;
     deactivateSurface();
     try{sessionStorage.removeItem(PENDING_KEY);}catch(_error){}
     if(state.serverSaveTimer)clearTimeout(state.serverSaveTimer);
-    Object.assign(state,{data:null,success:null,autoScheduled:false,editVehicleId:'',editLegacyBrandName:'',serverLoaded:false,serverRevision:0,serverStatus:'',serverSavePending:false,serverSaveTimer:0});
+    Object.assign(state,{data:null,success:null,onReturn:null,saving:false,autoScheduled:false,editVehicleId:'',editLegacyBrandName:'',serverLoaded:false,serverRevision:0,serverStatus:'',serverUpdatedAt:0,serverSaving:false,serverSavePending:false,serverSaveTimer:0,serverConflict:false,serverDraftSignature:'',serverBackoffUntil:0});
   });
 
   window.addEventListener('hashchange',()=>{if(!String(location.hash||'').startsWith('#/cabinet/garage'))deactivateSurface();});
