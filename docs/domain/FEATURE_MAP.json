@@ -509,6 +509,125 @@
         "api/migrations/066_event_notification_core.php",
         "js/next/pages/notifications.js"
       ]
+    },
+    {
+      "featureId": "finance.billing",
+      "route": "#/finance",
+      "boundedContext": "Finance",
+      "supportingContexts": [
+        "Identity",
+        "Organization",
+        "Service"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "primaryAggregate": "Invoice",
+      "runtimeStores": [
+        "finance_estimates",
+        "finance_estimate_items",
+        "finance_invoices",
+        "finance_transactions",
+        "finance_refunds",
+        "finance_ledger",
+        "payment_records"
+      ],
+      "commands": [
+        "payment.create",
+        "estimate.create",
+        "invoice.create",
+        "invoice.send",
+        "payment.record",
+        "refund.create"
+      ],
+      "queries": [
+        "finance.view"
+      ],
+      "apiOwner": "api/domain.php",
+      "capabilities": [
+        "finance.manageOwn",
+        "finance.manageOrganization",
+        "payment.intent.create"
+      ],
+      "invariants": [
+        "payment amount cannot exceed invoice balance",
+        "refund cannot exceed refundable transaction remainder",
+        "payment and refund ledger effects are written in the same transaction as invoice state",
+        "entity-linked finance actions require entity access"
+      ],
+      "knownDebt": [
+        "FIN-PROJECTION-001"
+      ],
+      "tests": [],
+      "evidence": [
+        "api/migrations/063_domain_platform_core.php",
+        "api/migrations/068_finance_payments.php",
+        "api/domain.php",
+        "js/next/api_client.js",
+        "js/next/pages/finance.js"
+      ]
+    },
+    {
+      "featureId": "finance.operational",
+      "route": "#/finance",
+      "boundedContext": "Finance",
+      "supportingContexts": [
+        "Service",
+        "Master",
+        "Organization",
+        "Marketplace"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED_WITH_P0_DEBT",
+      "primaryAggregate": "OperationalFinanceScope",
+      "runtimeStores": [
+        "work_order_financial_results",
+        "work_order_receivables",
+        "sto_cash_accounts",
+        "sto_cash_movements",
+        "sto_master_payroll_rules",
+        "sto_payroll_periods",
+        "sto_payroll_accruals",
+        "finance_invoices",
+        "finance_transactions",
+        "finance_ledger",
+        "payment_records"
+      ],
+      "commands": [
+        "operationalFinance.orderPayment.record",
+        "operationalFinance.expense.record",
+        "operationalFinance.payrollRule.save",
+        "operationalFinance.payroll.close",
+        "operationalFinance.payroll.pay",
+        "operationalFinance.receivable.due"
+      ],
+      "queries": [
+        "operationalFinance.dashboard"
+      ],
+      "apiOwner": "api/operational_finance.php behind legacy api/db.php",
+      "capabilities": [
+        "finance.manage on dashboard",
+        "WRITE_CAPABILITY_GATES_INCOMPLETE"
+      ],
+      "invariants": [
+        "order payment cannot exceed remaining order balance",
+        "order payment fans out atomically to payment, invoice, transaction, receivable, cash and ledger projections",
+        "payroll payment only pays locked accrued entries and advances payroll period paid status",
+        "STO finance mutations require STO scope; master view is scoped to master financial results"
+      ],
+      "knownDebt": [
+        "FIN-AUTH-001",
+        "FIN-API-001",
+        "FIN-PROJECTION-001"
+      ],
+      "tests": [
+        "tools/test_r1885579_master_aftercare_finance_inventory.js",
+        "tools/test_r1885580_operational_finance.js"
+      ],
+      "evidence": [
+        "api/migrations/105_master_aftercare_finance_inventory.php",
+        "api/migrations/106_operational_finance_payroll_receivables.php",
+        "api/operational_finance.php",
+        "api/db.php",
+        "js/next/pages/finance.js"
+      ]
     }
   ],
   "nextInventoryOrder": [
@@ -521,5 +640,5 @@
     "Finance",
     "Community"
   ],
-  "notes": "Feature entries are promoted only from repository evidence. Communication now records the active chat model and the dual notification-store regression risk."
+  "notes": "Feature entries are promoted only from repository evidence. Finance now separates core billing/payment records from operational projections and flags capability/write-path debt."
 }
