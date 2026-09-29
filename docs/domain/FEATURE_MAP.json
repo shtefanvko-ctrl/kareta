@@ -377,7 +377,13 @@
         "api/migrations/069_marketplace_warehouse.php",
         "api/domain.php",
         "js/next/pages/market.js"
-      ]
+      ],
+      "parity": {
+        "role": "PARALLEL_ACTIVE_MODEL",
+        "matrix": "docs/domain/MARKETPLACE_PARITY_MATRIX.json",
+        "audit": "tools/audit_marketplace_dual_sot.php",
+        "canonicalPhysicalStore": "NOT_SELECTED"
+      }
     },
     {
       "featureId": "seller.marketplace",
@@ -430,7 +436,14 @@
         "api/migrations/114_parts_native_marketplace.php",
         "api/seller_shop.php",
         "js/next/seller/seller_api.js"
-      ]
+      ],
+      "parity": {
+        "role": "CURRENT_PARTS_AND_SELLER_OPERATIONAL_MODEL",
+        "consumerSurface": "#/parts",
+        "matrix": "docs/domain/MARKETPLACE_PARITY_MATRIX.json",
+        "audit": "tools/audit_marketplace_dual_sot.php",
+        "canonicalPhysicalStore": "NOT_SELECTED"
+      }
     },
     {
       "featureId": "communication.chat",
@@ -1010,6 +1023,51 @@
         "PLATFORM-RUNTIME-DDL-001": "INVENTORY_PENDING",
         "PLATFORM-AUDIT-001": "INVENTORY_PENDING"
       }
+    },
+    {
+      "featureId": "parts.marketplace",
+      "route": "#/parts",
+      "boundedContext": "Marketplace",
+      "supportingContexts": [
+        "Identity",
+        "Organization",
+        "Finance"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED_WITH_P0_DEBT",
+      "primaryAggregate": "SellerProduct",
+      "runtimeStores": [
+        "seller_products",
+        "seller_profiles",
+        "seller_orders",
+        "seller_order_items"
+      ],
+      "commands": [
+        "shop.order.create"
+      ],
+      "queries": [
+        "shop.catalog"
+      ],
+      "apiOwner": "api/seller_shop.php behind api/db.php",
+      "capabilities": [
+        "public/read catalog",
+        "idempotent checkout session path"
+      ],
+      "invariants": [
+        "catalog item id is seller_products.id on the current surface",
+        "checkout cannot oversell seller_products.stock_qty under row lock",
+        "current consumer behavior must remain intact until migration parity is proven"
+      ],
+      "knownDebt": [
+        "MARKET-SOT-001",
+        "MARKET-API-001"
+      ],
+      "evidence": [
+        "js/next/pages/parts.js",
+        "js/next/shop/shop_state.js",
+        "js/next/shop/shop_api.js",
+        "api/seller_shop.php",
+        "api/db.php"
+      ]
     }
   ],
   "nextInventoryOrder": [
