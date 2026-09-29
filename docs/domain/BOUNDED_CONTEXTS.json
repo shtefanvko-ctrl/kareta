@@ -1277,7 +1277,7 @@
           "impact": "The same idempotency key can be reused for a different payload in the same action/actor scope and receive the previous response or reuse the processing slot instead of an explicit conflict.",
           "target": "Bind action + stable actor/context + idempotency key to exactly one canonical request hash. A different payload for an existing key returns an explicit 409 IDEMPOTENCY_CONFLICT.",
           "migrationPolicy": "Add request-hash comparison and regression tests before broadening idempotency coverage.",
-          "investigationStatus": "READY_FOR_IMPLEMENTATION",
+          "investigationStatus": "IMPLEMENTED_PENDING_RUNTIME_REGRESSION",
           "verifiedCoverage": {
             "domainApi": "All api/domain.php POST actions call kareta_idempotency_begin with action scope domain.<action>.",
             "legacyDbActions": [
@@ -1314,6 +1314,16 @@
             "same key + different payload + failed => conflict",
             "missing idempotency key => existing behavior unchanged",
             "all existing api/domain.php POST actions and 10 legacy protected actions remain callable"
+          ],
+          "implementationEvidence": [
+            "api/bootstrap.php now compares stored request_hash with the incoming request hash before replay/reuse.",
+            "Mismatch returns HTTP 409 with code IDEMPOTENCY_CONFLICT and does not overwrite the existing hash.",
+            "tools/test_api_contract_smoke_84_109.js already contains a static regression guard requiring the conflict check before replay."
+          ],
+          "remainingVerification": [
+            "Execute local API contract smoke in a runtime with PHP/Node available.",
+            "Verify same-key/same-payload replay against a disposable database row.",
+            "Verify same-key/different-payload conflict against completed, processing and failed rows."
           ]
         },
         {
