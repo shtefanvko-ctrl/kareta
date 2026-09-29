@@ -1,0 +1,182 @@
+{
+  "schema": "kareta.marketplace-parity-matrix.v1",
+  "status": "FACTUAL_PARITY_MATRIX_READY_CANONICAL_PHYSICAL_STORE_NOT_SELECTED",
+  "principle": "Do not merge stores by table similarity. Preserve active behavior until Product/Stock/Order identity and lifecycle are migrated with evidence.",
+  "activeSurfaces": [
+    {
+      "surface": "#/parts",
+      "model": "seller_*",
+      "evidence": [
+        "js/next/pages/parts.js",
+        "js/next/shop/shop_state.js",
+        "js/next/shop/shop_api.js",
+        "api/seller_shop.php",
+        "api/db.php"
+      ],
+      "facts": [
+        "shop.catalog reads seller_products joined to seller_profiles.",
+        "shop.order.create calls shop_create_order and creates seller_orders.",
+        "Cart product IDs are seller_products.id values."
+      ]
+    },
+    {
+      "surface": "#/seller, #/seller/products, #/seller/orders",
+      "model": "seller_*",
+      "evidence": [
+        "js/next/seller/seller_api.js",
+        "api/seller_shop.php"
+      ],
+      "facts": [
+        "Seller product writes are owner-scoped by seller_user_id.",
+        "Seller stock mutation writes seller_products.stock_qty.",
+        "Seller order status is managed in seller_orders."
+      ]
+    },
+    {
+      "surface": "#/market",
+      "model": "market_*",
+      "evidence": [
+        "js/next/pages/market.js",
+        "api/domain.php",
+        "api/migrations/069_marketplace_warehouse.php"
+      ],
+      "facts": [
+        "market.view and market.* commands use the normalized market_* model.",
+        "Checkout reserves warehouse stock and creates a Finance invoice.",
+        "Fulfillment converts reserved stock to shipment movement."
+      ]
+    }
+  ],
+  "parity": {
+    "Product": {
+      "market": {
+        "identity": "BIGINT id + unique product_key",
+        "owner": "owner_user_id + organization_id (+ owner_context_id in later schema)",
+        "skuUniqueness": "organization_id + sku",
+        "fields": [
+          "sku",
+          "title",
+          "brand",
+          "oem_number",
+          "price",
+          "currency",
+          "status",
+          "payload_json"
+        ]
+      },
+      "seller": {
+        "identity": "VARCHAR id (spr_* / platform-derived IDs)",
+        "owner": "seller_user_id + seller_phone",
+        "skuUniqueness": "seller_user_id + sku",
+        "fields": [
+          "sku",
+          "name",
+          "category",
+          "condition_code",
+          "exchange_available",
+          "brand",
+          "oem_number",
+          "price",
+          "old_price",
+          "stock_qty",
+          "status",
+          "description",
+          "image_url",
+          "fitment_json"
+        ]
+      },
+      "equivalence": "NOT_PROVEN",
+      "safeCandidateMatch": "same owner_user_id/seller_user_id + normalized SKU only; SKU alone is ambiguous"
+    },
+    "Stock": {
+      "market": {
+        "model": "warehouse-normalized",
+        "stores": [
+          "market_warehouses",
+          "market_stock",
+          "market_stock_movements"
+        ],
+        "semantics": "quantity and reserved are separate; mutations create movement records"
+      },
+      "seller": {
+        "model": "inline product quantity",
+        "stores": [
+          "seller_products.stock_qty"
+        ],
+        "semantics": "checkout immediately decrements stock_qty; no warehouse reservation or stock movement ledger in seller flow"
+      },
+      "equivalence": "SEMANTICALLY_INCOMPATIBLE_WITHOUT_ADAPTER",
+      "requiredTargetInvariant": "available = quantity - reserved; reservations and shipments must be traceable and reversible"
+    },
+    "Checkout": {
+      "market": {
+        "orderId": "market_orders.order_key (mord_*) plus BIGINT id",
+        "initialStatus": "reserved",
+        "stockEffect": "increase market_stock.reserved; no immediate quantity decrement",
+        "finance": "creates finance_invoices",
+        "sellerGrouping": "single organization cart required"
+      },
+      "seller": {
+        "orderId": "seller_orders.id (sord_*)",
+        "initialStatus": "new",
+        "stockEffect": "immediately decrements seller_products.stock_qty",
+        "finance": "no Finance invoice creation in shop_create_order",
+        "sellerGrouping": "cart is split into one seller_order per seller"
+      },
+      "equivalence": "NOT_EQUIVALENT"
+    },
+    "OrderLifecycle": {
+      "market": {
+        "verifiedStatuses": [
+          "reserved",
+          "completed"
+        ],
+        "verifiedTransition": "reserved -> completed by market.order.fulfill",
+        "fulfillmentEffect": "quantity -= qty; reserved -= qty; shipment movement"
+      },
+      "seller": {
+        "verifiedStatuses": [
+          "new",
+          "confirmed",
+          "packed",
+          "shipped",
+          "delivered",
+          "cancelled",
+          "returned"
+        ],
+        "transitionMechanism": "seller.orders.updateStatus",
+        "cancellationStockCompensation": "NOT_PROVEN in seller_order_update_status"
+      },
+      "equivalence": "NOT_EQUIVALENT"
+    },
+    "UsedParts": {
+      "store": "used_market_listings",
+      "relation": "Separate resale/listing aggregate; do not force into new-parts Product/Stock migration merely to reduce tables.",
+      "equivalenceToProduct": "NOT_ASSUMED"
+    }
+  },
+  "targetContract": {
+    "physicalCanonicalStore": "NOT_SELECTED",
+    "requiredSemantics": [
+      "Stable cross-model Product identity or explicit mapping table before writer migration.",
+      "Organization/seller ownership mapping must be explicit.",
+      "Warehouse stock, reserved quantity and movement/audit semantics must survive migration.",
+      "Order status mapping must be explicit and lossless; cancelled/returned compensation cannot be guessed.",
+      "Finance invoice/payment linkage must be preserved for target checkout.",
+      "Current #/parts seller_* behavior remains operational until replacement proves parity."
+    ],
+    "forbiddenShortcuts": [
+      "Do not copy seller_products into market_products by SKU alone.",
+      "Do not sum or overwrite stock without warehouse/allocation policy.",
+      "Do not translate seller cancelled/returned directly to market completed/reserved.",
+      "Do not switch #/parts to market_* before cart/checkout/order/history regression passes.",
+      "Do not delete seller_* while external/current routes still read or write it."
+    ]
+  },
+  "nextEvidence": [
+    "Run tools/audit_marketplace_dual_sot.php against staging/production snapshot.",
+    "Measure exact owner+SKU overlap, owner/SKU ambiguity and stock divergence.",
+    "Measure active route traffic/readers if runtime telemetry is available.",
+    "Define product identity mapping and order lifecycle translation only after data distribution is known."
+  ]
+}
