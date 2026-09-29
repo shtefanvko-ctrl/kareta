@@ -94,20 +94,39 @@
       "featureId": "service.request",
       "route": "#/orders/new",
       "boundedContext": "Service",
-      "verificationStatus": "TARGET_UNTIL_VERIFIED",
+      "verificationStatus": "PARTIALLY_VERIFIED",
       "primaryAggregate": "ServiceRequest",
-      "commands": [],
-      "queries": [],
-      "apiOwner": null,
+      "runtimeStore": "orders",
+      "physicalModelStatus": "SHARED_WITH_REPAIR_LIFECYCLE",
+      "commands": [
+        "orders.create",
+        "orders.clientEdit",
+        "orders.cancelByClient"
+      ],
+      "queries": [
+        "orders.getAll",
+        "orders.get"
+      ],
+      "apiOwner": "api/db.php legacy dispatcher",
       "capabilities": [
-        "service.request.create"
+        "ACTION_BY_ACTION_MIGRATION_INCOMPLETE"
       ],
       "invariants": [
-        "ServiceRequest is not RepairOrder",
-        "Booking must not imply repair acceptance"
+        "client identity/name/phone and actor scope are normalized server-side",
+        "duplicate active requests are guarded in the create flow",
+        "ServiceRequest must not be treated as the same domain concept as RepairOrder even though orders is currently shared"
+      ],
+      "knownDebt": [
+        "SERVICE-MODEL-001",
+        "SERVICE-AUTH-001",
+        "SERVICE-LEGACY-001"
       ],
       "tests": [],
-      "evidence": []
+      "evidence": [
+        "api/db.php",
+        "api/order_scope.php",
+        "js/next/orders/orders_api.js"
+      ]
     },
     {
       "featureId": "calendar.booking",
@@ -148,6 +167,74 @@
         "js/next/api_client.js",
         "js/next/pages/calendar_booking.js"
       ]
+    },
+    {
+      "featureId": "service.work-order",
+      "route": "#/orders/item/:id",
+      "boundedContext": "Service",
+      "supportingContexts": [
+        "Identity",
+        "Garage",
+        "Master",
+        "Booking",
+        "Marketplace",
+        "Finance",
+        "Community"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "primaryAggregate": "RepairOrder",
+      "runtimeStores": [
+        "orders",
+        "sto_workflows",
+        "master_order_diagnostics",
+        "work_order_part_reservations",
+        "work_order_quality_checks",
+        "work_order_handovers",
+        "work_order_warranties"
+      ],
+      "commands": [
+        "masterOrder.accept",
+        "masterOrder.diagnostics.save",
+        "masterOrder.extraWork.request",
+        "masterOrder.parts.reserve",
+        "masterOrder.work.complete",
+        "masterOrder.quality.save",
+        "masterOrder.handover.prepare",
+        "clientOrder.handover.confirm"
+      ],
+      "queries": [
+        "workOrders.detail",
+        "master order lifecycle snapshot"
+      ],
+      "apiOwner": "api/master_order_lifecycle.php behind legacy api/db.php dispatcher",
+      "capabilities": [
+        "PARTIAL_CAPABILITY_MIGRATION",
+        "RESOURCE_SCOPE_REQUIRED"
+      ],
+      "invariants": [
+        "write actor must own/have access to the order",
+        "workflow stage gates lifecycle commands",
+        "quality pass requires mandatory checks",
+        "handover ready requires quality pass",
+        "client confirmation closes the order and completes handover"
+      ],
+      "knownDebt": [
+        "SERVICE-AUTH-001",
+        "SERVICE-LEGACY-001",
+        "BOOKING-SERVICE-001"
+      ],
+      "tests": [
+        "tools/test_r1885578_master_order_lifecycle.js",
+        "tools/test_r1885637_work_order_native_lifecycle.js"
+      ],
+      "evidence": [
+        "api/master_order_lifecycle.php",
+        "api/work_orders.php",
+        "api/order_scope.php",
+        "api/migrations/094_sto_workflow_engine.php",
+        "api/migrations/104_master_order_full_lifecycle.php",
+        "js/next/work_orders/work_order_api.js"
+      ]
     }
   ],
   "nextInventoryOrder": [
@@ -160,5 +247,5 @@
     "Finance",
     "Community"
   ],
-  "notes": "Feature entries are promoted only from repository evidence. master.schedule and calendar.booking are partially verified; ownership boundaries with Service remain explicit debt."
+  "notes": "Feature entries are promoted only from repository evidence. Current partial verification covers Identity/Garage dependencies plus master schedule, calendar booking, service request and work-order lifecycle."
 }
