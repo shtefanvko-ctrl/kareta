@@ -1036,7 +1036,8 @@
         "api/runtime_health.php",
         "api/schema_health.php",
         "api/identity_health.php",
-        "tools/internal_architecture_audit.php"
+        "tools/internal_architecture_audit.php",
+        ".github/workflows/verify.yml"
       ],
       "remediationReadiness": {
         "PLATFORM-PROJECTION-001": "BLOCKED_ON_ACCEPTANCE_PREDICATE_AUDIT",
@@ -1044,7 +1045,7 @@
         "PLATFORM-IDEMPOTENCY-002": "DESIGN_READY_AFTER_IDEMPOTENCY_001",
         "PLATFORM-HEALTH-001": "IMPLEMENTED_PENDING_RUNTIME_REGRESSION",
         "PLATFORM-RUNTIME-DDL-001": "PARTIALLY_MITIGATED_REQUEST_PATH_REPAIR_REMAINS",
-        "PLATFORM-AUDIT-001": "INVENTORY_PENDING"
+        "PLATFORM-AUDIT-001": "PARTIALLY_IMPLEMENTED_STATIC_GUARDS_ACTIVE"
       },
       "healthBoundary": {
         "runtimeHealth": "READ_ONLY_VERIFIED_BY_STATIC_GUARD",
