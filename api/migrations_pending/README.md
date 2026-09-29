@@ -1,23 +1,37 @@
-# Pending database migrations
+# Pending and historical database migrations
 
-The canonical production migration chain currently ends at **129**.
+The canonical production migration chain now ends at **135**.
 
-Files in this directory are preserved engineering work from parallel branches. They are **not executable migrations** and are intentionally excluded from `api/migration_manifest.php`, `api/migration_manifest.json`, and `KARETA_DB_VERSION`.
+## Canonical compatibility bridge
 
-Why this quarantine exists:
+Versions **130–134** are intentionally side-effect-free compatibility slots. Historical parallel branches reused those numbers for different operations, and production databases can already contain one of those version markers with an incompatible checksum.
 
-- historical branches produced duplicate versions 130, 131 and 132;
-- production databases can contain audit markers from those parallel histories;
-- some pending transforms are not safe to replay blindly (for example onboarding step normalization);
-- promoting them by filename alone can mark one colliding migration as applied while silently skipping another.
+The migration runner preserves an already-applied version and records checksum conflicts instead of replaying it. Therefore versions 130–134 must never contain required schema/data transformations.
 
-Promotion Definition of Done:
+Real canonical schema work resumes at:
 
-1. Reconcile the pending operations into one strictly monotonic, idempotent sequence beginning at 130.
-2. Add explicit compatibility guards for databases that already contain historical 130+ markers/checksums.
-3. Update both migration manifests and `KARETA_DB_VERSION` in the same change.
-4. Run `php tools/test_migration_contract.php` and `php tools/test_release_migration_manifest.php`.
-5. Validate against a production-like database snapshot before enabling the migration window.
-6. Never copy a file from this directory back into `api/migrations/` without assigning its canonical version and checksum.
+- **135** — `obd_diagnostic_sessions` for Android Native API 6.
 
-The active runtime must treat this directory as documentation/source material only.
+This guarantees that OBD schema creation still runs even on a database carrying any historical 130–134 marker.
+
+## Historical source material
+
+The original conflicting files are preserved under:
+
+`api/migrations_pending/historical/`
+
+They are source material only. They are not runtime migrations and must not be copied back to `api/migrations/` under their historical version numbers.
+
+Any still-required behavior from those files must be re-authored as a new idempotent migration starting at **136**, with explicit compatibility checks against production-like database snapshots.
+
+## Promotion Definition of Done
+
+1. Assign a new monotonic version >= 136.
+2. Make the operation idempotent.
+3. Account for databases that may already contain historical 130–134 audit markers/checksums.
+4. Update both migration manifests and `KARETA_DB_VERSION` atomically.
+5. Run:
+   - `php tools/test_migration_contract.php`
+   - `php tools/test_release_migration_manifest.php`
+   - `php tools/test_migration_collision_bridge_84_149.php`
+6. Validate against a production-like DB snapshot before enabling a migration window.
