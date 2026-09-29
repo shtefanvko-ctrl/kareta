@@ -16,7 +16,10 @@ const db=read('api/db.php');
 expect(workOrders.includes('function kareta_service_order_schedule_projection_update'),'Service schedule projection contract missing');
 expect(workOrders.includes('service_schedule_non_service_order'),'Service schedule contract must reject parts_request');
 expect(workOrders.includes('UPDATE orders SET \`date\`=?,\`time\`=?'),'Service contract must remain the owner of legacy schedule projection writes');
-expect(!workOrders.includes('beginTransaction()') || workOrders.indexOf('function kareta_service_order_schedule_projection_update')>workOrders.lastIndexOf('beginTransaction()'),'Service schedule helper must not own caller transaction boundaries');
+const helperStart=workOrders.indexOf('function kareta_service_order_schedule_projection_update');
+const helperEnd=workOrders.indexOf('\nfunction ',helperStart+20);
+const helperBody=workOrders.slice(helperStart,helperEnd>helperStart?helperEnd:workOrders.length);
+expect(!helperBody.includes('beginTransaction(') && !helperBody.includes('commit(') && !helperBody.includes('rollBack('),'Service schedule helper must preserve caller transaction boundaries');
 
 const bookingFiles=[
   ['api/master_day_operations.php',masterDay],
