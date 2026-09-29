@@ -1,8 +1,8 @@
 {
   "schema": "kareta.domain-rules.v1",
-  "status": "IN_PROGRESS",
+  "status": "ACTIVE_DOCUMENTATION_ONLY",
   "enforcement": "DOCUMENTATION_ONLY",
-  "notes": "Required engineering constraints. Repository inventory has identified concrete projection, idempotency, health and typed-feed risks, but enforcement remains documentation-only until CI/release integration is verified.",
+  "notes": "Required engineering constraints derived from factual inventory. They are active review rules but are not claimed as machine-enforced until CI/release integration is implemented and verified.",
   "rules": [
     {
       "id": "IDENTITY-001",
