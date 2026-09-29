@@ -397,6 +397,118 @@
         "api/seller_shop.php",
         "js/next/seller/seller_api.js"
       ]
+    },
+    {
+      "featureId": "communication.chat",
+      "route": "#/chats",
+      "boundedContext": "Communication",
+      "supportingContexts": [
+        "Identity",
+        "Service",
+        "Master",
+        "Organization",
+        "Marketplace"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED",
+      "primaryAggregate": "Thread",
+      "runtimeStores": [
+        "chats",
+        "messages",
+        "chat_participants",
+        "chat_message_reads"
+      ],
+      "commands": [
+        "chats.openDirect",
+        "chats.create",
+        "chats.supportOpen",
+        "chats.markRead",
+        "messages.add",
+        "messages.update",
+        "messages.delete"
+      ],
+      "queries": [
+        "chats.getAll",
+        "chats.contacts",
+        "messages.get"
+      ],
+      "apiOwner": "legacy api/db.php with resource-scope helpers",
+      "capabilities": [
+        "EXPLICIT_CAPABILITY_POLICY_INCOMPLETE",
+        "RESOURCE_SCOPE_REQUIRED"
+      ],
+      "invariants": [
+        "only participants/authorized related actors can access a chat",
+        "message retry must not create duplicates",
+        "only message owner or moderator can mutate/delete allowed message types",
+        "secure attachments require chat access before serving",
+        "read/unread state must remain consistent across compatibility and participant models"
+      ],
+      "knownDebt": [
+        "COMM-READSTATE-001",
+        "COMM-AUTH-001",
+        "COMM-API-001"
+      ],
+      "tests": [
+        "tools/test_r1885640_social_communication_window_flow.js",
+        "tools/test_vehicle_chat_native_84_78.js",
+        "tools/verify_chat_participants_84_127.php"
+      ],
+      "evidence": [
+        "api/db.php",
+        "api/chat_attachment.php",
+        "api/migrations/054_schema_integrity_chat_attachments.php",
+        "api/migrations/056_chat_read_status.php",
+        "api/migrations/101_context_role_chat_state.php",
+        "js/next/pages/chats.js"
+      ]
+    },
+    {
+      "featureId": "communication.notifications",
+      "route": "#/notifications",
+      "boundedContext": "Communication",
+      "supportingContexts": [
+        "Identity",
+        "Platform"
+      ],
+      "verificationStatus": "PARTIALLY_VERIFIED_WITH_P0_DEBT",
+      "primaryAggregate": "Notification",
+      "runtimeStores": [
+        "notification_center",
+        "notifications"
+      ],
+      "commands": [
+        "notification.read",
+        "notification.readAll",
+        "legacy notifications.markRead",
+        "legacy notifications.markAllRead"
+      ],
+      "queries": [
+        "notifications.list",
+        "legacy notifications.getMine"
+      ],
+      "apiOwner": "split: api/domain.php + legacy api/db.php",
+      "capabilities": [
+        "notifications.manageOwn on domain notification_center flow",
+        "legacy notification flow uses session/recipient scoping"
+      ],
+      "invariants": [
+        "user may read/mark only own notification_center rows",
+        "domain-event notification delivery uses idempotent notification_key",
+        "legacy notification recipient scoping may target user, phone or role",
+        "current UI and producers must converge on one canonical store before legacy retirement"
+      ],
+      "knownDebt": [
+        "COMM-NOTIFY-SOT-001",
+        "COMM-API-001"
+      ],
+      "tests": [],
+      "evidence": [
+        "api/domain.php",
+        "api/db.php",
+        "api/migrations/063_domain_platform_core.php",
+        "api/migrations/066_event_notification_core.php",
+        "js/next/pages/notifications.js"
+      ]
     }
   ],
   "nextInventoryOrder": [
@@ -409,5 +521,5 @@
     "Finance",
     "Community"
   ],
-  "notes": "Feature entries are promoted only from repository evidence. Current partial verification covers Identity/Garage dependencies plus master schedule, calendar booking, service request and work-order lifecycle."
+  "notes": "Feature entries are promoted only from repository evidence. Communication now records the active chat model and the dual notification-store regression risk."
 }
