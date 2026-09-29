@@ -1278,7 +1278,7 @@
           "impact": "The generic projection can assert a RepairOrder that does not yet exist semantically, contradict ServiceRequest != RepairOrder. If projection ownership is stale, resource authorization can also diverge from the owning domain.",
           "target": "domain_entities/domain_relations are projection/ACL indexes only. Business aggregate existence and transitions come from the owning domain contract; projection updates carry source/version evidence and never create stronger business facts than the owner.",
           "migrationPolicy": "Do not delete the projection. Correct projection semantics incrementally: distinguish request-only versus accepted repair state, add provenance/revision checks, backfill safely, then verify authorization parity before changing readers.",
-          "investigationStatus": "ACCEPTANCE_PREDICATE_DEFINED_AUDIT_ADDED",
+          "investigationStatus": "AUDIT_TOOL_READY_PENDING_DB_RUN",
           "rootCause": [
             "Migration 065 materializes both work_request and work_order projection rows for every legacy orders row and links them with produces.",
             "orders is a shared legacy store for request/intake and accepted repair lifecycle, so one physical row does not prove both domain aggregates exist.",
@@ -1309,7 +1309,15 @@
               "orders.sto_id is non-empty",
               "sto_workflows row exists with current_stage='intake'"
             ],
-            "additionalFinding": "orders.type='parts_request' is not a ServiceRequest or RepairOrder, but migration 065 projected every orders row into both work_request and work_order."
+            "additionalFinding": "orders.type='parts_request' is not a ServiceRequest or RepairOrder, but migration 065 projected every orders row into both work_request and work_order.",
+            "strictPredicate": "service_order (or legacy empty type) AND accepted_at IS NOT NULL",
+            "partsRequestRule": "parts_request MUST NOT materialize as work_request/work_order",
+            "rejectedSignals": [
+              "status=process alone",
+              "sto_id alone",
+              "existence of sto_workflows row alone"
+            ],
+            "directStoCreateFinding": "orders.create may force status=process when sto_id is present, but accepted_at is written only when a master is actually assigned. Therefore process is not acceptance."
           },
           "verifiedRisk": [
             "Projection aggregate existence can be stronger than the owning Service fact.",
@@ -1346,7 +1354,15 @@
             "direct STO selection without explicit acceptance remains ServiceRequest-only even if legacy status=process",
             "STO lead acceptance without master can instantiate RepairOrder through explicit sto_lead_accepted evidence"
           ],
-          "auditTool": "tools/audit_service_projection_consistency.php"
+          "auditTool": {
+            "path": "tools/audit_service_domain_projection.php",
+            "mode": "READ_ONLY",
+            "bootstrapDependency": false,
+            "defaultBehavior": "report only",
+            "strictBehavior": "--strict exits non-zero when blocking mismatches exist",
+            "commit": "fe469dc8ea2d9645b336ed72c2c2766409fd1d19"
+          },
+          "nextAction": "Run the read-only audit against the target database, inspect mismatch counts/samples, then design an idempotent repair migration from measured data rather than assumptions."
         },
         {
           "id": "PLATFORM-IDEMPOTENCY-001",
