@@ -287,3 +287,12 @@ Liveness/readiness проверяет состояние. Repair/migration из�
 ### Приоритеты
 
 Порядок remediation хранится в разделе 15 и в machine-readable debt полях. Этот раздел определяет правила безопасного удаления дублей и projections, а не дублирует очередь задач.
+
+
+### Notification canonicalization
+
+Для Communication зафиксирован переходный контракт: `notification_center` — canonical in-app notification/read-state; `notifications` временно остаётся compatibility producer и источником legacy ID для внешней доставки Telegram/WhatsApp.
+
+Новые legacy notifications с конкретным user (или разрешимым phone) зеркалятся в `notification_center` идемпотентно. Ключ bridge: `legacy:<legacyNotificationId>:user:<userId>`. Legacy ID захватывается до mirror insert и не меняется, потому что на него уже опирается Messaging.
+
+Исторические role-only строки нельзя механически размножать по пользователям: у них общий read-state. Для них сначала определяется recipient-expansion policy. Backfill запускается dry-run инструментом `tools/backfill_notification_center_from_legacy.php`; `--apply` допустим только после проверки отчёта и regression.
