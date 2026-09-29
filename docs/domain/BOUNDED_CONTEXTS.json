@@ -283,7 +283,8 @@
         "masterOrder.quality.save",
         "masterOrder.warranty.configure",
         "masterOrder.handover.prepare",
-        "clientOrder.handover.confirm"
+        "clientOrder.handover.confirm",
+        "internal:serviceOrder.scheduleProjection.update"
       ],
       "queries": [
         "orders.getAll",
@@ -328,7 +329,9 @@
         "Lifecycle child records are keyed by order_id and do not become independent ownership roots.",
         "ServiceRequest existence is limited to service-like orders; parts_request is not a Service aggregate.",
         "Legacy orders.status=process alone is not proof that a RepairOrder exists.",
-        "RepairOrder existence requires explicit acceptance/lifecycle evidence such as accepted_at, provider/master acceptance event or workflow progress beyond intake."
+        "RepairOrder existence requires explicit acceptance/lifecycle evidence such as accepted_at, provider/master acceptance event or workflow progress beyond intake.",
+        "Legacy orders.date/time/estimated_duration_min scheduling projection is owned by Service through kareta_service_order_schedule_projection_update.",
+        "The Service schedule projection contract rejects parts_request and does not own transaction begin/commit/rollback."
       ],
       "knownBoundaryDebt": [
         {
@@ -368,7 +371,8 @@
         "api/migrations/094_sto_workflow_engine.php",
         "api/migrations/104_master_order_full_lifecycle.php",
         "js/next/orders/orders_api.js",
-        "js/next/work_orders/work_order_api.js"
+        "js/next/work_orders/work_order_api.js",
+        "tools/test_booking_service_boundary_84_153.js"
       ]
     },
     {
@@ -436,16 +440,36 @@
         "booking.cancel scopes the booking to the current owner/organization and cancels both service_bookings and calendar_events in one transaction.",
         "Booking and calendar writes require backend calendar.manageOwn or calendar.manageOrganization capability; availability/calendar reads require backend authorization.",
         "Legacy api/booking_save.php is disabled with HTTP 410 and points callers to the unified flow.",
-        "Booking is not equivalent to RepairOrder."
+        "Booking is not equivalent to RepairOrder.",
+        "Booking/Master schedule modules do not directly mutate legacy Service orders.date/time fields in the audited paths; they call a Service-owned projection contract."
       ],
       "knownBoundaryViolations": [
         {
           "id": "BOOKING-SERVICE-001",
           "severity": "P1",
-          "evidence": "api/master_day_operations.php",
-          "finding": "Automatic schedule recovery directly updates orders.date and orders.time while mutating master_order_plans.",
+          "evidence": [
+            "api/work_orders.php",
+            "api/master_day_operations.php",
+            "api/master_workplace.php",
+            "api/master_recovery_control.php",
+            "tools/test_booking_service_boundary_84_153.js"
+          ],
+          "finding": "Audited Booking/Master schedule paths previously wrote Service orders.date/time/estimated_duration_min directly. They now call the Service-owned kareta_service_order_schedule_projection_update contract.",
           "target": "Replace direct Service order write with an explicit Service scheduling contract after regression coverage exists.",
-          "migrationPolicy": "Do not delete or rewrite the legacy path until behavior and regression tests prove the replacement."
+          "migrationPolicy": "Do not delete or rewrite the legacy path until behavior and regression tests prove the replacement.",
+          "status": "IMPLEMENTED_PENDING_RUNTIME_REGRESSION",
+          "implementation": [
+            "api/master_day_operations.php auto recovery: 2 direct writes replaced",
+            "api/master_workplace.php order-plan/manual reschedule + client reschedule acceptance: 2 direct writes replaced",
+            "api/master_recovery_control.php recovery apply: 1 direct write replaced",
+            "api/work_orders.php owns the compatibility writer and preserves caller transaction boundaries"
+          ],
+          "remainingVerification": [
+            "Run tools/test_booking_service_boundary_84_153.js.",
+            "Run existing master schedule/recovery regression tests.",
+            "Run a real schedule move, client reschedule accept and recovery-control apply against a disposable/staging DB.",
+            "Continue call-site audit for any scheduling writer outside the audited modules."
+          ]
         }
       ],
       "unverified": [
@@ -465,7 +489,11 @@
         "api/master_day_operations.php",
         "js/next/api_client.js",
         "js/next/pages/calendar_booking.js",
-        "js/next/work_orders/master_schedule_api.js"
+        "js/next/work_orders/master_schedule_api.js",
+        "api/work_orders.php",
+        "api/master_workplace.php",
+        "api/master_recovery_control.php",
+        "tools/test_booking_service_boundary_84_153.js"
       ]
     },
     {
