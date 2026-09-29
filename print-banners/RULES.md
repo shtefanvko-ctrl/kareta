@@ -3,17 +3,24 @@
 ## Source of truth
 - Use only the production full logo: `assets/onboarding/kareta_logo_full.png`.
 - Never redraw, regenerate, crop, distort, stretch, recolor, or replace the KARETA.KZ logo with an approximation.
-- Preserve the logo aspect ratio and safe margins.\n- Target KARETA logo width: about **50% of the banner width**; it should be visibly larger than the previous draft while remaining fully inside the safe area.
+- Preserve the logo aspect ratio and safe margins.
+- Target KARETA logo width: about **50% of the banner width**; it should be visibly larger than the previous draft while remaining fully inside the safe area.
+
+## Third-party brand assets
 - For vehicle-marque logos, store badges, and any other third-party brand marks, use only original, recognizable assets from official or otherwise explicitly permitted sources.
-- Never hand-draw, trace, approximate, stylize, recolor, or substitute BMW, Peugeot, Mercedes-Benz, Audi, Volkswagen, Google Play, App Store, or other brand icons with homemade SVG versions.
-- Do not use Font Awesome, generic icon packs, generated look-alikes, or invented symbols as replacements for official brand marks.
-- If an approved original brand asset is unavailable, leave that asset out and flag it for sourcing; do not fabricate a replacement.\n- Working previews may reference official HTTPS-hosted source assets. Before final print export, package/embed the exact approved originals so the print master is self-contained.
+- **Vehicle marque artwork used in these banners must be the original permitted brand artwork. Do not replace it with SVG icon-pack versions, traced vectors, hand-built SVG paths, generated look-alikes, or simplified recreations.**
+- For BMW, Peugeot, Mercedes-Benz, Audi, and Volkswagen, use the approved original image asset exactly as supplied by the permitted source; preserve its original proportions, colors, clear space, and visual form.
+- Do not convert a third-party automotive logo into a homemade SVG for convenience. If the approved source asset is a raster image, keep that original raster asset in the production layout rather than redrawing it as vector paths.
+- Do not use Font Awesome, generic icon packs, generated look-alikes, invented symbols, or unofficial logo collections as replacements for official brand marks.
+- Never hand-draw, trace, approximate, stylize, recolor, crop, stretch, or otherwise alter BMW, Peugeot, Mercedes-Benz, Audi, Volkswagen, Google Play, App Store, or other brand marks.
+- If an approved original brand asset is unavailable, leave that asset out and flag it for sourcing; do not fabricate a replacement.
+- Working previews may reference official HTTPS-hosted source assets. Before final print export, package/embed the exact approved originals so the print master is self-contained.
 
 ## Final format
 - Exactly 3 banners.
 - Physical size of each banner: **100 × 60 cm**.
 - Aspect ratio: **5:3**.
-- Master format: standalone SVG at `1000mm × 600mm`.
+- Master canvas may be SVG at `1000mm × 600mm`, but third-party automotive brand artwork inside it must remain the approved original asset and must not be recreated as SVG icon geometry.
 - Raster export for print, if required: **300 dpi**.
 - Background: solid white.
 
@@ -34,14 +41,15 @@
 
 ## QA / Definition of Done
 A banner is not DONE until:
-1. the exact production logo is visible in full;
-2. no part of the logo is clipped;
+1. the exact production KARETA.KZ logo is visible in full;
+2. no part of the KARETA.KZ logo is clipped;
 3. no `Autoelectric` text remains;
 4. the background is white;
 5. the arrow is orange and visually dominant;
 6. the distance matches the correct banner;
-7. the five marque logos use original permitted assets and are visible along the bottom;
-8. Google Play and App Store use original permitted badge artwork;
-9. there are no homemade, traced, generated, generic-pack, Font Awesome, or look-alike brand icons anywhere in the banner;
-10. the final 100×60 cm proportions are preserved;
-11. the final rendered preview has been visually checked before approval.
+7. BMW, Peugeot, Mercedes-Benz, Audi, and Volkswagen use original permitted brand artwork;
+8. no vehicle-marque logo has been rebuilt as an SVG icon, traced vector, Font Awesome glyph, generic icon-pack asset, generated look-alike, or homemade substitute;
+9. all third-party logos preserve original proportions, colors, and clear space without deformation or recoloring;
+10. Google Play and App Store use original permitted badge artwork;
+11. the final 100×60 cm proportions are preserved;
+12. the final rendered preview has been visually checked before approval.
