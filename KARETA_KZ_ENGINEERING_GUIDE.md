@@ -250,3 +250,31 @@ WHAT EVIDENCE WILL PROVE DONE?
 ```
 
 Если критический ответ неизвестен — сначала аудит, потом изменение кода.
+
+
+## 16. Projection, read-model and duplicate-removal rules
+
+После фактической инвентаризации добавляется отдельное правило: визуально или структурно похожие данные не считаются дублем автоматически.
+
+- Aggregate/owner state и projection/read model — разные вещи. Projection может объединять данные нескольких контекстов, но не получает право менять их business lifecycle.
+- Один UI feed может собираться из нескольких типизированных источников. Это не причина сливать source tables в одну таблицу.
+- Удалять копию можно только после доказательства semantic equivalence: одинаковый owner, identity, lifecycle, invariants, writers, readers и recovery behavior.
+- Если два хранилища представляют один и тот же mutable fact, выбирается canonical writer и строится adapter/backfill/dual-read migration; если они представляют разные aggregates, унифицируется query/read contract, а не storage.
+- Generic Platform tables (domain_entities/domain_relations/search/feed/index/cache) считаются projections, пока отдельным решением не доказано обратное. Они не могут создавать более сильный бизнес-факт, чем source owner.
+
+### Idempotency
+
+Idempotency contract: `ACTION + STABLE ACTOR/CONTEXT + KEY + REQUEST HASH -> ONE RESULT`. Повтор с тем же key и другим payload — конфликт, а не replay старого ответа. Session rotation не должна сама по себе создавать новый business-operation scope.
+
+### Health / repair separation
+
+Liveness/readiness проверяет состояние. Repair/migration изменяет состояние. Эти контракты не смешиваются без явного названия, разрешения и release policy. Production migration предпочтительно завершается до приёма обычного трафика; runtime auto-repair остаётся compatibility/emergency path, пока его нельзя безопасно убрать.
+
+### Текущие подтверждённые приоритеты исправления
+
+1. P0 — не считать domain_entities/domain_relations владельцами бизнес-сущностей; исправить ложную проекцию ServiceRequest -> RepairOrder.
+2. P0 — сравнивать request_hash при повторном idempotency key и возвращать conflict при несовпадении.
+3. P0 — свести уведомления к одному canonical notification contract без удаления legacy producers до доказанной миграции.
+4. P0 — определить canonical Marketplace Product/Order/Stock model между market_* и seller_*.
+5. P0 — закрыть capability-gap для operational Finance writes.
+6. Затем P1 — Community social contract, чистые health probes, runtime DDL reduction, legacy api/db.php strangler.
