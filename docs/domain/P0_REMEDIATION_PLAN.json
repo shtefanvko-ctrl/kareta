@@ -46,10 +46,16 @@
     {
       "id": "COMM-NOTIFY-SOT-001",
       "priority": 3,
-      "status": "INVENTORY_READY_NEXT",
+      "status": "BRIDGE_IMPLEMENTED_BACKFILL_DRY_RUN_READY",
       "ownerContext": "Communication",
-      "nextAction": "Inventory every producer/reader of notifications and notification_center and define one semantic notification adapter.",
-      "codeChangeAllowedNow": false
+      "nextAction": "Run notification backfill in DRY_RUN on staging/production snapshot, inspect role-only/unresolved counts, then run regression before any --apply or legacy retirement.",
+      "codeChangeAllowedNow": false,
+      "implementationCommits": [
+        "cc0784cfbfd837e2584fd8735a6bc6b86e604fb1",
+        "bef7bc3b8e1f5dd4f14a7af5ef79090cdce430ef",
+        "35aa76360a4f469f673e3937a94b65fede594027",
+        "5909b730a118ed1b29809af5d4575da81272abb6"
+      ]
     },
     {
       "id": "MARKET-SOT-001",
