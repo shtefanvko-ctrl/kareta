@@ -1473,7 +1473,8 @@
             "api/runtime_health.php is observational and never loads bootstrap.php.",
             "api/schema_health.php uses direct PDO + KaretaSchemaContract::inspect only; it does not call record(), migrations or bootstrap maintenance.",
             "api/identity_health.php now observes Identity/legacy sessions with SELECT-only queries; it does not call bootstrap.php, KaretaAuthResolver, KaretaSessionService, context reconciliation, session touch/rotation or audit writers.",
-            "tools/test_health_readonly_boundary_84_154.js statically rejects bootstrap/SQL-write/AuthResolver regressions."
+            "tools/test_health_readonly_boundary_84_154.js statically rejects bootstrap/SQL-write/AuthResolver regressions.",
+            "All three health probes honor configured MySQL unix_socket as well as host/port, preventing false degraded status on socket deployments."
           ],
           "remaining": [
             "Run health endpoints against staging with anonymous, Identity, legacy-compatible and conflicting-session scenarios.",
@@ -1484,7 +1485,10 @@
           "implementationCommits": [
             "e45f4a3f756862a1a89583eee28eb6531d7e1ac4",
             "ac06930936ed8f03d51a10fdc68b74b4639c0c27",
-            "ba5bff8e189fb14f3037fd4df9cfca535cdf3897"
+            "ba5bff8e189fb14f3037fd4df9cfca535cdf3897",
+            "7662d6baae4af42cb8ba65456aaf7865d8f1a874",
+            "c1a6dc368067b05ab68a649750659ecfa7527683",
+            "da0113cd8b9acce768461a5f22cddf1a9b37a500"
           ]
         },
         {
@@ -1497,14 +1501,19 @@
           "verifiedMitigation": [
             "config.php sets KARETA_DB_VERSION=129.",
             "Production forces KARETA_DB_AUTO_MIGRATE=false unless KARETA_DB_RUNTIME_MIGRATION_WINDOW is explicitly enabled.",
-            "bootstrap schema-changing work is serialized by a database named lock."
+            "bootstrap schema-changing work is serialized by a database named lock.",
+            "Runtime maintenance no longer calls undefined catalog/public ensure functions.",
+            "One maintenance cycle no longer repeats relation backfill/user_stats aggregation multiple times; one relation pass owns the stats rebuild."
           ],
           "remainingRisk": [
             "kareta_pdo()/kareta_bootstrap_runtime can still execute runtime maintenance/backfill on ordinary requests.",
             "schema mismatch paths still call schema create/ensure logic even when migration execution is disabled.",
-            "deployment-time migration orchestration has not yet been proven as the sole normal production path."
+            "deployment-time migration orchestration has not yet been proven as the sole normal production path.",
+            "A throttled relation/user-stats repair pass still runs from ordinary bootstrap requests every maintenance interval."
           ],
-          "nextAction": "Inventory every write performed by kareta_runtime_maintenance and split mandatory request-time reads from deployment/repair jobs before disabling runtime maintenance."
+          "nextAction": "Inventory every write performed by kareta_runtime_maintenance and split mandatory request-time reads from deployment/repair jobs before disabling runtime maintenance.",
+          "implementationCommit": "5f3feb6abde55235acf310936017110a753dcb84",
+          "regressionGuard": "tools/test_runtime_maintenance_boundary_84_154.js"
         },
         {
           "id": "PLATFORM-AUDIT-001",
