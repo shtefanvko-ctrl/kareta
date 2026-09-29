@@ -166,6 +166,22 @@ def description(folder,p,n):
     lines += [f"{i}. {i:02d}.png — {x}." for i,x in enumerate(labels,1)]
     lines += ["","## Визуальный стиль","","Светлый фон, чёрная крупная типографика, фирменный оранжевый акцент KARETA.KZ, чистая сетка, крупные карточки, минимум визуального шума.","",f"Количество изображений: {p[1]}."]
     (folder/"description.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
+    payload={
+        "post":n,
+        "slug":p[0],
+        "title":p[2],
+        "goal":p[3],
+        "cta":p[4],
+        "caption":p[7],
+        "hashtags":p[8].split(),
+        "format":"instagram_carousel_4x5",
+        "size":"1080x1350",
+        "image_count":p[1],
+        "images":[f"{i:02d}.png" for i in range(1,p[1]+1)],
+        "cover":"01.png",
+        "status":"draft"
+    }
+    (folder/"post.json").write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
 
 def build_grid_preview(manifest):
     tile_w,tile_h=360,450
@@ -210,6 +226,13 @@ def write_publishing_plan(manifest):
         "posts":[{"position":m["post"],"folder":m["slug"],"title":m["title"],"images":m["images"]} for m in manifest]
     },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
 
+def write_master_captions(manifest):
+    lines=["# KARETA.KZ — MASTER CAPTIONS","","Готовые подписи для 12 Instagram-постов. Порядок соответствует feed-order.json.",""]
+    for m in manifest:
+        p=POSTS[m["post"]-1]
+        lines += [f"## {m['post']:02d}. {m['title']}","",p[7],"",p[8],"",f"CTA: {p[4]}",""]
+    (OUT/"MASTER_CAPTIONS.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
+
 def main():
     OUT.mkdir(parents=True,exist_ok=True); manifest=[]; total=0
     for n,p in enumerate(POSTS,1):
@@ -220,7 +243,8 @@ def main():
     (OUT/"manifest.json").write_text(json.dumps({"posts":manifest,"total_images":total,"size":"1080x1350"},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     build_grid_preview(manifest)
     write_publishing_plan(manifest)
-    lines=["# KARETA.KZ — Instagram / 12 posts","","12 отдельных постов. В каждой папке есть description.md и 3–6 изображений карусели.","","Все изображения: 1080×1350 (4:5).","Общее превью ленты: grid-preview.jpg.","Порядок публикации: PUBLISHING_PLAN.md.","","## Состав",""]
+    write_master_captions(manifest)
+    lines=["# KARETA.KZ — Instagram / 12 posts","","12 отдельных постов. В каждой папке есть description.md, post.json и 3–6 изображений карусели.","","Все изображения: 1080×1350 (4:5).","Общее превью ленты: grid-preview.jpg.","Порядок публикации: PUBLISHING_PLAN.md.","Готовые тексты: MASTER_CAPTIONS.md.","","## Состав",""]
     for m in manifest: lines.append(f"{m['post']}. {m['slug']}/ — {m['title']} — {m['images']} изображений.")
     lines += ["",f"Всего изображений: {total}.","","Генератор: tools/social/generate_instagram_assets.py."]
     (OUT/"README.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
