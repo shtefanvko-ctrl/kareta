@@ -1146,8 +1146,19 @@
           "severity": "P0",
           "finding": "operationalFinance.dashboard is capability-gated at the dispatcher, but operationalFinance POST mutations are dispatched without explicit capability checks and rely on internal role/context checks.",
           "impact": "Authorization policy is inconsistent between reads and writes and can drift from the Capability Engine.",
-          "target": "Every operational Finance mutation must require an explicit backend Finance capability plus the existing resource/STO/order scope checks.",
-          "migrationPolicy": "Inventory each action and add capability checks with regression tests before removing role compatibility."
+          "target": "Every operational Finance mutation requires finance.manage in addition to—not instead of—existing order/STO/role scope.",
+          "migrationPolicy": "Do not grant finance.manage to organization.member. Seed the minimum intended capability sets if audit shows gaps, then add dispatcher gates and run master/STO/admin/owner regression.",
+          "investigationStatus": "ACTION_MATRIX_READY_CAPABILITY_DATA_AUDIT_READY",
+          "actionMatrix": "docs/domain/FINANCE_AUTH_MATRIX.json",
+          "auditTool": "tools/audit_operational_finance_authorization.php",
+          "verifiedFinding": [
+            "operationalFinance.dashboard already requires finance.manage at api/db.php.",
+            "Six operationalFinance POST mutations are not capability-gated at the dispatcher.",
+            "Internal mutation functions still enforce role and resource/STO/order scope.",
+            "finance.manageOwn and finance.manageOrganization currently canonicalize to finance.manage.",
+            "Inspected Identity seed migrations do not prove finance.manage on profile.master, so adding POST gates before deployed-capability audit can break intended master finance access."
+          ],
+          "implementationPrecondition": "Run deployed capability audit; profile.master and organization.owner must have intended finance.manage access while organization.member must not receive it broadly."
         },
         {
           "id": "FIN-API-001",
