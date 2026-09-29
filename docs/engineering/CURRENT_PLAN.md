@@ -1,6 +1,6 @@
 # KARETA.KZ — Current engineering plan
 
-Current web/runtime release: **188.5.5.6.84.149**  
+Current web/runtime release: **188.5.5.6.84.150**  
 Working branch: `import/kareta-current-84.142`  
 Merge target: `main`
 
@@ -62,7 +62,19 @@ Old release-numbered staging artifacts remain historical evidence only. Current 
 python3 tools/verify_staging_current.py --base-url https://s.kareta.kz
 ```
 
-84.149 is **not marked staging PASS until that deployed check succeeds**. The verifier now walks every lazy route CSS/JS asset and requires HTTP 200, correct MIME and the current release token.
+84.150 is **not marked staging PASS until that deployed check succeeds**. The verifier now walks every lazy route CSS/JS asset and requires HTTP 200, correct MIME and the current release token.
+
+### P1 — Master/WebView visual consistency
+
+84.150 removes five structural UI causes recorded as WV-07..WV-11:
+
+- Master outer content width inherits the canonical 1280px route frame instead of competing with a 1420px role-local frame;
+- Smart Action Hub / `Ещё` has one visual active state instead of showing the current route and More as simultaneously active;
+- Master Chat/Orders FABs are a horizontal quick rail with reserved scroll clearance and disappear under navigation overlays;
+- route asset failures no longer expose internal asset filenames or raw loader exceptions in the UI;
+- the public Masters filter rail is full-bleed and scroll-padded on narrow WebView widths.
+
+Code regression is gated by `tools/test_master_ui_contract_84_150.js`. WV-07..WV-11 remain evidence-open until narrow-WebView before/after screenshots are collected.
 
 ### P4 — legacy authorization
 
