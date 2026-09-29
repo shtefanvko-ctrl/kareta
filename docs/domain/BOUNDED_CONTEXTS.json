@@ -1213,7 +1213,62 @@
           "finding": "domain_entities/domain_relations mirror business-domain state and are also used by resource authorization. Migration 065 materializes both work_request and work_order from every legacy orders row and adds a produces relation without verifying that a request was actually accepted into a RepairOrder.",
           "impact": "The generic projection can assert a RepairOrder that does not yet exist semantically, contradict ServiceRequest != RepairOrder. If projection ownership is stale, resource authorization can also diverge from the owning domain.",
           "target": "domain_entities/domain_relations are projection/ACL indexes only. Business aggregate existence and transitions come from the owning domain contract; projection updates carry source/version evidence and never create stronger business facts than the owner.",
-          "migrationPolicy": "Do not delete the projection. Correct projection semantics incrementally: distinguish request-only versus accepted repair state, add provenance/revision checks, backfill safely, then verify authorization parity before changing readers."
+          "migrationPolicy": "Do not delete the projection. Correct projection semantics incrementally: distinguish request-only versus accepted repair state, add provenance/revision checks, backfill safely, then verify authorization parity before changing readers.",
+          "investigationStatus": "BLOCKED_ON_ACCEPTANCE_PREDICATE_AUDIT",
+          "rootCause": [
+            "Migration 065 materializes both work_request and work_order projection rows for every legacy orders row and links them with produces.",
+            "orders is a shared legacy store for request/intake and accepted repair lifecycle, so one physical row does not prove both domain aggregates exist.",
+            "Representative runtime Service lifecycle mutations update orders, sto_workflows and order_events but do not synchronously update domain_entities/domain_relations.",
+            "kareta_write_event writes order_events; it does not refresh domain_events/domain_entities.",
+            "api/domain.php and KaretaDomainOwnershipService consume domain_entities/domain_relations for Core reads, event recipient resolution and resource authorization."
+          ],
+          "acceptancePredicateEvidence": {
+            "provenSignals": [
+              "orders_master_claim sets master_id/master_user_id, status=process and accepted_at when a master claims an available request.",
+              "kareta_master_order_accept transitions sto_workflows from intake to diagnostics and sets orders.status=process.",
+              "kareta_sto_workflow_ensure can create an intake workflow for any accessed order, therefore sto_workflows existence alone is not an acceptance signal."
+            ],
+            "insufficientSignals": [
+              "orders row exists",
+              "orders.status=process by itself",
+              "sto_workflows row exists by itself"
+            ],
+            "unresolved": [
+              "Direct STO-created orders can enter process without the same accepted_at path; this must be classified before defining one canonical RepairOrder-exists predicate."
+            ]
+          },
+          "verifiedRisk": [
+            "Projection aggregate existence can be stronger than the owning Service fact.",
+            "Projection status and ownership can become stale after runtime Service mutations.",
+            "Stale projection ownership can affect authorization and event-recipient resolution, not only UI display."
+          ],
+          "remediationContract": {
+            "canonicalOwner": "Service owns ServiceRequest/RepairOrder lifecycle. Platform owns projection/index/ACL mechanics only.",
+            "phase1": [
+              "Inventory every transition that converts request/intake into an accepted repair, including master claim, masterOrder.accept, STO-created orders and admin/STO assignment flows.",
+              "Define one Service-owned RepairOrder existence predicate from explicit acceptance/lifecycle evidence.",
+              "Add a read-only consistency audit comparing orders + sto_workflows + acceptance signals against domain_entities/domain_relations.",
+              "Do not change projection-backed authorization readers until mismatch counts and affected entity types are known."
+            ],
+            "phase2": [
+              "Add source/provenance and source revision semantics to projection updates.",
+              "Introduce an owner-driven idempotent projection updater/outbox for verified Service transitions.",
+              "Backfill request-only rows without inventing work_order entities and repair accepted rows deterministically."
+            ],
+            "phase3": [
+              "Verify Core view parity, resource authorization parity, realtime recipient parity and rollback behavior.",
+              "Only then retire or rewrite the legacy migration/backfill assumption."
+            ]
+          },
+          "requiredRegression": [
+            "new request remains ServiceRequest-only until explicit acceptance condition",
+            "master claim creates/updates RepairOrder projection exactly once",
+            "masterOrder.accept creates/updates RepairOrder projection exactly once",
+            "STO direct-create/assignment path classified and covered",
+            "status transitions refresh projection revision without changing owner",
+            "resource authorization result remains identical before/after migration for legitimate actors",
+            "event recipient set remains identical for legitimate actors"
+          ]
         },
         {
           "id": "PLATFORM-IDEMPOTENCY-001",
@@ -1221,14 +1276,58 @@
           "finding": "idempotency_keys stores request_hash, but kareta_idempotency_begin does not compare an existing row's request_hash with the incoming request before replaying/reusing the key.",
           "impact": "The same idempotency key can be reused for a different payload in the same action/actor scope and receive the previous response or reuse the processing slot instead of an explicit conflict.",
           "target": "Bind action + stable actor/context + idempotency key to exactly one canonical request hash. A different payload for an existing key returns an explicit 409 IDEMPOTENCY_CONFLICT.",
-          "migrationPolicy": "Add request-hash comparison and regression tests before broadening idempotency coverage."
+          "migrationPolicy": "Add request-hash comparison and regression tests before broadening idempotency coverage.",
+          "investigationStatus": "READY_FOR_IMPLEMENTATION",
+          "verifiedCoverage": {
+            "domainApi": "All api/domain.php POST actions call kareta_idempotency_begin with action scope domain.<action>.",
+            "legacyDbActions": [
+              "shop.order.create",
+              "usedMarket.save",
+              "productReviews.submit",
+              "productQuestions.submit",
+              "masterExchange.saveResponse",
+              "workPosts.comment",
+              "publicReviews.submit",
+              "orders.create",
+              "chats.openDirect",
+              "messages.add"
+            ]
+          },
+          "rootCause": [
+            "kareta_idempotency_begin calculates request_hash and stores it.",
+            "On an existing key row, request_hash is not compared before completed-response replay, processing conflict handling, or stale-row reuse.",
+            "The stored request_hash is overwritten when an existing non-completed row is reused."
+          ],
+          "implementationContract": {
+            "samePayloadCompleted": "Replay the stored response with X-Idempotency-Replayed: 1.",
+            "samePayloadProcessing": "Return 409 idempotency_request_processing while the processing lease is fresh.",
+            "differentPayloadAnyExistingStatus": "Return 409 IDEMPOTENCY_CONFLICT without overwriting the existing request_hash or stored response.",
+            "staleSamePayload": "May reacquire the stale processing row and continue.",
+            "failureRetry": "May retry the same payload/key according to existing failed-row behavior; a different payload still conflicts."
+          },
+          "requiredRegression": [
+            "same key + same payload + completed => exact replay",
+            "same key + different payload + completed => 409 conflict, no replay",
+            "same key + different payload + processing => 409 conflict, row unchanged",
+            "same key + same payload + fresh processing => processing 409",
+            "same key + same payload + stale processing => reacquire allowed",
+            "same key + different payload + failed => conflict",
+            "missing idempotency key => existing behavior unchanged",
+            "all existing api/domain.php POST actions and 10 legacy protected actions remain callable"
+          ]
         },
         {
           "id": "PLATFORM-IDEMPOTENCY-002",
           "severity": "P1",
           "finding": "actor_hash includes PHP session_id, so idempotency scope changes after session rotation even for the same Account/context.",
           "impact": "A legitimate retry after session renewal can bypass the previous idempotency record.",
-          "target": "Use stable authenticated Account/context identity in the actor scope, with legacy fallback only where Identity is unavailable."
+          "target": "Use stable authenticated Account/context identity in the actor scope, with legacy fallback only where Identity is unavailable.",
+          "investigationStatus": "DESIGN_READY_AFTER_IDEMPOTENCY_001",
+          "stableScopeEvidence": [
+            "Identity sessions expose stable account_id and current_context_id.",
+            "PHP session_id rotates independently and is therefore not a business actor identity."
+          ],
+          "targetScope": "action + AccountId + ContextId + key; legacy user/phone fallback only when Identity resolution is unavailable."
         },
         {
           "id": "PLATFORM-HEALTH-001",
