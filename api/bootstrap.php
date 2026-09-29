@@ -483,11 +483,19 @@ function kareta_schema_bootstrap_required(PDO $pdo): bool
 function kareta_runtime_maintenance(PDO $pdo): void
 {
     if (!kareta_runtime_maintenance_due()) return;
-    kareta_safe_step($pdo, 'BOOTSTRAP_CATALOG', static function(PDO $pdo): void { kareta_ensure_catalog_content($pdo); });
-    kareta_safe_step($pdo, 'BOOTSTRAP_PUBLIC', static function(PDO $pdo): void { kareta_ensure_public_content($pdo); });
-    kareta_safe_step($pdo, 'BOOTSTRAP_SEED', static function(PDO $pdo): void { kareta_ensure_core_seed_integrity($pdo); });
+
+    // Runtime maintenance must be bounded and non-duplicative. Catalog/public
+    // content is versioned by migrations; there are no runtime ensure functions
+    // for those concerns. Demo seeding is optional and production-safe because
+    // kareta_seed() is a no-op unless KARETA_DEMO_SEED is explicitly enabled.
+    if (defined('KARETA_DEMO_SEED') && KARETA_DEMO_SEED) {
+        kareta_safe_step($pdo, 'BOOTSTRAP_SEED', static function(PDO $pdo): void { kareta_seed($pdo); });
+    }
+
+    // One relation repair pass is enough: kareta_backfill_relations() already
+    // rebuilds user_stats at the end. Do not run the same expensive aggregation
+    // two or three more times in one maintenance cycle.
     kareta_safe_step($pdo, 'BOOTSTRAP_RELATIONS', static function(PDO $pdo): void { kareta_backfill_relations($pdo); });
-    kareta_safe_step($pdo, 'BOOTSTRAP_STATS', static function(PDO $pdo): void { kareta_rebuild_user_stats($pdo); });
 }
 
 function kareta_bootstrap_runtime(PDO $pdo): void
