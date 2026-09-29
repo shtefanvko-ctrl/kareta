@@ -2,7 +2,7 @@
   "schema": "kareta.bounded-contexts.v1",
   "status": "TARGET_UNTIL_VERIFIED",
   "coverage": "IN_PROGRESS",
-  "notes": "Identity, Garage, Master, Booking, Service, Organization and Marketplace have repository-backed partial verification. Parallel legacy/native stores are explicitly flagged until a single canonical owner is proven.",
+  "notes": "Identity, Garage, Master, Booking, Service, Organization, Marketplace and Communication have repository-backed partial verification. Duplicate stores/read-state representations are recorded as debt instead of silently canonized.",
   "contexts": [
     {
       "id": "Identity",
@@ -691,25 +691,147 @@
     },
     {
       "id": "Communication",
-      "verificationStatus": "TARGET_UNTIL_VERIFIED",
+      "verificationStatus": "PARTIALLY_VERIFIED",
       "targetOwns": [
         "Thread",
         "Message",
+        "ChatParticipant",
+        "MessageRead",
         "Notification",
         "DeliveryState"
       ],
-      "commands": [],
-      "queries": [],
-      "events": [],
-      "apis": [],
+      "verifiedChatRuntimeStores": [
+        "chats",
+        "messages",
+        "chat_participants",
+        "chat_message_reads"
+      ],
+      "notificationRuntimeStores": [
+        {
+          "store": "notification_center",
+          "status": "CURRENT_DOMAIN_UI_STORE",
+          "readers": [
+            "api/domain.php notifications.list",
+            "js/next/pages/notifications.js"
+          ],
+          "writers": [
+            "api/domain.php domain-event delivery"
+          ]
+        },
+        {
+          "store": "notifications",
+          "status": "ACTIVE_LEGACY_EVENT_STORE",
+          "readers": [
+            "api/db.php notifications.getMine"
+          ],
+          "writers": [
+            "api/db.php kareta_notification_insert",
+            "legacy Service/Garage/Chat operational flows"
+          ]
+        }
+      ],
+      "commands": [
+        "chats.openDirect",
+        "chats.create",
+        "chats.supportOpen",
+        "chats.markRead",
+        "messages.add",
+        "messages.update",
+        "messages.delete",
+        "notification.read",
+        "notification.readAll",
+        "legacy notifications.markRead",
+        "legacy notifications.markAllRead"
+      ],
+      "queries": [
+        "chats.getAll",
+        "chats.contacts",
+        "messages.get",
+        "notifications.list",
+        "legacy notifications.getMine"
+      ],
+      "events": [
+        "message.new",
+        "domain event notification delivery"
+      ],
+      "apis": [
+        "api/domain.php notifications.*",
+        "api/chat_attachment.php",
+        "legacy api/db.php chats.* / messages.* / notifications.* actions"
+      ],
       "dependencies": [
-        "Identity"
+        "Identity for effective actor/context",
+        "Service for order-linked chats",
+        "Master/Organization/Marketplace for participant resolution",
+        "Platform domain_events for domain-event notification delivery",
+        "external messaging outbox/provider adapters for asynchronous fan-out"
       ],
       "forbiddenWrites": [
-        "accounts",
-        "repair_orders"
+        "Service order lifecycle",
+        "Identity profile/account state",
+        "Marketplace order lifecycle",
+        "Finance state"
       ],
-      "evidence": []
+      "verifiedInvariants": [
+        "Chat reads and message mutations require resource access through chat participants or legacy role/entity ownership checks.",
+        "Direct chat creation uses chat_participants and context-scoped chat identity to avoid one global direct-chat identity across contexts.",
+        "Message retries are idempotency-guarded by chat_id + from_role + client_message_id.",
+        "Chat attachments are stored outside public paths and are returned only after chat access verification.",
+        "Message read state is recorded in participant/read tables while legacy per-role unread/read columns are still maintained for compatibility.",
+        "The current Notifications page reads notification_center and marks notification_center rows read through capability-protected api/domain.php actions."
+      ],
+      "knownBoundaryDebt": [
+        {
+          "id": "COMM-NOTIFY-SOT-001",
+          "severity": "P0",
+          "finding": "Two active notification stores coexist. Current UI reads notification_center, while many legacy business/chat flows write notifications through kareta_notification_insert.",
+          "impact": "A notification written only to notifications can be absent from the current Notifications page; read state can also diverge between the two stores.",
+          "target": "One canonical notification store/contract with adapters for legacy producers.",
+          "migrationPolicy": "Do not delete either table. Inventory every producer first, introduce one dual-write/outbox or migration adapter with idempotent keys, verify UI/read-state parity, then retire legacy reads/writes incrementally."
+        },
+        {
+          "id": "COMM-READSTATE-001",
+          "severity": "P1",
+          "finding": "Unread/read state is represented both in chats/messages per-role columns and in chat_participants/chat_message_reads.",
+          "impact": "Partial writers can desynchronize unread counters and delivery/read labels.",
+          "target": "Select one canonical participant/message read model after all readers/writers are mapped; keep compatibility projection for legacy UI during migration.",
+          "migrationPolicy": "No column/table removal until parity tests prove counters and read receipts for client/master/STO/seller/admin."
+        },
+        {
+          "id": "COMM-AUTH-001",
+          "severity": "P1",
+          "finding": "Chat/message actions rely on Identity-aware resource access plus legacy role/entity fallbacks, but dispatcher actions are not uniformly capability-gated.",
+          "target": "Define explicit chat read/write capabilities while preserving participant/resource ownership checks.",
+          "migrationPolicy": "Add capability checks only after action-by-action compatibility and participant scenarios are covered."
+        },
+        {
+          "id": "COMM-API-001",
+          "severity": "P1",
+          "finding": "Chats/messages and legacy notifications still route through api/db.php while notification_center uses api/domain.php.",
+          "target": "Move Communication commands/queries behind explicit owner contracts without creating another duplicate API layer."
+        }
+      ],
+      "unverified": [
+        "Complete producer inventory for notifications and notification_center",
+        "Whether any synchronization already exists between notifications and notification_center outside inspected files",
+        "All chat actions and role/capability combinations",
+        "External Telegram/WhatsApp delivery outbox ownership and retry semantics",
+        "All old js/chat.js readers/writers that still depend on legacy unread columns"
+      ],
+      "evidence": [
+        "api/db.php",
+        "api/domain.php",
+        "api/chat_attachment.php",
+        "api/migrations/053_client_orders_support_chat.php",
+        "api/migrations/054_schema_integrity_chat_attachments.php",
+        "api/migrations/056_chat_read_status.php",
+        "api/migrations/063_domain_platform_core.php",
+        "api/migrations/066_event_notification_core.php",
+        "api/migrations/101_context_role_chat_state.php",
+        "js/next/pages/chats.js",
+        "js/next/pages/notifications.js",
+        "js/chat.js"
+      ]
     },
     {
       "id": "Finance",
