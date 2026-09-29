@@ -1468,25 +1468,43 @@
           "impact": "A health/readiness probe can have side effects, increased latency or couple availability checks to repair work.",
           "target": "Separate pure liveness/readiness inspection from explicit repair/migration commands. Health endpoints may record telemetry only through a bounded non-disruptive path.",
           "migrationPolicy": "Keep current recovery behavior until deployment/startup migration flow is proven; first add pure read-only probes and tests.",
-          "status": "PARTIALLY_IMPLEMENTED",
+          "status": "IMPLEMENTED_PENDING_RUNTIME_REGRESSION",
           "implementation": [
-            "api/runtime_health.php already avoids bootstrap.php and is observational.",
-            "api/schema_health.php now opens a direct PDO connection, runs KaretaSchemaContract::inspect only, does not record schema_contract_audit, and does not load bootstrap.php.",
-            "tools/test_health_readonly_boundary_84_154.js guards runtime_health + schema_health against bootstrap and SQL mutation."
+            "api/runtime_health.php is observational and never loads bootstrap.php.",
+            "api/schema_health.php uses direct PDO + KaretaSchemaContract::inspect only; it does not call record(), migrations or bootstrap maintenance.",
+            "api/identity_health.php now observes Identity/legacy sessions with SELECT-only queries; it does not call bootstrap.php, KaretaAuthResolver, KaretaSessionService, context reconciliation, session touch/rotation or audit writers.",
+            "tools/test_health_readonly_boundary_84_154.js statically rejects bootstrap/SQL-write/AuthResolver regressions."
           ],
           "remaining": [
-            "api/identity_health.php still loads bootstrap.php.",
-            "KaretaAuthResolver used by identity_health can create Account/Profile for legacy-compatible identity and writes auth_resolver_audit, so it is not a pure readiness probe.",
-            "Identity needs a separate read-only resolver/probe contract before identity_health can be made observational."
+            "Run health endpoints against staging with anonymous, Identity, legacy-compatible and conflicting-session scenarios.",
+            "Verify diagnostics-token/admin detail responses remain compatible with monitoring clients.",
+            "Keep repair/migration/audit recording on explicit operational paths, not readiness probes."
           ],
-          "nextAction": "Introduce a read-only Identity readiness resolver that never ensures accounts/profiles, never switches context and never writes audits; only then refactor identity_health."
+          "nextAction": "Introduce a read-only Identity readiness resolver that never ensures accounts/profiles, never switches context and never writes audits; only then refactor identity_health.",
+          "implementationCommits": [
+            "e45f4a3f756862a1a89583eee28eb6531d7e1ac4",
+            "ac06930936ed8f03d51a10fdc68b74b4639c0c27",
+            "ba5bff8e189fb14f3037fd4df9cfca535cdf3897"
+          ]
         },
         {
           "id": "PLATFORM-RUNTIME-DDL-001",
           "severity": "P1",
           "finding": "Normal bootstrap can perform schema-changing work when migration history does not match the expected version.",
           "impact": "Application traffic can enter a DDL/recovery path; the database lock prevents duplicate work but does not eliminate request latency or deployment coupling.",
-          "target": "Production releases run deterministic migrations before serving normal traffic; runtime auto-repair remains an explicit emergency compatibility path."
+          "target": "Production releases run deterministic migrations before serving normal traffic; runtime auto-repair remains an explicit emergency compatibility path.",
+          "status": "PARTIALLY_MITIGATED",
+          "verifiedMitigation": [
+            "config.php sets KARETA_DB_VERSION=129.",
+            "Production forces KARETA_DB_AUTO_MIGRATE=false unless KARETA_DB_RUNTIME_MIGRATION_WINDOW is explicitly enabled.",
+            "bootstrap schema-changing work is serialized by a database named lock."
+          ],
+          "remainingRisk": [
+            "kareta_pdo()/kareta_bootstrap_runtime can still execute runtime maintenance/backfill on ordinary requests.",
+            "schema mismatch paths still call schema create/ensure logic even when migration execution is disabled.",
+            "deployment-time migration orchestration has not yet been proven as the sole normal production path."
+          ],
+          "nextAction": "Inventory every write performed by kareta_runtime_maintenance and split mandatory request-time reads from deployment/repair jobs before disabling runtime maintenance."
         },
         {
           "id": "PLATFORM-AUDIT-001",
