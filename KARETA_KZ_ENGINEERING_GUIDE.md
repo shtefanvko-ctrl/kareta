@@ -314,3 +314,14 @@ Liveness/readiness проверяет состояние. Repair/migration из�
 GET `operationalFinance.dashboard` уже capability-gated, но шесть POST mutation actions пока проходят только внутренние role/resource/STO checks. Нельзя просто добавить gate и считать задачу закрытой: сначала нужно проверить реальные deployed capability sets. В частности, `profile.master` в просмотренных seed migrations не имеет доказанного `finance.manage`.
 
 Порядок: `docs/domain/FINANCE_AUTH_MATRIX.json` → read-only `tools/audit_operational_finance_authorization.php` → минимальный capability seed для допустимых контекстов → dispatcher gates → regression для master/STO/admin/owner. `organization.member` не получает finance.manage автоматически.
+
+
+### Booking → Service schedule boundary
+
+Расписание мастера и запись клиента относятся к Booking/Master planning, но lifecycle и compatibility schedule fields самого Service order принадлежат Service.
+
+Запрещённый паттерн: `master schedule/recovery -> UPDATE orders.date/time/estimated_duration_min` напрямую. Разрешённый паттерн: schedule module меняет собственный `master_order_plans`/proposal state и вызывает Service-owned contract `kareta_service_order_schedule_projection_update()`.
+
+Contract не открывает и не завершает транзакцию: транзакцией владеет вызывающий use-case, поэтому plan update + Service projection + proposal/bay changes остаются атомарными. Contract не применяется к `parts_request`.
+
+Regression guard: `tools/test_booking_service_boundary_84_153.js`. Возврат прямого UPDATE schedule fields в `api/master_day_operations.php`, `api/master_workplace.php` или `api/master_recovery_control.php` считается boundary regression.
