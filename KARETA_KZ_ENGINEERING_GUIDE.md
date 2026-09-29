@@ -325,3 +325,14 @@ GET `operationalFinance.dashboard` уже capability-gated, но шесть POST
 Contract не открывает и не завершает транзакцию: транзакцией владеет вызывающий use-case, поэтому plan update + Service projection + proposal/bay changes остаются атомарными. Contract не применяется к `parts_request`.
 
 Regression guard: `tools/test_booking_service_boundary_84_153.js`. Возврат прямого UPDATE schedule fields в `api/master_day_operations.php`, `api/master_workplace.php` или `api/master_recovery_control.php` считается boundary regression.
+
+
+### Health / readiness purity
+
+Health endpoint не должен запускать schema migration, runtime repair, account/profile ensure, context recovery или audit write. Проверка состояния и ремонт — разные use-case.
+
+`api/runtime_health.php` и `api/schema_health.php` считаются read-only probes. `schema_health.php` использует прямой PDO + `KaretaSchemaContract::inspect()` и не загружает `bootstrap.php`.
+
+`api/identity_health.php` пока НЕ считается pure readiness: он использует `KaretaAuthResolver`, а compatibility resolve может создавать Identity records и писать audit. Его нельзя «починить» простым удалением bootstrap — сначала нужен отдельный read-only resolver.
+
+Static guard: `tools/test_health_readonly_boundary_84_154.js`.
