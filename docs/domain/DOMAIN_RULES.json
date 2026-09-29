@@ -1,0 +1,19 @@
+{
+  "schema": "kareta.domain-rules.v1",
+  "status": "TARGET_UNTIL_VERIFIED",
+  "enforcement": "DOCUMENTATION_ONLY",
+  "notes": "These are required engineering constraints. They are not claimed to be automatically enforced until CI/release integration is implemented.",
+  "rules": [
+    {"id":"IDENTITY-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"MasterProfile creation MUST NOT create a second Account."},
+    {"id":"IDENTITY-002","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"SellerProfile creation MUST NOT create a second Account."},
+    {"id":"AUTH-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"Authorization MUST use effective backend capabilities."},
+    {"id":"CTX-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"Cross-context writes MUST go through the verified owner contract."},
+    {"id":"CTX-002","severity":"P1","status":"REQUIRED_CONSTRAINT","rule":"Each mutable business entity MUST resolve to one owner after factual inventory."},
+    {"id":"API-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"New business actions MUST NOT be added directly to api/db.php."},
+    {"id":"API-002","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"New frontend business code MUST NOT introduce direct fetches to legacy api/db.php."},
+    {"id":"FEATURE-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"A feature MUST NOT be promoted to READY without required evidence."},
+    {"id":"LEGACY-001","severity":"P1","status":"REQUIRED_CONSTRAINT","rule":"Legacy code MUST NOT be removed until replacement usage and regression safety are proven."},
+    {"id":"AGENT-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"Agent MUST identify factual domain evidence, target owner and invariants before implementation."},
+    {"id":"DOC-001","severity":"P0","status":"REQUIRED_CONSTRAINT","rule":"Unverified ownership MUST be labeled TARGET_UNTIL_VERIFIED and MUST NOT be presented as canonical fact."}
+  ]
+}
