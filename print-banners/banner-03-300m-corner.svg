@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Working master: official HTTPS brand assets only. Embed assets before final print export. -->
-<svg xmlns="http://www.w3.org/2000/svg" width="1000mm" height="600mm" viewBox="0 0 2000 1200"><rect width="2000" height="1200" fill="#fff"/>
+<!-- Vehicle brand marks are raster assets only. No automotive SVG icon geometry is used. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1000mm" height="600mm" viewBox="0 0 2000 1200">
+<rect width="2000" height="1200" fill="#fff"/>
 <rect x="42" y="42" width="1916" height="1116" rx="26" fill="none" stroke="#ECECEC" stroke-width="3"/>
-<image href="https://kareta.kz/assets/onboarding/kareta_logo_full.png" x="90" y="92" width="1010" height="215" preserveAspectRatio="xMinYMid meet"/>
-<image href="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" x="1080" y="105" width="315" height="108" preserveAspectRatio="xMidYMid meet"/>
-<image href="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" x="1080" y="228" width="315" height="96" preserveAspectRatio="xMidYMid meet"/>
-<line x1="90" y1="800" x2="1910" y2="800" stroke="#ECECEC" stroke-width="2"/>
-<image href="https://www.bmw.dk/content/dam/bmw/common/images/logo-icons/BMW/BMW_Grey-Colour_RGB.svg.asset.1756199978277.svg" x="120" y="860" width="230" height="230" preserveAspectRatio="xMidYMid meet"/>
-<image href="https://www.peugeot.com/content/dam/peugeot/master/home/peugeot-logo-alt.png" x="430" y="865" width="270" height="220" preserveAspectRatio="xMidYMid meet"/>
-<circle cx="820" cy="975" r="84" fill="#111"/>
-<image href="https://www.mercedes-benz.com/logos/mb-star-white.svg" x="752" y="907" width="136" height="136" preserveAspectRatio="xMidYMid meet"/>
-<image href="https://static.audi.com/assets/images/frontend/rings18-2GJCA2FU.svg" x="1040" y="900" width="330" height="150" preserveAspectRatio="xMidYMid meet"/>
-<image href="https://www.volkswagen.ch/etc.clientlibs/clientlibs/vwa-ngw18/ngw18-frontend/apps/resources/statics/img/vw-logo-2x.png" x="1510" y="860" width="230" height="230" preserveAspectRatio="xMidYMid meet"/><path d="M1560 430V285Q1560 165 1680 165H1785V105L1940 205L1785 305V245H1700Q1640 245 1640 305V430Z" fill="#FF6A00"/><text x="1410" y="565" font-family="Arial,sans-serif" font-size="178" font-weight="900" fill="#151515">300</text><text x="1420" y="645" font-family="Arial,sans-serif" font-size="60" font-weight="900" fill="#151515">МЕТРОВ</text></svg>
+<image href="../assets/onboarding/kareta_logo_full.png" x="75" y="72" width="1000" height="225" preserveAspectRatio="xMinYMid meet"/>
+<image href="assets/stores/google-play.png" x="1085" y="78" width="310" height="100" preserveAspectRatio="xMidYMid meet"/>
+<image href="assets/stores/app-store.png" x="1085" y="196" width="310" height="100" preserveAspectRatio="xMidYMid meet"/>
+<path d="M1560 430V285Q1560 165 1680 165H1785V105L1940 205L1785 305V245H1700Q1640 245 1640 305V430Z" fill="#FF6A00"/><text x="1410" y="565" font-family="Arial,sans-serif" font-size="178" font-weight="900" fill="#151515">300</text><text x="1420" y="645" font-family="Arial,sans-serif" font-size="60" font-weight="900" fill="#151515">МЕТРОВ</text>
+<line x1="85" y1="795" x2="1915" y2="795" stroke="#EDEDED" stroke-width="2"/>
+<image href="assets/brands/bmw.png" x="105" y="865" width="210" height="210" preserveAspectRatio="xMidYMid meet"/>
+<rect x="455" y="865" width="190" height="190" rx="32" fill="#111"/>
+<image href="assets/brands/peugeot.png" x="475" y="885" width="150" height="150" preserveAspectRatio="xMidYMid meet"/>
+<circle cx="900" cy="960" r="95" fill="#111"/>
+<image href="assets/brands/mercedes-benz.png" x="828" y="888" width="145" height="145" preserveAspectRatio="xMidYMid meet"/>
+<image href="assets/brands/audi.jpg" x="1110" y="880" width="310" height="165" preserveAspectRatio="xMidYMid meet"/>
+<image href="assets/brands/volkswagen.png" x="1640" y="865" width="190" height="190" preserveAspectRatio="xMidYMid meet"/>
+</svg>

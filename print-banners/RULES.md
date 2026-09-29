@@ -7,6 +7,7 @@
 - Target KARETA logo width: about **50% of the banner width**; it should be visibly larger than the previous draft while remaining fully inside the safe area.
 
 ## Third-party brand assets
+- **Final automotive-logo rule:** BMW, Peugeot, Mercedes-Benz, Audi, and Volkswagen must appear in the banner as raster image assets (`PNG`/`JPG`/`WebP`), never as embedded SVG vehicle icons. If an approved official source is SVG-only, rasterize that exact official artwork to PNG without changing geometry, colors, or proportions, then use the PNG.
 - For vehicle-marque logos, store badges, and any other third-party brand marks, use only original, recognizable assets from official or otherwise explicitly permitted sources.
 - **Vehicle marque artwork used in these banners must be the original permitted brand artwork. Do not replace it with SVG icon-pack versions, traced vectors, hand-built SVG paths, generated look-alikes, or simplified recreations.**
 - For BMW, Peugeot, Mercedes-Benz, Audi, and Volkswagen, use the approved original image asset exactly as supplied by the permitted source; preserve its original proportions, colors, clear space, and visual form.
@@ -20,7 +21,7 @@
 - Exactly 3 banners.
 - Physical size of each banner: **100 × 60 cm**.
 - Aspect ratio: **5:3**.
-- Master canvas may be SVG at `1000mm × 600mm`, but third-party automotive brand artwork inside it must remain the approved original asset and must not be recreated as SVG icon geometry.
+- Master canvas may be SVG at `1000mm × 600mm` for layout and KARETA arrows, but every third-party automotive logo inside it must be a raster image asset. SVG remains forbidden for vehicle-brand icons in the final banner.
 - Raster export for print, if required: **300 dpi**.
 - Background: solid white.
 
