@@ -30,6 +30,9 @@ expect(identity.includes("session_start(['read_and_close'=>true])"),'identity he
 expect(identity.includes("'readOnly'=>true"),'detailed identity health must declare readOnly');
 expect(identity.includes('SELECT s.id,s.account_id,s.current_context_id'),'identity health must observe auth_sessions directly');
 expect(identity.includes("selected_context_unavailable"),'identity health must report invalid selected context instead of repairing it');
+expect(runtime.includes('mysql:unix_socket='),'runtime health must support configured MySQL socket');
+expect(schema.includes('mysql:unix_socket='),'schema health must support configured MySQL socket');
+expect(identity.includes('mysql:unix_socket='),'identity health must support configured MySQL socket');
 
 if(fail.length){
   console.error(fail.join('\n'));
