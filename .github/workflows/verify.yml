@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - import/kareta-current-84.142
+      - fix/navigation-audit-84.150
 
 permissions:
   contents: read
