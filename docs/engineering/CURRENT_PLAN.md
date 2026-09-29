@@ -1,8 +1,11 @@
 # KARETA.KZ — Current engineering plan
 
-Current web/runtime release: **188.5.5.6.84.150**  
-Working branch: `import/kareta-current-84.142`  
+Reconciled web/runtime baseline: **188.5.5.6.84.150** (draft PR #16)  
+Garage/WebView candidate: **188.5.5.6.84.151** (draft PR #17, based on #16)  
+Working branch for the baseline: `import/kareta-current-84.142`  
 Merge target: `main`
+
+> Candidate status, 29 September 2026: `docs/release/current.json` records 84.151 with `NOT_VERIFIED_AFTER_84_151` for staging. The 84.150 sections below describe the reconciled base, not proof of an 84.151 deployment. Check PR heads and the exact release token before treating this plan as an implementation or staging report.
 
 ## Current branch reality
 
