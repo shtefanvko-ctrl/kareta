@@ -1,4 +1,4 @@
-/* KARETA.KZ R188.5.5.6.84.143
+/* KARETA.KZ canonical MASTER shell — hardened in R188.5.5.6.84.150
    Canonical MASTER shell parity contract.
    One owner for Master header/nav geometry across direct loads and route transitions.
    Client visual geometry is mirrored, while route composition remains Master-owned. */
@@ -275,7 +275,49 @@ html[data-user-role="master"] #k-menu-toggle .k-menu-toggle-label{
   }
 
   html[data-user-role="master"] #k-mobile-fab-stack{
-    bottom:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px) + 12px)!important;
+    right:max(12px,env(safe-area-inset-right,0px))!important;
+    bottom:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px) + 10px)!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,44px)!important;
+    grid-auto-flow:column!important;
+    grid-auto-columns:44px!important;
+    gap:8px!important;
+    align-items:center!important;
+    justify-items:center!important;
+    transition:opacity .16s ease,visibility .16s ease,transform .16s ease!important;
+  }
+  html[data-user-role="master"] #k-mobile-fab-stack .k-mobile-fab{
+    width:44px!important;
+    height:44px!important;
+    min-width:44px!important;
+    min-height:44px!important;
+    border-radius:14px!important;
+    box-shadow:0 10px 26px rgba(15,23,42,.16)!important;
+  }
+
+  /* More/drawer is a temporary navigation state: only its trigger may look active. */
+  html[data-user-role="master"].k-smart-action-open #k-mobile-nav .k-nav-link:not(.k-nav-more).is-active,
+  html[data-user-role="master"].k-smart-action-open #k-mobile-nav .k-nav-link:not(.k-nav-more)[aria-current="page"]{
+    border-color:transparent!important;
+    background:transparent!important;
+    color:var(--k-master-shell-muted)!important;
+  }
+  html[data-user-role="master"] #k-mobile-nav .k-nav-more:is(.is-active,[aria-expanded="true"]){
+    border-color:var(--k-master-shell-orange)!important;
+    background:var(--k-master-shell-orange)!important;
+    color:#fff!important;
+  }
+  html[data-user-role="master"]:is(.k-smart-action-open,.k-menu-open) #k-mobile-fab-stack{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+    transform:translateY(8px)!important;
+  }
+
+  /* The horizontal quick rail sits above the dock; reserve scrollable clearance for it. */
+  html[data-user-role="master"] #k-page-outlet{
+    padding-bottom:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px) + 66px)!important;
+    scroll-padding-bottom:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px) + 66px)!important;
   }
 }
 
