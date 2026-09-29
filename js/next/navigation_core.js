@@ -71,7 +71,12 @@
   function contextKind(snapshot=identity()){
     if (!snapshot.authenticated) {
       const role = legacyRole();
-      if (hasLegacySession() && ['client','customer','user'].includes(role)) return 'personal';
+      if (hasLegacySession()) {
+        if (['client','customer','user'].includes(role)) return 'personal';
+        if (role === 'master') return 'master';
+        if (role === 'seller') return 'seller';
+        if (['sto','service'].includes(role)) return 'organization_service';
+      }
       return 'anonymous';
     }
     if (window.KaretaIdentity?.has?.('*') === true) return 'admin';
