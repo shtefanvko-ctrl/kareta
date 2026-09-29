@@ -1,10 +1,10 @@
 # KARETA.KZ — ENGINEERING GUIDE
 
 Version: 2026-09-29
-Status: TARGET UNTIL VERIFIED
+Status: MIXED — CONTEXT-LEVEL FACTUAL INVENTORY COMPLETE / PARTIALLY VERIFIED
 Scope: architecture, domain boundaries, agent workflow, verification and release discipline.
 
-> Важно: этот документ задаёт целевую инженерную модель. Граница bounded context или ownership не считается фактически подтверждённой, пока она не сверена с текущими DB tables, API actions, PHP handlers, JS state, routes, permissions и tests.
+> Важно: первый фактический проход выполнен по всем bounded contexts. Документ теперь совмещает подтверждённые факты и целевые ограничения. Каноническим считается только утверждение, которое имеет repository evidence; неполные границы, legacy-совместимость и планируемые изменения сохраняют явный статус и не выдаются за завершённую реализацию.
 
 ## 0. Основной принцип
 
@@ -22,31 +22,35 @@ KARETA.KZ развивается инкрементально. Рабочая а
 
 ## 1. Статусы архитектурных утверждений
 
-Используются три статуса:
+Используются пять статусов:
 
-- `VERIFIED` — подтверждено фактическим кодом/БД/API/tests;
-- `TARGET_UNTIL_VERIFIED` — целевая архитектурная граница, ещё требующая инвентаризации;
+- `VERIFIED` — конкретное утверждение полностью подтверждено требуемым evidence;
+- `PARTIALLY_VERIFIED` — граница или feature подтверждена repository evidence, но не все legacy paths, callers, permissions и regression scenarios исчерпывающе проверены;
+- `PARTIALLY_VERIFIED_WITH_P0_DEBT` — фактическая граница подтверждена, но внутри неё найдено критичное архитектурное расхождение, которое нельзя скрывать статусом READY;
+- `TARGET_UNTIL_VERIFIED` — целевое утверждение ещё не подтверждено фактической реализацией;
 - `PLANNED` — механизм описан, но ещё не включён как автоматический enforcement.
 
 Нельзя называть ownership каноническим только потому, что он логично выглядит в DDD-модели.
 
-## 2. Целевые bounded contexts
+## 2. Bounded contexts — фактический статус
 
-До завершения Actual Domain Inventory следующие границы имеют статус `TARGET_UNTIL_VERIFIED`:
+Первый repository-backed inventory pass завершён для всех основных контекстов. На текущем этапе:
 
-- `Identity` — Account, Person, AuthSession, AuthChallenge, Context, Capability;
-- `Garage` — GarageVehicle, VehicleProfile, vehicle ownership, garage state;
-- `Master` — MasterProfile, skills, master services, working status, operational settings;
-- `Service` — ServiceRequest, RepairOrder, diagnostics, repair lifecycle;
-- `Booking` — Booking, CalendarSlot, appointment/time reservation;
-- `Organization` — Organization/STO, Membership, workplace, organization settings;
-- `Marketplace` — Product, PartProduct, SellerOffer, Stock, PartOrder;
-- `Community` — Post, WorkPublication, Subscription, Like, Comment;
-- `Communication` — Thread, Message, Notification, delivery state;
-- `Finance` — Payment, Invoice, Transaction, Commission, Settlement;
-- `Platform` — Audit, Feature Registry, Runtime Config, Integration Health, Idempotency, Trace.
+- `Identity` — `PARTIALLY_VERIFIED`: Account, Person, PersonProfile, AuthSession, Context, Capability;
+- `Garage` — `PARTIALLY_VERIFIED`: GarageVehicle и vehicle-owned child state; физический runtime-store пока `client_vehicles`;
+- `Master` — `PARTIALLY_VERIFIED`: MasterProfile, onboarding, availability/preferences и рабочие настройки;
+- `Service` — `PARTIALLY_VERIFIED`: ServiceRequest, RepairOrder и repair lifecycle при сохранённом legacy shared store `orders`;
+- `Booking` — `PARTIALLY_VERIFIED`: CalendarEvent, Booking и scheduling projection;
+- `Organization` — `PARTIALLY_VERIFIED`: Organization, Membership, organizational workplace и legacy STO/seller mirrors;
+- `Marketplace` — `PARTIALLY_VERIFIED`: Product/Order/Stock с выявленным параллельным `market_*` / `seller_*` контуром;
+- `Community` — `PARTIALLY_VERIFIED`: типизированные CommunityPost, WorkPublication, MasterWallPost и feed projection;
+- `Communication` — `PARTIALLY_VERIFIED`: Thread, Message, participant/read state и Notification с выявленным dual-store;
+- `Finance` — `PARTIALLY_VERIFIED`: Invoice, Payment, Transaction, Ledger и operational projections;
+- `Platform` — `PARTIALLY_VERIFIED_WITH_P0_DEBT`: projection, events, ACL, idempotency, realtime, health/reliability infrastructure.
 
-`Platform` не должен превращаться в универсального владельца бизнес-логики.
+`PARTIALLY_VERIFIED` не означает «всё закончено». Он означает, что граница подтверждена текущим `main`, а оставшиеся неизвестные, legacy paths и debt перечислены в machine-readable SoT.
+
+`Platform` не является универсальным владельцем бизнес-логики: его generic entities, relations, events, indexes и read models не могут создавать более сильный business fact, чем owning context.
 
 ## 3. Domain ownership rule
 
@@ -54,7 +58,7 @@ KARETA.KZ развивается инкрементально. Рабочая а
 
 `ONE MUTABLE BUSINESS ENTITY → ONE OWNER`
 
-До фактической проверки владелец в документации считается `targetOwner`, а не доказанным canonical owner.
+Для уже инвентаризированных частей owner/runtime store/invariant фиксируется вместе с `evidence`. Поле `targetOwner` используется там, где ownership ещё является целевой границей или требует дополнительной проверки. Отсутствие evidence не превращается в канон по умолчанию.
 
 Другой context может читать данные только через определённый read/query contract. Запись в чужой context допускается только через owner command/API/event contract.
 
@@ -95,7 +99,7 @@ KARETA.KZ развивается инкрементально. Рабочая а
 5. Frontend role/context не является достаточным authorization check.
 6. Revoke membership должен лишать доступа к соответствующему Organization context.
 
-Фактическое соответствие текущего кода этим правилам проверяется отдельно и не предполагается автоматически.
+Базовая цепочка Account → Person → Profile/Context, backend effective capabilities и resource-scope authorization уже подтверждены текущим кодом как `PARTIALLY_VERIFIED`. Оставшиеся Identity gaps перечислены в `BOUNDED_CONTEXTS.json`; legacy role fallback не считается новым источником authorization.
 
 ## 6. Service / Booking separation
 
@@ -113,25 +117,28 @@ Repair lifecycle должен быть описан отдельным contract;
 
 ## 7. Feature Contract
 
-Каждая feature получает contract минимум с полями:
+Каждая feature получает contract, который отделяет подтверждённое от целевого. Минимальный рабочий пример:
 
 ```json
 {
-  "featureId": "master.schedule",
-  "route": "#/master/schedule",
+  "featureId": "calendar.booking",
+  "route": "#/calendar",
   "boundedContext": "Booking",
-  "verificationStatus": "TARGET_UNTIL_VERIFIED",
+  "supportingContexts": ["Identity", "Master", "Service"],
+  "verificationStatus": "PARTIALLY_VERIFIED",
   "primaryAggregate": "Booking",
-  "commands": [],
-  "queries": [],
-  "capabilities": [],
-  "apiOwner": null,
-  "invariants": [],
-  "evidence": []
+  "runtimeStores": ["calendar_events", "service_bookings"],
+  "commands": ["booking.create", "booking.cancel"],
+  "queries": ["calendar.view", "booking.availability"],
+  "capabilities": ["calendar.manageOwn", "calendar.manageOrganization"],
+  "apiOwner": "api/domain.php",
+  "invariants": ["booking conflict must be rejected"],
+  "knownDebt": [],
+  "evidence": ["api/domain.php", "api/migrations/067_calendar_booking.php"]
 }
 ```
 
-Feature нельзя переводить в `READY`, пока обязательное evidence не подтверждено.
+Feature нельзя переводить в `READY` только по наличию route/handler. Нужны acceptance evidence, regression evidence и отсутствие неучтённого P0 debt.
 
 ## 8. Machine-readable domain SoT
 
@@ -142,13 +149,15 @@ Feature нельзя переводить в `READY`, пока обязател�
 - `docs/domain/FEATURE_MAP.json`
 - `docs/domain/DOMAIN_RULES.json`
 
-Пока inventory не завершён, эти файлы являются `TARGET_UNTIL_VERIFIED`, а не доказанным описанием текущей реализации.
+Первый context-level factual inventory pass завершён. Поэтому эти файлы теперь имеют смешанный статус: подтверждённые поля опираются на repository evidence, а `target*`, `unverified`, `knownDebt` и специальные verification statuses явно показывают неполные или целевые части.
 
-`BOUNDED_CONTEXTS.json` должен со временем содержать:
+`BOUNDED_CONTEXTS.json` сохраняет цепочку:
 
-`context → owns → commands → queries → events → APIs → dependencies → forbiddenWrites → evidence`
+`context → ownership/runtime stores → commands → queries → events → APIs → dependencies → forbiddenWrites → invariants → debt → evidence`
 
-`FEATURE_MAP.json` должен со временем покрыть все canonical routes/features и связать route, feature, context, aggregate, API, capability, invariants, tests и readiness evidence.
+`FEATURE_MAP.json` связывает canonical route, feature, context, aggregate, runtime stores, API, capability, invariants, tests, debt и evidence.
+
+Machine-readable SoT не заменяет runtime-код и не создаёт новую бизнес-модель. Он является проверяемой картой текущей реализации и целевых ограничений.
 
 ## 9. Agent Context Pack
 
@@ -213,28 +222,34 @@ FEATURE_MAP UPDATED WHEN APPLICABLE
 DOMAIN_RULES UPDATED WHEN APPLICABLE
 ```
 
-## 14. Порядок внедрения
+## 14. Текущая фаза внедрения
 
-### Step 1 — Actual Domain Inventory
+### Step 1 — Context-level Actual Domain Inventory — DONE
 
-Инвентаризировать DB tables, API actions, PHP handlers, JS state/models, routes, permissions и tests. Не переименовывать и не переносить код ради красивой схемы.
+Первый проход по DB tables, API actions, PHP handlers, JS routes/state, permissions/capabilities и representative tests выполнен по всем основным bounded contexts. Это не означает исчерпывающий call-site audit.
 
-### Step 2 — Verify SoT
+### Step 2 — P0 remediation inventory / contracts — CURRENT
 
-Для каждого контекста заполнить фактические commands, queries, APIs, dependencies, events, tests и evidence. Только после этого менять статус отдельных утверждений на `VERIFIED`.
+Для каждого P0 сначала фиксируются root cause, canonical owner, readers/writers, compatibility path, migration contract, regression scope и rollback evidence. Код до этого не переписывается.
 
-### Step 3 — Enforcement
+### Step 3 — Incremental implementation
 
-Сначала включить guardrails для новых изменений: no new monolith business actions, no direct cross-context writes, no duplicate entities, mandatory owner/context, mandatory contract evidence.
+Каждый P0 исправляется отдельно, в изолированном scope. Legacy path не удаляется, пока replacement не докажет data/behavior parity и regression safety.
 
-Старые нарушения устраняются инкрементально при работе с соответствующей feature.
+### Step 4 — Enforcement
 
-## 15. Приоритет инвентаризации
+После стабилизации правил они переводятся из documentation-only в machine-enforced CI/release guardrails. Сначала задаётся baseline и механизм исключений, затем blocking checks.
 
-1. Identity: `Account / Person / Profile / Context / Capability / Membership`.
-2. Vehicle: `Vehicle / GarageVehicle / ownership / service-history projection`.
-3. Service: `Service / ServiceRequest / Booking / RepairOrder / RepairStatus`.
-4. Затем Organization/STO, Marketplace, Communication, Finance, Community.
+## 15. Приоритет после первого factual pass
+
+Текущий порядок не определяется количеством похожего кода. Приоритет задаётся риском нарушения ownership, authorization, idempotency и пользовательских данных:
+
+1. `P0 PLATFORM-PROJECTION-001` — projection `domain_entities/domain_relations` не должна преждевременно утверждать существование RepairOrder для любого legacy `orders` row.
+2. `P0 PLATFORM-IDEMPOTENCY-001` — один idempotency key не должен принимать другой request payload; mismatch обязан давать conflict.
+3. `P0 COMM-NOTIFY-SOT-001` — свести `notifications` и `notification_center` к одному semantic notification contract без преждевременного удаления legacy producers.
+4. `P0 MARKET-SOT-001` — установить canonical Product/Order/Stock ownership между `market_*` и `seller_*`, предварительно доказав reader/writer/ID/lifecycle parity.
+5. `P0 FIN-AUTH-001` — закрыть capability-gap в operational Finance writes, сохранив resource/STO/order scope.
+6. После P0 — пройти P1 boundary/action inventory: Booking↔Service, Master scheduling, Organization membership, Community social interactions, health/repair separation и `api/db.php` strangler.
 
 Перед изменением агент обязан ответить:
 
@@ -250,7 +265,6 @@ WHAT EVIDENCE WILL PROVE DONE?
 ```
 
 Если критический ответ неизвестен — сначала аудит, потом изменение кода.
-
 
 ## 16. Projection, read-model and duplicate-removal rules
 
@@ -270,11 +284,6 @@ Idempotency contract: `ACTION + STABLE ACTOR/CONTEXT + KEY + REQUEST HASH -> ONE
 
 Liveness/readiness проверяет состояние. Repair/migration изменяет состояние. Эти контракты не смешиваются без явного названия, разрешения и release policy. Production migration предпочтительно завершается до приёма обычного трафика; runtime auto-repair остаётся compatibility/emergency path, пока его нельзя безопасно убрать.
 
-### Текущие подтверждённые приоритеты исправления
+### Приоритеты
 
-1. P0 — не считать domain_entities/domain_relations владельцами бизнес-сущностей; исправить ложную проекцию ServiceRequest -> RepairOrder.
-2. P0 — сравнивать request_hash при повторном idempotency key и возвращать conflict при несовпадении.
-3. P0 — свести уведомления к одному canonical notification contract без удаления legacy producers до доказанной миграции.
-4. P0 — определить canonical Marketplace Product/Order/Stock model между market_* и seller_*.
-5. P0 — закрыть capability-gap для operational Finance writes.
-6. Затем P1 — Community social contract, чистые health probes, runtime DDL reduction, legacy api/db.php strangler.
+Порядок remediation хранится в разделе 15 и в machine-readable debt полях. Этот раздел определяет правила безопасного удаления дублей и projections, а не дублирует очередь задач.
