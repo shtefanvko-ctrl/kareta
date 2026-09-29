@@ -167,6 +167,49 @@ def description(folder,p,n):
     lines += ["","## Визуальный стиль","","Светлый фон, чёрная крупная типографика, фирменный оранжевый акцент KARETA.KZ, чистая сетка, крупные карточки, минимум визуального шума.","",f"Количество изображений: {p[1]}."]
     (folder/"description.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
 
+def build_grid_preview(manifest):
+    tile_w,tile_h=360,450
+    grid=Image.new("RGB",(tile_w*4,tile_h*3),WHITE)
+    for idx,m in enumerate(manifest):
+        src=Image.open(OUT/m["slug"]/"01.png").convert("RGB")
+        src=src.resize((tile_w,tile_h),Image.Resampling.LANCZOS)
+        x=(idx%4)*tile_w; y=(idx//4)*tile_h
+        grid.paste(src,(x,y))
+    grid.save(OUT/"grid-preview.jpg","JPEG",quality=92,optimize=True,progressive=True,subsampling=1)
+
+def write_publishing_plan(manifest):
+    phases=[
+        ("Знакомство с продуктом",[1,2,3,4]),
+        ("Решение конкретных задач",[5,6,7,8]),
+        ("Удержание и экосистема",[9,10,11,12]),
+    ]
+    lines=["# KARETA.KZ — порядок публикации 12 Instagram-постов","",
+           "Последовательность построена как единая лента: сначала объясняем ценность сервиса, затем показываем прикладные сценарии, после — функции удержания и экосистему.",""]
+    by_num={m["post"]:m for m in manifest}
+    for phase,nums in phases:
+        lines += [f"## {phase}",""]
+        for num in nums:
+            m=by_num[num]
+            p=POSTS[num-1]
+            lines += [f"### {num:02d}. {m['title']}",
+                      f"- Папка: \`{m['slug']}/\`",
+                      f"- Карусель: {m['images']} изображений",
+                      f"- CTA: {p[4]}",
+                      f"- Смысл: {p[3]}",
+                      ""]
+    lines += ["## Правило публикации","",
+              "Первая картинка в каждой папке — обложка поста. Остальные изображения публикуются в том же порядке, в котором пронумерованы файлы.",
+              "",
+              "Текст подписи и хэштеги находятся в \`description.md\` каждой папки.",
+              "",
+              "Общее превью ленты: \`grid-preview.jpg\`."]
+    (OUT/"PUBLISHING_PLAN.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
+    (OUT/"feed-order.json").write_text(json.dumps({
+        "layout":"4x3",
+        "cover_file":"01.png",
+        "posts":[{"position":m["post"],"folder":m["slug"],"title":m["title"],"images":m["images"]} for m in manifest]
+    },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+
 def main():
     OUT.mkdir(parents=True,exist_ok=True); manifest=[]; total=0
     for n,p in enumerate(POSTS,1):
@@ -175,9 +218,11 @@ def main():
         for i in range(p[1]): GEN[i](p,n).save(folder/f"{i+1:02d}.png","PNG",optimize=True,compress_level=9)
         description(folder,p,n); total+=p[1]; manifest.append({"post":n,"slug":p[0],"title":p[2],"images":p[1]})
     (OUT/"manifest.json").write_text(json.dumps({"posts":manifest,"total_images":total,"size":"1080x1350"},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    lines=["# KARETA.KZ — Instagram / 12 posts","","12 отдельных постов. В каждой папке есть description.md и 3–6 изображений карусели.","","Все изображения: 1080×1350 (4:5).","","## Состав",""]
+    build_grid_preview(manifest)
+    write_publishing_plan(manifest)
+    lines=["# KARETA.KZ — Instagram / 12 posts","","12 отдельных постов. В каждой папке есть description.md и 3–6 изображений карусели.","","Все изображения: 1080×1350 (4:5).","Общее превью ленты: grid-preview.jpg.","Порядок публикации: PUBLISHING_PLAN.md.","","## Состав",""]
     for m in manifest: lines.append(f"{m['post']}. {m['slug']}/ — {m['title']} — {m['images']} изображений.")
     lines += ["",f"Всего изображений: {total}.","","Генератор: tools/social/generate_instagram_assets.py."]
     (OUT/"README.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
-    print(f"Generated {len(POSTS)} posts / {total} images")
+    print(f"Generated {len(POSTS)} posts / {total} images + grid preview + publishing plan")
 if __name__=="__main__": main()
