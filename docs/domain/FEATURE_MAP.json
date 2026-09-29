@@ -1,7 +1,7 @@
 {
   "schema": "kareta.feature-map.v1",
-  "status": "TARGET_UNTIL_VERIFIED",
-  "coverage": "PARTIAL",
+  "status": "PARTIALLY_VERIFIED",
+  "coverage": "PARTIAL_FEATURE_COVERAGE",
   "policy": {
     "routeMustHaveContext": true,
     "readyRequiresEvidence": true,
@@ -992,5 +992,5 @@
     "P1 boundary/action inventory",
     "CI guardrail design"
   ],
-  "notes": "All major contexts have factual partial verification. Platform features are explicitly projections/infrastructure and may not become alternate business owners."
+  "notes": "Mapped features are repository-backed and partially verified. This is not a complete route catalog; remaining work is P0 remediation inventory, P1 action/boundary inventory and later CI guardrail design."
 }
