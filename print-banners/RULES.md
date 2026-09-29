@@ -3,11 +3,11 @@
 ## Source of truth
 - Use only the production full logo: `assets/onboarding/kareta_logo_full.png`.
 - Never redraw, regenerate, crop, distort, stretch, recolor, or replace the KARETA.KZ logo with an approximation.
-- Preserve the logo aspect ratio and safe margins.
+- Preserve the logo aspect ratio and safe margins.\n- Target KARETA logo width: about **50% of the banner width**; it should be visibly larger than the previous draft while remaining fully inside the safe area.
 - For vehicle-marque logos, store badges, and any other third-party brand marks, use only original, recognizable assets from official or otherwise explicitly permitted sources.
 - Never hand-draw, trace, approximate, stylize, recolor, or substitute BMW, Peugeot, Mercedes-Benz, Audi, Volkswagen, Google Play, App Store, or other brand icons with homemade SVG versions.
 - Do not use Font Awesome, generic icon packs, generated look-alikes, or invented symbols as replacements for official brand marks.
-- If an approved original brand asset is unavailable, leave that asset out and flag it for sourcing; do not fabricate a replacement.
+- If an approved original brand asset is unavailable, leave that asset out and flag it for sourcing; do not fabricate a replacement.\n- Working previews may reference official HTTPS-hosted source assets. Before final print export, package/embed the exact approved originals so the print master is self-contained.
 
 ## Final format
 - Exactly 3 banners.
