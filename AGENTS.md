@@ -24,6 +24,7 @@ Applies to the web repository. Read this before changing PHP, JavaScript, CSS, A
 
 ## Verification and handoff
 
-- For a behavior change, check the focused happy path and errors, ownership/authorization, repeat actions, back/re-entry, and dependent routes. Add a regression at the level that catches the actual failure; prefer behavioral assertions over string-presence checks.
-- Run the relevant focused checks and current `.github/workflows/verify.yml` gate. For deployment-sensitive changes run the release-matched staging verifier and affected WebView route smoke. Report commands, SHA, result, and unavailable evidence separately.
-- DONE requires an observed user scenario and its evidence. A commit, document, generated test, or green local lint alone is an intermediate state. Carry incidents through root cause, regression, and an enforceable gate when feasible.
+- Preserve the existing user paths while changing a feature: compare the affected entry points, success/error states, ownership, repeat actions, back/re-entry, and dependent routes before and after. Never remove a working capability just to satisfy a new pattern or a stale assertion.
+- Before adding a test, find the current check for that invariant. Extend or replace one authoritative behavioral regression; avoid another string-presence test of the same block. Retire a historical test only after mapping its distinct coverage to a current check. A failing old test is a contract conflict to investigate, not permission to weaken the product behavior.
+- During implementation run focused checks for the changed risk. The current `.github/workflows/verify.yml` gate runs on the PR head; run release-matched staging/device smoke when the changed behavior is deployed. Documentation-only edits need source/link review, not repeated full runtime or Android smoke.
+- Report exact commands, SHA, release, result, and unavailable evidence separately. DONE for a behavior change requires an observed user scenario and its evidence. A commit, document, generated test, or green local lint alone is an intermediate state.
