@@ -336,3 +336,14 @@ Health endpoint не должен запускать schema migration, runtime r
 `api/identity_health.php` пока НЕ считается pure readiness: он использует `KaretaAuthResolver`, а compatibility resolve может создавать Identity records и писать audit. Его нельзя «починить» простым удалением bootstrap — сначала нужен отдельный read-only resolver.
 
 Static guard: `tools/test_health_readonly_boundary_84_154.js`.
+
+
+### Health/readiness — текущий статус
+
+- `runtime_health.php` — read-only: не загружает bootstrap и не запускает maintenance.
+- `schema_health.php` — переведён на direct PDO + schema inspect; audit-record/migration/repair отсутствуют.
+- `identity_health.php` — переведён на SELECT-only observation; health больше не создаёт Identity-сущности, не touch/rotate session, не восстанавливает context и не пишет auth audit.
+- Regression guard: `tools/test_health_readonly_boundary_84_154.js`.
+- Статус: `IMPLEMENTED_PENDING_RUNTIME_REGRESSION`; runtime-проверка ждёт доступной среды.
+
+Runtime DDL считается только частично смягчённым: production auto-migrate закрыт maintenance-window gate, но обычный bootstrap всё ещё может запускать throttled content/relation/stats maintenance. Следующий шаг — инвентаризация этих writes и перенос repair/backfill из request path.
