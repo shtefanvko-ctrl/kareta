@@ -1,6 +1,6 @@
 # KARETA.KZ — Current engineering plan
 
-Current web/runtime release: **188.5.5.6.84.148**  
+Current web/runtime release: **188.5.5.6.84.149**  
 Working branch: `import/kareta-current-84.142`  
 Merge target: `main`
 
@@ -12,17 +12,19 @@ Merge commit `d0660fa1f9c562e826c5f8e81707f837368075cf` reconciled the Android N
 
 ## Priority state
 
-### P0 — migration numbering / manifest divergence
+### P0 — migration numbering / manifest divergence — CLOSED IN 84.149
 
-Repository cause: canonical runtime is intentionally DB **129**, while parallel work had left duplicate active filenames for 130, 131 and 132 plus 133/134.
+Historical branches reused migration numbers 130–134 for incompatible operations. The migration runner preserves an already-applied version even when its checksum differs, so assigning new required work to one of those numbers would be unsafe.
 
-Correction in 84.146:
-- active `api/migrations/` is the canonical 1..129 chain;
-- unpromoted 130+ work is quarantined under `api/migrations_pending/`;
-- PHP manifest, JSON manifest and `KARETA_DB_VERSION` remain 129;
-- migration verification now enforces the same boundary.
+84.149 establishes a deterministic compatibility boundary:
+- active `api/migrations/` is now a strict canonical chain **1..135**;
+- versions **130–134** are deliberate side-effect-free collision bridges;
+- original conflicting sources are preserved under `api/migrations_pending/historical/` and are never executed;
+- version **135** owns `obd_diagnostic_sessions` for Android Native API 6;
+- PHP manifest, JSON manifest and `KARETA_DB_VERSION` are all **135**;
+- CI verifies manifest checksums, bridge no-side-effects, historical archive presence and OBD schema ownership.
 
-Do not bump the database version until pending operations are reconciled into an idempotent monotonic sequence against a production-like DB snapshot.
+Any still-required behavior from historical 130–134 files must be re-authored as a new idempotent migration beginning at **136**.
 
 ### P0 — GitHub CI verification gate
 
@@ -32,7 +34,7 @@ Repository branch protection must require the `verification-gate` status before 
 
 ### P1 — release/version metadata
 
-`inc/asset_version.php` and `sw.js` are synchronized at 84.146. `docs/release/current.json` is the human/machine release snapshot; `tools/test_current_release_84_146.js` fails on release drift.
+`inc/asset_version.php` and `sw.js` are synchronized at 84.149. `docs/release/current.json` is the human/machine release snapshot; `tools/test_current_release_84_149.js` fails on release or DB-contract drift.
 
 
 ### P1 — WebView/static cache without stale releases
@@ -60,7 +62,7 @@ Old release-numbered staging artifacts remain historical evidence only. Current 
 python3 tools/verify_staging_current.py --base-url https://s.kareta.kz
 ```
 
-84.148 is **not marked staging PASS until that deployed check succeeds**. The verifier now walks every lazy route CSS/JS asset and requires HTTP 200, correct MIME and the current release token.
+84.149 is **not marked staging PASS until that deployed check succeeds**. The verifier now walks every lazy route CSS/JS asset and requires HTTP 200, correct MIME and the current release token.
 
 ### P4 — legacy authorization
 
@@ -91,6 +93,6 @@ This document is normative for the current Android WebView stabilization cycle. 
 1. `verification-gate` passes.
 2. Android Native API 6 reconciliation contract passes and `main` remains an ancestor of the working branch.
 3. Staging verifier passes against the intended KARETA staging host.
-4. No active migration exists outside canonical manifest 1..129 until the pending migration promotion is explicitly approved.
+4. Canonical migration chain remains 1..135; historical collision sources stay non-executable and any future migration starts at 136.
 5. 404, Client and Master routes retain the same outer desktop alignment at representative widths.
 6. Changelog and `docs/release/current.json` match the merged commit.
