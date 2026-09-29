@@ -2,7 +2,7 @@
   "schema": "kareta.bounded-contexts.v1",
   "status": "TARGET_UNTIL_VERIFIED",
   "coverage": "IN_PROGRESS",
-  "notes": "Identity, Garage, Master, Booking, Service, Organization, Marketplace, Communication and Finance have repository-backed partial verification. Canonical facts, compatibility projections and authorization debt are kept distinct.",
+  "notes": "Identity, Garage, Master, Booking, Service, Organization, Marketplace, Communication, Finance and Community have repository-backed partial verification. Similar-looking publication stores are not collapsed unless they represent the same aggregate; the Community feed is treated as a typed read model.",
   "contexts": [
     {
       "id": "Identity",
@@ -667,27 +667,191 @@
     },
     {
       "id": "Community",
-      "verificationStatus": "TARGET_UNTIL_VERIFIED",
+      "verificationStatus": "PARTIALLY_VERIFIED",
       "targetOwns": [
-        "Post",
-        "WorkPublication",
-        "Subscription",
-        "Like",
-        "Comment"
+        "CommunityPost",
+        "CommunityGroup",
+        "CommunityMembership",
+        "SocialReaction",
+        "SavedPublication",
+        "PublicationComment",
+        "ProviderFollowRelation",
+        "CommunityFeedProjection"
       ],
-      "commands": [],
-      "queries": [],
-      "events": [],
-      "apis": [],
+      "sourceAggregates": [
+        {
+          "aggregate": "CommunityPost",
+          "stores": [
+            "community_posts",
+            "community_groups",
+            "community_group_members"
+          ],
+          "ownership": "COMMUNITY_NATIVE",
+          "notes": "Generic posts/questions/news created directly in Community."
+        },
+        {
+          "aggregate": "WorkPublication",
+          "stores": [
+            "work_posts",
+            "work_post_media"
+          ],
+          "ownership": "SERVICE_DERIVED_PUBLICATION",
+          "notes": "Published repair story derived from a completed Service order after client-consent checks."
+        },
+        {
+          "aggregate": "MasterWallPost",
+          "stores": [
+            "master_wall_posts"
+          ],
+          "ownership": "MASTER_AUTHORED_COMMUNITY_PUBLICATION",
+          "notes": "Master-authored wall content; not the same aggregate as a repair-derived WorkPublication."
+        },
+        {
+          "aggregate": "NewsPublication",
+          "stores": [
+            "news_articles"
+          ],
+          "ownership": "EXTERNAL_FEED_SOURCE",
+          "notes": "News is consumed by the Community feed but remains its own source aggregate."
+        }
+      ],
+      "socialRuntimeStores": [
+        "master_wall_reactions",
+        "master_wall_saved",
+        "master_wall_comments_social",
+        "work_post_likes",
+        "work_post_saved",
+        "work_post_comments",
+        "master_social_relations",
+        "sto_social_relations"
+      ],
+      "reviewRuntimeStores": [
+        "reviews_public",
+        "master_reviews"
+      ],
+      "commands": [
+        "communityPosts.save",
+        "communityGroups.join",
+        "workPosts.publish",
+        "workPosts.like",
+        "workPosts.save",
+        "workPosts.comment",
+        "workPosts.commentDelete",
+        "masterSocialWall.save",
+        "masterSocialWall.delete",
+        "masterSocialWall.like",
+        "masterSocialWall.saveState",
+        "masterSocialWall.comment",
+        "masterSocialWall.commentDelete",
+        "masterSocial.update",
+        "stoSocial.update"
+      ],
+      "queries": [
+        "communityPosts.list",
+        "communityGroups.list",
+        "communityGroups.members",
+        "workPosts.list",
+        "workPosts.detail",
+        "workPosts.comments",
+        "workPosts.socialState",
+        "masterSocialWall.community",
+        "masterSocialWall.feed",
+        "masterSocial.following"
+      ],
+      "events": [
+        "work_post_published",
+        "work_post_auto_published"
+      ],
+      "apis": [
+        "api/community_posts.php",
+        "api/work_posts.php",
+        "api/master_social_wall.php",
+        "api/master_social.php",
+        "legacy api/db.php Community/social dispatcher"
+      ],
       "dependencies": [
-        "Identity",
-        "Master"
+        "Identity for actor/account/person/context attribution",
+        "Service for completed-order WorkPublication source and client publication consent",
+        "Master/Organization for provider identity",
+        "Marketplace for linked product cards in master-wall posts",
+        "News as a separate feed source"
       ],
       "forbiddenWrites": [
-        "master_profiles",
-        "accounts"
+        "Service order lifecycle except via publication policy/read contracts",
+        "Identity account/person/profile state",
+        "Marketplace product ownership/state",
+        "News source lifecycle from generic Community commands"
       ],
-      "evidence": []
+      "verifiedInvariants": [
+        "The Community feed is a typed client-side read model over community_posts, work_posts, master_wall_posts and news; these stores are not automatically duplicate sources of truth because they represent different source aggregates.",
+        "Normalized feed identifiers are source-prefixed (community:, work:, post:/news:) before merge, so source identity is preserved.",
+        "A WorkPublication can be published only after resource-scoped work-order access, verified client consent and completed/accepted repair handover.",
+        "CommunityPost creation records author Account/Person/User/Context identifiers from the active Identity session.",
+        "Master-wall post writes require the current master profile through profile.manage and are owner-scoped to that master.",
+        "Generic CommunityPost and MasterWallPost interactions share master_wall_reactions/master_wall_saved/master_wall_comments_social through typed entity_key values.",
+        "WorkPublication interactions use a separate work_post_likes/work_post_saved/work_post_comments model.",
+        "Provider follow state is separate from post reaction state through master_social_relations and sto_social_relations."
+      ],
+      "knownBoundaryDebt": [
+        {
+          "id": "COMMUNITY-SOCIAL-SOT-001",
+          "severity": "P1",
+          "finding": "Like/save/comment state has two active implementations: work_post_* social tables for WorkPublication and master_wall_* social tables for CommunityPost/MasterWall/News.",
+          "impact": "The UI needs source-specific mutation branches and a future social feature can diverge in semantics, counters, identity keys or moderation behavior.",
+          "target": "Keep typed publication aggregates, but expose one SocialInteraction contract/read model across publication types. A physical table merge is not required.",
+          "migrationPolicy": "Do not merge tables by similarity. First define canonical entity key + actor key + moderation/idempotency semantics, add adapters per source, prove parity, then optionally consolidate storage."
+        },
+        {
+          "id": "COMMUNITY-FEED-001",
+          "severity": "P1",
+          "finding": "The production feed is assembled in the browser from four independent API calls and then sorted/filtered client-side.",
+          "impact": "Pagination, ranking, availability and consistency are source-dependent; partial source failure produces a partial feed and cursor is only local slice position.",
+          "target": "A server-side CommunityFeed projection/query contract may aggregate typed source references without taking ownership of the source aggregates.",
+          "migrationPolicy": "Do not copy source records into another mutable SoT. Build a read projection/reference index if server-side ranking/pagination is introduced."
+        },
+        {
+          "id": "COMMUNITY-AUTH-001",
+          "severity": "P1",
+          "finding": "Several Community/social POST dispatcher actions have no explicit capability gate at api/db.php and rely on internal session/role/resource checks; only some owner flows use capabilities such as profile.manage.",
+          "target": "Define explicit community.publish, community.interact and community.moderate capabilities while retaining resource ownership and consent checks.",
+          "migrationPolicy": "Add action-by-action capability coverage with regression scenarios for client/master/STO/seller/admin/owner."
+        },
+        {
+          "id": "COMMUNITY-REVIEW-001",
+          "severity": "P1",
+          "finding": "reviews_public and master_reviews coexist with synchronization/backfill logic for verified completed-order Master reviews.",
+          "target": "Treat the completed-order verified Master review stream as one semantic contract; one store may remain source/compatibility projection while the other serves the Master-review read model.",
+          "migrationPolicy": "Inventory current writers/readers before naming either physical table the only SoT or removing synchronization."
+        },
+        {
+          "id": "COMMUNITY-API-001",
+          "severity": "P1",
+          "finding": "Community, WorkPublication and MasterWall commands are still routed through legacy api/db.php despite separate domain modules.",
+          "target": "Move one verified Community command/query at a time behind explicit owner contracts without adding another parallel store."
+        }
+      ],
+      "unverified": [
+        "Complete current writer/reader map for reviews_public versus master_reviews",
+        "All moderation/reporting flows across CommunityPost, WorkPublication and MasterWallPost",
+        "Capability policy for every Community/social action",
+        "Whether work_post likes/saves/comments should remain source-local indefinitely or become adapters over a common social store",
+        "Server-side feed ranking/pagination requirements and failure semantics",
+        "Story persistence contract: production createStory currently has no backend implementation"
+      ],
+      "evidence": [
+        "api/community_posts.php",
+        "api/work_posts.php",
+        "api/master_social_wall.php",
+        "api/master_social.php",
+        "api/migrations/048_work_posts_ecosystem.php",
+        "api/migrations/050_communication_requests_reviews.php",
+        "api/migrations/111_master_reviews_social_contract.php",
+        "api/migrations/112_master_social_wall.php",
+        "api/db.php",
+        "js/next/community/community_api.js",
+        "js/next/community/community_state.js",
+        "js/next/pages/community.js"
+      ]
     },
     {
       "id": "Communication",
