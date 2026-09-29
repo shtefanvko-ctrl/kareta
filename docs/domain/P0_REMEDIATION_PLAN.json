@@ -7,10 +7,10 @@
     {
       "id": "PLATFORM-PROJECTION-001",
       "priority": 1,
-      "status": "AUDIT_READY",
+      "status": "AUDIT_TOOL_READY_PENDING_DB_RUN",
       "ownerContext": "Platform",
       "sourceOwner": "Service",
-      "nextAction": "Run tools/audit_service_projection_consistency.php against staging/production snapshot; classify ambiguous legacy rows before any repair/backfill.",
+      "nextAction": "Run tools/audit_service_domain_projection.php on the target DB; use measured mismatch classes to design repair/backfill. Do not mutate projections yet.",
       "codeChangeAllowedNow": false,
       "auditTool": "tools/audit_service_projection_consistency.php",
       "repairOrderPredicate": {
@@ -31,7 +31,8 @@
         "workflowBeyondIntake": true,
         "statusProcessAlone": false,
         "stoIdAlone": false
-      }
+      },
+      "auditCommit": "fe469dc8ea2d9645b336ed72c2c2766409fd1d19"
     },
     {
       "id": "PLATFORM-IDEMPOTENCY-001",
