@@ -183,12 +183,17 @@
         "api/bootstrap.php",
         "api/db.php",
         "api/domain.php",
-        "api/identity/session_service.php"
+        "api/identity/session_service.php",
+        "tools/test_idempotency_scope_84_154.js",
+        ".github/workflows/verify.yml"
       ],
       "acceptance": [
         "existing key with different request hash returns HTTP 409 IDEMPOTENCY_CONFLICT",
         "stored request hash is never overwritten by a different payload",
-        "completed same-payload request replays the original response"
+        "completed same-payload request replays the original response",
+        "authenticated actor scope is stable across PHP session rotation",
+        "Identity actor scope is Account + current Context; session_id is not part of authenticated scope",
+        "legacy session-bound idempotency rows may migrate only after request_hash equality"
       ]
     },
     {
