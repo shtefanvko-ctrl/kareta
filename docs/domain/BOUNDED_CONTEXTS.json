@@ -639,7 +639,10 @@
         "Domain-native stock is separated from product identity and records stock movements.",
         "Seller shop actions resolve an Identity seller/parts-store context and require seller capabilities before product operations.",
         "Seller product updates are owner-scoped by seller_user_id.",
-        "Marketplace organization membership links bind organization context/person membership to marketplace ownership."
+        "Marketplace organization membership links bind organization context/person membership to marketplace ownership.",
+        "The current #/parts consumer catalog and checkout use seller_*; #/market is a separate active market_* surface.",
+        "seller stock_qty is not semantically equivalent to market_stock.quantity-reserved without a warehouse/reservation mapping.",
+        "Marketplace model convergence must preserve current seller checkout behavior until an adapter/replacement passes regression."
       ],
       "knownBoundaryDebt": [
         {
@@ -647,7 +650,27 @@
           "severity": "P0",
           "finding": "Two active marketplace data models coexist: domain-native market_* tables and seller_* tables used by the seller workplace/native parts flow.",
           "target": "Establish one canonical Product/Order/Stock ownership model and treat the other as adapter/projection during migration.",
-          "migrationPolicy": "Do not bulk-merge or delete either model. First inventory every reader/writer, map IDs, ownership and lifecycle semantics, then migrate one command/query at a time."
+          "migrationPolicy": "Do not bulk-merge or delete either model. First inventory every reader/writer, map IDs, ownership and lifecycle semantics, then migrate one command/query at a time.",
+          "investigationStatus": "PARITY_MATRIX_READY_AUDIT_READY_CANONICAL_PHYSICAL_STORE_NOT_SELECTED",
+          "facts": [
+            "#/parts and shop.order.create actively use seller_products/seller_orders.",
+            "#/seller workplace actively writes seller_products/seller_orders.",
+            "#/market and api/domain.php market.* actively use market_products/market_stock/market_orders.",
+            "market_* stock is warehouse-normalized with quantity/reserved and movement ledger.",
+            "seller_* stock is seller_products.stock_qty and is decremented immediately during shop.order.create.",
+            "market checkout reserves stock and creates Finance invoice; seller checkout creates per-seller orders without the same verified Finance invoice contract.",
+            "market order lifecycle (verified path) reserved->completed is not equivalent to seller new/confirmed/packed/shipped/delivered/cancelled/returned."
+          ],
+          "canonicalDecision": {
+            "physicalStore": "NOT_SELECTED",
+            "reason": "Both models are active and their stock/order semantics are materially different. Selecting a table now would silently discard behavior.",
+            "targetContract": "Preserve stable Product identity, explicit ownership, warehouse availability/reservation/movement semantics, lossless order lifecycle mapping and Finance linkage.",
+            "currentOperationalConstraint": "#/parts remains on seller_* until replacement checkout/order/history behavior proves parity."
+          },
+          "auditTool": "tools/audit_marketplace_dual_sot.php",
+          "parityMatrix": "docs/domain/MARKETPLACE_PARITY_MATRIX.json",
+          "safeCandidateIdentity": "seller_user_id = market_products.owner_user_id AND normalized SKU; SKU alone is not sufficient.",
+          "nextAction": "Run read-only dual-SoT audit on staging/production snapshot; use distribution and mismatch results to design explicit product identity mapping and migration adapters. No bulk copy/merge."
         },
         {
           "id": "MARKET-ORG-001",
@@ -663,11 +686,14 @@
         }
       ],
       "unverified": [
-        "Which product/order store is authoritative for every current user-facing route",
         "Complete synchronization/import relationship between market_products and seller_products",
         "Checkout/fulfillment linkage to seller_orders and finance invoices",
         "Used-market listing ownership and whether it is a Marketplace aggregate or separate resale subdomain",
-        "All stock mutation paths and reservation semantics from Service work orders"
+        "All stock mutation paths and reservation semantics from Service work orders",
+        "Production data overlap and divergence between owner+SKU candidate pairs",
+        "Canonical cross-model Product identity mapping",
+        "Cancellation/return stock compensation semantics for seller orders",
+        "Traffic/usage distribution between #/parts and #/market"
       ],
       "evidence": [
         "api/migrations/069_marketplace_warehouse.php",
