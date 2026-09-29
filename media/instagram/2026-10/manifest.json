@@ -1,0 +1,78 @@
+{
+  "posts": [
+    {
+      "post": 1,
+      "slug": "01-diagnostics",
+      "title": "Диагностика без лишней переписки",
+      "images": 6
+    },
+    {
+      "post": 2,
+      "slug": "02-find-master",
+      "title": "Найди мастера без десятков звонков",
+      "images": 5
+    },
+    {
+      "post": 3,
+      "slug": "03-car-control",
+      "title": "Автомобиль под контролем",
+      "images": 6
+    },
+    {
+      "post": 4,
+      "slug": "04-service-booking",
+      "title": "Запись на сервис за пару минут",
+      "images": 4
+    },
+    {
+      "post": 5,
+      "slug": "05-repair-prices",
+      "title": "Понятные цены на ремонт",
+      "images": 6
+    },
+    {
+      "post": 6,
+      "slug": "06-parts",
+      "title": "Запчасти в одном месте",
+      "images": 4
+    },
+    {
+      "post": 7,
+      "slug": "07-auto-electrician",
+      "title": "Автоэлектрик рядом",
+      "images": 5
+    },
+    {
+      "post": 8,
+      "slug": "08-oil-reminder",
+      "title": "Не пропускайте замену масла",
+      "images": 6
+    },
+    {
+      "post": 9,
+      "slug": "09-service-history",
+      "title": "История обслуживания автомобиля",
+      "images": 3
+    },
+    {
+      "post": 10,
+      "slug": "10-road-help",
+      "title": "Эвакуатор и помощь в пути",
+      "images": 3
+    },
+    {
+      "post": 11,
+      "slug": "11-sto-map",
+      "title": "Подбор СТО рядом",
+      "images": 5
+    },
+    {
+      "post": 12,
+      "slug": "12-all-in-one",
+      "title": "Один сервис для авто, мастера и запчастей",
+      "images": 6
+    }
+  ],
+  "total_images": 59,
+  "size": "1080x1350"
+}
