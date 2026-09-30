@@ -6,7 +6,7 @@ on:
       - fix/master-more-contract-20260930
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   verify:
@@ -17,14 +17,16 @@ jobs:
         run: node tools/test_master_more_contract.js
       - name: Smart Action hash
         run: sha256sum js/next/smart_action_hub.js
-      - name: Rebuild boot bundles
+      - name: Sync generated shell bundle only
         run: |
           node tools/build_boot_js_bundles.js
-          git status --short js/boot
-          git diff --stat -- js/boot
-      - name: Upload rebuilt shell bundle
-        uses: actions/upload-artifact@v4
-        with:
-          name: rebuilt-master-more-shell
-          path: js/boot/runtime_shell_bundle.js
-          if-no-files-found: error
+          git checkout -- js/boot/runtime_onboarding_bundle.js js/boot/runtime_identity_bundle.js js/boot/runtime_ui_bundle.js js/boot/runtime_core_bundle.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/boot/runtime_shell_bundle.js
+          if git diff --cached --quiet; then
+            echo "runtime_shell_bundle.js already synchronized"
+          else
+            git commit -m "build(shell): sync master More runtime bundle"
+            git push origin HEAD:fix/master-more-contract-20260930
+          fi
