@@ -37,6 +37,32 @@ if ($versions) {
         $errors[] = 'migration sequence gap: ' . implode(',', $missing);
     }
 }
+
+// Canonical boundary must agree across config + PHP manifest + JSON manifest.
+$manifestPath = $root . '/api/migration_manifest.php';
+$jsonManifestPath = $root . '/api/migration_manifest.json';
+$configPath = $root . '/config.php';
+$manifest = is_file($manifestPath) ? require $manifestPath : null;
+$manifestVersion = is_array($manifest) ? (int)($manifest['version'] ?? 0) : 0;
+$configText = is_file($configPath) ? (string)file_get_contents($configPath) : '';
+$configVersion = preg_match("/define\\('KARETA_DB_VERSION',\\s*(\\d+)\\)/", $configText, $cm) ? (int)$cm[1] : 0;
+$jsonManifest = is_file($jsonManifestPath) ? json_decode((string)file_get_contents($jsonManifestPath), true) : null;
+$jsonVersion = is_array($jsonManifest) ? (int)($jsonManifest['targetDbVersion'] ?? 0) : 0;
+$activeMax = $versions ? max(array_keys($versions)) : 0;
+if ($manifestVersion <= 0 || $activeMax !== $manifestVersion) $errors[] = "active migration max {$activeMax} differs from PHP manifest {$manifestVersion}";
+if ($configVersion !== $manifestVersion) $errors[] = "KARETA_DB_VERSION {$configVersion} differs from PHP manifest {$manifestVersion}";
+if ($jsonVersion !== $manifestVersion) $errors[] = "JSON manifest {$jsonVersion} differs from PHP manifest {$manifestVersion}";
+
+$pending = glob($root . '/api/migrations_pending/*.php') ?: [];
+foreach ($pending as $file) {
+    $base = basename($file);
+    if (!preg_match('/^(\\d+)_/', $base, $pm)) {
+        $errors[] = "pending/{$base}: filename has no numeric version";
+        continue;
+    }
+    if ((int)$pm[1] <= $manifestVersion) $errors[] = "pending/{$base}: version must stay above canonical boundary {$manifestVersion}";
+}
+
 if ($errors) {
     foreach ($errors as $e) fwrite(STDERR, "[FAIL] $e\n");
     exit(1);

@@ -5,7 +5,7 @@
     posts:[],stories:[],groups:[],
     activeStoryId:null,activePostId:null,commentsPostId:null,
     searchQuery:'',filters:{types:[],authors:[],city:'',vehicle:''},
-    loading:false,error:'',pagination:{cursor:null,hasMore:true,page:0},
+    loading:false,error:'',fetchedAt:0,pagination:{cursor:null,hasMore:true,page:0},
     scrollByRoute:{},
     joinedGroups:[],followingGroups:[],savedPosts:[]
   });

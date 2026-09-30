@@ -1,0 +1,20 @@
+{
+  "schema": "kareta.legacy-role-budget.current.v2",
+  "release": "188.5.5.6.84.146",
+  "measuredBy": "tools/audit_legacy_role_authorization_current.js",
+  "budget": {
+    "total": 108,
+    "dbPhp": 96
+  },
+  "remainingByFile": {
+    "api/db.php": 96,
+    "api/account_tariffs.php": 3,
+    "api/work_posts.php": 3,
+    "api/data_integrity.php": 2,
+    "api/identity/legacy_api_bridge.php": 1,
+    "api/messaging.php": 1,
+    "api/profile.php": 1,
+    "api/seller_shop.php": 1
+  },
+  "policy": "no-growth: total, db.php, per-file and new-file direct role gates may not increase"
+}

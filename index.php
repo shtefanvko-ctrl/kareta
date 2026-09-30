@@ -1,4 +1,10 @@
 <?php
+$karetaHttpNotFound = isset($_GET['kareta_route_fallback']) && (string)$_GET['kareta_route_fallback'] === '1';
+$karetaHttpNotFoundPath = '';
+if ($karetaHttpNotFound) {
+    $karetaHttpNotFoundPath = (string)($_SERVER['REQUEST_URI'] ?? '/');
+    http_response_code(404);
+}
 declare(strict_types=1);
 
 require_once __DIR__ . '/inc/web_guard.php';
@@ -105,6 +111,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
     (() => {
       const release = <?= json_encode($assetVersion, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
       const errorCatalog = <?= json_encode($errorCodeCatalog, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>;
+      window.KARETA_HTTP_NOT_FOUND_PATH = <?= json_encode($karetaHttpNotFoundPath, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>;
       window.KARETA_BOOT_RELEASE=release;
       console.info('[KARETA][boot.release]',{release,pipeline:'single-pass-v2'});
       const recoveryKey = `kareta_asset_recovery:${release}`;
@@ -117,7 +124,9 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
           }
           if ('caches' in window) {
             const keys = await caches.keys();
-            await Promise.all(keys.filter(k => k.startsWith('kareta-')).map(k => caches.delete(k)));
+            // Preserve the last known-good shell. A transient DNS/TLS failure during
+            // retry must not strand the user on the synthetic offline document.
+            await Promise.all(keys.filter(k => String(k).startsWith('kareta-static-')).map(k => caches.delete(k)));
           }
         } catch (_) {}
       };
@@ -239,7 +248,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
 <body>
   <div id="k-app-preloader" class="k-app-preloader" role="status" aria-live="polite" aria-label="Загрузка приложения">
     <div class="k-app-preloader__panel">
-      <img class="k-app-preloader__logo" src="<?= asset_ver('assets/logo/main/kareta_logo_full.png') ?>" alt="KARETA.KZ" onerror="this.onerror=null;this.src='<?= asset_ver('assets/onboarding/kareta_logo_icon.png') ?>'">
+      <img class="k-app-preloader__logo" src="<?= asset_ver('assets/onboarding/kareta_logo_full.png') ?>" alt="KARETA.KZ" onerror="this.onerror=null;this.src='<?= asset_ver('assets/onboarding/kareta_logo_icon.png') ?>'">
       <div class="k-app-preloader__copy">
         <p class="k-app-preloader__slogan">Всё для автомобиля в одном месте</p>
       </div>
@@ -261,7 +270,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5 8.5 12l7 7"></path><path d="M9 12h11"></path></svg>
       </button>
       <a class="k-brand" href="#/home" data-route-link="home" aria-label="KARETA.KZ главная">
-        <img class="k-brand-logo k-brand-logo--full" src="<?= asset_ver('assets/logo/main/kareta_logo_full.png') ?>" alt="KARETA.KZ">
+        <img class="k-brand-logo k-brand-logo--full" src="<?= asset_ver('assets/onboarding/kareta_logo_full.png') ?>" alt="KARETA.KZ">
         <img class="k-brand-logo k-brand-logo--icon" src="<?= asset_ver('assets/onboarding/kareta_logo_icon.png') ?>" alt="" aria-hidden="true">
       </a>
 
@@ -371,7 +380,9 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
         try{
           if('caches' in window){
             const keys=await caches.keys();
-            await Promise.all(keys.filter(key=>String(key).startsWith('kareta-')).map(key=>caches.delete(key)));
+            // Static assets are release-scoped and safe to purge. Preserve shell HTML
+            // until the replacement Service Worker has successfully precached '/'.
+            await Promise.all(keys.filter(key=>String(key).startsWith('kareta-static-')).map(key=>caches.delete(key)));
           }
         }catch(_error){}
         try{

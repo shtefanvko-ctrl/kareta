@@ -153,6 +153,21 @@
     </article>`;
   }
 
+  const MASTERS_CACHE_TTL=30000;
+  const MASTERS_CACHE_KEY=`kareta.masters.snapshot:${String(window.KARETA_NEXT_ASSET_VERSION||'dev')}`;
+  let mastersCache={};
+  try{mastersCache=JSON.parse(sessionStorage.getItem(MASTERS_CACHE_KEY)||'{}')||{};}catch(_e){mastersCache={};}
+  const mastersCacheId=(kind,search)=>`${kind}:${String(search||'').trim().toLowerCase()}`;
+  const mastersSignature=rows=>{try{return JSON.stringify((rows||[]).map(row=>[row.id,row.name,row.rating,row.availability,row.minPrice,row.offerCount,row.receptionStatus,row.reception_status]));}catch(_e){return'';}};
+  function readMastersCache(key){const row=mastersCache[key];return row&&Array.isArray(row.rows)?row:null;}
+  function writeMastersCache(key,rows){
+    mastersCache[key]={at:Date.now(),rows,signature:mastersSignature(rows)};
+    const keys=Object.keys(mastersCache).sort((a,b)=>Number(mastersCache[b]?.at||0)-Number(mastersCache[a]?.at||0));
+    keys.slice(12).forEach(old=>delete mastersCache[old]);
+    try{sessionStorage.setItem(MASTERS_CACHE_KEY,JSON.stringify(mastersCache));}catch(_e){}
+    return mastersCache[key];
+  }
+
   function mountMasters(context = {}){
     const root=document.querySelector('[data-masters-page]'); if(!root)return;
     if(root.hasAttribute('data-sto-team'))return mountStoTeam(root,context);
@@ -165,10 +180,36 @@
     const matchesSpec=row=>!specFilter||String([row.spec,row.description,row.servicesLabel].filter(Boolean).join(' ')).toLowerCase().includes(specFilter);
     const syncKind=()=>{root.querySelectorAll('[data-master-provider-kind]').forEach(btn=>btn.classList.toggle('is-active',btn.dataset.masterProviderKind===providerKind));if(title)title.textContent=providerKind==='sto'?'СТО рядом':'Мастера';};
     const paint=()=>{let view=rows.filter(matchesSpec);if(mode==='available')view=view.filter(isFree);if(mode==='rating')view=[...view].sort((a,b)=>score(b)-score(a));if(mode==='nearby')view=[...view].sort((a,b)=>Number(isFree(b))-Number(isFree(a))||score(b)-score(a));directory.innerHTML=view.length?view.map(row=>providerKind==='sto'?referenceStationCard(row):masterCard(row)).join(''):'<div class="k-master-reference-empty"><b>Ничего не найдено</b><span>Измените поиск или фильтр.</span></div>';status.textContent=view.length?`Найдено: ${view.length}`:'По вашему запросу ничего не найдено';status.hidden=view.length>0;};
-    const load=async()=>{syncKind();status.hidden=false;status.textContent='Загружаем исполнителей…';directory.innerHTML=skeleton();try{const result=await api.getMastersCatalog({type:providerKind,search},{signal:context.lifecycle?.signal});if(!result?.ok)throw new Error(result?.payload?.message||'Не удалось загрузить каталог');const data=result.payload?.data||{};rows=providerKind==='sto'?(Array.isArray(data.stos)?data.stos:Array.isArray(data.stations)?data.stations:[]):(Array.isArray(data.masters)?data.masters:[]);paint();}catch(error){rows=[];directory.innerHTML='<div class="k-master-reference-empty"><b>Каталог временно недоступен</b><span>Попробуйте обновить страницу.</span></div>';status.hidden=false;status.textContent=error?.message||'Не удалось загрузить каталог';}};
+    const load=async({force=false,reason='route'}={})=>{
+      syncKind();
+      const key=mastersCacheId(providerKind,search);
+      const cached=readMastersCache(key);
+      const hasCached=Boolean(cached?.rows);
+      if(hasCached){rows=cached.rows;paint();}
+      else{status.hidden=false;status.textContent='Загружаем исполнителей…';directory.innerHTML=skeleton();}
+      if(hasCached&&!force&&(Date.now()-Number(cached.at||0))<MASTERS_CACHE_TTL)return;
+      try{
+        const result=await api.getMastersCatalog({type:providerKind,search},{force:force||hasCached,signal:context.lifecycle?.signal});
+        if(!result?.ok)throw new Error(result?.payload?.message||'Не удалось загрузить каталог');
+        const data=result.payload?.data||{};
+        const nextRows=providerKind==='sto'?(Array.isArray(data.stos)?data.stos:Array.isArray(data.stations)?data.stations:[]):(Array.isArray(data.masters)?data.masters:[]);
+        const nextSignature=mastersSignature(nextRows);
+        writeMastersCache(key,nextRows);
+        if(!hasCached||nextSignature!==cached.signature){rows=nextRows;paint();}
+        else{rows=cached.rows;status.hidden=true;}
+      }catch(error){
+        if(hasCached){rows=cached.rows;paint();return;}
+        rows=[];directory.innerHTML='<div class="k-master-reference-empty"><b>Каталог временно недоступен</b><span>Попробуйте обновить страницу.</span></div>';status.hidden=false;status.textContent=error?.message||'Не удалось загрузить каталог';
+      }
+    };
     root.addEventListener('click',event=>{const kind=event.target.closest('[data-master-provider-kind]');if(kind){const next=kind.dataset.masterProviderKind;if(next&&next!==providerKind){providerKind=next;specFilter='';try{const q=new URLSearchParams(String(location.hash||'').split('?')[1]||'');q.set('type',providerKind);history.replaceState(null,'',location.pathname+location.search+'#/masters?'+q.toString());}catch(_e){}load();}return;}const modeButton=event.target.closest('[data-master-mode]');if(modeButton){mode=modeButton.dataset.masterMode||'nearby';root.querySelectorAll('[data-master-mode]').forEach(x=>x.classList.toggle('is-active',x===modeButton));paint();return;}const toggle=event.target.closest('[data-master-filter-toggle]');if(toggle){filterPanel.hidden=!filterPanel.hidden;return;}const spec=event.target.closest('[data-master-spec]');if(spec){specFilter=String(spec.dataset.masterSpec||'');filterPanel.querySelectorAll('[data-master-spec]').forEach(x=>x.classList.toggle('is-active',x===spec));filterPanel.hidden=true;paint();}},{signal:context.lifecycle?.signal});
     input?.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(()=>{search=String(input.value||'').trim();load();},260);},{signal:context.lifecycle?.signal});
     input?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();clearTimeout(timer);search=String(input.value||'').trim();load();}},{signal:context.lifecycle?.signal});
+    const refreshFromRealtime=event=>{const type=String(event.detail?.event?.eventType||'');if(/^(master|sto|provider|serviceOffer|service)\./i.test(type))void load({force:true,reason:'realtime'});};
+    const refreshOnResume=()=>{if(!document.hidden)void load({force:true,reason:'resume'});};
+    window.addEventListener('kareta:realtime:event',refreshFromRealtime,{signal:context.lifecycle?.signal});
+    document.addEventListener('visibilitychange',refreshOnResume,{signal:context.lifecycle?.signal});
+    window.addEventListener('online',refreshOnResume,{signal:context.lifecycle?.signal});
     load();
   }
 
