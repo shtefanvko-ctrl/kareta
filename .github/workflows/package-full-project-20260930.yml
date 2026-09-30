@@ -1,0 +1,35 @@
+name: Package full project
+
+on:
+  push:
+    branches:
+      - package/full-project-20260930
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Build full project ZIP
+        shell: bash
+        run: |
+          git archive --format=zip --output KARETA_FULL_PROJECT_2026-09-30.zip HEAD
+          unzip -t KARETA_FULL_PROJECT_2026-09-30.zip
+          sha256sum KARETA_FULL_PROJECT_2026-09-30.zip > KARETA_FULL_PROJECT_2026-09-30.zip.sha256
+
+      - name: Upload project archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: KARETA_FULL_PROJECT_2026-09-30
+          path: |
+            KARETA_FULL_PROJECT_2026-09-30.zip
+            KARETA_FULL_PROJECT_2026-09-30.zip.sha256
+          if-no-files-found: error
+          retention-days: 7
