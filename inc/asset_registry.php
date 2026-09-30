@@ -598,7 +598,7 @@ function kareta_route_asset_plan(): array
         ],
         'masterWorkplaceApi' => [
             'lazy' => true,
-            'routeKeys' => ['masterDashboard','masterWorkplaceSettings'],
+            'routeKeys' => ['masterDashboard','cabinetSettings'],
             'routes' => ['#/master','#/cabinet/settings'],
             'styles' => ['css/next/master_requests_workplace_services.css'],
             'scripts' => ['js/next/work_orders/master_workplace_api.js'],
