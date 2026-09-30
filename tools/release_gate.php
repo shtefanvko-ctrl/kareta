@@ -41,7 +41,7 @@ $add('release_parity', $assetVersion !== '' && hash_equals($assetVersion, $swVer
 
 $protected = [
     'index.php' => '5e3dbc84e0ff808dd023d490399677f7ff1616d3c7bebaeb1bfab462d0854d26',
-    'js/next/smart_action_hub.js' => '6e3941b4cc27e1f45e0f44ab0085efdd1b8e043fc9f55e0a4a66d58c05a50532',
+    'js/next/smart_action_hub.js' => '1b43d237e7de8a94cc960344ad69bcd9be5545816929bc0a62d457468c03c122',
 ];
 foreach ($protected as $relative => $hash) {
     $path = $root . '/' . $relative;
@@ -150,6 +150,7 @@ $focused = [
     '84.93' => 'tools/test_request_problem_step_84_93.js',
     '84.94' => 'tools/test_garage_mobile_layout_84_94.js',
     '84.95' => 'tools/test_mobile_fab_badges_84_95.js',
+    'master.more' => 'tools/test_master_more_contract.js',
 ];
 if ($node !== '') foreach ($focused as $label => $relative) {
     $path = $root . '/' . $relative;
