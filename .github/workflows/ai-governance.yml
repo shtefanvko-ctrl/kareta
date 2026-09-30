@@ -7,7 +7,9 @@ on:
       - 'CLAUDE.md'
       - 'MB_MONITORING.md'
       - 'ai/**'
+      - '.github/agents/**'
       - '.github/copilot-instructions.md'
+      - '.github/pull_request_template.md'
       - '.github/workflows/ai-governance.yml'
       - '.github/workflows/php-syntax.yml'
   push:
@@ -17,7 +19,9 @@ on:
       - 'CLAUDE.md'
       - 'MB_MONITORING.md'
       - 'ai/**'
+      - '.github/agents/**'
       - '.github/copilot-instructions.md'
+      - '.github/pull_request_template.md'
       - '.github/workflows/ai-governance.yml'
       - '.github/workflows/php-syntax.yml'
 
@@ -26,49 +30,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Verify required AI context files
         shell: bash
         run: |
           set -euo pipefail
-          required=(
-            AGENTS.md
-            CLAUDE.md
-            MB_MONITORING.md
-            ai/CONTEXT_ROUTER.md
-            ai/WORKFLOW.md
-            ai/VERIFICATION_GATES.md
-            ai/rules/architecture.md
-            ai/rules/security.md
-            ai/rules/verification-release.md
-            .github/copilot-instructions.md
-            .github/workflows/php-syntax.yml
-          )
-          for file in "${required[@]}"; do
-            test -s "$file" || { echo "Missing or empty: $file"; exit 1; }
-          done
-
+          required=(AGENTS.md CLAUDE.md MB_MONITORING.md ai/CONTEXT_ROUTER.md ai/WORKFLOW.md ai/VERIFICATION_GATES.md ai/SURFACE_MAP.json ai/CHANGE_LANES.md ai/rules/architecture.md ai/rules/security.md ai/rules/verification-release.md ai/rules/web-spa.md ai/rules/backend-api.md ai/rules/marketplace-catalog.md ai/rules/admin.md ai/rules/android-webview.md .github/agents/product-manager.agent.md .github/agents/implementer.agent.md .github/agents/verifier.agent.md .github/agents/release-manager.agent.md .github/copilot-instructions.md .github/pull_request_template.md .github/workflows/php-syntax.yml)
+          for file in "${required[@]}"; do test -s "$file" || { echo "Missing or empty: $file"; exit 1; }; done
       - name: Keep root kernel compact
         shell: bash
         run: |
           set -euo pipefail
           lines=$(wc -l < AGENTS.md)
           echo "AGENTS.md lines: $lines"
-          test "$lines" -le 120 || {
-            echo "AGENTS.md exceeded 120 lines. Move domain detail into routed modules."
-            exit 1
-          }
-
-      - name: Verify source-of-truth links
+          test "$lines" -le 120 || { echo "AGENTS.md exceeded 120 lines."; exit 1; }
+      - name: Validate routed contracts
         shell: bash
         run: |
           set -euo pipefail
+          python -m json.tool ai/SURFACE_MAP.json >/dev/null
           grep -q 'ai/CONTEXT_ROUTER.md' AGENTS.md
+          grep -q 'ai/SURFACE_MAP.json' AGENTS.md
+          grep -q 'ai/CHANGE_LANES.md' AGENTS.md
           grep -q 'MB_MONITORING.md' AGENTS.md
-          grep -q 'AGENTS.md' CLAUDE.md
-          grep -q 'AGENTS.md' .github/copilot-instructions.md
-          grep -q 'MB_MONITORING.md' ai/rules/verification-release.md
-          grep -q 'ai/VERIFICATION_GATES.md' ai/rules/verification-release.md
-          grep -q 'MB_MONITORING.md' ai/VERIFICATION_GATES.md
-          grep -q '.github/workflows/php-syntax.yml' ai/VERIFICATION_GATES.md
-          echo 'AI context routing and executable gate contracts are internally linked.'
+          for file in .github/agents/*.agent.md; do grep -q 'AGENTS.md' "$file" || { echo "$file must route through AGENTS.md"; exit 1; }; done
+          echo 'AI governance contract is internally linked.'
