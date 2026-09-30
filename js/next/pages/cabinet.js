@@ -219,7 +219,7 @@
         await window.KaretaSmartActionHub?.loadPreference?.();
         if(!window.KaretaMasterWorkplaceApi){
           const routeLoader=window.KaretaRouteAssetLoader;
-          if(routeLoader?.isKnownLazy?.('masterWorkplaceSettings'))await routeLoader.ensureRoute('masterWorkplaceSettings');
+          if(routeLoader?.isKnownLazy?.('cabinetSettings'))await routeLoader.ensureRoute('cabinetSettings');
         }
         const workplaceApi=window.KaretaMasterWorkplaceApi;
         if(!workplaceApi)throw new Error('Модуль настроек рабочего места не загружен');
