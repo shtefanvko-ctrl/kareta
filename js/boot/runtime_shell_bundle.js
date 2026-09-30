@@ -1261,12 +1261,12 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
       {key:'help',label:'Помощь',icon:'help'}
     ]),
     master:Object.freeze([
-      {key:'masterDashboard',label:'Рабочее место',icon:'work'},
+      {key:'cabinetGarage',label:'Гараж',icon:'car',action:'personalGarage'},
+      {key:'cabinet',label:'Аккаунт',icon:'user'},
+      {key:'cabinetSettings',label:'Подключения',icon:'chats',action:'connections'},
       {key:'masterSchedule',label:'Календарь',icon:'calendar'},
-      {key:'chats',label:'Чаты',icon:'chats',badge:'chat'},
-      {key:'orders',label:'Мои заказы',icon:'orders'},
-      {key:'following',label:'Подписки',icon:'following'},
-      {key:'cabinetSettings',label:'Настройки',icon:'settings'}
+      {key:'orders',label:'Заявки',icon:'orders'},
+      {key:'chats',label:'Чаты',icon:'chats',badge:'chat'}
     ]),
     organization_service:Object.freeze([
       {key:'orders',label:'Заказы',icon:'orders'},
@@ -1322,22 +1322,35 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
   function initials(){const value=profileTitle().replace(/[^\p{L}\p{N}\s]/gu,' ').trim();return value.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x.charAt(0)).join('').toUpperCase()||'K';}
   function actions(){return ACTIONS[kind()]||ACTIONS.anonymous;}
   function routeAllowed(key){const nav=window.KaretaDynamicNavigation;return Boolean(registry()?.has?.(key)&&(nav?.canAccess?.(key)||['cabinet','cabinetGarage','cabinetSettings','following','notifications','help','about'].includes(key)));}
+  function personalContext(){return (identity().contexts||[]).find(c=>String(c?.type||'').toLowerCase()==='personal')||null;}
+  function actionAllowed(item){if(item?.action==='personalGarage')return Boolean(personalContext()&&registry()?.has?.('cabinetGarage'));return routeAllowed(item?.key);}
   function badge(item){const n=item.badge==='chat'?state.unreadChats:item.badge==='notifications'?state.unreadNotifications:0;return n>0?`<b class="k-more-window-badge">${n>99?'99+':n}</b>`:'';}
-  function actionMarkup(item,index){const allowed=routeAllowed(item.key);return `<button type="button" class="k-more-window-action k-more-window-action--${index+1}" data-smart-action-route="${esc(item.key)}" ${allowed?'':'disabled aria-disabled="true"'}><span class="k-more-window-action__inside"><span class="k-more-window-action__icon">${iconSvg(item.icon)}</span><span>${esc(item.label)}</span></span>${badge(item)}</button>`;}
+  function actionMarkup(item,index){const allowed=actionAllowed(item),special=item.action?` data-smart-action-special="${esc(item.action)}"`:'';return `<button type="button" class="k-more-window-action k-more-window-action--${index+1}" data-smart-action-route="${esc(item.key)}"${special} ${allowed?'':'disabled aria-disabled="true"'}><span class="k-more-window-action__inside"><span class="k-more-window-action__icon">${iconSvg(item.icon)}</span><span>${esc(item.label)}</span></span>${badge(item)}</button>`;}
   function contextLabel(c){if(c.type==='personal')return'Клиент';const p=String(c.profileType||c.profile_type||'').toLowerCase();if(p==='master')return'Мастер';if(p==='seller')return'Магазин';if(String(c.organizationType||c.organization_type||'').includes('store'))return'Магазин';return'СТО';}
   function ensure(){
     if(state.root&&document.body.contains(state.root))return state.root;
     const root=document.createElement('div');root.id='k-smart-action-hub';root.className='k-smart-action-hub k-more-window-host';root.hidden=true;root.dataset.contract=MORE_WINDOW_CONTRACT;
     root.innerHTML=`<section class="k-more-window" role="region" aria-label="Ещё"><main class="k-more-window-main"><button type="button" class="k-more-window-profile" data-smart-action-route="cabinet"><span class="k-more-window-avatar" data-more-avatar></span><span class="k-more-window-profile__body"><span class="k-more-window-profile__context" data-more-context></span><strong data-more-profile-title></strong><span class="k-more-window-profile__meta"><span>${iconSvg('phone')}<i data-more-profile-phone>Телефон не указан</i></span><span>${iconSvg('location')}<i data-more-profile-city>Город не указан</i></span></span><span class="k-more-window-profile__stats"><span><b data-more-profile-vehicles>0</b><small>авто</small></span><span><b data-more-profile-promos>0</b><small>акции</small></span><span><b data-more-profile-chats>0</b><small>чаты</small></span></span></span><span class="k-more-window-profile__chevron">${iconSvg('chevronRight')}</span></button><div class="k-more-window-summary"><button type="button" class="k-more-window-summary-card" data-smart-action-route="cabinetGarage"><span class="k-more-window-summary-card__icon">${iconSvg('car')}</span><span><b>Гараж</b><small>Мои автомобили</small></span><strong data-more-garage-count>0</strong></button><button type="button" class="k-more-window-summary-card" data-smart-action-route="cabinetPromos"><span class="k-more-window-summary-card__icon">${iconSvg('discount')}</span><span><b>Акции</b><small>Выгодные предложения</small></span><strong data-more-promo-count>0</strong></button></div><section class="k-more-window-quick"><h2>Быстрый доступ</h2><div class="k-more-window-hub" data-more-actions></div></section><aside class="k-more-window-support"><span class="k-more-window-support__icon">${iconSvg('help')}</span><span><strong>Поддержка KARETA.KZ</strong><small>Мы поможем решить любой вопрос</small></span><button type="button" data-smart-action-route="help">Написать</button></aside><div class="k-more-window-status" data-more-status role="alert" hidden><span data-more-status-text></span><button type="button" data-more-retry>Повторить</button></div></main></section>`;
     document.body.appendChild(root);
-    root.addEventListener('click',event=>{
+    root.addEventListener('click',async event=>{
       const retry=event.target.closest('[data-more-retry]');if(retry){state.error='';render();return;}
-      const route=event.target.closest('[data-smart-action-route]');if(route&&!route.disabled){const key=route.dataset.smartActionRoute;close();navigate(key);return;}
+      const route=event.target.closest('[data-smart-action-route]');if(!route||route.disabled)return;
+      const key=route.dataset.smartActionRoute,special=route.dataset.smartActionSpecial||'';
+      if(special==='personalGarage'){await openPersonalGarage();return;}
+      if(special==='connections'){try{sessionStorage.setItem('kareta.settings.focus','messaging');}catch(_e){}close();navigate('cabinetSettings');return;}
+      close();navigate(key);
     });
     state.root=root;return root;
   }
 
   function navigate(key){if(window.KaretaRouteRuntime?.navigate)window.KaretaRouteRuntime.navigate(key,{source:'more-window'});else{const route=registry()?.get?.(key);if(route?.path)location.hash=route.path;}}
+  async function openPersonalGarage(){
+    const target=personalContext();if(!target){state.error='Личный гараж недоступен для этого аккаунта';render();return false;}
+    const id=String(target.id||target.key||'');if(!id)return false;
+    try{if(String(identity().context?.id||identity().context?.key||'')!==id)await window.KaretaNavigationCore?.switchContext?.(id);close();navigate('cabinetGarage');return true;}
+    catch(error){state.error=error?.message||'Не удалось открыть личный гараж';render();return false;}
+  }
+  function masterStatusLabel(value){return ({online:'Свободен',available:'Свободен',busy:'Занят',break:'Пауза',paused:'Пауза',day_off:'Выходной',offline:'Не принимает'})[String(value||'').toLowerCase()]||'Статус не указан';}
   function render(){
     const root=ensure(),snap=identity(),items=actions();
     root.dataset.contextKind=kind();root.dataset.layout='honeycomb';
@@ -1351,16 +1364,22 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     const promotionCount=Array.isArray(promoRows)?promoRows.length:Number(user.promotionCount||user.promotionsCount||0)||0;
     const phone=String(snap.account?.phone||snap.person?.phone||user.phone||user.phoneNumber||'').trim();
     const city=String(user.city||user.location||snap.context?.city||snap.account?.city||'').trim();
-    const phoneNode=root.querySelector('[data-more-profile-phone]');if(phoneNode)phoneNode.textContent=phone||'Телефон не указан';
-    const cityNode=root.querySelector('[data-more-profile-city]');if(cityNode)cityNode.textContent=city||'Город не указан';
-    const profileVehicles=root.querySelector('[data-more-profile-vehicles]');if(profileVehicles)profileVehicles.textContent=String(vehicleCount);
-    const profilePromos=root.querySelector('[data-more-profile-promos]');if(profilePromos)profilePromos.textContent=String(promotionCount);
+    const masterMode=kind()==='master';
+    const masterSpec=String(user.spec||user.specialization||snap.context?.meta?.spec||snap.context?.label||'Специализация не указана').trim();
+    const masterRating=Number(user.rating||snap.context?.meta?.rating||0);
+    const masterStatus=masterStatusLabel(user.availability||snap.context?.meta?.availability||snap.context?.meta?.status||'');
+    const phoneNode=root.querySelector('[data-more-profile-phone]');if(phoneNode)phoneNode.textContent=masterMode?masterSpec:(phone||'Телефон не указан');
+    const cityNode=root.querySelector('[data-more-profile-city]');if(cityNode)cityNode.textContent=masterMode?(city||'Город не указан'):(city||'Город не указан');
+    const profileVehicles=root.querySelector('[data-more-profile-vehicles]');if(profileVehicles)profileVehicles.textContent=masterMode?(masterRating>0?masterRating.toFixed(1):'—'):String(vehicleCount);
+    const profilePromos=root.querySelector('[data-more-profile-promos]');if(profilePromos)profilePromos.textContent=masterMode?masterStatus:String(promotionCount);
     const profileChats=root.querySelector('[data-more-profile-chats]');if(profileChats)profileChats.textContent=String(state.unreadChats||0);
+    const statLabels=root.querySelectorAll('.k-more-window-profile__stats small');if(statLabels.length>=3){statLabels[0].textContent=masterMode?'рейтинг':'авто';statLabels[1].textContent=masterMode?'статус':'акции';statLabels[2].textContent='чаты';}
+    const summary=root.querySelector('.k-more-window-summary');if(summary)summary.hidden=masterMode;
     const garageCount=root.querySelector('[data-more-garage-count]');if(garageCount)garageCount.textContent=String(vehicleCount);
     const promoCount=root.querySelector('[data-more-promo-count]');if(promoCount)promoCount.textContent=String(promotionCount);
-    const box=root.querySelector('[data-more-actions]');if(box)box.innerHTML=items.map(actionMarkup).join('')+`<span class="k-more-window-core" aria-hidden="true">${iconSvg('car')}</span>`;
-    const support=root.querySelector('.k-more-window-support');if(support)support.hidden=kind()==='master';
-    const quickTitle=root.querySelector('.k-more-window-quick h2');if(quickTitle)quickTitle.textContent=kind()==='master'?'Инструменты':'Быстрый доступ';
+    const box=root.querySelector('[data-more-actions]');if(box)box.innerHTML=items.map(actionMarkup).join('')+`<span class="k-more-window-core" aria-hidden="true">${iconSvg(masterMode?'masters':'car')}</span>`;
+    const support=root.querySelector('.k-more-window-support');if(support)support.hidden=masterMode;
+    const quickTitle=root.querySelector('.k-more-window-quick h2');if(quickTitle)quickTitle.textContent=masterMode?'Действия мастера':'Быстрый доступ';
     const status=root.querySelector('[data-more-status]');if(status){const text=status.querySelector('[data-more-status-text]');status.hidden=!state.error;if(text)text.textContent=state.error||'';}
   }
   function setMoreButtonState(active){document.querySelectorAll('[data-mobile-more]').forEach(button=>{button.classList.toggle('is-active',active);button.setAttribute('aria-expanded',active?'true':'false');});}

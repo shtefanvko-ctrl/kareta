@@ -243,7 +243,9 @@
         const preferences=response.payload?.data?.preferences||{};
         const selected=window.KaretaSmartActionHub?.snapshot?.().layout||'honeycomb';
         replace(shell('Настройки рабочего места','Настройте свои окна, количество заявок, автообновление и дополнительное меню Мастера.',`<form id="k-master-settings-form" class="k-settings-form">${masterWorkplaceSettings(preferences)}${moreLayoutPicker(selected)}<div class="k-master-settings-links"><a class="k-btn k-btn-secondary" href="#/services/manage">Мои услуги</a><a class="k-btn k-btn-secondary" href="#/master">Посмотреть рабочее место</a></div><button class="k-btn k-btn-primary" type="submit">Сохранить настройки</button><output id="k-settings-status"></output></form><div data-messaging-settings-host></div>`));
-        window.KaretaMessagingSettings?.mount?.(document.querySelector('[data-messaging-settings-host]'));
+        const messagingHost=document.querySelector('[data-messaging-settings-host]');
+        window.KaretaMessagingSettings?.mount?.(messagingHost);
+        try{if(sessionStorage.getItem('kareta.settings.focus')==='messaging'){sessionStorage.removeItem('kareta.settings.focus');requestAnimationFrame(()=>messagingHost?.scrollIntoView?.({block:'start'}));}}catch(_e){}
         document.querySelector('#k-master-settings-form')?.addEventListener('submit',async ev=>{
           ev.preventDefault();const form=ev.currentTarget;const out=document.querySelector('#k-settings-status');const save=form.querySelector('[type="submit"]');if(save)save.disabled=true;out.textContent='Сохранение…';
           try{
