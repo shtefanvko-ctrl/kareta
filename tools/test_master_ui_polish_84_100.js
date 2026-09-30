@@ -31,7 +31,7 @@ const serviceRender=(services.match(/function renderMasterServiceManagement\(con
 expect((serviceRender.match(/<article>/g)||[]).length===2,'My services overview should have two counters');
 expect(!serviceRender.includes('<span>в каталоге</span>'),'catalog-total noise remains in My services overview');
 expect(servicesCss.includes('.k-master-services-help{display:none}'),'mobile help-panel reduction missing');
-expect(more.includes("support.hidden=kind()==='master'"),'master More support CTA is not hidden');
-expect(more.includes("kind()==='master'?'Инструменты':'Быстрый доступ'"),'master More section title not normalized');
-expect(bundle.includes("support.hidden=kind()==='master'"),'runtime shell bundle is stale');
+expect(more.includes('support.hidden=masterMode'),'master More support CTA is not hidden');
+expect(more.includes("masterMode?'Действия мастера':'Быстрый доступ'"),'master More section title not normalized');
+expect(bundle.includes('support.hidden=masterMode')&&bundle.includes("masterMode?'Действия мастера':'Быстрый доступ'"),'runtime shell bundle is stale');
 console.log('OK master UI polish 84.100');
