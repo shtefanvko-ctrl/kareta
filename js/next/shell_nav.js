@@ -15,7 +15,7 @@
     const route=registry.get(key);
     const kind=window.KaretaNavigationCore?.contextKind?.()||'anonymous';
     const labels={
-      personal:{parts:'Market',orders:'Заявки',cabinet:'Профиль'},
+      personal:{parts:'Запчасти',orders:'Заявки',cabinet:'Профиль'},
       master:{masterDashboard:'Рабочее место',masterExchange:'Биржа',orders:'Заявки',masterSchedule:'Календарь',community:'Сообщество',parts:'Запчасти',serviceManagement:'Услуги',chats:'Чаты',cabinet:'Аккаунт'},
       organization_service:{stoDashboard:'Главная СТО',orders:'Заказы',masters:'Мастера',workflow:'Производство',serviceManagement:'Услуги',finance:'Выручка / KPI',parts:'Запчасти',chats:'Чаты',cabinet:'Аккаунт'},
       seller:{seller:'Магазин',sellerProducts:'Товары',sellerOrders:'Заказы',market:'Склад',finance:'Финансы',parts:'Витрина',chats:'Чаты',cabinet:'Аккаунт'},
