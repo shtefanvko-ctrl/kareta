@@ -8,7 +8,10 @@ Define the requested outcome in observable terms. Identify affected files/surfac
 ## 2. Inspect before change
 Read the existing implementation and its direct dependencies. Search for existing helpers/contracts before creating alternatives. Never infer a test/build/deploy command that is not present.
 
-## 3. Plan the delta
+## 3. Claim one change lane
+Check `ai/SURFACE_MAP.json` and `ai/CHANGE_LANES.md`. If an active PR already owns the same contract, either stack explicitly on that PR or stop and report the conflict. Do not open a parallel competing implementation.
+
+## 4. Plan the delta
 For a non-trivial change, record:
 - intended behavior;
 - files/contracts expected to change;
@@ -18,10 +21,10 @@ For a non-trivial change, record:
 
 Prefer the smallest coherent delta over broad cleanup.
 
-## 4. Implement incrementally
+## 5. Implement incrementally
 Keep each change attributable to the task. Preserve public/API/data contracts unless explicitly changing them. Do not combine unrelated refactors with bug fixes.
 
-## 5. Verify in layers
+## 6. Verify in layers
 Use the strongest checks that actually exist for the affected surface, ideally in this order:
 1. syntax/static validity;
 2. focused unit/module checks;
@@ -31,10 +34,10 @@ Use the strongest checks that actually exist for the affected surface, ideally i
 
 A missing check is not a PASS. Report it as an evidence gap and create the next executable action.
 
-## 6. Inspect the result
+## 7. Inspect the result
 Review the final diff for accidental scope expansion, dead code, duplicated logic, debug output, secret leakage, broken fallback behavior, and contract drift.
 
-## 7. Evidence record
+## 8. Evidence record
 For completion/release-sensitive work, state:
 - candidate branch/ref/SHA when available;
 - checks actually executed and outcomes;
@@ -44,7 +47,7 @@ For completion/release-sensitive work, state:
 
 Status vocabulary follows `MB_MONITORING.md`: desired, implemented, verified, deployed are separate states.
 
-## 8. Done gate
+## 9. Done gate
 Use `DONE` only when the requested Definition of Done is met with required evidence. Otherwise use the most accurate state (for example IMPLEMENTED / NOT VERIFIED) and provide the next executable step.
 
 ## Regression rule

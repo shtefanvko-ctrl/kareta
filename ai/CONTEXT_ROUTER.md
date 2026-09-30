@@ -16,7 +16,12 @@ Goal: maximize useful project context while minimizing context pollution. The ag
 | architecture, router, shared state, cross-module refactor, public contracts | `ai/rules/architecture.md` | unrelated historical patch notes |
 | auth, identity, permissions, capabilities, cookies, sessions, secrets, uploads, destructive actions | `ai/rules/security.md` | broad UI/product docs unless affected |
 | tests, regression, release, staging, deploy, DONE/PASS, baseline, evidence | `ai/rules/verification-release.md`, `MB_MONITORING.md` | assuming latest commit == verified release |
-| ordinary implementation task | `ai/WORKFLOW.md` plus only the affected module files | all rule modules at once |
+| web SPA / routing / lazy assets / cache | `ai/rules/web-spa.md` | backend/catalog history unless required |
+| PHP/API/DB contract | `ai/rules/backend-api.md` | unrelated UI history |
+| seller/store/product catalog | `ai/rules/marketplace-catalog.md` | loading the full catalog into startup context |
+| admin/control plane | `ai/rules/admin.md`, `ai/rules/security.md` | client-only UI assumptions |
+| Android/WebView/native bridge | `ai/rules/android-webview.md` | inferring native source that is not in this repository |
+| ordinary implementation task | `ai/WORKFLOW.md`, `ai/SURFACE_MAP.json` plus only the affected module files | all rule modules at once |
 | ambiguous conflict between docs and runtime | `MB_MONITORING.md`, then the smallest relevant rule module | silently choosing the newest text |
 
 ## Progressive disclosure rules
@@ -27,6 +32,9 @@ Goal: maximize useful project context while minimizing context pollution. The ag
 5. Do not recursively load documentation merely because it is linked.
 6. Summarize large evidence before carrying it into the next reasoning step.
 7. If two instructions overlap, keep the stricter safety/verification invariant and resolve product/architecture conflicts by the source-of-truth order in `AGENTS.md`.
+
+## Change-lane check
+Before implementation, read `ai/CHANGE_LANES.md` when another open PR touches the same surface or shared contract. Do not create a competing source of truth.
 
 ## Context budget discipline
 A rule belongs in `AGENTS.md` only if it applies to almost every task. Domain-specific detail belongs in a routed module. Historical state belongs in changelog/patch records. Machine-verifiable requirements should migrate to executable checks rather than grow as prose.

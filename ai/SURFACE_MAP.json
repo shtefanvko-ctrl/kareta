@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "purpose": "Verified entry points and ownership hints for KARETA coding agents. This is not a complete dependency graph.",
+  "surfaces": {
+    "web_spa": {
+      "entry_points": [
+        "js/next/route_registry.js",
+        "js/next/route_asset_loader.js",
+        "js/next/pages/",
+        "asset_manifest.php",
+        "sw.js"
+      ],
+      "rules": [
+        "ai/rules/web-spa.md"
+      ],
+      "shared_contracts": [
+        "route keys",
+        "lazy bundles",
+        "release-scoped asset URLs",
+        "cache/warm navigation"
+      ]
+    },
+    "backend_api": {
+      "entry_points": [
+        "api/db.php",
+        "api/bootstrap.php",
+        "api/domain.php",
+        "api/"
+      ],
+      "rules": [
+        "ai/rules/backend-api.md",
+        "ai/rules/security.md"
+      ],
+      "shared_contracts": [
+        "request/response schema",
+        "DB access",
+        "idempotency",
+        "authorization"
+      ]
+    },
+    "admin": {
+      "entry_points": [
+        "js/next/pages/admin_workspaces.js",
+        "api/admin_operations.php"
+      ],
+      "rules": [
+        "ai/rules/admin.md",
+        "ai/rules/security.md"
+      ],
+      "shared_contracts": [
+        "capabilities",
+        "privileged operations",
+        "monitoring"
+      ]
+    },
+    "marketplace_catalog": {
+      "entry_points": [
+        "js/next/shop/",
+        "js/next/seller/",
+        "js/next/catalog/",
+        "js/next/pages/parts.js",
+        "js/next/pages/seller.js",
+        "api/seller_shop.php",
+        "api/catalog/"
+      ],
+      "rules": [
+        "ai/rules/marketplace-catalog.md",
+        "ai/rules/backend-api.md"
+      ],
+      "shared_contracts": [
+        "product identity",
+        "SKU/OEM/fitment",
+        "price/stock",
+        "seller orders",
+        "bounded catalog payload"
+      ]
+    },
+    "identity": {
+      "entry_points": [
+        "api/identity/",
+        "api/identity_session.php",
+        "api/identity_health.php",
+        "js/next/identity_frontend.js",
+        "js/rbac.js"
+      ],
+      "rules": [
+        "ai/rules/security.md",
+        "ai/rules/backend-api.md"
+      ],
+      "shared_contracts": [
+        "session",
+        "context",
+        "capabilities",
+        "legacy compatibility"
+      ]
+    },
+    "android_webview_bridge": {
+      "entry_points": [
+        "js/mobile_native_bridge.js"
+      ],
+      "rules": [
+        "ai/rules/android-webview.md"
+      ],
+      "note": "Native Android project is not assumed present in this repository.",
+      "shared_contracts": [
+        "web/native bridge",
+        "WebView release/cache behavior"
+      ]
+    },
+    "release": {
+      "entry_points": [
+        "api/readiness.php",
+        "api/release_check.php",
+        "api/deploy_check.php",
+        "api/post_deploy_check.php",
+        "api/version_check.php",
+        "api/release_status.php",
+        "asset_manifest.php",
+        "sw.js"
+      ],
+      "rules": [
+        "ai/rules/verification-release.md"
+      ],
+      "shared_contracts": [
+        "candidate identity",
+        "asset version",
+        "runtime evidence",
+        "provenance"
+      ]
+    }
+  }
+}

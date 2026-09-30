@@ -39,5 +39,7 @@ Load only what applies:
 - auth / secrets / sensitive data / destructive actions: `ai/rules/security.md`
 - verification / release / status / evidence: `ai/rules/verification-release.md`
 - execution lifecycle and reporting: `ai/WORKFLOW.md`
+- surface ownership and verified entry points: `ai/SURFACE_MAP.json`
+- parallel PR / integration-lane rules: `ai/CHANGE_LANES.md`
 
 Do not read every historical patch note by default. Use historical documents only when they are directly relevant to the task or needed to resolve a conflict.
