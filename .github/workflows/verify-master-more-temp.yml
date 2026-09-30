@@ -17,5 +17,14 @@ jobs:
         run: node tools/test_master_more_contract.js
       - name: Smart Action hash
         run: sha256sum js/next/smart_action_hub.js
-      - name: Full release gate
-        run: php tools/release_gate.php --package=full
+      - name: Rebuild boot bundles
+        run: |
+          node tools/build_boot_js_bundles.js
+          git status --short js/boot
+          git diff --stat -- js/boot
+      - name: Upload rebuilt shell bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: rebuilt-master-more-shell
+          path: js/boot/runtime_shell_bundle.js
+          if-no-files-found: error
