@@ -3,7 +3,8 @@
   const ui=window.KaretaPageUI;
   const api=window.KaretaClientCabinetApi;
   const firstVehicleFlow=window.KaretaFirstVehicleFlow;
-  if(!ui||!api) throw new Error('Client cabinet dependencies are required');
+  const jsonCatalog=window.KaretaJsonCatalogLoader;
+  if(!ui||!api||!jsonCatalog) throw new Error('Client cabinet dependencies are required');
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const money=v=>new Intl.NumberFormat('ru-RU').format(Number(v||0))+' ₸';
   let data=null;
@@ -79,40 +80,24 @@
 
   function garageBooks(d,type){const vehicles=d.vehicles||[];if(!vehicles.length)return '<div class="k-empty-card"><h2>Сначала добавьте автомобиль</h2><p>После этого для него появятся сервисная книжка, история ремонтов и технические записи.</p></div>';const renderer={service:serviceBook,repairs:repairBook,carbook:(v)=>carBook(v),problems:problemBook,operation:operationBook,calendar:serviceCalendarBook}[type]||serviceBook;return `<div class="k-garage-books">${vehicles.map(v=>renderer(v,d)).join('')}</div>`;}
 
-  const serviceSystems=[
-    {id:'engine',title:'Двигатель',text:'Смазка, зажигание, впуск и навесное оборудование'},
-    {id:'timing',title:'ГРМ и приводы',text:'Ремень или цепь, ролики, натяжители и помпа'},
-    {id:'cooling',title:'Система охлаждения',text:'Антифриз, термостат, радиатор, патрубки и помпа'},
-    {id:'transmission',title:'Трансмиссия',text:'Масло КПП, сцепление, ШРУСы и приводы'},
-    {id:'suspension',title:'Подвеска и ступицы',text:'Подшипники, амортизаторы, опоры и сайлентблоки'},
-    {id:'brakes',title:'Тормозная система',text:'Колодки, диски, жидкость, шланги и суппорты'},
-    {id:'steering',title:'Рулевое управление',text:'Наконечники, тяги, рейка и рабочая жидкость'},
-    {id:'electrics',title:'Электрика',text:'АКБ, генератор, стартер, лампы и проводка'},
-    {id:'climate',title:'Климатическая система',text:'Фильтр салона, хладагент, компрессор и радиаторы'},
-    {id:'fuel',title:'Топливная система',text:'Фильтр, насос, форсунки и магистрали'}
-  ];
-  const serviceConsumables=[
-    {id:'engine_oil',system:'engine',title:'Моторное масло',km:10000,months:12,mode:'interval'},
-    {id:'oil_filter',system:'engine',title:'Масляный фильтр',km:10000,months:12,mode:'interval'},
-    {id:'air_filter',system:'engine',title:'Воздушный фильтр',km:15000,months:12,mode:'interval'},
-    {id:'spark_plugs',system:'engine',title:'Свечи зажигания',km:30000,months:24,mode:'interval'},
-    {id:'timing_belt',system:'timing',title:'Ремень ГРМ',km:60000,months:48,mode:'interval'},
-    {id:'timing_rollers',system:'timing',title:'Ролики ГРМ',km:60000,months:48,mode:'interval'},
-    {id:'water_pump',system:'timing',title:'Помпа',km:60000,months:48,mode:'interval'},
-    {id:'drive_belt',system:'timing',title:'Приводной ремень',km:50000,months:36,mode:'interval'},
-    {id:'coolant',system:'cooling',title:'Охлаждающая жидкость',km:60000,months:36,mode:'interval'},
-    {id:'thermostat',system:'cooling',title:'Термостат',km:0,months:0,mode:'condition'},
-    {id:'gear_oil',system:'transmission',title:'Масло КПП / АКПП',km:60000,months:48,mode:'interval'},
-    {id:'clutch',system:'transmission',title:'Комплект сцепления',km:0,months:0,mode:'condition'},
-    {id:'wheel_bearing',system:'suspension',title:'Ступичные подшипники',km:0,months:0,mode:'condition'},
-    {id:'shock_absorber',system:'suspension',title:'Амортизаторы',km:0,months:0,mode:'condition'},
-    {id:'brake_pads',system:'brakes',title:'Тормозные колодки',km:0,months:0,mode:'condition'},
-    {id:'brake_fluid',system:'brakes',title:'Тормозная жидкость',km:40000,months:24,mode:'interval'},
-    {id:'tie_rod',system:'steering',title:'Рулевые наконечники и тяги',km:0,months:0,mode:'condition'},
-    {id:'battery',system:'electrics',title:'Аккумулятор',km:0,months:48,mode:'condition'},
-    {id:'cabin_filter',system:'climate',title:'Салонный фильтр',km:15000,months:12,mode:'interval'},
-    {id:'fuel_filter',system:'fuel',title:'Топливный фильтр',km:30000,months:24,mode:'interval'}
-  ];
+  const SERVICE_MAINTENANCE_CATALOG='assets/catalog/garage/service_maintenance.json';
+  let serviceSystems=[];
+  let serviceConsumables=[];
+  let serviceCatalogPromise=null;
+  async function ensureServiceCatalog(){
+    if(serviceSystems.length&&serviceConsumables.length)return {systems:serviceSystems,items:serviceConsumables};
+    if(serviceCatalogPromise)return serviceCatalogPromise;
+    serviceCatalogPromise=jsonCatalog.load(SERVICE_MAINTENANCE_CATALOG,{schema:1}).then(payload=>{
+      const systems=Array.isArray(payload.systems)?payload.systems:[];
+      const items=Array.isArray(payload.items)?payload.items:[];
+      const ids=new Set(systems.map(row=>String(row?.id||'')));
+      if(!systems.length||!items.length||ids.size!==systems.length||items.some(item=>!ids.has(String(item?.system||''))))throw new Error('garage_service_catalog_invalid');
+      serviceSystems=systems.map(row=>Object.freeze({id:String(row.id),title:String(row.title||''),text:String(row.text||'')}));
+      serviceConsumables=items.map(row=>Object.freeze({id:String(row.id),system:String(row.system),title:String(row.title||''),km:Number(row.km||0),months:Number(row.months||0),mode:String(row.mode||'condition')}));
+      return {systems:serviceSystems,items:serviceConsumables};
+    }).catch(error=>{serviceCatalogPromise=null;throw error;});
+    return serviceCatalogPromise;
+  }
   function selectedVehicle(d){const vehicles=d.vehicles||[];return vehicles.find(v=>String(v.id)===String(serviceVehicleId))||vehicles.find(v=>Number(v.is_default)===1)||vehicles[0]||null;}
   function vehicleSwitcher(d,v){const vehicles=d.vehicles||[];return `<div class="k-service-vehicle-switcher-r78"><span>Автомобиль</span><div>${vehicles.map(x=>`<button type="button" data-service-vehicle-pick="${esc(x.id)}" class="${String(x.id)===String(v.id)?'is-selected':''}"><b>${vehicleTitle(x)}</b><small>${Number(x.mileage_km||0).toLocaleString('ru-RU')} км</small></button>`).join('')}</div></div>`;}
   function maintenanceMatch(d,v,item){const vid=String(v?.id||'');const direct=(d.maintenance||[]).filter(x=>String(x.vehicle_id)===vid).find(x=>String(x.item_type||'')===item.id);if(direct)return direct;const words=item.title.toLowerCase().split(/\s+/).filter(x=>x.length>3);return (d.maintenance||[]).filter(x=>String(x.vehicle_id)===vid).find(x=>words.some(w=>String(x.title||'').toLowerCase().includes(w)));}
