@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - import/kareta-current-84.142
+      - release/reconcile-84.152
 
 permissions:
   contents: read
@@ -65,6 +66,9 @@ jobs:
 
       - name: Current release contract
         run: node tools/test_current_release.js
+
+      - name: 84.152 reconciliation contract
+        run: node tools/test_reconciliation_84_152.js
 
       - name: Master and WebView UI contract
         run: node tools/test_master_ui_contract_84_150.js

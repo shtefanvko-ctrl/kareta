@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Target: Android WebView running `s.kareta.kz`
-Working branch: `import/kareta-current-84.142`
+Working branch: `release/reconcile-84.152`
 Merge target: `main`
 
 ## Purpose
@@ -44,7 +44,7 @@ The reconciliation must preserve the 84.148 WebView/runtime/cache work and the A
 - The failed `verify` at commit `7d6a900` checked for asset release 84.150 while the asset and Service Worker tokens were 84.149. The working branch now has matching tokens and a release parity regression check; `verify` run `36513375955` passed. This is a repository/CI issue, not proof of the screenshot-time Android failure.
 - The inspected staging responses advertised 84.144 for the shell, asset manifest, Service Worker and DB ping. The three screenshot-named lazy assets returned HTTP 200 with appropriate MIME during that later check. This does not explain why they failed on the device earlier; deploy history, cache state and device network logs are needed.
 - No Android APK or native source is present in this web checkout. Native API 6 JavaScript/PHP contracts passed CI, but APK packaging, WebView configuration and device behavior remain separate verification tasks.
-- The new 84.151 changes must pass `verify`, then be deployed together with the matching asset/Service Worker release token before the staging asset walk and two-account Android smoke can confirm them. The connected test host was offline during this inspection, so no host logs or device smoke are claimed.
+- 84.152 reconciles the 84.151 changes with current main. The exact 84.152 candidate must pass `verify`, then be deployed with the matching asset/Service Worker release token before the staging asset walk and two-account Android smoke can confirm it. The connected test host was offline during this inspection, so no host logs or device smoke are claimed.
 
 ## Execution order
 

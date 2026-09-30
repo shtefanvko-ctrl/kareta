@@ -1,15 +1,17 @@
 {
   "schema": "kareta.release.current.v1",
-  "release": "188.5.5.6.84.151",
-  "sourceBranch": "import/kareta-current-84.142",
+  "release": "188.5.5.6.84.152",
+  "sourceBranch": "release/reconcile-84.152",
   "targetBranch": "main",
   "branchState": {
-    "status": "ahead",
+    "status": "reconciled_candidate",
     "behindBy": 0,
     "mainAncestor": true,
-    "aheadByAtReconciliation": 88,
+    "reconciliationMergeCommit": "a7df986cee0d1e05895bbb93290dbc03111b9dac",
+    "mainHeadAtReconciliation": "d2873bbde16ec985ad14e8ff892df5ccbd7cf3b4",
+    "candidate84_151": "6685ad9e02531dfa653aacd1f1eaf1c7c5a4cecc",
     "mergeBase": "5d333d5e67857d91a44a653e725fb2924eef2004",
-    "note": "Android Native API 6 main delta reconciled by merge commit d0660fa1f9c562e826c5f8e81707f837368075cf. Later planning/test commits may increase ahead-by; the invariant is mainAncestor=true and behindBy=0."
+    "note": "84.152 is based on a two-parent reconciliation merge. Staging/deployed status is intentionally unverified until the exact candidate is deployed and verified."
   },
   "database": {
     "canonicalVersion": 135,
@@ -30,7 +32,7 @@
   "verification": {
     "ciWorkflow": ".github/workflows/verify.yml",
     "stagingWorkflow": ".github/workflows/staging-verify.yml",
-    "stagingStatus": "NOT_VERIFIED_AFTER_84_151"
+    "stagingStatus": "NOT_VERIFIED_AFTER_84_152"
   },
   "ui": {
     "notFound": "first_class_spa_route",

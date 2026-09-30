@@ -1,14 +1,24 @@
 # KARETA.KZ — Current engineering plan
 
-Current web/runtime release: **188.5.5.6.84.150**  
-Working branch: `import/kareta-current-84.142`  
+Current web/runtime release: **188.5.5.6.84.152**  
+Working branch: `release/reconcile-84.152`  
 Merge target: `main`
 
 ## Current branch reality
 
-The Native API reconciliation is now committed. The working branch is **0 behind** `main`; `main` head `5d333d5e67857d91a44a653e725fb2924eef2004` is an ancestor of the working branch. Ahead-by may continue to increase as verification/planning commits are added.
+84.152 reconciles the complete 84.146–84.151 web/runtime line with the current `main`.
 
-Merge commit `d0660fa1f9c562e826c5f8e81707f837368075cf` reconciled the Android Native API 6 delta with the 84.148 web/runtime line. The three Native API files were unchanged on the web branch since the previous main merge, so the main versions were transplanted without dropping later web/runtime work.
+- reconciliation merge: `a7df986cee0d1e05895bbb93290dbc03111b9dac`;
+- current main at reconciliation: `d2873bbde16ec985ad14e8ff892df5ccbd7cf3b4`;
+- 84.151 candidate: `6685ad9e02531dfa653aacd1f1eaf1c7c5a4cecc`;
+- common merge base: `5d333d5e67857d91a44a653e725fb2924eef2004`;
+- current main is the first parent and 84.151 is the second parent;
+- the only path changed on both sides since the merge base was `index.php`;
+- the resolution preserves the 84.151 runtime/bootstrap/404 behavior and the newer city-calm preloader from current main;
+- all unrelated current-main social/print/assets changes remain present;
+- staging remains **NOT VERIFIED** until this 84.152 candidate is deployed and the external staging verifier passes.
+
+Android Native API 6 remains preserved: structured bridge errors, durable `offlineAcknowledge`, separate adapter-connected/ECU-ready state, and migration-owned OBD schema at DB 135.
 
 ## Priority state
 
@@ -62,7 +72,7 @@ Old release-numbered staging artifacts remain historical evidence only. Current 
 python3 tools/verify_staging_current.py --base-url https://s.kareta.kz
 ```
 
-84.150 is **not marked staging PASS until that deployed check succeeds**. The verifier now walks every lazy route CSS/JS asset and requires HTTP 200, correct MIME and the current release token.
+84.152 is **not marked staging PASS until that deployed check succeeds for this exact candidate**. The verifier now walks every lazy route CSS/JS asset and requires HTTP 200, correct MIME and the current release token.
 
 ### P1 — Master/WebView visual consistency
 
