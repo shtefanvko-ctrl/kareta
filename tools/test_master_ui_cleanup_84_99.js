@@ -18,11 +18,11 @@ expect(/188\.5\.5\.6\.84\.(?:99|1\d{2,})/.test(version),'release is older than 8
 expect(nav.includes("master: Object.freeze(['masterDashboard','masterExchange','serviceManagement','parts','cabinet','__more__'])"),'master mobile navigation contract changed');
 
 const moreBlock=(more.match(/master:Object\.freeze\(\[([\s\S]*?)\]\),\n\s*organization_service:/)||[])[1]||'';
-for(const label of ['Рабочее место','Календарь','Чаты','Мои заказы','Подписки','Настройки']) expect(moreBlock.includes(`label:'${label}'`),`More missing ${label}`);
-expect(!moreBlock.includes("label:'Помощь'"),'Master More still contains Help instead of Subscriptions');
-const positions=['Рабочее место','Календарь','Чаты','Мои заказы','Подписки','Настройки'].map(x=>moreBlock.indexOf(`label:'${x}'`));
+for(const label of ['Гараж','Аккаунт','Подключения','Календарь','Заявки','Чаты']) expect(moreBlock.includes(`label:'${label}'`),`More missing ${label}`);
+for(const legacy of ['Рабочее место','Мои заказы','Подписки','Настройки']) expect(!moreBlock.includes(`label:'${legacy}'`),`Legacy Master More action remains: ${legacy}`);
+const positions=['Гараж','Аккаунт','Подключения','Календарь','Заявки','Чаты'].map(x=>moreBlock.indexOf(`label:'${x}'`));
 expect(positions.every((v,i)=>i===0||v>positions[i-1]),'Master More order is inconsistent');
-expect(bundle.includes("{key:'following',label:'Подписки',icon:'following'}"),'boot shell bundle was not rebuilt with master More');
+expect(bundle.includes("{key:'cabinetGarage',label:'Гараж',icon:'car',action:'personalGarage'}")&&bundle.includes("{key:'cabinetSettings',label:'Подключения',icon:'chats',action:'connections'}"),'boot shell bundle was not rebuilt with canonical master More');
 
 const renderData=(workplace.match(/function renderData\(data\)\{([\s\S]*?)\n  \}\n\n  function mountMasterWorkplace/)||[])[1]||'';
 expect(renderData.length>0,'renderData extraction failed');
