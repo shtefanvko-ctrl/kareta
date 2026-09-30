@@ -150,6 +150,7 @@ $focused = [
     '84.93' => 'tools/test_request_problem_step_84_93.js',
     '84.94' => 'tools/test_garage_mobile_layout_84_94.js',
     '84.95' => 'tools/test_mobile_fab_badges_84_95.js',
+    'master.more' => 'tools/test_master_more_contract.js',
 ];
 if ($node !== '') foreach ($focused as $label => $relative) {
     $path = $root . '/' . $relative;
