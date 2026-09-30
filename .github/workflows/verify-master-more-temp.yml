@@ -17,3 +17,5 @@ jobs:
         run: node tools/test_master_more_contract.js
       - name: Smart Action hash
         run: sha256sum js/next/smart_action_hub.js
+      - name: Full release gate
+        run: php tools/release_gate.php --package=full
