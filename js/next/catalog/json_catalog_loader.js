@@ -14,24 +14,31 @@
     return value;
   }
   function urlFor(path){const key=normalize(path);return `/${key}?v=${encodeURIComponent(release)}`;}
+  function validateSchema(payload,key,schema){
+    if(schema!==undefined&&Number(payload.schema)!==Number(schema))throw new Error(`catalog_schema_mismatch:${key}`);
+    return payload;
+  }
   async function load(path,options={}){
-    const key=normalize(path),force=options.force===true;
-    if(!force&&cache.has(key)){cacheHits+=1;return cache.get(key);}
-    if(!force&&inFlight.has(key)){dedupeHits+=1;return inFlight.get(key);}
-    const request=(async()=>{
-      requests+=1;
-      const response=await fetch(urlFor(key),{cache:'default',credentials:'same-origin',headers:{Accept:'application/json'}});
-      if(!response.ok)throw new Error(`catalog_http_${response.status}:${key}`);
-      const type=String(response.headers.get('content-type')||'').toLowerCase();
-      if(type&&!type.includes('json'))throw new Error(`catalog_mime_invalid:${type}:${key}`);
-      const payload=await response.json();
-      if(!payload||typeof payload!=='object'||Array.isArray(payload))throw new Error(`catalog_payload_invalid:${key}`);
-      if(options.schema!==undefined&&Number(payload.schema)!==Number(options.schema))throw new Error(`catalog_schema_mismatch:${key}`);
-      cache.set(key,payload);
-      return payload;
-    })().finally(()=>inFlight.delete(key));
-    inFlight.set(key,request);
-    return request;
+    const key=normalize(path),force=options.force===true,schema=options.schema;
+    if(!force&&cache.has(key)){cacheHits+=1;return validateSchema(cache.get(key),key,schema);}
+    let request=!force&&inFlight.get(key);
+    if(request){dedupeHits+=1;}
+    else{
+      request=(async()=>{
+        requests+=1;
+        const response=await fetch(urlFor(key),{cache:'default',credentials:'same-origin',headers:{Accept:'application/json'}});
+        if(!response.ok)throw new Error(`catalog_http_${response.status}:${key}`);
+        const type=String(response.headers.get('content-type')||'').toLowerCase();
+        if(type&&!type.includes('json'))throw new Error(`catalog_mime_invalid:${type}:${key}`);
+        const payload=await response.json();
+        if(!payload||typeof payload!=='object'||Array.isArray(payload))throw new Error(`catalog_payload_invalid:${key}`);
+        return payload;
+      })().finally(()=>inFlight.delete(key));
+      inFlight.set(key,request);
+    }
+    const payload=validateSchema(await request,key,schema);
+    cache.set(key,payload);
+    return payload;
   }
   function clear(path){if(path)cache.delete(normalize(path));else cache.clear();}
   function audit(){return Object.freeze({release,requests,cacheHits,dedupeHits,cached:Array.from(cache.keys()),pending:Array.from(inFlight.keys())});}
