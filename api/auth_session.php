@@ -256,6 +256,36 @@ if ($method === 'POST') {
     kareta_request_log_context(['action'=>$action, 'phone'=>preg_replace('~\D+~','',$logPhone)]);
 
     if ($action === 'logout') {
+        $pushDisabled = 0;
+        $pushToken = trim((string)($body['pushToken'] ?? ''));
+        $sessionUser = $_SESSION['kareta_user'] ?? null;
+        if (
+            $pdo instanceof PDO &&
+            is_array($sessionUser) &&
+            strlen($pushToken) >= 20 &&
+            strlen($pushToken) <= 512
+        ) {
+            $sessionPhone = kareta_normalize_phone((string)($sessionUser['phone'] ?? ''));
+            if ($sessionPhone !== '') {
+                try {
+                    $accountStmt = $pdo->prepare('SELECT id FROM accounts WHERE phone=? LIMIT 1');
+                    $accountStmt->execute([$sessionPhone]);
+                    $accountId = (int)($accountStmt->fetchColumn() ?: 0);
+                    if ($accountId > 0) {
+                        $pushStmt = $pdo->prepare(
+                            'UPDATE mobile_push_tokens SET enabled=0,last_seen_at=NOW() WHERE account_id=? AND token_hash=?'
+                        );
+                        $pushStmt->execute([$accountId, hash('sha256', $pushToken)]);
+                        $pushDisabled = $pushStmt->rowCount();
+                    }
+                } catch (Throwable $pushError) {
+                    // Push cleanup must never block account logout. Missing legacy
+                    // tables or a transient DB error are handled as best effort.
+                    kareta_log_error('LOGOUT_PUSH_CLEANUP', $pushError->getMessage());
+                }
+            }
+        }
+
         kareta_revoke_identity_cookie_session($pdo);
         $_SESSION = [];
         if (ini_get('session.use_cookies')) {
@@ -266,7 +296,7 @@ if ($method === 'POST') {
             setcookie($cookieName,'',kareta_auth_cookie_options(time()-3600));
         }
         session_destroy();
-        kareta_json(['ok' => true, 'loggedOut' => true]);
+        kareta_json(['ok' => true, 'loggedOut' => true, 'pushDisabled' => $pushDisabled]);
     }
 
     if (!$pdo instanceof PDO) {
