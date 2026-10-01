@@ -133,6 +133,8 @@ foreach ($items as $item) {
     $adapter = is_array($payload['adapter'] ?? null) ? $payload['adapter'] : [];
     $snapshot = is_array($payload['snapshot'] ?? null) ? $payload['snapshot'] : [];
     $dtc = is_array($payload['dtc'] ?? null) ? $payload['dtc'] : [];
+    $source = strtolower(trim((string)($payload['source'] ?? $payload['platform'] ?? 'android')));
+    if (!in_array($source, ['android','ios','web'], true)) $source = 'android';
     $vehicleId=trim((string)($payload['vehicleId'] ?? ''));
     if($vehicleId!==''&&!kareta_obd_vehicle_access($pdo,$vehicleId,$actorUserId,$phone,$actorRole)){
         kareta_json(['ok'=>false,'code'=>'VEHICLE_FORBIDDEN','vehicleId'=>$vehicleId],403);
@@ -148,7 +150,7 @@ foreach ($items as $item) {
         json_encode($dtc,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),
         json_encode($snapshot,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),
         json_encode($payload,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),
-        'android',
+        $source,
         $capturedAt
     ]);
     $accepted[] = $syncKey;
