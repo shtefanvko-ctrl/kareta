@@ -280,14 +280,83 @@ function kareta_idempotency_extract_key(array $body): string
     return substr($key, 0, 128);
 }
 
-function kareta_idempotency_actor_hash(string $action): string
+function kareta_idempotency_legacy_actor_hash(string $action): string
 {
     $user = function_exists('kareta_session_user') ? (kareta_session_user() ?: []) : [];
     $id = (string)($user['id'] ?? '0');
     $role = (string)($user['role'] ?? 'guest');
-    $phone = preg_replace('~\D+~', '', (string)($user['phone'] ?? '')) ?: '';
+    $phone = preg_replace('~\\D+~', '', (string)($user['phone'] ?? '')) ?: '';
     $sessionId = session_id() ?: '';
     return hash('sha256', $action . '|' . $role . '|' . $id . '|' . $phone . '|' . $sessionId);
+}
+
+function kareta_idempotency_actor_hash(string $action, ?PDO $pdo = null): string
+{
+    $user = function_exists('kareta_session_user') ? (kareta_session_user() ?: []) : [];
+    $legacyId = (int)($user['id'] ?? 0);
+    $role = (string)($user['role'] ?? 'guest');
+    $phone = preg_replace('~\\D+~', '', (string)($user['phone'] ?? '')) ?: '';
+
+    // Prefer stable Identity scope. This query does not touch or rotate the
+    // Identity session.
+    if ($pdo instanceof PDO) {
+        try {
+            $token = trim((string)($_COOKIE['kareta_identity_session'] ?? ''));
+            if ($token !== '' && kareta_table_exists($pdo, 'auth_sessions') && kareta_table_exists($pdo, 'accounts')) {
+                $st = $pdo->prepare("SELECT s.account_id,s.current_context_id
+                    FROM auth_sessions s
+                    JOIN accounts a ON a.id=s.account_id
+                    WHERE s.token_hash=?
+                      AND a.status='active'
+                      AND COALESCE(s.absolute_expires_at,s.expires_at)>NOW()
+                      AND COALESCE(s.idle_expires_at,s.expires_at)>NOW()
+                      AND (s.revoked_at IS NULL OR s.rotation_grace_until>NOW())
+                    LIMIT 1");
+                $st->execute([hash('sha256',$token)]);
+                $identity = $st->fetch(PDO::FETCH_ASSOC) ?: [];
+                $accountId = (int)($identity['account_id'] ?? 0);
+                if ($accountId > 0) {
+                    $contextId = (int)($identity['current_context_id'] ?? 0);
+                    return hash('sha256', $action . '|account|' . $accountId . '|context|' . $contextId);
+                }
+            }
+        } catch (Throwable $e) {
+            if (function_exists('kareta_log_error')) kareta_log_error('IDEMPOTENCY', 'actor_scope_identity: ' . $e->getMessage());
+        }
+
+        // Legacy-authenticated users still get a stable scope across PHP session
+        // rotation. Resolve Account when possible, without creating Identity data.
+        if ($phone !== '') {
+            try {
+                if (kareta_table_exists($pdo, 'accounts')) {
+                    $normalized = function_exists('kareta_normalize_phone')
+                        ? kareta_normalize_phone((string)($user['phone'] ?? ''))
+                        : (string)($user['phone'] ?? '');
+                    if ($normalized !== '') {
+                        $st = $pdo->prepare("SELECT id FROM accounts WHERE phone=? AND status='active' LIMIT 1");
+                        $st->execute([$normalized]);
+                        $accountId = (int)($st->fetchColumn() ?: 0);
+                        if ($accountId > 0) {
+                            return hash('sha256', $action . '|account|' . $accountId . '|context|0');
+                        }
+                    }
+                }
+            } catch (Throwable $e) {
+                if (function_exists('kareta_log_error')) kareta_log_error('IDEMPOTENCY', 'actor_scope_legacy_account: ' . $e->getMessage());
+            }
+        }
+    }
+
+    if ($legacyId > 0 || $phone !== '') {
+        return hash('sha256', $action . '|legacy|' . $role . '|' . $legacyId . '|' . $phone);
+    }
+
+    // session_id is allowed only for anonymous callers that have no stable
+    // authenticated Account/legacy identity.
+    $sessionId = session_id() ?: '';
+    $ip = (string)($_SERVER['REMOTE_ADDR'] ?? '');
+    $userAgent = (string)($_SERVER['HTTP_USER_AGENT'] ?? '');
+    return hash('sha256', $action . '|anonymous|' . $sessionId . '|' . $ip . '|' . hash('sha256',$userAgent));
 }
 
 function kareta_idempotency_request_hash(array $body): string
@@ -333,12 +402,54 @@ function kareta_idempotency_begin(?PDO $pdo, string $action, array $body): void
     if ($key === '') return;
     kareta_idempotency_ensure_table($pdo);
     $keyHash = hash('sha256', $key);
-    $actorHash = kareta_idempotency_actor_hash($action);
+    $actorHash = kareta_idempotency_actor_hash($action, $pdo);
+    $legacyActorHash = kareta_idempotency_legacy_actor_hash($action);
     $requestHash = kareta_idempotency_request_hash($body);
     try {
         $st = $pdo->prepare("SELECT * FROM `idempotency_keys` WHERE `action`=? AND `actor_hash`=? AND `key_hash`=? LIMIT 1");
         $st->execute([$action, $actorHash, $keyHash]);
         $row = $st->fetch(PDO::FETCH_ASSOC);
+        $foundLegacyScope = false;
+        if (!$row && $legacyActorHash !== $actorHash) {
+            $st->execute([$action, $legacyActorHash, $keyHash]);
+            $row = $st->fetch(PDO::FETCH_ASSOC);
+            $foundLegacyScope = (bool)$row;
+        }
+
+        $storedRequestHash = $row ? (string)($row['request_hash'] ?? '') : '';
+        if ($row && ($storedRequestHash === '' || !hash_equals($storedRequestHash, $requestHash))) {
+            kareta_json([
+                'ok' => false,
+                'error' => 'idempotency_conflict',
+                'code' => 'IDEMPOTENCY_CONFLICT',
+                'message' => 'Этот ключ идемпотентности уже использован для другого запроса.',
+            ], 409);
+        }
+
+        // Migrate the old session-bound scope lazily only after request payload
+        // equality is proven. A concurrent stable row wins and is revalidated.
+        if ($row && $foundLegacyScope) {
+            try {
+                $pdo->prepare("UPDATE `idempotency_keys` SET `actor_hash`=?, `updated_at`=CURRENT_TIMESTAMP WHERE `id`=?")
+                    ->execute([$actorHash, (int)$row['id']]);
+                $row['actor_hash'] = $actorHash;
+            } catch (Throwable $migrationError) {
+                $st->execute([$action, $actorHash, $keyHash]);
+                $stableRow = $st->fetch(PDO::FETCH_ASSOC);
+                if (!$stableRow) throw $migrationError;
+                $stableRequestHash = (string)($stableRow['request_hash'] ?? '');
+                if ($stableRequestHash === '' || !hash_equals($stableRequestHash, $requestHash)) {
+                    kareta_json([
+                        'ok' => false,
+                        'error' => 'idempotency_conflict',
+                        'code' => 'IDEMPOTENCY_CONFLICT',
+                        'message' => 'Этот ключ идемпотентности уже использован для другого запроса.',
+                    ], 409);
+                }
+                $row = $stableRow;
+            }
+        }
+
         if ($row && (string)($row['status'] ?? '') === 'completed' && (string)($row['response_json'] ?? '') !== '') {
             header('X-Idempotency-Replayed: 1');
             http_response_code((int)($row['response_status'] ?? 200));
