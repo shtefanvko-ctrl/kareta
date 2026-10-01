@@ -120,15 +120,27 @@ try {
     $credentials = kareta_firebase_credentials();
     $accessToken = kareta_firebase_access_token($credentials);
 
-    $stmt = $pdo->prepare("SELECT id,token FROM mobile_push_tokens
+    $stmt = $pdo->prepare("SELECT id,token,platform FROM mobile_push_tokens
         WHERE account_id=? AND enabled=1 ORDER BY updated_at DESC LIMIT 20");
     $stmt->execute([$accountId]);
     $devices = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $sent = 0;
     $failed = 0;
+    $iosPending = 0;
     $invalidIds = [];
     foreach ($devices as $device) {
+        $platform = strtolower((string)($device['platform'] ?? 'android'));
+        if ($platform === 'ios') {
+            // APNs delivery is a separate transport. Never send an APNs token
+            // to FCM; keep it enabled for the APNs sender once configured.
+            $iosPending++;
+            continue;
+        }
+        if ($platform !== 'android') {
+            $failed++;
+            continue;
+        }
         $result = kareta_fcm_send(
             $credentials,
             $accessToken,
@@ -149,7 +161,13 @@ try {
         $pdo->prepare("UPDATE mobile_push_tokens SET enabled=0 WHERE id IN ($marks)")
             ->execute($invalidIds);
     }
-    kareta_json(['ok'=>true,'sent'=>$sent,'failed'=>$failed,'devices'=>count($devices)]);
+    kareta_json([
+        'ok'=>true,
+        'sent'=>$sent,
+        'failed'=>$failed,
+        'iosPending'=>$iosPending,
+        'devices'=>count($devices),
+    ]);
 } catch (Throwable $error) {
     kareta_log_error('MOBILE_PUSH_SEND', $error->getMessage());
     kareta_json(['ok'=>false,'code'=>'PUSH_SEND_FAILED','message'=>$error->getMessage()], 503);
