@@ -6,13 +6,15 @@ require_once __DIR__ . '/bootstrap.php';
 $pdo = kareta_pdo();
 $action = strtolower(trim((string)($_GET['action'] ?? 'status')));
 $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
+$requestedPlatform = strtolower(trim((string)($_GET['platform'] ?? 'android')));
+if (!in_array($requestedPlatform, ['android','ios'], true)) $requestedPlatform = 'android';
 
 if ($action === 'config' && $method === 'GET') {
     kareta_json([
         'ok' => true,
-        'platform' => 'android',
-        'nativeApiVersion' => 5,
-        'minAppVersion' => '1.4.0',
+        'platform' => $requestedPlatform,
+        'nativeApiVersion' => $requestedPlatform === 'ios' ? 2 : 5,
+        'minAppVersion' => $requestedPlatform === 'ios' ? '1.0.0' : '1.4.0',
         'baseUrl' => 'https://s.kareta.kz/',
         'features' => [
             'push' => true,
@@ -106,6 +108,10 @@ if ($action !== 'register') {
     kareta_json(['ok' => false, 'code' => 'UNKNOWN_ACTION'], 404);
 }
 
+$platform = strtolower(trim((string)($body['platform'] ?? 'android')));
+if (!in_array($platform, ['android','ios'], true)) {
+    kareta_json(['ok' => false, 'code' => 'INVALID_PUSH_PLATFORM'], 422);
+}
 $deviceId = substr(trim((string)($body['deviceId'] ?? '')), 0, 80);
 $appVersion = substr(trim((string)($body['appVersion'] ?? '')), 0, 32);
 $model = substr(trim((string)($body['model'] ?? '')), 0, 191);
@@ -117,11 +123,12 @@ $stmt = $pdo->prepare("INSERT INTO mobile_push_tokens
     ON DUPLICATE KEY UPDATE token=VALUES(token),device_id=VALUES(device_id),
     platform=VALUES(platform),app_version=VALUES(app_version),device_model=VALUES(device_model),
     sdk=VALUES(sdk),enabled=1,last_seen_at=NOW()");
-$stmt->execute([$accountId,$token,$tokenHash,$deviceId,'android',$appVersion,$model,$sdk]);
+$stmt->execute([$accountId,$token,$tokenHash,$deviceId,$platform,$appVersion,$model,$sdk]);
 
 kareta_json([
     'ok' => true,
     'registered' => true,
     'accountId' => $accountId,
     'deviceId' => $deviceId,
+    'platform' => $platform,
 ]);
