@@ -182,12 +182,18 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
             send(id: id, data: offlineQueue.state())
 
         case "offlineEnqueue":
-            guard let itemPayload = payload["payload"] as? [String: Any] else {
+            guard var itemPayload = payload["payload"] as? [String: Any] else {
                 return fail(
                     id,
                     "KARETA_NATIVE_BAD_PAYLOAD",
                     "payload is required"
                 )
+            }
+            if itemPayload["source"] == nil {
+                itemPayload["source"] = "ios"
+            }
+            if itemPayload["platform"] == nil {
+                itemPayload["platform"] = "ios"
             }
             do {
                 send(id: id, data: try offlineQueue.enqueue(payload: itemPayload))
