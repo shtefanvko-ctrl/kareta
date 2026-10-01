@@ -116,6 +116,9 @@
     if(/service station|workshop|сто|сервис/.test(raw))return 'serviceStation';
     return normalize(fallback);
   };
+  // One thematic icon ID per canonical service category; menu/category aliases remain unchanged.
+  const serviceThemes = Object.freeze({"maintenance":"tabler:tool","diagnostics":"tabler:device-desktop","diagnostic":"tabler:device-desktop","diag":"tabler:device-desktop","wash":"tabler:wash-machine","detailing":"tabler:brush","engine":"tabler:engine","fuel":"tabler:gas-station","cooling_heating":"tabler:temperature","climate":"tabler:snowflake","exhaust":"tabler:wind","transmission":"tabler:tools","suspension_steering":"tabler:steering-wheel","chassis":"tabler:steering-wheel","suspension":"tabler:steering-wheel","electrical":"tabler:bolt","electric":"tabler:bolt","lighting":"tabler:bulb","multimedia_security":"tabler:shield-check","security":"tabler:shield-check","audio":"tabler:device-desktop","brakes":"tabler:disc","tires":"tabler:disc","alignment":"tabler:ruler-measure","body_welding":"tabler:hammer","body":"tabler:hammer","paint":"tabler:paint","glass":"tabler:glass"});
+  const serviceName = category => serviceThemes[String(category||'').trim().toLowerCase()] || 'tabler:tool';
   const svg = (name, options={}) => {
     const key=normalize(name), body=paths[key] || thematicBody(key) || paths.warning;
     const cls=options.className?` class="${String(options.className)}"`:'';
@@ -125,5 +128,5 @@
   const routeName = routeKey => routeIcons[String(routeKey)] || 'warning';
   const routeSvg = (routeKey, options={}) => svg(routeName(routeKey), options);
   const action = (name, label, value='') => `${icon(name)}<span>${label}</span>${value!==''?`<b>${value}</b>`:''}`;
-  window.KaretaUIIcons=Object.freeze({svg,icon,routeSvg,routeName,action,categoryIcon,has:name=>Object.hasOwn(paths,normalize(name))||thematicKeys.has(normalize(name)),normalize,names:Object.freeze([...Object.keys(paths),...thematicNames]),routeNames:routeIcons});
+  window.KaretaUIIcons=Object.freeze({svg,icon,routeSvg,routeName,action,categoryIcon,serviceName,has:name=>Object.hasOwn(paths,normalize(name))||thematicKeys.has(normalize(name)),normalize,names:Object.freeze([...Object.keys(paths),...thematicNames]),routeNames:routeIcons});
 })();

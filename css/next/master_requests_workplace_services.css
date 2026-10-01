@@ -392,3 +392,8 @@ html[data-user-role="master"] .k-master-empty-r84__actions .k-btn{
     justify-content:center!important;
   }
 }
+
+/* Thematic service artwork; scoped to services, preserving shell/menu geometry. */
+[data-page="service-management"] :is(.k-service-native-icon,.k-service-picker-card>span,.k-master-service-card-r84__icon){display:inline-grid;place-items:center;line-height:0}
+[data-page="service-management"] .k-service-themed-icon{display:block;width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:var(--k-icon-stroke,1.9);stroke-linecap:round;stroke-linejoin:round;flex:none}
+@media(min-width:768px){[data-page="service-management"] .k-service-themed-icon{width:32px;height:32px}}

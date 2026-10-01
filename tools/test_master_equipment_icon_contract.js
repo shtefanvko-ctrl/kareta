@@ -35,4 +35,9 @@ assert.ok(!source.includes('available_upstream_names'),'full library loaded into
 assert.ok(!/fetch\(|XMLHttpRequest|document\./.test(source),'registry performs eager requests');
 const bundle=fs.readFileSync(path.join(root,'js/boot/runtime_identity_bundle.js'),'utf8');
 assert.equal(bundle.split(source.trimEnd()).length,2,'generated boot source drift');
+const catalog=JSON.parse(fs.readFileSync(path.join(root,'storage/catalog/services.json'),'utf8'));
+for(const category of catalog.categories){assert.ok(api.serviceName(category.key).startsWith('tabler:'));assert.equal(api.has(api.serviceName(category.key)),true,'unmapped service category '+category.key);}
+assert.equal(api.serviceName('diagnostic'),api.serviceName('diagnostics'));
+assert.equal(api.serviceName('engine'),'tabler:engine');
+assert.equal(api.serviceName('unknown'),'tabler:tool');
 console.log(JSON.stringify({status:'PASS',legacy_icons:expected.count,menu_routes:Object.keys(api.routeNames).length,thematic_icons:pack.vendored_icons.length,lazy_sprite:true}));

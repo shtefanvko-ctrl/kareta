@@ -8,7 +8,8 @@
   if (!state) throw new Error('KaretaServiceOffersState is required before service_management.js');
   if (!offersApi) throw new Error('KaretaServiceOffersApi is required before service_management.js');
 
-  const icon=name=>window.KaretaUIIcons?.svg?.(name,{className:'k-master-dialog-icon'})||'';
+  const icon=name=>window.KaretaUIIcons?.svg?.(name==='search'?'tabler:search':name,{className:'k-master-dialog-icon'})||'';
+  const serviceSvg=service=>{const icons=window.KaretaUIIcons;return icons?.svg?.(icons.serviceName?.(service.category)||icons.categoryIcon?.(service.category)||'services',{className:'k-service-themed-icon'})||'';};
   const NATIVE_SERVICE_CONTRACT = 'R188.5.5.6.56';
   const MASTER_SERVICE_MATRIX_R64_CONTRACT = 'R188.5.5.6.64';
   const CATEGORY_LABELS = Object.freeze({
@@ -118,7 +119,7 @@
   function serviceCard(service,offer){
     const paused=offerStatus(offer)==='paused';
     return `<article class="k-service-native-card is-${ui.escHtml(offerStatus(offer))}" data-service-offer-card="${ui.escHtml(service.id)}">
-      <header><div class="k-service-native-title"><span class="k-service-native-icon">${ui.escHtml(service.icon||'⚙')}</span><div><small>${ui.escHtml(categoryLabel(service.category))}</small><h3>${ui.escHtml(service.name)}</h3></div></div>${statusBadge(offer)}</header>
+      <header><div class="k-service-native-title"><span class="k-service-native-icon">${serviceSvg(service)}</span><div><small>${ui.escHtml(categoryLabel(service.category))}</small><h3>${ui.escHtml(service.name)}</h3></div></div>${statusBadge(offer)}</header>
       ${service.shortDesc?`<p>${ui.escHtml(service.shortDesc)}</p>`:''}
       <div class="k-service-native-facts">
         <article><span>Цена</span><b>${ui.escHtml(priceLabel(offer))}</b></article>
@@ -159,7 +160,7 @@
       return true;
     });
     if(!rows.length)return '<div class="k-empty">Услуги не найдены.</div>';
-    return rows.map(service=>{const configured=offers.has(service.id);return `<article class="k-service-picker-card${configured?' is-configured':''}"><span>${ui.escHtml(service.icon||'⚙')}</span><div><small>${ui.escHtml(categoryLabel(service.category))}</small><b>${ui.escHtml(service.name)}</b>${service.shortDesc?`<p>${ui.escHtml(service.shortDesc)}</p>`:''}<em>База: ${ui.escHtml(money(service.basePrice))}${service.avgTime?` · ${ui.escHtml(service.avgTime)}`:''}</em></div><button class="k-btn ${configured?'k-btn-secondary':'k-btn-primary'}" type="button" data-service-pick="${ui.escHtml(service.id)}">${configured?'Настроить':'Добавить'}</button></article>`;}).join('');
+    return rows.map(service=>{const configured=offers.has(service.id);return `<article class="k-service-picker-card${configured?' is-configured':''}"><span>${serviceSvg(service)}</span><div><small>${ui.escHtml(categoryLabel(service.category))}</small><b>${ui.escHtml(service.name)}</b>${service.shortDesc?`<p>${ui.escHtml(service.shortDesc)}</p>`:''}<em>База: ${ui.escHtml(money(service.basePrice))}${service.avgTime?` · ${ui.escHtml(service.avgTime)}`:''}</em></div><button class="k-btn ${configured?'k-btn-secondary':'k-btn-primary'}" type="button" data-service-pick="${ui.escHtml(service.id)}">${configured?'Настроить':'Добавить'}</button></article>`;}).join('');
   }
   function renderDialogs(snapshot){
     return `<dialog class="k-service-native-dialog" data-service-filter-dialog><form method="dialog"><header><div><small>ФИЛЬТРЫ</small><h2>Показать услуги</h2></div><button value="cancel" aria-label="Закрыть">${icon('close')}</button></header><div class="k-service-dialog-body"><section><h3>Категория</h3><div class="k-service-choice-grid" data-service-filter-categories>${categoryButtons(snapshot,view.category,'data-service-filter-category')}</div></section><section><h3>Статус</h3><div class="k-service-choice-grid k-service-choice-grid--status">${[['all','Все'],['active','Доступные'],['busy','Занято'],['paused','Пауза']].map(([key,label])=>`<button type="button" class="${view.status===key?'is-active':''}" data-service-filter-status="${key}"><b>${label}</b></button>`).join('')}</div></section></div><footer><button class="k-btn k-btn-secondary" type="button" data-service-filter-reset>Сбросить</button><button class="k-btn k-btn-primary" value="cancel">Готово</button></footer></form></dialog>
@@ -203,7 +204,7 @@
   function masterServiceRow(service,offer){
     const effective=masterEffective(service,offer),enabled=effective.enabled===true;
     const standardPrice=Number(service.basePrice||0),standardTime=service.avgTime||`${standardMinutes(service.avgTime)} мин`;
-    return `<article class="k-master-service-row k-master-service-card-r84 ${enabled?'is-enabled':''}" data-master-service-row="${ui.escHtml(service.id)}"><label class="k-master-service-check k-master-service-card-r84__head"><input type="checkbox" data-master-service-enabled="${ui.escHtml(service.id)}" ${enabled?'checked':''}><span aria-hidden="true"></span><span class="k-master-service-card-r84__icon">${ui.escHtml(service.icon||'🔧')}</span><div><b>${ui.escHtml(service.name)}</b>${service.shortDesc?`<small>${ui.escHtml(service.shortDesc)}</small>`:''}<em>Стандарт: ${ui.escHtml(money(standardPrice))} · ${ui.escHtml(standardTime)}</em></div></label><div class="k-master-service-own-fields k-master-service-card-r84__fields"><label><span>Моя цена, ₸</span><div><input type="number" min="0" max="999999999" step="100" data-master-service-price="${ui.escHtml(service.id)}" value="${ui.escHtml(Math.round(Number(effective.price||0)))}" ${enabled?'':'disabled'}><small>₸</small></div></label><label><span>Моё время, мин</span><div><input type="number" min="5" max="10080" step="5" data-master-service-duration="${ui.escHtml(service.id)}" value="${ui.escHtml(Math.round(Number(effective.duration||standardMinutes(service.avgTime))))}" ${enabled?'':'disabled'}><small>мин</small></div></label></div></article>`;
+    return `<article class="k-master-service-row k-master-service-card-r84 ${enabled?'is-enabled':''}" data-master-service-row="${ui.escHtml(service.id)}"><label class="k-master-service-check k-master-service-card-r84__head"><input type="checkbox" data-master-service-enabled="${ui.escHtml(service.id)}" ${enabled?'checked':''}><span aria-hidden="true"></span><span class="k-master-service-card-r84__icon">${serviceSvg(service)}</span><div><b>${ui.escHtml(service.name)}</b>${service.shortDesc?`<small>${ui.escHtml(service.shortDesc)}</small>`:''}<em>Стандарт: ${ui.escHtml(money(standardPrice))} · ${ui.escHtml(standardTime)}</em></div></label><div class="k-master-service-own-fields k-master-service-card-r84__fields"><label><span>Моя цена, ₸</span><div><input type="number" min="0" max="999999999" step="100" data-master-service-price="${ui.escHtml(service.id)}" value="${ui.escHtml(Math.round(Number(effective.price||0)))}" ${enabled?'':'disabled'}><small>₸</small></div></label><label><span>Моё время, мин</span><div><input type="number" min="5" max="10080" step="5" data-master-service-duration="${ui.escHtml(service.id)}" value="${ui.escHtml(Math.round(Number(effective.duration||standardMinutes(service.avgTime))))}" ${enabled?'':'disabled'}><small>мин</small></div></label></div></article>`;
   }
   function masterCategoryBlock(key,rows){
     const enabledCount=rows.filter(({service,offer})=>masterEffective(service,offer).enabled).length;
