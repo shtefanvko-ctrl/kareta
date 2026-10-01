@@ -782,7 +782,7 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
             ),
             json.count >= 2
         else {
-            return """"
+            return "\\\"\\\""
         }
         return String(json.dropFirst().dropLast())
     }
