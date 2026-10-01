@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-01",
+  "repository": "shtefanvko-ctrl/kareta",
+  "source_base_sha": "c20beb7fd2814e06b108451aa3e15bf414448123",
+  "candidate_branch": "feat/master-equipment-icons-20261001",
+  "candidate_sha": "124f452e99e0d8d8c04cfb19d0af28bf4423d657",
+  "candidate_asset_version": "188.5.5.6.84.156",
+  "state": {
+    "desired": "MASTER_SETUP_AND_MATCHING_PLAN",
+    "implemented": "MASTER_SETUP_CANDIDATE",
+    "verified": "SOURCE_AND_MOCK_ONLY",
+    "deployed": "NOT_CONFIRMED"
+  },
+  "checks": [
+    {
+      "name": "node --check master_setup_picker.js",
+      "status": "PASS",
+      "target": "LOCAL"
+    },
+    {
+      "name": "tools/test_master_setup_picker.js",
+      "status": "PASS",
+      "target": "LOCAL_MOCK",
+      "scenarios": 13
+    },
+    {
+      "name": "tools/test_master_setup_integration.js",
+      "status": "PASS",
+      "target": "LOCAL_SOURCE_VM",
+      "service_rows": 109
+    },
+    {
+      "name": "Git readback 124f452 master_setup_picker.js",
+      "status": "PASS",
+      "target": "GITHUB"
+    },
+    {
+      "name": "PHP syntax and PHP unit",
+      "status": "NOT_RUN",
+      "local_blocker": "PHP binary missing"
+    },
+    {
+      "name": "MySQL/API integration",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "browser/device smoke",
+      "status": "NOT_RUN",
+      "local_blocker": "Chromium executable missing",
+      "manual_owner": "USER"
+    },
+    {
+      "name": "required release gates G0-G5 and provenance",
+      "status": "NOT_CONFIRMED"
+    }
+  ],
+  "limits": {
+    "draft_storage": "sessionStorage",
+    "draft_survives_page_reload": true,
+    "draft_survives_browser_close": "NOT_GUARANTEED",
+    "equipment_implies_verified_skill": false,
+    "matching_integration_implemented": false,
+    "query_counts_observed": false
+  },
+  "next": "Runtime catalog metadata; PHP/DB verification; coordinate works route lane; matching M1"
+}
+

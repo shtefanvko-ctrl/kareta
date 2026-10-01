@@ -1,0 +1,25 @@
+{
+  "status": "CONFIRMED_MODULE_DEPENDENCE",
+  "source_commit": "c20beb7fd2814e06b108451aa3e15bf414448123",
+  "results": [
+    {
+      "role": "client",
+      "withoutModule": "public_works",
+      "withModule": "community",
+      "same": false
+    },
+    {
+      "role": "master",
+      "withoutModule": "public_works",
+      "withModule": "community",
+      "same": false
+    },
+    {
+      "role": "guest",
+      "withoutModule": "public_works",
+      "withModule": "public_works",
+      "same": true
+    }
+  ],
+  "browser_reproduction": "NOT_RUN"
+}
