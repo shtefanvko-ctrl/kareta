@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__.'/geo_core.php';
+
 function kareta_sto_workplace_profile(PDO $pdo): array {
     if (class_exists('KaretaAuthResolver')) {
         try {
@@ -172,8 +174,10 @@ function kareta_sto_workplace_get(PDO $pdo): void {
         $q->execute([$organizationKey,$stoId]);$calendar=$q->fetchAll(PDO::FETCH_ASSOC)?:[];
     }
 
+    $geoPoints=kareta_table_exists($pdo,'geo_points')?kareta_geo_owner_points($pdo,'sto',$stoId,false):[];
+    $geoPoint=null;foreach($geoPoints as $point){if(in_array((string)($point['kind']??''),['service','branch'],true)){$geoPoint=$point;break;}}
     kareta_json(['ok'=>true,'data'=>[
-        'sto'=>['id'=>$stoId,'name'=>(string)($sto['name']??'СТО'),'city'=>(string)($sto['city']??''),'address'=>(string)($sto['address']??''),'workHours'=>(string)($sto['work_hours']??'')],
+        'sto'=>['id'=>$stoId,'name'=>(string)($sto['name']??'СТО'),'city'=>(string)($sto['city']??''),'address'=>(string)($sto['address']??''),'workHours'=>(string)($sto['work_hours']??''),'geoPoint'=>$geoPoint],
         'bays'=>array_values($bayMap),
         'queue'=>$queue,
         'masters'=>array_values($masterStats),
