@@ -80,5 +80,11 @@ jobs:
           node tools/test_first_vehicle_account_isolation_84_151.js
           node tools/test_cabinet_session_isolation_84_151.js
 
+      - name: Domain runtime singularity regressions
+        run: |
+          node tools/test_booking_service_boundary_84_153.js
+          node tools/test_notification_center_bridge_84_152.js
+          node tools/test_idempotency_scope_84_154.js
+
       - name: Staging verifier syntax
         run: python3 -m py_compile tools/verify_staging_current.py
