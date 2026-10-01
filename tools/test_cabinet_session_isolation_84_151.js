@@ -39,7 +39,7 @@ async function checkCabinetRender(){
   const node=id=>{if(!hosts.has(id))hosts.set(id,{innerHTML:'',textContent:''});return hosts.get(id);};
   let calls=0;
   const window={
-    KaretaPageUI:{},KaretaFirstVehicleFlow:{},
+    KaretaPageUI:{},KaretaFirstVehicleFlow:{},KaretaJsonCatalogLoader:{load:async()=>({schema:1,systems:[],items:[]})},
     KaretaClientCabinetApi:{get:()=>++calls===1?old.promise:next.promise},
     KaretaNavigationCore:{interfaceRole:()=> 'client'},
     addEventListener:(event,fn)=>listeners.set(event,fn),
