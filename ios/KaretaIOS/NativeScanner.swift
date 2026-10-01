@@ -203,15 +203,12 @@ private final class DataScannerSession: NSObject,
     }
 
     private func extractVin(_ text: String) -> String? {
-        let compact = text
-            .uppercased()
-            .filter { character in
-                character.isASCII &&
-                (
-                    character.isLetter ||
-                    character.isNumber
-                )
-            }
+        let allowed = Set("ABCDEFGHJKLMNPRSTUVWXYZ0123456789")
+        let compact = String(
+            text
+                .uppercased()
+                .filter { allowed.contains($0) }
+        )
 
         guard compact.count >= 17 else { return nil }
 
