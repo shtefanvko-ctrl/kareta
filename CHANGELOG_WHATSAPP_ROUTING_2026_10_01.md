@@ -26,6 +26,9 @@ migrations `1..135`; it is not a deployed release claim.
 - Added `messaging_whatsapp_threads` through the existing explicit Messaging
   installer. Missing routing storage blocks WhatsApp sending. Runtime auto-schema
   cannot create this table; Telegram retains its existing six-table requirement.
+- The Messaging UI regression reads the actual PHP asset plan and checks lazy
+  loading, globals and Messaging-before-Cabinet order. It accepts the release
+  lane's JSON loader between those scripts instead of assuming literal adjacency.
 
 ## Verification actually executed
 
@@ -39,7 +42,7 @@ migrations `1..135`; it is not a deployed release claim.
 | Current API contract | Local PHP HTTP server | PASS: 8/8 |
 | Authorization/recovery, lazy route/catalog, PWA, browser support, asset hygiene, provenance unit checks | Refreshed candidate | PASS |
 | Boot bundle freshness / cabinet account isolation | Refreshed candidate | PASS |
-| PHP 8.1/8.2 + MySQL 8 CI | Exact candidate | NOT RUN at commit preparation; see GitHub checks |
+| PHP 8.1/8.2 + MySQL 8 CI | Initial `5fabbb424b84033dd349caf94344e7a010147f1f`; PHP unchanged by the compatibility-test correction | PASS: 50 checks each; latest exact-head result remains in GitHub checks |
 | Target readiness, identity health, staging and deployment provenance | Intended staging target | NOT RUN |
 
 The historical `tools/release_gate.php` failed on both the initial `6b78de9`

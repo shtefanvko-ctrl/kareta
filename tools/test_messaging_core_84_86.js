@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 'use strict';
-const fs=require('fs'),path=require('path'),root=path.resolve(__dirname,'..');
+const fs=require('fs'),path=require('path'),cp=require('child_process'),root=path.resolve(__dirname,'..');
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 const must=(condition,label)=>{if(!condition){console.error(`[84.86][FAIL] ${label}`);process.exitCode=1;}else console.log(`[84.86][OK] ${label}`);};
 const asset=read('inc/asset_version.php'),sw=read('sw.js'),config=read('config.php'),privateExample=read('config.private.example.php');
@@ -33,7 +33,13 @@ must(worker.includes('kareta_messaging_worker_once')&&worker.includes('--watch')
 must(chats.includes("chatId=String(params.get('chatId')")&&chats.includes('target?.chatId')&&chats.includes('state.chats.some'),'external deep link opens only authorized visible chat');
 must(settings.includes('WhatsApp и Telegram')&&settings.includes('data-messaging-link')&&settings.includes('preferences.save'),'shared client/master channel settings UI');
 must(cabinet.includes('KaretaMessagingSettings?.mount')&&account.includes('KaretaMessagingSettings?.mount'),'messaging settings mounted for master and client');
-must(registry.includes("'js/next/messaging_settings.js','js/next/pages/cabinet.js'")&&registry.includes("'KaretaMessagingSettings','KaretaCabinetPages'"),'messaging UI is cabinet lazy asset');
+const registryProbe=cp.spawnSync('php',['-r',"require 'inc/asset_registry.php'; echo json_encode(['eager'=>kareta_asset_registry(),'plan'=>kareta_route_asset_plan()]);"],{cwd:root,encoding:'utf8'});
+let runtimeRegistry=null;
+try{if(registryProbe.status===0)runtimeRegistry=JSON.parse(registryProbe.stdout);}catch(_){}
+must(!!runtimeRegistry,'actual PHP asset registry can be read');
+const cabinetBundle=runtimeRegistry?.plan?.cabinet||{},cabinetScripts=cabinetBundle.scripts||[];
+const messagingIndex=cabinetScripts.indexOf('js/next/messaging_settings.js'),cabinetIndex=cabinetScripts.indexOf('js/next/pages/cabinet.js');
+must(cabinetBundle.lazy===true&&(cabinetBundle.routeKeys||[]).includes('cabinet')&&messagingIndex>=0&&cabinetIndex>messagingIndex&&(cabinetBundle.globals||[]).includes('KaretaMessagingSettings')&&(cabinetBundle.globals||[]).includes('KaretaCabinetPages')&&!(runtimeRegistry?.eager?.scripts||[]).includes('js/next/messaging_settings.js'),'messaging UI stays lazy and loads before the cabinet');
 must(css.includes('.k-messaging-settings')&&css.includes('.k-messaging-channel'),'messaging settings responsive styles');
 const protectedHub=read('js/next/smart_action_hub.js');
 must(!protectedHub.includes('KaretaMessagingSettings'),'protected smart action hub untouched by messaging');
