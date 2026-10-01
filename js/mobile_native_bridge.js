@@ -97,6 +97,21 @@
     return browserLocation(options);
   }
 
+
+  async function bestMap(query, lat, lng) {
+    const latitude=Number(lat),longitude=Number(lng);
+    if(nativeAvailable()){
+      try { return await call("openMap", { query:String(query||''), lat:latitude, lng:longitude }, 15000); }
+      catch(_error) {}
+    }
+    const hasCoords=Number.isFinite(latitude)&&Number.isFinite(longitude);
+    const target=hasCoords
+      ? `https://www.openstreetmap.org/?mlat=${encodeURIComponent(latitude)}&mlon=${encodeURIComponent(longitude)}#map=16/${encodeURIComponent(latitude)}/${encodeURIComponent(longitude)}`
+      : `https://www.openstreetmap.org/search?query=${encodeURIComponent(String(query||''))}`;
+    window.open(target,'_blank','noopener,noreferrer');
+    return { opened:true, source:"browser", url:target };
+  }
+
   const api = {
     available: nativeAvailable,
     attach,
@@ -139,6 +154,7 @@
     copy: text => call("copy", { text }),
     openPhone: phone => call("openPhone", { phone }),
     openMap: (query, lat, lng) => call("openMap", { query, lat, lng }),
+    openBestMap: (query, lat, lng) => bestMap(query, lat, lng),
     openExternal: url => call("openExternal", { url }),
     openSettings: () => call("openSettings"),
     vibrate: ms => call("vibrate", { ms }),
