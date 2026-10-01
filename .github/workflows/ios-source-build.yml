@@ -27,6 +27,8 @@ jobs:
         run: node tools/test_ios_native_phase2.js
       - name: Native phase 3
         run: node tools/test_ios_native_phase3.js
+      - name: BLE ELM contract
+        run: node tools/test_ios_elm_contract.js
 
   simulator-build:
     runs-on: macos-latest
