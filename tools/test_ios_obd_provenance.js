@@ -8,6 +8,7 @@ const root = path.resolve(__dirname, '..');
 const bridge = fs.readFileSync(path.join(root, 'ios/KaretaIOS/NativeBridge.swift'), 'utf8');
 const obd = fs.readFileSync(path.join(root, 'api/obd.php'), 'utf8');
 const diagnostics = fs.readFileSync(path.join(root, 'js/next/pages/diagnostics.js'), 'utf8');
+const migration = fs.readFileSync(path.join(root, 'api/migrations/134_obd_elm327_diagnostics.php'), 'utf8');
 
 const checks = [
   {
@@ -25,6 +26,13 @@ const checks = [
     name: 'legacy_android_default_preserved',
     pass: obd.includes("?? 'android'")
       && obd.includes("$source = 'android'")
+  },
+  {
+    name: 'ios_uuid_fits_existing_schema_without_migration',
+    pass: migration.includes('adapter_address VARCHAR(32)')
+      && obd.includes("if ($source === 'ios' && preg_match")
+      && obd.includes("str_replace('-', '', strtolower($adapterAddress))")
+      && obd.includes('substr($adapterAddress,0,32)')
   },
   {
     name: 'diagnostics_is_cross_platform',
