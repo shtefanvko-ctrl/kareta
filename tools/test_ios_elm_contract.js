@@ -63,6 +63,18 @@ const checks = [
       && elm.includes('"dtcCodes"')
   },
   {
+    name: 'gatt_uart_same_service',
+    pass: elm.includes('let localWrite = characteristics.first')
+      && elm.includes('let localNotify = characteristics.first')
+      && elm.includes('A UART transport must use a coherent GATT service')
+  },
+  {
+    name: 'connect_has_native_timeout',
+    pass: elm.includes('withTimeInterval: 12.0')
+      && elm.includes('case connectTimeout')
+      && elm.includes('BLE ELM connection timed out')
+  },
+  {
     name: 'bluetooth_permission_description',
     pass: project.includes('NSBluetoothAlwaysUsageDescription')
   },
