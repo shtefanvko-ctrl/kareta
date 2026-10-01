@@ -1,7 +1,7 @@
 {
   "schema": "kareta.navigation.map.v1",
   "date": "2026-10-01",
-  "status": "SOURCE_AUDIT_EXPANDED_NOT_RUNTIME_VERIFIED",
+  "status": "SOURCE_ROUTE_REGISTRY_FULLY_CLASSIFIED_RUNTIME_NOT_VERIFIED",
   "dimensions": [
     "context",
     "router",
@@ -282,6 +282,139 @@
       ],
       "guard": "admin navigation context/capabilities",
       "verification": "SOURCE_CONFIRMED"
+    },
+    {
+      "id": "home",
+      "type": "LANDING_ROUTER",
+      "contexts": [
+        "anonymous",
+        "client"
+      ],
+      "routes": [
+        "#/home"
+      ],
+      "verification": "REGISTRY_CONFIRMED"
+    },
+    {
+      "id": "services",
+      "type": "CATALOG_ROUTER",
+      "contexts": [
+        "anonymous",
+        "client",
+        "master",
+        "sto"
+      ],
+      "routes": [
+        "#/services",
+        "#/services/item/:id",
+        "#/services/manage"
+      ],
+      "verification": "REGISTRY_CONFIRMED"
+    },
+    {
+      "id": "seller",
+      "type": "WORKSPACE_ROUTER",
+      "contexts": [
+        "seller",
+        "organization_store"
+      ],
+      "routes": [
+        "#/seller",
+        "#/seller/products",
+        "#/seller/orders"
+      ],
+      "cross": [
+        "#/market",
+        "#/finance",
+        "#/parts",
+        "#/chats",
+        "#/cabinet"
+      ],
+      "verification": "REGISTRY_CONFIRMED"
+    },
+    {
+      "id": "sto",
+      "type": "WORKSPACE_ROUTER",
+      "contexts": [
+        "organization_service"
+      ],
+      "routes": [
+        "#/sto"
+      ],
+      "cross": [
+        "#/orders",
+        "#/masters",
+        "#/workflow",
+        "#/services/manage",
+        "#/finance",
+        "#/parts",
+        "#/chats",
+        "#/cabinet"
+      ],
+      "verification": "REGISTRY_CONFIRMED"
+    },
+    {
+      "id": "business-workspaces",
+      "type": "WORKSPACE_ROUTER",
+      "contexts": [
+        "seller",
+        "organization_store",
+        "organization_service",
+        "organization"
+      ],
+      "routes": [
+        "#/calendar",
+        "#/finance",
+        "#/market",
+        "#/crm",
+        "#/workflow"
+      ],
+      "verification": "REGISTRY_CONFIRMED"
+    },
+    {
+      "id": "chats",
+      "type": "COMMUNICATION_ROUTER",
+      "contexts": [
+        "client",
+        "master",
+        "seller",
+        "organization_service",
+        "organization"
+      ],
+      "routes": [
+        "#/chats"
+      ],
+      "entry": [
+        "direct route",
+        "cross-flow with chat id/provider/order context"
+      ],
+      "verification": "REGISTRY_CONFIRMED"
+    },
+    {
+      "id": "system-support",
+      "type": "SYSTEM_ROUTER",
+      "contexts": [
+        "anonymous",
+        "client",
+        "master",
+        "seller",
+        "organization_service",
+        "organization",
+        "admin"
+      ],
+      "routes": [
+        "#/about",
+        "#/rules",
+        "#/help",
+        "#/404",
+        "#/assistant",
+        "#/diagnostics",
+        "#/privacy",
+        "#/contacts",
+        "#/lawyer",
+        "#/tow-truck"
+      ],
+      "verification": "REGISTRY_CONFIRMED"
     }
   ],
   "notes": [
@@ -329,6 +462,26 @@
       "severity": "risk",
       "status": "SOURCE_CONFIRMED",
       "finding": "Navigation is not exclusively mediated by RouteRuntime; source contains direct location.hash and history.replaceState transitions. These require edge-by-edge audit."
+    },
+    {
+      "id": "NAV-F06",
+      "severity": "audit",
+      "status": "SOURCE_STATIC",
+      "finding": "All 69 route_registry keys now have a classification: 68 current route-family entries plus legacy #/news -> #/works. Runtime behavior remains unverified."
     }
-  ]
+  ],
+  "aliases": {
+    "legacy_news": {
+      "#/news": "#/works"
+    },
+    "note": "Legacy aliases are compatibility inputs and are not counted as independent design branches."
+  },
+  "coverage": {
+    "registry_total": 69,
+    "classified_after_expansion": 68,
+    "legacy_alias_only": 1,
+    "unclassified": 0,
+    "method": "route_registry key coverage against router families; #/news classified as legacy alias to #/works",
+    "verification": "SOURCE_STATIC"
+  }
 }
