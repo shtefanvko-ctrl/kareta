@@ -7,6 +7,9 @@ on:
     paths:
       - "ios/**"
       - "api/obd.php"
+      - "api/mobile_push.php"
+      - "api/mobile_push_send.php"
+      - "api/auth_session.php"
       - "js/next/pages/diagnostics.js"
       - "tools/test_ios_*.js"
       - ".github/workflows/ios-source-build.yml"
@@ -32,7 +35,11 @@ jobs:
           php-version: "8.1"
           coverage: none
       - name: PHP 8.1 syntax
-        run: php -l api/obd.php
+        run: |
+          php -l api/obd.php
+          php -l api/mobile_push.php
+          php -l api/mobile_push_send.php
+          php -l api/auth_session.php
       - name: Bridge parity
         run: node tools/test_ios_bridge_contract.js
       - name: Native phase 2
@@ -43,6 +50,8 @@ jobs:
         run: node tools/test_ios_elm_contract.js
       - name: OBD provenance
         run: node tools/test_ios_obd_provenance.js
+      - name: iOS push contract
+        run: node tools/test_ios_push_contract.js
 
   simulator-build:
     runs-on: macos-latest
