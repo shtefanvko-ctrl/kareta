@@ -59,6 +59,7 @@
     const key=String(routeKey||'');
     const normalizedRole=normalizeRole(role);
     if (!registry.has(key)) return false;
+    if (['scanner','scannerQr','scannerDocument'].includes(key)) return ['client','master'].includes(normalizedRole);
     if (identityActive()) {
       if(key==='diagnostics') return ['client','master','sto','admin','owner'].includes(normalizedRole);
       return dynamic()?.canAccess?.(key) === true;

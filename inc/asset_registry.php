@@ -713,6 +713,12 @@ function kareta_route_asset_plan(): array
             'styles' => [], 'scripts' => ['js/next/pages/assistant.js'],
             'globals' => ['KaretaAssistantPages'],
         ],
+        'scannerDomain' => [
+            'lazy' => true, 'routeKeys' => ['scanner','scannerQr','scannerDocument'],
+            'routes' => ['#/scan','#/scan/qr','#/scan/document'],
+            'styles' => ['css/next/scanner.css'], 'scripts' => ['js/next/pages/scanner.js'],
+            'globals' => ['KaretaScannerPages'],
+        ],
         'diagnosticsDomain' => [
             'lazy' => true, 'routeKeys' => ['diagnostics'], 'routes' => ['#/diagnostics'],
             'styles' => ['css/next/diagnostics.css'], 'scripts' => ['js/next/pages/diagnostics.js'],

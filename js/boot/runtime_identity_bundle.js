@@ -7,6 +7,9 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
 
   const ROUTES = Object.freeze({
     home:Object.freeze({ path:'#/home', label:'Главная', icon:'⌂' }),
+    scanner:Object.freeze({ path:'#/scan', label:'Сканировать', icon:'camera', nav:false }),
+    scannerQr:Object.freeze({ path:'#/scan/qr', label:'QR KARETA', icon:'camera', nav:false }),
+    scannerDocument:Object.freeze({ path:'#/scan/document', label:'Техпаспорт', icon:'document', nav:false }),
     platform:Object.freeze({ path:'#/platform', label:'Платформа', icon:'◆' }),
     corePlatform:Object.freeze({ path:'#/core', label:'Ядро', icon:'◉' }),
     calendarBooking:Object.freeze({ path:'#/calendar', label:'Календарь', icon:'▦' }),
@@ -77,6 +80,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
   });
 
   const UX_SURFACE_BY_KEY = Object.freeze({
+    scanner:'workspace', scannerQr:'workspace', scannerDocument:'workspace',
     home:'workspace', platform:'workspace', corePlatform:'workspace', calendarBooking:'workspace', finance:'workspace', market:'workspace', crm:'workspace',
     identityMigration:'workspace', adminUsers:'workspace', adminOrganizations:'workspace', adminMonitoring:'workspace', adminManagement:'workspace',
     services:'workspace', news:'deep-link-fallback', masterNews:'workspace', masterNewsCreate:'work-dialog', masterNewsEdit:'work-dialog', works:'workspace', profile:'entity-window', following:'workspace', realWorks:'workspace',
@@ -788,6 +792,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     const key=String(routeKey||'');
     const normalizedRole=normalizeRole(role);
     if (!registry.has(key)) return false;
+    if (['scanner','scannerQr','scannerDocument'].includes(key)) return ['client','master'].includes(normalizedRole);
     if (identityActive()) {
       if(key==='diagnostics') return ['client','master','sto','admin','owner'].includes(normalizedRole);
       return dynamic()?.canAccess?.(key) === true;

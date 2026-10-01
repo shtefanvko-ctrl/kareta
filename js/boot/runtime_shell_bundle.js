@@ -833,7 +833,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     'news','masterNews','masterNewsCreate','masterNewsEdit',
     'about','rules','help','privacy','contacts','lawyer','towTruck',
     'masterOnboarding','masterDashboard','masterSchedule','masterWorkplaceSettings','masterProfileOwner','masterWallOwner','masterWorks','masterReviews','providerReviews',
-    'platform','corePlatform','calendarBooking','finance','market','crm','assistant','diagnostics',
+    'platform','corePlatform','calendarBooking','finance','market','crm','assistant','diagnostics','scanner','scannerQr','scannerDocument',
   ]);
 
   const state={
