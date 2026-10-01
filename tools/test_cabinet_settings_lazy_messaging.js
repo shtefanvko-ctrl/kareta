@@ -25,8 +25,8 @@ const data=JSON.parse(cp.execFileSync('php',['-r',php],{encoding:'utf8'}));
 
 assert.deepStrictEqual(data.cabinet.scripts,['js/next/pages/cabinet.js'],'general cabinet bundle must not load messaging settings');
 assert.deepStrictEqual(data.cabinet.globals,['KaretaCabinetPages'],'general cabinet globals must stay cabinet-only');
-assert.deepStrictEqual(data.messaging.routeKeys,['cabinetSettings'],'messaging bundle must be settings-only');
-assert.deepStrictEqual(data.messaging.routes,['#/cabinet/settings'],'messaging bundle route path mismatch');
+assert.deepStrictEqual(data.messaging.routeKeys,['cabinet','cabinetSettings'],'messaging bundle must load only for account root and settings');
+assert.deepStrictEqual(data.messaging.routes,['#/cabinet','#/cabinet/settings'],'messaging bundle route path mismatch');
 assert.deepStrictEqual(data.messaging.scripts,['js/next/messaging_settings.js'],'messaging settings script missing from dedicated bundle');
 assert.deepStrictEqual(data.messaging.globals,['KaretaMessagingSettings'],'messaging global guard missing');
 assert.deepStrictEqual(data.owners,['cabinetMessagingSettings'],'messaging settings must have exactly one lazy owner');
@@ -39,4 +39,5 @@ assert(loader.includes('for(const [name,bundle] of bundles)'),'route loader must
 const cabinet=read('js/next/pages/cabinet.js');
 assert(cabinet.includes('window.KaretaMessagingSettings?.mount?.(messagingHost)'),'cabinet settings must still mount messaging module when available');
 
+assert(!data.messaging.routeKeys.includes('cabinetGarage')&&!data.messaging.routeKeys.includes('cabinetHistory')&&!data.messaging.routeKeys.includes('cabinetDocuments')&&!data.messaging.routeKeys.includes('cabinetTariff')&&!data.messaging.routeKeys.includes('cabinetData')&&!data.messaging.routeKeys.includes('cabinetPromos'),'messaging bundle leaks into non-messaging cabinet routes');
 console.log('Cabinet settings lazy messaging regression: OK');
