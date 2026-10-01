@@ -67,6 +67,13 @@ jobs:
       - name: Identity API recovery contract
         run: node tools/test_r1885607_identity_api_client_garage_recovery.js
 
+      - name: Current lazy-route regressions
+        run: |
+          node tools/test_route_lazy_runtime_84_68.js
+          if [ -f tools/test_progressive_json_catalog.js ]; then
+            node tools/test_progressive_json_catalog.js
+          fi
+
       - name: Current API happy and negative paths
         run: node tools/test_api_contract_current.js
 
