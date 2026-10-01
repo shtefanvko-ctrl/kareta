@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSCameraUsageDescription</key>
+    <string>KARETA использует камеру для фото автомобиля, документов, QR и VIN.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>KARETA использует медиатеку для выбора фотографий автомобиля и вложений.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>KARETA использует геопозицию для сервисов рядом и выездных услуг.</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>KARETA использует Bluetooth для подключения совместимого диагностического адаптера OBD-II.</string>
+</dict>
+</plist>
