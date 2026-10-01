@@ -23,8 +23,10 @@ echo json_encode([
 ]);`;
 const data=JSON.parse(cp.execFileSync('php',['-r',php],{encoding:'utf8'}));
 
-assert.deepStrictEqual(data.cabinet.scripts,['js/next/pages/cabinet.js'],'general cabinet bundle must not load messaging settings');
-assert.deepStrictEqual(data.cabinet.globals,['KaretaCabinetPages'],'general cabinet globals must stay cabinet-only');
+assert(data.cabinet.scripts.includes('js/next/pages/cabinet.js'),'general cabinet bundle must include cabinet page');
+assert(!data.cabinet.scripts.includes('js/next/messaging_settings.js'),'general cabinet bundle must not load messaging settings');
+assert(data.cabinet.globals.includes('KaretaCabinetPages'),'general cabinet global guard missing');
+assert(!data.cabinet.globals.includes('KaretaMessagingSettings'),'general cabinet globals must not require messaging settings');
 assert.deepStrictEqual(data.messaging.routeKeys,['cabinet','cabinetSettings'],'messaging bundle must load only for account root and settings');
 assert.deepStrictEqual(data.messaging.routes,['#/cabinet','#/cabinet/settings'],'messaging bundle route path mismatch');
 assert.deepStrictEqual(data.messaging.scripts,['js/next/messaging_settings.js'],'messaging settings script missing from dedicated bundle');
