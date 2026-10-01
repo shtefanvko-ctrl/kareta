@@ -19,6 +19,8 @@ const sellerApi=read('api/seller_shop.php');
 const sellerPage=read('js/next/pages/seller.js');
 const stoApi=read('api/sto_workplace.php');
 const stoPage=read('js/next/pages/sto_workplace.js');
+const parts=read('js/next/pages/parts.js');
+const masters=read('js/next/pages/masters.js');
 
 assert(migration.includes("'version' => 137"),'geo migration version mismatch');
 assert(migration.includes('CREATE TABLE IF NOT EXISTS `geo_points`'),'geo_points table missing');
@@ -64,5 +66,14 @@ assert(sellerPage.includes('pickupPublic'),'seller explicit pickup publication c
 assert(stoApi.includes("kareta_geo_owner_points($pdo,'sto'"),'STO workplace geo point read missing');
 assert(stoPage.includes('data-sto-window-open="location"'),'STO location window missing');
 assert(stoPage.includes("ownerType:'sto'")&&stoPage.includes("visibility:'exact'"),'STO point save contract missing');
+assert(parts.includes('data-parts-nearby-detect'),'parts nearby shops trigger missing');
+assert(parts.includes('types=shop&limit=20'),'parts nearby pickup query missing');
+assert(parts.includes("String(row.kind||'')==='pickup'"),'parts must filter public pickup points');
+assert(parts.includes('openBestMap'),'parts route action must use shared map opener');
+assert(api.includes("$payload['publicId']=$sellerUserId"),'public shop point must expose safe storefront id only');
+assert(masters.includes('const loadGeoNearby=async'),'masters nearby geo query missing');
+assert(masters.includes("types='+encodeURIComponent(providerKind)"),'masters geo query provider type missing');
+assert(masters.includes('if(af!==bf)return af?-1:1'),'masters nearby sort must prioritize rows with real distance');
+assert(masters.includes('await requestLocation()'),'masters nearby click must explicitly request location when absent');
 
 console.log('GEO_PLATFORM_CORE: PASS');
