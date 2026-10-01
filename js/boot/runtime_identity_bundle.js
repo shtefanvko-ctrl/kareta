@@ -1192,6 +1192,13 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     image:'<rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><path d="m4 18 5-5 4 4 2-2 5 5"></path>'
   });
 
+  // Selected Tabler Icons v3.48.0 (MIT). The SVG sprite is requested only when used.
+  const thematicNames = Object.freeze(["tabler:tools","tabler:tool","tabler:engine","tabler:gas-station","tabler:battery-automotive","tabler:car","tabler:car-garage","tabler:car-crane","tabler:device-desktop","tabler:device-heart-monitor","tabler:wave-sine","tabler:bolt","tabler:plug-connected","tabler:temperature","tabler:snowflake","tabler:air-conditioning","tabler:wind","tabler:hammer","tabler:paint","tabler:spray","tabler:brush","tabler:disc","tabler:steering-wheel","tabler:ruler-measure","tabler:shield-check","tabler:car-fan","tabler:bulb","tabler:glass","tabler:wash-machine","tabler:bucket","tabler:photo","tabler:package","tabler:check","tabler:settings","tabler:filter","tabler:search","tabler:flame","tabler:gauge","tabler:wiper"]);
+  const thematicKeys = new Set(thematicNames);
+  const thematicBody = key => thematicKeys.has(key)
+    ? `<use href="assets/icons/tabler/sprite-v3.48.0.svg#${key.slice(7)}"></use>`
+    : '';
+
   const routeIcons = Object.freeze({
     home:'home',platform:'grid',corePlatform:'grid',calendarBooking:'calendar',finance:'finance',market:'warehouse',crm:'crm',identityMigration:'refresh',
     adminUsers:'community',adminOrganizations:'store',adminMonitoring:'view',adminManagement:'settings',services:'services',news:'news',masterNews:'news',masterNewsCreate:'plus',masterNewsEdit:'edit',
@@ -1225,7 +1232,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     return normalize(fallback);
   };
   const svg = (name, options={}) => {
-    const key=normalize(name), body=paths[key] || paths.warning;
+    const key=normalize(name), body=paths[key] || thematicBody(key) || paths.warning;
     const cls=options.className?` class="${String(options.className)}"`:'';
     return `<svg${cls} viewBox="0 0 24 24" aria-hidden="true" focusable="false">${body}</svg>`;
   };
@@ -1233,7 +1240,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
   const routeName = routeKey => routeIcons[String(routeKey)] || 'warning';
   const routeSvg = (routeKey, options={}) => svg(routeName(routeKey), options);
   const action = (name, label, value='') => `${icon(name)}<span>${label}</span>${value!==''?`<b>${value}</b>`:''}`;
-  window.KaretaUIIcons=Object.freeze({svg,icon,routeSvg,routeName,action,categoryIcon,has:name=>Object.hasOwn(paths,normalize(name)),normalize,names:Object.freeze(Object.keys(paths)),routeNames:routeIcons});
+  window.KaretaUIIcons=Object.freeze({svg,icon,routeSvg,routeName,action,categoryIcon,has:name=>Object.hasOwn(paths,normalize(name))||thematicKeys.has(normalize(name)),normalize,names:Object.freeze([...Object.keys(paths),...thematicNames]),routeNames:routeIcons});
 })();
 ;
 
