@@ -1,7 +1,7 @@
 {
   "schema": "kareta.navigation.map.v1",
   "date": "2026-10-01",
-  "status": "SOURCE_PARTIAL_NOT_RUNTIME_VERIFIED",
+  "status": "SOURCE_AUDIT_EXPANDED_NOT_RUNTIME_VERIFIED",
   "dimensions": [
     "context",
     "router",
@@ -10,8 +10,13 @@
     "view",
     "steps",
     "windows",
+    "entry",
     "cross",
-    "return"
+    "return",
+    "guard",
+    "alias",
+    "state_owner",
+    "verification"
   ],
   "routers": [
     {
@@ -214,10 +219,116 @@
       "aliases": {
         "#/news": "#/works"
       }
+    },
+    {
+      "id": "master-onboarding",
+      "type": "FLOW_ROUTER",
+      "contexts": [
+        "master"
+      ],
+      "routes": [
+        "#/onboarding/master"
+      ],
+      "state_owner": "master_onboarding draft + URL step/view",
+      "steps": [
+        "1",
+        "2",
+        "3"
+      ],
+      "windows": [
+        "city",
+        "address",
+        "origin",
+        "service-area",
+        "custom-service",
+        "price",
+        "terms"
+      ],
+      "entry": [
+        "onboarding gate",
+        "resume route"
+      ],
+      "return": [
+        "previous step",
+        "personal context -> #/home on step 1 back"
+      ],
+      "cross": [
+        "complete -> #/master"
+      ],
+      "guard": "reject foreign role",
+      "verification": "SOURCE_CONFIRMED"
+    },
+    {
+      "id": "admin-workspaces",
+      "type": "WORKSPACE_ROUTER",
+      "contexts": [
+        "admin"
+      ],
+      "routes": [
+        "#/admin/monitoring",
+        "#/admin/users",
+        "#/admin/organizations",
+        "#/admin/management",
+        "#/admin/identity-migration",
+        "#/platform",
+        "#/core"
+      ],
+      "windows": [
+        "admin-action",
+        "identity-detail"
+      ],
+      "cross": [
+        "monitoring -> identity-migration"
+      ],
+      "guard": "admin navigation context/capabilities",
+      "verification": "SOURCE_CONFIRMED"
     }
   ],
   "notes": [
     "Map is source-derived and intentionally incomplete until remaining route modules are scanned.",
-    "No runtime/browser verification has been claimed."
+    "No runtime/browser verification has been claimed.",
+    "Expanded audit now tracks navigation primitive type, state ownership, guards and verification status."
+  ],
+  "audit_rules": [
+    "Every route_registry key must be classified or explicitly marked UNCLASSIFIED.",
+    "Route, view, step, dialog/window and cross-router transition are distinct navigation primitives.",
+    "Query parameters must be classified as state/view/context, not silently treated as routes.",
+    "Every detail/direct-entry route must have an explicit logical return/fallback contract.",
+    "Every role/context fallback must be recorded and checked for foreign-branch redirects.",
+    "Legacy aliases are compatibility entries, not independent design branches.",
+    "location.hash/history mutations outside RouteRuntime are recorded as hidden navigation edges.",
+    "Runtime/browser verification remains NOT_RUN unless executed."
+  ],
+  "findings": [
+    {
+      "id": "NAV-F01",
+      "severity": "architecture",
+      "status": "SOURCE_CONFIRMED",
+      "finding": "Master Workplace uses query ?view=overview|kpi|statistics|today|paused as internal workspace state, not independent routes."
+    },
+    {
+      "id": "NAV-F02",
+      "severity": "architecture",
+      "status": "SOURCE_CONFIRMED",
+      "finding": "Client Cabinet mixes full routes and overlay account windows; URL hierarchy alone does not describe its navigation."
+    },
+    {
+      "id": "NAV-F03",
+      "severity": "architecture",
+      "status": "SOURCE_CONFIRMED",
+      "finding": "Garage can prefill Request through #/orders/new?vehicleId=:id, creating an explicit cross-router edge."
+    },
+    {
+      "id": "NAV-F04",
+      "severity": "architecture",
+      "status": "SOURCE_CONFIRMED",
+      "finding": "Master onboarding has a dedicated flow router with URL step/view state, draft restore, custom Back and completion redirect."
+    },
+    {
+      "id": "NAV-F05",
+      "severity": "risk",
+      "status": "SOURCE_CONFIRMED",
+      "finding": "Navigation is not exclusively mediated by RouteRuntime; source contains direct location.hash and history.replaceState transitions. These require edge-by-edge audit."
+    }
   ]
 }
