@@ -491,8 +491,16 @@ function kareta_route_asset_plan(): array
             'routeKeys' => ['cabinet','cabinetGarage','cabinetData','cabinetHistory','cabinetDocuments','cabinetPromos','cabinetTariff','cabinetSettings'],
             'routes' => ['#/cabinet','#/cabinet/garage','#/cabinet/data','#/cabinet/history','#/cabinet/documents','#/cabinet/promotions','#/cabinet/tariff','#/cabinet/settings'],
             'styles' => ['css/next/client_cabinet.css'],
-            'scripts' => ['js/next/messaging_settings.js','js/next/pages/cabinet.js'],
-            'globals' => ['KaretaMessagingSettings','KaretaCabinetPages'],
+            'scripts' => ['js/next/pages/cabinet.js'],
+            'globals' => ['KaretaCabinetPages'],
+        ],
+        'cabinetMessagingSettings' => [
+            'lazy' => true,
+            'routeKeys' => ['cabinetSettings'],
+            'routes' => ['#/cabinet/settings'],
+            'styles' => [],
+            'scripts' => ['js/next/messaging_settings.js'],
+            'globals' => ['KaretaMessagingSettings'],
         ],
         'chats' => [
             'lazy' => true,
