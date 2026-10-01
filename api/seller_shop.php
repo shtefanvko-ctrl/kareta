@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/catalog/product_categories.php';
+require_once __DIR__ . '/geo_core.php';
 
 function seller_decode_json_field($value): array {
     if (is_array($value)) return array_values($value);
@@ -42,6 +43,12 @@ function seller_profile_row(PDO $pdo, int $userId): ?array {
     $st=$pdo->prepare("SELECT * FROM `seller_profiles` WHERE user_id=? LIMIT 1"); $st->execute([$userId]); $row=$st->fetch();
     if(!$row) return null;
     foreach(['category_tags','delivery_modes','payment_methods'] as $f) $row[$f]=seller_decode_json_field($row[$f]??null);
+    $row['geoPoints']=kareta_table_exists($pdo,'geo_points')?kareta_geo_owner_points($pdo,'shop',(string)($row['id']??''),false):[];
+    $row['pickupPoint']=null;$row['warehousePoint']=null;
+    foreach($row['geoPoints'] as $point){
+        if(($point['kind']??'')==='pickup'&&$row['pickupPoint']===null)$row['pickupPoint']=$point;
+        if(($point['kind']??'')==='warehouse'&&$row['warehousePoint']===null)$row['warehousePoint']=$point;
+    }
     return $row;
 }
 
@@ -66,6 +73,12 @@ function seller_clean_profile_input(array $input): array {
     $input['minimumOrder'] = mb_substr(trim((string)($input['minimumOrder'] ?? $input['minimum_order'] ?? '')), 0, 64, 'UTF-8');
     $input['returnPolicy'] = mb_substr(trim((string)($input['returnPolicy'] ?? $input['return_policy'] ?? '')), 0, 1000, 'UTF-8');
     $input['returnDays'] = max(0, min(30, (int)($input['returnDays'] ?? $input['return_days'] ?? 14)));
+    $input['pickupPublic'] = !empty($input['pickupPublic'] ?? $input['pickup_public']);
+    $input['geoLat'] = kareta_geo_number($input['geoLat'] ?? $input['latitude'] ?? null);
+    $input['geoLng'] = kareta_geo_number($input['geoLng'] ?? $input['longitude'] ?? null);
+    $input['geoSource'] = in_array(strtolower(trim((string)($input['geoSource'] ?? 'manual'))),['manual','gps','geocoder','organization'],true)?strtolower(trim((string)($input['geoSource'] ?? 'manual'))):'manual';
+    if(!kareta_geo_coords_valid($input['geoLat'],$input['geoLng']))kareta_json(['ok'=>false,'error'=>'seller_geo_coordinates_invalid'],422);
+    if($input['pickupPublic']&&($input['geoLat']===null||$input['geoLng']===null))kareta_json(['ok'=>false,'error'=>'seller_pickup_coordinates_required'],422);
     foreach (['categoryTags','deliveryModes','paymentMethods'] as $field) {
         $values = is_array($input[$field] ?? null) ? $input[$field] : [];
         $input[$field] = array_values(array_unique(array_slice(array_map(static fn($value) => mb_substr(trim((string)$value), 0, 64, 'UTF-8'), $values), 0, 50)));
@@ -211,6 +224,17 @@ function seller_profile_save(?PDO $pdo,array $body): void {
     $profileUser['city']=trim((string)($input['city']??$user['city']??''));
     $previous=seller_profile_row($pdo,(int)$user['id']);
     $profile=kareta_upsert_seller_profile($pdo,$profileUser,$input);
+    $profileId=(string)($profile['id']??'');
+    if($profileId!==''&&kareta_table_exists($pdo,'geo_points')){
+        $lat=$input['geoLat']??null;$lng=$input['geoLng']??null;$city=(string)($input['city']??'');$address=(string)($input['warehouseAddress']??'');$label=(string)($input['storeName']??'Магазин');
+        if($lat!==null&&$lng!==null){
+            kareta_geo_upsert_point($pdo,['ownerType'=>'shop','ownerId'=>$profileId,'kind'=>'warehouse','label'=>$label,'city'=>$city,'address'=>$address,'latitude'=>$lat,'longitude'=>$lng,'source'=>$input['geoSource']??'manual','visibility'=>'hidden','active'=>true]);
+            if(!empty($input['pickupPublic'])){
+                kareta_geo_upsert_point($pdo,['ownerType'=>'shop','ownerId'=>$profileId,'kind'=>'pickup','label'=>$label,'city'=>$city,'address'=>$address,'latitude'=>$lat,'longitude'=>$lng,'source'=>$input['geoSource']??'manual','visibility'=>'exact','active'=>true,'metadata'=>['pickup'=>true]]);
+            }else{kareta_geo_set_owner_kind_active($pdo,'shop',$profileId,'pickup',false);}
+        }elseif(empty($input['pickupPublic'])){kareta_geo_set_owner_kind_active($pdo,'shop',$profileId,'pickup',false);}
+        $profile=seller_profile_row($pdo,(int)$user['id'])?:$profile;
+    }
     if(($previous['moderation_status']??'')==='rejected') {
         $pdo->prepare("UPDATE seller_profiles SET moderation_status='pending', moderation_reason='', updated_at=NOW() WHERE user_id=? AND moderation_status='rejected'")->execute([(int)$user['id']]);
         $profile=seller_profile_row($pdo,(int)$user['id']);
