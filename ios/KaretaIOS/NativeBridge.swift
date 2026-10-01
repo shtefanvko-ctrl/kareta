@@ -20,6 +20,8 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
     private let network = NetworkState.shared
     private let locationService = NativeLocationService()
     private let mediaService = NativeMediaService()
+    private let scannerService = NativeScannerService()
+    private let pushService = PushNotificationService.shared
     private let offlineQueue = OfflineQueueStore.shared
 
     func userContentController(
@@ -111,6 +113,17 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
         case "logout":
             performLogout(id: id)
 
+        case "pushToken":
+            send(id: id, data: pushService.snapshot())
+
+        case "registerPush":
+            pushService.register { [weak self] result in
+                self?.complete(id: id, result: result)
+            }
+
+        case "unregisterPush":
+            send(id: id, data: pushService.unregister())
+
         case "requestPermission":
             handlePermission(id: id, payload: payload)
 
@@ -136,6 +149,12 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
 
         case "getLocation":
             locationService.currentLocation { [weak self] result in
+                self?.complete(id: id, result: result)
+            }
+
+        case "scanCode":
+            let mode = payload["mode"] as? String ?? "qr"
+            scannerService.scan(mode: mode) { [weak self] result in
                 self?.complete(id: id, result: result)
             }
 
