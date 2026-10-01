@@ -2,8 +2,9 @@
 
 The existing catalog schema fix (`b4d1032`) and the parallel canonical release,
 cabinet-settings, executable CI and provenance work were retained. The PR now
-contains the canonical cabinet branch through Git ancestry; the catalog changes
-remain in the existing progressive-catalog lane.
+contains the canonical cabinet branch through Git ancestry. Original PRs #24 and
+#25 were merged into release candidate `c20beb7`; these remaining fixes are a
+follow-up stacked on that exact #22 candidate, with 16 net changed files.
 
 ## Result
 
@@ -45,7 +46,8 @@ settle. This changelog is not evidence of deployment. Stage HTTP/MIME and full l
 asset walk, exact runtime provenance, cold/warm/offline browser behavior and the
 Garage save/reload flow must be checked on the delivered candidate. Keep release
 tokens unique to the deployed bytes; never replace an already-served immutable
-manifest inside the same release. Merge order remains #22 -> #24 -> #25.
+manifest inside the same release. Merge this follow-up into the release lane,
+rerun the final candidate checks, then consider #22 -> main and deployment.
 
 No Android native sources, native bridge or database migrations are changed by
 this catalog-hardening delta.
