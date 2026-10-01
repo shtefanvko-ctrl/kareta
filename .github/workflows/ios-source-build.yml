@@ -1,0 +1,49 @@
+name: iOS source build
+
+on:
+  push:
+    branches:
+      - ios/kareta-2026-10-01
+    paths:
+      - "ios/**"
+      - "tools/test_ios_*.js"
+      - ".github/workflows/ios-source-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Bridge parity
+        run: node tools/test_ios_bridge_contract.js
+      - name: Native phase 2
+        run: node tools/test_ios_native_phase2.js
+      - name: Native phase 3
+        run: node tools/test_ios_native_phase3.js
+
+  simulator-build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate Xcode project
+        working-directory: ios
+        run: xcodegen generate
+      - name: Build for iOS Simulator
+        run: >-
+          xcodebuild
+          -project ios/KaretaIOS.xcodeproj
+          -scheme KaretaIOS
+          -configuration Debug
+          -sdk iphonesimulator
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO
+          build
