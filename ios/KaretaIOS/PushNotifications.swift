@@ -54,21 +54,56 @@ final class PushNotificationService {
         completion: @escaping (Result<[String: Any], Error>) -> Void
     ) {
         let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(
-            options: [.alert, .badge, .sound]
-        ) { granted, error in
-            if let error {
-                self.updateRegistrationError(error)
-                return completion(.failure(error))
-            }
+        center.getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+            case .notDetermined:
+                center.requestAuthorization(
+                    options: [.alert, .badge, .sound]
+                ) { granted, error in
+                    if let error {
+                        self.updateRegistrationError(error)
+                        return
+                    }
+                    guard granted else { return }
+                    DispatchQueue.main.async {
+                        UIApplication.shared.registerForRemoteNotifications()
+                    }
+                }
 
-            DispatchQueue.main.async {
-                UIApplication.shared.registerForRemoteNotifications()
                 completion(.success([
                     "platform": "ios",
-                    "authorizationGranted": granted,
-                    "registrationRequested": true,
-                    "registered": UIApplication.shared.isRegisteredForRemoteNotifications
+                    "authorizationPending": true,
+                    "registrationRequested": true
+                ]))
+
+            case .authorized, .provisional, .ephemeral:
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
+                    completion(.success([
+                        "platform": "ios",
+                        "authorizationGranted": true,
+                        "authorizationPending": false,
+                        "registrationRequested": true,
+                        "registered": UIApplication.shared.isRegisteredForRemoteNotifications
+                    ]))
+                }
+
+            case .denied:
+                completion(.success([
+                    "platform": "ios",
+                    "authorizationGranted": false,
+                    "authorizationPending": false,
+                    "registrationRequested": false,
+                    "status": "denied"
+                ]))
+
+            @unknown default:
+                completion(.success([
+                    "platform": "ios",
+                    "authorizationGranted": false,
+                    "authorizationPending": false,
+                    "registrationRequested": false,
+                    "status": "unknown"
                 ]))
             }
         }
