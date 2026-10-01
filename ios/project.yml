@@ -1,0 +1,57 @@
+name: KaretaIOS
+
+options:
+  deploymentTarget:
+    iOS: "15.0"
+  projectFormat: xcode16_0
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+
+targets:
+  KaretaIOS:
+    type: application
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: KaretaIOS
+        excludes:
+          - Info.plist.template
+          - Info.plist
+          - KaretaIOS.entitlements
+    info:
+      path: KaretaIOS/Info.plist
+      properties:
+        CFBundleDisplayName: KARETA.KZ
+        LSRequiresIPhoneOS: true
+        NSBluetoothAlwaysUsageDescription: KARETA использует Bluetooth для подключения совместимого диагностического адаптера OBD-II.
+        NSCameraUsageDescription: KARETA использует камеру для фото автомобиля, документов, QR и VIN.
+        NSLocationWhenInUseUsageDescription: KARETA использует геопозицию для сервисов рядом и выездных услуг.
+        NSPhotoLibraryUsageDescription: KARETA использует медиатеку для выбора фотографий автомобиля и вложений.
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+    entitlements:
+      path: KaretaIOS/KaretaIOS.entitlements
+      properties:
+        aps-environment: $(APS_ENVIRONMENT)
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: kz.kareta.app
+        PRODUCT_NAME: KARETA
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        CODE_SIGN_STYLE: Automatic
+        TARGETED_DEVICE_FAMILY: "1"
+      configs:
+        Debug:
+          APS_ENVIRONMENT: development
+        Release:
+          APS_ENVIRONMENT: production
+    scheme:
+      gatherCoverageData: false
