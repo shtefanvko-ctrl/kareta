@@ -58,13 +58,18 @@ expect(/'cssMode' => 'route-domain-css-v[12]'/.test(registry)||registry.includes
 
 for(const key of [
   'cabinet','cabinetGarage','cabinetSettings','chats','notifications','works','masterExchange','realWorks','workDetail',
-  'vehicle','orders','workflow','news','masterNews','about','lawyer','masterOnboarding','masterDashboard','masterWorkplaceSettings',
+  'vehicle','orders','workflow','news','masterNews','about','lawyer','masterOnboarding','masterDashboard',
   'masterProfileOwner','masterWallOwner','masterWorks','masterReviews','providerReviews'
 ]){
   expect(loader.includes(`'${key}'`),`route loader lazy key missing: ${key}`);
 }
 
-expect(read('js/next/pages/cabinet.js').includes("ensureRoute('masterWorkplaceSettings'"),'master cabinet settings must lazy-load master workplace settings only when needed');
+expect(registry.includes("'routeKeys' => ['masterDashboard','cabinetSettings']"),'master workplace API bundle must use canonical cabinetSettings route key');
+expect(!registry.includes("'masterDashboard','masterWorkplaceSettings'"),'obsolete masterWorkplaceSettings pseudo route key remains in registry');
+const cabinetSource=read('js/next/pages/cabinet.js');
+expect(cabinetSource.includes("ensureRoute('cabinetSettings'"),'master cabinet settings recovery must use canonical cabinetSettings route');
+expect(!cabinetSource.includes("ensureRoute('masterWorkplaceSettings'"),'obsolete masterWorkplaceSettings recovery path remains');
+expect(!loader.includes("'masterWorkplaceSettings'"),'route loader still exposes obsolete masterWorkplaceSettings pseudo key');
 expect(windowEngine.includes("loader?.isKnownLazy?.(meta.key)")&&windowEngine.includes("await loader.ensureRoute(meta.key"),'entity window does not wait for lazy route assets');
 expect(windowEngine.includes('data-entity-window-retry'),'entity window lazy retry missing');
 expect(windowEngine.includes("loadController.signal.aborted||state.targetHash!==target||!dialog.open"),'entity window stale-load guard missing');

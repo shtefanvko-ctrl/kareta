@@ -191,7 +191,31 @@
   function syncPostReaction(post){document.querySelectorAll('[data-community-post-id]').forEach(article=>{if(String(article.dataset.communityPostId)!==String(post.id))return;const like=article.querySelector('[data-community-like]');if(like){like.classList.toggle('is-active',!!post.liked);const count=like.querySelector('span');if(count)count.textContent=formatCount(post.stats?.likes||0);}const save=article.querySelector('[data-community-save]');if(save)save.classList.toggle('is-active',!!post.saved);});}
   function setCommunityVideoSuspended(suspended){if(suspended){document.querySelectorAll('[data-community-autoplay-video]').forEach(video=>{if(!video.paused){try{video.pause();}catch(_e){}}});return;}setupVideoAutoplay();}
 
-  async function loadFeed(mode){stateApi.setFeedMode(mode||'recommended');stateApi.patch({loading:true,error:''},'loading');const result=await api.getFeed({mode:stateApi.snapshot().feedMode,limit:window.matchMedia?.('(max-width: 767px)')?.matches?48:80});if(disposed)return;if(!result.ok){stateApi.patch({loading:false,error:'Не удалось загрузить публикации'},'error');return;}patchPosts(result.data.items||[]);stateApi.patch({loading:false,error:'',groups:api.getGroups(),pagination:{cursor:result.data.cursor||null,hasMore:!!result.data.hasMore,page:0}},'loaded');paintStories();paintFeed();paintSideGroups();setupSentinel();}
+  const feedSignature=rows=>{try{return JSON.stringify((rows||[]).map(post=>[post.id,post.createdAt,post.stats?.likes,post.stats?.comments,post.saved,post.liked]));}catch(_e){return'';}};
+  async function loadFeed(mode,options={}){
+    const targetMode=mode||'recommended';
+    const before=stateApi.snapshot();
+    const hasCached=before.posts.length>0&&before.feedMode===targetMode;
+    const beforeSignature=feedSignature(before.posts);
+    stateApi.setFeedMode(targetMode);
+    if(hasCached){paintStories();paintFeed();paintSideGroups();setupSentinel();}
+    else{stateApi.patch({loading:true,error:''},'loading');}
+    const result=await api.getFeed({
+      mode:targetMode,
+      limit:window.matchMedia?.('(max-width: 767px)')?.matches?48:80,
+      force:options.force===true
+    });
+    if(disposed)return;
+    if(!result.ok){
+      if(hasCached){stateApi.patch({loading:false,error:''},'revalidate-failed');return;}
+      stateApi.patch({loading:false,error:'Не удалось загрузить публикации'},'error');return;
+    }
+    const incoming=result.data.items||[];
+    const changed=!hasCached||feedSignature(incoming)!==beforeSignature;
+    if(changed)patchPosts(incoming);
+    stateApi.patch({loading:false,error:'',fetchedAt:Date.now(),groups:api.getGroups(),pagination:{cursor:result.data.cursor||null,hasMore:!!result.data.hasMore,page:0}},changed?'loaded':'revalidated');
+    if(changed){paintStories();paintFeed();paintSideGroups();setupSentinel();}
+  }
   function paintSideGroups(){const root=document.querySelector('[data-community-side-groups]');if(root)root.innerHTML=groupsRail(api.getGroups());}
   function setupSentinel(){observer?.disconnect();const sentinel=document.querySelector('[data-community-feed-sentinel]');if(!sentinel||!('IntersectionObserver'in window))return;observer=new IntersectionObserver(entries=>{if(!entries.some(e=>e.isIntersecting))return;const total=filteredPosts().length;if(visibleCount<total){visibleCount=Math.min(total,visibleCount+8);paintFeed();}},{rootMargin:'500px 0px'});observer.observe(sentinel);}
 
@@ -290,7 +314,10 @@
     if(communityLayout&&communityTabs&&communityTabs.parentElement!==communityLayout){
       communityLayout.insertBefore(communityTabs,communityLayout.firstElementChild);
     }
-    disposed=false;visibleCount=window.matchMedia?.('(max-width: 767px)')?.matches?6:12;const route=parseRoute();const routeKey=routeHash();const groupWasMissing=route.name==='group'&&!api.getGroup?.(route.id);const onVisibility=()=>{if(document.hidden)setCommunityVideoSuspended(true);else setCommunityVideoSuspended(false);};document.addEventListener('visibilitychange',onVisibility);
+    disposed=false;visibleCount=window.matchMedia?.('(max-width: 767px)')?.matches?6:12;const route=parseRoute();const routeKey=routeHash();const groupWasMissing=route.name==='group'&&!api.getGroup?.(route.id);const onVisibility=()=>{if(document.hidden)setCommunityVideoSuspended(true);else{setCommunityVideoSuspended(false);const st=stateApi.snapshot();if(st.posts.length&&(Date.now()-Number(st.fetchedAt||0))>15000)void loadFeed(st.feedMode,{force:true,background:true});}};document.addEventListener('visibilitychange',onVisibility);
+    const onRealtime=event=>{const type=String(event.detail?.event?.eventType||'');if(/^(community|work|news|masterSocial|social)\./i.test(type))void loadFeed(stateApi.snapshot().feedMode,{force:true,background:true});};
+    window.addEventListener('kareta:realtime:event',onRealtime,{signal:ctx.lifecycle?.signal});
+    window.addEventListener('online',()=>{const st=stateApi.snapshot();if(st.posts.length)void loadFeed(st.feedMode,{force:true,background:true});},{signal:ctx.lifecycle?.signal});
     const onClick=async e=>{
       if(!e.target.closest('[data-community-more],.k-community-more-menu'))closeCommunityMoreMenu(page);
       const desktopView=e.target.closest('[data-community-desktop-view]');

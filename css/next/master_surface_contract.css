@@ -3,7 +3,7 @@
    shared-route role skin lives in master_role_skin.css. */
 html[data-user-role="master"]{
   /* Kept here as contract assertions for legacy regression tooling. */
-  --k-master-content-max:1420px;
+  --k-master-content-max:var(--k-route-frame-max,1280px);
   --k-master-page-x:clamp(14px,2.2vw,34px);
   --k-master-page-y:18px;
   --k-master-section-gap:16px;

@@ -93,6 +93,7 @@
     about:{global:'KaretaInfoPages',render:'renderAbout'},
     rules:{global:'KaretaInfoPages',render:'renderRules'},
     help:{global:'KaretaInfoPages',render:'renderHelp'},
+    notFound:{global:'KaretaNotFoundPages',render:'renderNotFound',mount:'mountNotFound'},
     privacy:{global:'KaretaInfoPages',render:'renderPrivacy'},
     contacts:{global:'KaretaInfoPages',render:'renderContacts'},
     lawyer:{global:'KaretaInfoPages',render:'renderLawyer',mount:'mountLawyer'},
@@ -151,6 +152,7 @@
 
 
   function resolveAppRoute(routeKey){
+    if(routeKey==='notFound') return 'notFound';
     const gate=window.KaretaMasterOnboardingGate;
     const requested=routeRegistry.has(routeKey) ? routeKey : '';
     if (gate?.shouldOwnRoute?.(requested)) return gate.resolveRoute(requested);
@@ -158,7 +160,10 @@
     const base=identityMode ? (window.KaretaNavigationCore?.resolveRoute?.(requested)||requested) : roleAccess.resolve(requested);
     return gate?.resolveRoute?.(base) || base;
   }
-  function routeKeyFromHash(hashValue){ return resolveAppRoute(routeRegistry.keyFromHash(hashValue)); }
+  function routeKeyFromHash(hashValue){
+    if(!String(hashValue||'').trim() && String(window.KARETA_HTTP_NOT_FOUND_PATH||'').trim()) return 'notFound';
+    return resolveAppRoute(routeRegistry.keyFromHash(hashValue));
+  }
 
   function updateActiveNav(){
     if (window.KaretaShellNav) window.KaretaShellNav.setActive(state.routeKey);
@@ -300,9 +305,23 @@
     if(label)label.textContent=routeLoadingStageLabel(detail.phase);
   }
   function routeLoadErrorHtml(route,error){
-    const label=String(route?.label||'раздел');
-    const message=String(error?.message||'Не удалось загрузить файлы раздела').replace(/[<>&]/g,'');
-    return `<section class="k-page k-route-load-error"><div class="k-empty"><h1>${label} временно недоступен</h1><p>${message}</p><button type="button" class="k-btn k-btn-primary" data-next-action="route-assets-retry">Повторить</button></div></section>`;
+    const label=routeLoadingText(route?.label||'Раздел');
+    const raw=String(error?.message||error||'');
+    const offline=navigator.onLine===false||/(?:failed to fetch|network|offline|internet|connection)/i.test(raw);
+    const title=offline?'Нет соединения':`${label} временно недоступен`;
+    const copy=offline
+      ? 'Проверьте интернет. Уже загруженные разделы останутся доступны, а этот раздел можно повторить после восстановления сети.'
+      : 'Интерфейс раздела не загрузился полностью. Повторите загрузку; техническая диагностика уже записана в журнал приложения.';
+    return `<section class="k-page k-route-load-error" data-route-load-error data-route-error-kind="${offline?'offline':'asset'}">
+      <div class="k-route-load-error__panel">
+        <span class="k-route-load-error__mark" aria-hidden="true">!</span>
+        <div class="k-route-load-error__copy"><small>KARETA.KZ</small><h1>${title}</h1><p>${copy}</p></div>
+        <div class="k-route-load-error__actions">
+          <button type="button" class="k-btn k-btn-primary" data-next-action="route-assets-retry">Повторить</button>
+          <button type="button" class="k-btn k-btn-secondary" data-next-action="route-assets-back">Назад</button>
+        </div>
+      </div>
+    </section>`;
   }
 
   function renderResolvedRoute(key,route,outlet,lifecycle){
@@ -378,6 +397,10 @@
       if(!window.KaretaRequestWindow?.open?.('#/orders/new'))location.hash='#/orders/new';
     });
     routeRuntime.onAction('route-assets-retry',()=>routeRuntime.transition(state.routeKey,{source:'route-assets-retry',force:true}));
+    routeRuntime.onAction('route-assets-back',()=>{
+      if(history.length>1){history.back();return;}
+      routeRuntime.navigate(window.KaretaNavigationCore?.defaultRoute?.()||'home',{source:'route-assets-back',replace:true});
+    });
   }
 
 
@@ -563,7 +586,9 @@
     try {
       if ('caches' in window) {
         const keys=await caches.keys();
-        await Promise.all(keys.filter(key=>String(key).startsWith('kareta-')).map(key=>caches.delete(key)));
+        // Version reconciliation may happen during a flaky network window. Purge
+        // release-scoped static assets but keep the last known-good HTML shell.
+        await Promise.all(keys.filter(key=>String(key).startsWith('kareta-static-')).map(key=>caches.delete(key)));
       }
     } catch (_error) {}
     try { apiClient.invalidate?.(); } catch (_error) {}

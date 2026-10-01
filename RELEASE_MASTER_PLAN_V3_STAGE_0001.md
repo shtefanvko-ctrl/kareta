@@ -1,3 +1,5 @@
+> Historical 84.109 baseline. Current active engineering plan: `docs/engineering/CURRENT_PLAN.md`. Do not use this stage file as the current release state.
+
 # KARETA.KZ — RELEASE MASTER PLAN V3 — STAGE 1/2516
 
 ## Stage
