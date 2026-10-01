@@ -6,6 +6,8 @@ on:
       - ios/kareta-2026-10-01
     paths:
       - "ios/**"
+      - "api/obd.php"
+      - "js/next/pages/diagnostics.js"
       - "tools/test_ios_*.js"
       - ".github/workflows/ios-source-build.yml"
   workflow_dispatch:
@@ -29,6 +31,8 @@ jobs:
         run: node tools/test_ios_native_phase3.js
       - name: BLE ELM contract
         run: node tools/test_ios_elm_contract.js
+      - name: OBD provenance
+        run: node tools/test_ios_obd_provenance.js
 
   simulator-build:
     runs-on: macos-latest
