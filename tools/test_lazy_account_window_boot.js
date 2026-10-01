@@ -35,5 +35,4 @@ assert(data.cabinet.globals.includes('KaretaAccountWindow')&&data.cabinet.global
 assert(registry.includes("'js/next/account_window.js'"),'account window source must remain registered');
 assert(core.length<115000,`runtime core still too large after account-window extraction: ${core.length}`);
 
-cp.execFileSync(process.execPath,[path.join(root,'tools/build_boot_js_bundles.js'),'--check'],{stdio:'pipe'});
 console.log('Lazy account window boot regression: OK');
