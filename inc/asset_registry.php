@@ -496,8 +496,8 @@ function kareta_route_asset_plan(): array
         ],
         'cabinetMessagingSettings' => [
             'lazy' => true,
-            'routeKeys' => ['cabinetSettings'],
-            'routes' => ['#/cabinet/settings'],
+            'routeKeys' => ['cabinet','cabinetSettings'],
+            'routes' => ['#/cabinet','#/cabinet/settings'],
             'styles' => [],
             'scripts' => ['js/next/messaging_settings.js'],
             'globals' => ['KaretaMessagingSettings'],
