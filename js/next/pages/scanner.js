@@ -20,7 +20,7 @@
     return hash;
   }
   function render() {
-    if (mode() === 'masterQr') return '<section class="k-page k-scan-page" data-page="scanner"><a class="k-btn k-btn-secondary" href="#/master">Назад</a><h1>Мой QR</h1><p>Клиент или мастер сканирует код, открывает ваш профиль и переходит к записи.</p><div data-master-qr-code></div><p data-master-qr-status role="status" aria-live="polite">Загружаем ваш профиль…</p><a class="k-btn k-btn-secondary" data-master-qr-link hidden>Открыть мой профиль</a><button class="k-btn k-btn-secondary" type="button" data-master-qr-copy hidden>Скопировать ссылку</button></section>';
+    if (mode() === 'masterQr') return '<section class="k-page k-scan-page" data-page="scanner"><a class="k-btn k-btn-secondary" href="#/master">Назад</a><h1>Мой QR</h1><p>Клиент или мастер сканирует код, открывает ваш профиль и переходит к записи.</p><div class="k-master-qr-identity" hidden data-master-qr-identity><h2 data-master-qr-name></h2><p data-master-qr-detail></p></div><div data-master-qr-code></div><p data-master-qr-status role="status" aria-live="polite">Загружаем ваш профиль…</p><a class="k-btn k-btn-secondary" data-master-qr-link hidden>Открыть мой профиль</a><button class="k-btn k-btn-secondary" type="button" data-master-qr-copy hidden>Скопировать ссылку</button><a class="k-btn k-btn-secondary" data-master-qr-save hidden>Сохранить QR</a><button class="k-btn k-btn-secondary" type="button" data-master-qr-share hidden>Поделиться</button></section>';
     const key = mode(), documentMode = key === 'scannerDocument';
     const back = key === 'scanner' ? home() : '#/scan';
     const title = key === 'scanner' ? 'Сканировать' : documentMode ? 'Техпаспорт автомобиля' : 'QR KARETA';
@@ -126,19 +126,26 @@
   }
   function mountMasterQr(root, context) {
     const life = context.lifecycle;
-    let disposed = false;
+    let disposed = false, imageUrl = '';
     const active = () => !disposed && life.isActive() && root.isConnected && role() === 'master';
-    life.addCleanup(() => { disposed = true; });
+    life.addCleanup(() => { disposed = true; if(imageUrl) URL.revokeObjectURL(imageUrl); });
     const status = root.querySelector('[data-master-qr-status]');
     const link = root.querySelector('[data-master-qr-link]');
     const copy = root.querySelector('[data-master-qr-copy]');
+    const save = root.querySelector('[data-master-qr-save]');
+    const share = root.querySelector('[data-master-qr-share]');
     (async () => {
       try {
         if (role() !== 'master') throw new Error('Выберите контекст мастера.');
         const response = await window.KaretaApiClient.request('api/db.php?action=masterProfile.get', { cacheTtlMs:0, force:true, signal:life.signal });
         if (!active()) return;
         if (!response?.ok) throw new Error('Не удалось загрузить ваш профиль. Откройте страницу ещё раз.');
-        const url = masterQrUrl(response.payload?.data || response.payload || response.data || {});
+        const data = response.payload?.data || response.payload || response.data || {};
+        const url = masterQrUrl(data);
+        const name = String(data.profile.name || 'Мастер');
+        root.querySelector('[data-master-qr-name]').textContent = name;
+        root.querySelector('[data-master-qr-detail]').textContent = [data.profile.spec,data.profile.city].filter(Boolean).join(' · ');
+        root.querySelector('[data-master-qr-identity]').hidden = false;
         const qr = new window.KaretaQRCode(-1, 1); // L correction; byte payload is an ASCII URL.
         qr.addData(url); qr.make();
         const size = qr.getModuleCount(), canvas = document.createElement('canvas'), scale = 6;
@@ -151,7 +158,21 @@
         root.querySelector('[data-master-qr-code]').replaceChildren(canvas);
         link.href = url; link.hidden = false; copy.hidden = false;
         status.textContent = 'Ваш личный QR готов. Покажите его для сканирования.';
+        canvas.toBlob(blob => {
+          if (!blob || !active()) return;
+          imageUrl = URL.createObjectURL(blob);
+          save.href = imageUrl; save.download = 'kareta-master-' + data.profile.id + '-qr.png'; save.hidden = false;
+        },'image/png');
+        if (typeof navigator.share === 'function') {
+          share.hidden = false;
+          life.listen(share,'click',async () => {
+            if (!active()) return;
+            try { await navigator.share({title:'Запись к мастеру ' + name,text:'Мой профиль KARETA',url}); }
+            catch(error) { if(active() && error.name !== 'AbortError') status.textContent='Не удалось поделиться. Скопируйте ссылку или сохраните QR.'; }
+          });
+        }
         life.listen(copy,'click',async () => {
+          if (!active()) return;
           try { await navigator.clipboard.writeText(url); if(active()) status.textContent='Ссылка скопирована.'; }
           catch (_) { if(active()) status.textContent='Не удалось скопировать. Используйте ссылку «Открыть мой профиль».'; }
         });

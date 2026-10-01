@@ -20,3 +20,25 @@ const scale=8,size=(qr.getModuleCount()+8)*scale, pixels=Buffer.alloc(size*size,
 for(let y=0;y<qr.getModuleCount();y++)for(let x=0;x<qr.getModuleCount();x++)if(qr.isDark(y,x))for(let a=0;a<scale;a++)for(let b=0;b<scale;b++)pixels[(y*scale+4*scale+a)*size+x*scale+4*scale+b]=0;
 if(process.argv[2])fs.writeFileSync(process.argv[2],Buffer.concat([Buffer.from(`P5\n${size} ${size}\n255\n`),pixels]));
 console.log('PASS personal master QR: owner route, roles, canonical identity, hidden/missing profile, scanner round trip, encoder');
+async function mountTests(){
+  let pending,cleanup,revoked=0;
+  const nodes={};for(const key of ['status','link','copy','save','share','name','detail','identity','code'])nodes[key]={hidden:true,handlers:{},textContent:'',replaceChildren(x){this.child=x;}};
+  const root={isConnected:true,querySelector:s=>nodes[s.match(/data-master-qr-([a-z]+)/)[1]]};
+  context.document.querySelector=()=>root;
+  const canvas={setAttribute(){},getContext:()=>({fillRect(){}}),toBlob(fn){pending=fn;}};
+  context.document.createElement=()=>canvas;
+  context.URL={createObjectURL:()=> 'blob:test',revokeObjectURL:()=>revoked++};
+  context.navigator={clipboard:{writeText:async v=>assert.equal(v,url)},share:async()=>{const e=new Error();e.name='AbortError';throw e;}};
+  const life={isActive:()=>true,addCleanup:fn=>cleanup=fn,listen:(n,e,fn)=>n.handlers[e]=fn};
+  window.KaretaApiClient={request:async()=>({ok:true,payload:{data:{profile:{id:'ms_001',name:'<b>Мастер</b>',spec:'Электрика',city:'Усть-Каменогорск'}}}})};
+  scanner.mount({lifecycle:life});await new Promise(r=>setImmediate(r));
+  assert.equal(nodes.name.textContent,'<b>Мастер</b>','name is text, never HTML');
+  assert.equal(nodes.detail.textContent,'Электрика · Усть-Каменогорск');
+  pending({});assert.equal(nodes.save.href,'blob:test');assert.equal(nodes.save.download,'kareta-master-ms_001-qr.png');
+  const status=nodes.status.textContent;await nodes.share.handlers.click();assert.equal(nodes.status.textContent,status,'share cancellation is silent');
+  await nodes.copy.handlers.click();assert.equal(nodes.status.textContent,'Ссылка скопирована.');
+  cleanup();assert.equal(revoked,1);
+  scanner.mount({lifecycle:life});await new Promise(r=>setImmediate(r));cleanup();pending({});assert.equal(revoked,1,'late image callback must not allocate URL');
+  console.log('PASS QR screen: safe identity text, image download, share cancellation, copy, URL cleanup, late callback');
+}
+mountTests().catch(e=>{console.error(e);process.exitCode=1;});

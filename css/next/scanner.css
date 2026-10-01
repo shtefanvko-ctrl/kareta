@@ -10,3 +10,5 @@
 .k-scan-page input[type=file]{display:block;max-width:100%;font:inherit;margin-top:8px}
 
 .k-scan-page [data-master-qr-code] canvas{display:block;width:min(100%,320px);height:auto;image-rendering:pixelated;background:#fff}
+
+.k-master-qr-identity{display:grid;gap:6px;overflow-wrap:anywhere}.k-master-qr-identity h2{margin:0;font-size:1.25rem}.k-master-qr-identity p{color:var(--k-text-muted,#666)}
