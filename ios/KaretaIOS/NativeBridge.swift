@@ -170,7 +170,13 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
             }
             open(url, id: id)
 
-        case "openSettings", "openBluetoothSettings":
+        case "openSettings":
+            guard let url = URL(string: UIApplication.openSettingsURLString) else {
+                return fail(id, "KARETA_NATIVE_BAD_URL", "Unable to open app settings")
+            }
+            open(url, id: id)
+
+        case "openBluetoothSettings":
             guard let url = URL(string: UIApplication.openSettingsURLString) else {
                 return fail(id, "KARETA_NATIVE_BAD_URL", "Unable to open app settings")
             }
