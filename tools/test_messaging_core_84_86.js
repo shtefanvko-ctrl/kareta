@@ -32,7 +32,9 @@ must(worker.includes('kareta_messaging_worker_once')&&worker.includes('--watch')
 must(chats.includes("chatId=String(params.get('chatId')")&&chats.includes('target?.chatId')&&chats.includes('state.chats.some'),'external deep link opens only authorized visible chat');
 must(settings.includes('WhatsApp и Telegram')&&settings.includes('data-messaging-link')&&settings.includes('preferences.save'),'shared client/master channel settings UI');
 must(cabinet.includes('KaretaMessagingSettings?.mount')&&account.includes('KaretaMessagingSettings?.mount'),'messaging settings mounted for master and client');
-must(registry.includes("'js/next/messaging_settings.js','js/next/pages/cabinet.js'")&&registry.includes("'KaretaMessagingSettings','KaretaCabinetPages'"),'messaging UI is cabinet lazy asset');
+const cabinetBundle=registry.slice(registry.indexOf("'cabinet' => ["),registry.indexOf("'chats' => [",registry.indexOf("'cabinet' => [")));
+const messagingAt=cabinetBundle.indexOf("'js/next/messaging_settings.js'"),catalogAt=cabinetBundle.indexOf("'js/next/catalog/json_catalog_loader.js'"),pageAt=cabinetBundle.indexOf("'js/next/pages/cabinet.js'");
+must(cabinetBundle.includes("'lazy' => true")&&messagingAt>=0&&catalogAt>messagingAt&&pageAt>catalogAt&&cabinetBundle.includes("'KaretaMessagingSettings','KaretaCabinetPages'"),'messaging UI and catalog loader are ordered cabinet lazy assets');
 must(css.includes('.k-messaging-settings')&&css.includes('.k-messaging-channel'),'messaging settings responsive styles');
 const protectedHub=read('js/next/smart_action_hub.js');
 must(!protectedHub.includes('KaretaMessagingSettings'),'protected smart action hub untouched by messaging');

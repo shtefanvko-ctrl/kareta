@@ -81,14 +81,21 @@ async function handleNavigation(request) {
 }
 
 async function networkFirst(request, cacheName) {
+  const pathname = new URL(request.url).pathname;
+  const catalog = /^\/assets\/catalog\/.+\.json$/i.test(pathname);
   try {
     const response = await fetch(request, { cache: 'no-store', credentials: 'same-origin' });
-    if (response && response.ok) {
+    if (response && response.ok && (!catalog || validMime(response, pathname))) {
       const cache = await caches.open(cacheName);
       await cache.put(request, response.clone());
     }
     return response;
   } catch (_error) {
+    if (catalog) {
+      const cache = await caches.open(cacheName);
+      const cached = await cache.match(request);
+      return validMime(cached, pathname) ? cached : Response.error();
+    }
     return (await caches.match(request)) || Response.error();
   }
 }
@@ -107,6 +114,7 @@ async function cacheFirstVersioned(request, cacheName) {
 }
 
 function expectedStaticType(pathname) {
+  if (/^\/assets\/catalog\/.+\.json$/i.test(pathname)) return 'json';
   if (/\.css$/i.test(pathname)) return 'text/css';
   if (/\.js$/i.test(pathname)) return 'javascript';
   if (/\.(?:png|jpe?g|webp|svg|gif|ico)$/i.test(pathname)) return 'image/';
@@ -119,6 +127,7 @@ function validMime(response, pathname) {
   const expected = expectedStaticType(pathname);
   if (!expected) return true;
   const actual = (response.headers.get('Content-Type') || '').toLowerCase();
+  if (expected === 'json') return /^application\/(?:[a-z0-9!#$&^_.+-]+\+)?json$/.test(actual.split(';')[0].trim());
   if (expected === 'javascript') return actual.includes('javascript') || actual.includes('ecmascript');
   return actual.includes(expected);
 }

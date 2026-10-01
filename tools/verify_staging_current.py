@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, json, re, sys, time
+import argparse, hashlib, json, re, sys, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -35,6 +35,14 @@ def expected_mime(group):
         return ('javascript','ecmascript')
     return ()
 
+def is_json_mime(value):
+    media_type=str(value or '').split(';')[0].strip().lower()
+    return re.fullmatch(r'application/(?:[a-z0-9!#$&^_.+-]+\+)?json',media_type) is not None
+
+def expected_catalog_paths():
+    registry=(ROOT/'inc/asset_registry.php').read_text(encoding='utf-8')
+    return {'/'+path for path in re.findall(r"['\"](assets/catalog/[A-Za-z0-9_./-]+\.json)['\"]",registry)}
+
 def verify_lazy_asset(base,release,asset):
     group=str(asset.get('group') or '')
     path=str(asset.get('path') or '')
@@ -42,7 +50,7 @@ def verify_lazy_asset(base,release,asset):
     bundle=str(asset.get('bundle') or '')
     label=f'{bundle}:{group}:{path}'
 
-    if group not in ('styles','scripts'):
+    if group not in ('styles','scripts','catalogs'):
         return f'{label}: unexpected group'
     if asset.get('lazy') is not True:
         return f'{label}: route-loader asset is not marked lazy'
@@ -57,7 +65,13 @@ def verify_lazy_asset(base,release,asset):
         return f'{label}: asset version={version or "<missing>"} expected={release}'
 
     target=urljoin(base+'/',asset_url)
-    accept='text/css,*/*;q=0.1' if group=='styles' else 'application/javascript,text/javascript,*/*;q=0.1'
+    if group=='catalogs':
+        if path not in expected_catalog_paths() or '..' in path:
+            return f'{label}: catalog is not in candidate registry'
+        target_parts,base_parts=urlparse(target),urlparse(base)
+        if (target_parts.scheme,target_parts.netloc)!=(base_parts.scheme,base_parts.netloc) or target_parts.path!=path:
+            return f'{label}: catalog URL does not match candidate path/origin'
+    accept={'styles':'text/css,*/*;q=0.1','scripts':'application/javascript,text/javascript,*/*;q=0.1','catalogs':'application/json'}[group]
     try:
         status,headers,body=fetch(target,accept)
     except (HTTPError,URLError,TimeoutError,OSError) as exc:
@@ -67,12 +81,25 @@ def verify_lazy_asset(base,release,asset):
         return f'{label}: HTTP {status}'
 
     content_type=str(headers.get('Content-Type') or '').lower()
-    if not any(token in content_type for token in expected_mime(group)):
+    mime_ok=is_json_mime(content_type) if group=='catalogs' else any(token in content_type for token in expected_mime(group))
+    if not mime_ok:
         return f'{label}: MIME {content_type or "<missing>"}'
 
     prefix=body[:256].lstrip().lower()
     if prefix.startswith(b'<!doctype html') or prefix.startswith(b'<html'):
         return f'{label}: HTML body returned for {group} asset'
+
+    if group=='catalogs':
+        try:
+            payload=json.loads(body.decode('utf-8'))
+            candidate=(ROOT/path.lstrip('/')).read_bytes()
+            expected=json.loads(candidate.decode('utf-8'))
+        except (UnicodeError,json.JSONDecodeError,OSError) as exc:
+            return f'{label}: JSON/candidate read failed: {exc}'
+        if not isinstance(payload,dict) or type(payload.get('schema')) is not int or payload.get('schema')!=expected.get('schema') or payload.get('id')!=expected.get('id'):
+            return f'{label}: catalog schema/id mismatch'
+        if hashlib.sha256(body).digest()!=hashlib.sha256(candidate).digest():
+            return f'{label}: catalog SHA-256 differs from candidate'
 
     return None
 
@@ -81,6 +108,8 @@ def verify_lazy_assets(base,release):
     status,headers,body=fetch(base+'/asset_manifest.php?'+probe,'application/json')
     if status!=200:
         fail(f'route asset manifest HTTP {status}')
+    if not is_json_mime(headers.get('Content-Type')):
+        fail('route asset manifest MIME is not JSON')
 
     manifest=json.loads(body.decode('utf-8'))
     manifest_release=str(manifest.get('release') or manifest.get('assetVersion') or '')
@@ -107,10 +136,18 @@ def verify_lazy_assets(base,release):
     if expected_count and expected_count!=len(assets):
         fail(f'route asset count={len(assets)} manifest metrics={expected_count}')
 
+    catalogs=[row for row in (manifest.get('assets') or []) if row.get('group')=='catalogs']
+    required_catalogs=expected_catalog_paths()
+    delivered_catalogs={str(row.get('path') or '') for row in catalogs}
+    if delivered_catalogs!=required_catalogs or len(catalogs)!=len(required_catalogs):
+        fail(f'route catalog inventory differs from candidate: delivered={sorted(delivered_catalogs)} expected={sorted(required_catalogs)}')
+    if int(metrics.get('lazyCatalogCount') or 0)!=len(catalogs):
+        fail('route catalog count differs from manifest metrics')
+
     errors=[]
-    workers=min(12,max(1,len(assets)))
+    workers=min(12,max(1,len(assets)+len(catalogs)))
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        futures=[pool.submit(verify_lazy_asset,base,release,row) for row in assets]
+        futures=[pool.submit(verify_lazy_asset,base,release,row) for row in assets+catalogs]
         for future in as_completed(futures):
             error=future.result()
             if error:
@@ -124,6 +161,7 @@ def verify_lazy_assets(base,release):
     styles=sum(1 for row in assets if row.get('group')=='styles')
     scripts=sum(1 for row in assets if row.get('group')=='scripts')
     print(f'LAZY_ASSETS: PASS total={len(assets)} styles={styles} scripts={scripts}')
+    print(f'LAZY_CATALOGS: PASS total={len(catalogs)} SHA-256=candidate')
 
 def main():
     ap=argparse.ArgumentParser()

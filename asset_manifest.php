@@ -103,7 +103,7 @@ if ($mode === 'route-loader') {
     foreach ($routeBundles as $bundleName => $bundle) {
         if (!is_array($bundle) || str_starts_with((string)$bundleName, '_') || empty($bundle['lazy'])) continue;
         $publicBundles[(string)$bundleName] = $bundle;
-        foreach (['styles','scripts'] as $group) {
+        foreach (['styles','scripts','catalogs'] as $group) {
             foreach (($bundle[$group] ?? []) as $order => $path) {
                 if (!is_string($path) || $path === '') continue;
                 $key = $group . ':' . $path;
@@ -128,6 +128,7 @@ if ($mode === 'route-loader') {
         'assetMetrics' => [
             'lazyStyleCount' => count(array_filter($entries, static fn(array $entry): bool => $entry['group'] === 'styles')),
             'lazyScriptCount' => count(array_filter($entries, static fn(array $entry): bool => $entry['group'] === 'scripts')),
+            'lazyCatalogCount' => count(array_filter($entries, static fn(array $entry): bool => $entry['group'] === 'catalogs')),
             'routeBundleCount' => count($publicBundles),
             'routeOnly' => true,
         ],
@@ -151,7 +152,7 @@ foreach (['styles', 'scripts', 'images'] as $group) {
 
 foreach ($routeBundles as $bundleName => $bundle) {
     if (!is_array($bundle) || str_starts_with((string)$bundleName, '_') || empty($bundle['lazy'])) continue;
-    foreach (['styles','scripts'] as $group) {
+    foreach (['styles','scripts','catalogs'] as $group) {
         foreach (($bundle[$group] ?? []) as $order => $path) {
             if (!is_string($path) || $path === '' || isset($seen[$group . ':' . $path])) continue;
             $entries[] = $assetEntry($group, (int)$order, $path, true, (string)$bundleName);
@@ -178,6 +179,7 @@ $emit([
         'imageCount' => count($registry['images'] ?? []),
         'lazyStyleCount' => count(array_filter($entries, static fn(array $entry): bool => $entry['group'] === 'styles' && !empty($entry['lazy']))),
         'lazyScriptCount' => count(array_filter($entries, static fn(array $entry): bool => $entry['group'] === 'scripts' && !empty($entry['lazy']))),
+        'lazyCatalogCount' => count(array_filter($entries, static fn(array $entry): bool => $entry['group'] === 'catalogs' && !empty($entry['lazy']))),
         'totalScriptCount' => count(array_filter($entries, static fn(array $entry): bool => $entry['group'] === 'scripts')),
     ],
     'routeBundles' => $routeBundles,

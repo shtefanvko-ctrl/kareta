@@ -39,13 +39,15 @@ async function checkCabinetRender(){
   const node=id=>{if(!hosts.has(id))hosts.set(id,{innerHTML:'',textContent:''});return hosts.get(id);};
   let calls=0;
   const window={
-    KaretaPageUI:{},KaretaFirstVehicleFlow:{},KaretaJsonCatalogLoader:{load:async()=>({schema:1,systems:[],items:[]})},
+    KaretaPageUI:{},KaretaFirstVehicleFlow:{},
     KaretaClientCabinetApi:{get:()=>++calls===1?old.promise:next.promise},
     KaretaNavigationCore:{interfaceRole:()=> 'client'},
     addEventListener:(event,fn)=>listeners.set(event,fn),
   };
   const document={querySelector:selector=>selector==='#k-client-profile-host'||selector==='#k-client-vehicles-host'?node(selector):null,getElementById:node};
-  vm.runInNewContext(read('js/next/pages/cabinet.js'),{window,document,Intl});
+  const context=vm.createContext({window,document,Intl,AbortController,setTimeout,clearTimeout,fetch:()=>{throw new Error('cabinet mount must not fetch catalogs');}});
+  vm.runInContext(read('js/next/catalog/json_catalog_loader.js'),context);
+  vm.runInContext(read('js/next/pages/cabinet.js'),context);
   const oldMount=window.KaretaCabinetPages.mountCabinet();
   listeners.get('kareta:session-anonymous')();
   const newMount=window.KaretaCabinetPages.mountCabinet();
