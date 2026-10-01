@@ -23,6 +23,7 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
     private let contactService = NativeContactService()
     private let scannerService = NativeScannerService()
     private let pushService = PushNotificationService.shared
+    private let elmService = NativeELMService.shared
     private let offlineQueue = OfflineQueueStore.shared
 
     func userContentController(
@@ -379,15 +380,72 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
             )
 
         case "elmStatus":
-            send(id: id, data: [
-                "platform": "ios",
-                "supported": false,
-                "permission": false,
-                "enabled": false,
-                "connected": false,
-                "ready": false,
-                "lastError": "IOS_ELM_TRANSPORT_NOT_CONFIGURED"
-            ])
+            send(id: id, data: elmService.status())
+
+        case "elmDevices":
+            elmService.devices { [weak self] result in
+                self?.complete(id: id, result: result)
+            }
+
+        case "elmConnect":
+            guard let address = payload["address"] as? String,
+                  !address.isEmpty
+            else {
+                return fail(
+                    id,
+                    "KARETA_NATIVE_BAD_PAYLOAD",
+                    "address is required"
+                )
+            }
+            elmService.connect(address: address) { [weak self] result in
+                self?.complete(id: id, result: result)
+            }
+
+        case "elmReconnectLast":
+            elmService.reconnectLast { [weak self] result in
+                self?.complete(id: id, result: result)
+            }
+
+        case "elmDisconnect":
+            send(id: id, data: elmService.disconnect())
+
+        case "elmInit":
+            elmService.initialize { [weak self] result in
+                self?.complete(id: id, result: result)
+            }
+
+        case "elmCommand":
+            guard let elmCommand = payload["command"] as? String,
+                  !elmCommand.isEmpty
+            else {
+                return fail(
+                    id,
+                    "KARETA_NATIVE_BAD_PAYLOAD",
+                    "command is required"
+                )
+            }
+            let timeoutMs =
+                payload["timeoutMs"] as? Int
+                ?? (payload["timeoutMs"] as? NSNumber)?.intValue
+                ?? Int(payload["timeoutMs"] as? String ?? "")
+                ?? 2500
+
+            elmService.command(
+                elmCommand,
+                timeoutMs: timeoutMs
+            ) { [weak self] result in
+                self?.complete(id: id, result: result)
+            }
+
+        case "elmSnapshot":
+            elmService.snapshot { [weak self] result in
+                self?.complete(id: id, result: result)
+            }
+
+        case "elmLiveSnapshot":
+            elmService.liveSnapshot { [weak self] result in
+                self?.complete(id: id, result: result)
+            }
 
         default:
             fail(
@@ -537,12 +595,9 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
             ])
 
         case "bluetooth":
-            send(id: id, data: [
-                "permission": "bluetooth",
-                "granted": false,
-                "supported": false,
-                "status": "transport_not_configured"
-            ])
+            elmService.requestPermission { [weak self] result in
+                self?.send(id: id, data: result)
+            }
 
         default:
             fail(
