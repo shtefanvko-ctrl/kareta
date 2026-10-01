@@ -1,0 +1,99 @@
+name: Application gates
+
+on:
+  pull_request:
+    paths:
+      - 'api/**'
+      - 'inc/**'
+      - 'js/**'
+      - 'css/**'
+      - 'tools/**'
+      - 'asset_manifest.php'
+      - 'index.php'
+      - 'sw.js'
+      - '.htaccess'
+      - '.github/workflows/application-gates.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'api/**'
+      - 'inc/**'
+      - 'js/**'
+      - 'css/**'
+      - 'tools/**'
+      - 'asset_manifest.php'
+      - 'index.php'
+      - 'sw.js'
+      - '.htaccess'
+      - '.github/workflows/application-gates.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: application-gates-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  application-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Runtime versions
+        run: |
+          php --version
+          node --version
+
+      - name: JavaScript syntax
+        run: |
+          find js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
+          node --check tools/test_api_contract_current.js
+
+      - name: Migration manifest integrity
+        run: php tools/test_release_migration_manifest.php
+
+      - name: Authorization guard
+        run: node tools/test_r1885568427_master_workplace_auth_guard.js
+
+      - name: Identity API recovery contract
+        run: node tools/test_r1885607_identity_api_client_garage_recovery.js
+
+      - name: Current API happy and negative paths
+        run: node tools/test_api_contract_current.js
+
+      - name: PWA fallback contract
+        run: node tools/test_r1885568428_manifest_fallback.js
+
+      - name: Browser support contract
+        run: node tools/test_browser_support_matrix_84_109.js
+
+      - name: Asset URL hygiene
+        run: php tools/test_asset_url_hygiene.php
+
+      - name: Provenance contract
+        run: php tools/test_deployment_provenance.php
+
+      - name: Generate exact-candidate provenance artifact
+        env:
+          KARETA_DEPLOY_GIT_SHA: ${{ github.sha }}
+          KARETA_DEPLOY_GIT_REF: ${{ github.ref_name }}
+          KARETA_DEPLOY_WORKFLOW_RUN_ID: ${{ github.run_id }}
+        run: |
+          php tools/generate_deployment_manifest.php --output=/tmp/kareta-deployment-manifest.json >/tmp/kareta-deployment-manifest.out
+          php -r '$d=json_decode(file_get_contents("/tmp/kareta-deployment-manifest.json"),true,32,JSON_THROW_ON_ERROR); if(($d["gitSha"]??"")!==strtolower(getenv("GITHUB_SHA"))) {fwrite(STDERR,"candidate SHA mismatch\n"); exit(1);} echo "PROVENANCE_ARTIFACT: PASS\n";'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deployment-provenance-${{ github.sha }}
+          path: /tmp/kareta-deployment-manifest.json
+          if-no-files-found: error
+          retention-days: 30
