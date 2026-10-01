@@ -1,0 +1,218 @@
+{
+  "schema": 1,
+  "id": "garage-service-maintenance",
+  "systems": [
+    {
+      "id": "engine",
+      "title": "Двигатель",
+      "text": "Смазка, зажигание, впуск и навесное оборудование"
+    },
+    {
+      "id": "timing",
+      "title": "ГРМ и приводы",
+      "text": "Ремень или цепь, ролики, натяжители и помпа"
+    },
+    {
+      "id": "cooling",
+      "title": "Система охлаждения",
+      "text": "Антифриз, термостат, радиатор, патрубки и помпа"
+    },
+    {
+      "id": "transmission",
+      "title": "Трансмиссия",
+      "text": "Масло КПП, сцепление, ШРУСы и приводы"
+    },
+    {
+      "id": "suspension",
+      "title": "Подвеска и ступицы",
+      "text": "Подшипники, амортизаторы, опоры и сайлентблоки"
+    },
+    {
+      "id": "brakes",
+      "title": "Тормозная система",
+      "text": "Колодки, диски, жидкость, шланги и суппорты"
+    },
+    {
+      "id": "steering",
+      "title": "Рулевое управление",
+      "text": "Наконечники, тяги, рейка и рабочая жидкость"
+    },
+    {
+      "id": "electrics",
+      "title": "Электрика",
+      "text": "АКБ, генератор, стартер, лампы и проводка"
+    },
+    {
+      "id": "climate",
+      "title": "Климатическая система",
+      "text": "Фильтр салона, хладагент, компрессор и радиаторы"
+    },
+    {
+      "id": "fuel",
+      "title": "Топливная система",
+      "text": "Фильтр, насос, форсунки и магистрали"
+    }
+  ],
+  "items": [
+    {
+      "id": "engine_oil",
+      "system": "engine",
+      "title": "Моторное масло",
+      "km": 10000,
+      "months": 12,
+      "mode": "interval"
+    },
+    {
+      "id": "oil_filter",
+      "system": "engine",
+      "title": "Масляный фильтр",
+      "km": 10000,
+      "months": 12,
+      "mode": "interval"
+    },
+    {
+      "id": "air_filter",
+      "system": "engine",
+      "title": "Воздушный фильтр",
+      "km": 15000,
+      "months": 12,
+      "mode": "interval"
+    },
+    {
+      "id": "spark_plugs",
+      "system": "engine",
+      "title": "Свечи зажигания",
+      "km": 30000,
+      "months": 24,
+      "mode": "interval"
+    },
+    {
+      "id": "timing_belt",
+      "system": "timing",
+      "title": "Ремень ГРМ",
+      "km": 60000,
+      "months": 48,
+      "mode": "interval"
+    },
+    {
+      "id": "timing_rollers",
+      "system": "timing",
+      "title": "Ролики ГРМ",
+      "km": 60000,
+      "months": 48,
+      "mode": "interval"
+    },
+    {
+      "id": "water_pump",
+      "system": "timing",
+      "title": "Помпа",
+      "km": 60000,
+      "months": 48,
+      "mode": "interval"
+    },
+    {
+      "id": "drive_belt",
+      "system": "timing",
+      "title": "Приводной ремень",
+      "km": 50000,
+      "months": 36,
+      "mode": "interval"
+    },
+    {
+      "id": "coolant",
+      "system": "cooling",
+      "title": "Охлаждающая жидкость",
+      "km": 60000,
+      "months": 36,
+      "mode": "interval"
+    },
+    {
+      "id": "thermostat",
+      "system": "cooling",
+      "title": "Термостат",
+      "km": 0,
+      "months": 0,
+      "mode": "condition"
+    },
+    {
+      "id": "gear_oil",
+      "system": "transmission",
+      "title": "Масло КПП / АКПП",
+      "km": 60000,
+      "months": 48,
+      "mode": "interval"
+    },
+    {
+      "id": "clutch",
+      "system": "transmission",
+      "title": "Комплект сцепления",
+      "km": 0,
+      "months": 0,
+      "mode": "condition"
+    },
+    {
+      "id": "wheel_bearing",
+      "system": "suspension",
+      "title": "Ступичные подшипники",
+      "km": 0,
+      "months": 0,
+      "mode": "condition"
+    },
+    {
+      "id": "shock_absorber",
+      "system": "suspension",
+      "title": "Амортизаторы",
+      "km": 0,
+      "months": 0,
+      "mode": "condition"
+    },
+    {
+      "id": "brake_pads",
+      "system": "brakes",
+      "title": "Тормозные колодки",
+      "km": 0,
+      "months": 0,
+      "mode": "condition"
+    },
+    {
+      "id": "brake_fluid",
+      "system": "brakes",
+      "title": "Тормозная жидкость",
+      "km": 40000,
+      "months": 24,
+      "mode": "interval"
+    },
+    {
+      "id": "tie_rod",
+      "system": "steering",
+      "title": "Рулевые наконечники и тяги",
+      "km": 0,
+      "months": 0,
+      "mode": "condition"
+    },
+    {
+      "id": "battery",
+      "system": "electrics",
+      "title": "Аккумулятор",
+      "km": 0,
+      "months": 48,
+      "mode": "condition"
+    },
+    {
+      "id": "cabin_filter",
+      "system": "climate",
+      "title": "Салонный фильтр",
+      "km": 15000,
+      "months": 12,
+      "mode": "interval"
+    },
+    {
+      "id": "fuel_filter",
+      "system": "fuel",
+      "title": "Топливный фильтр",
+      "km": 30000,
+      "months": 24,
+      "mode": "interval"
+    }
+  ]
+}
