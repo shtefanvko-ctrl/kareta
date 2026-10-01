@@ -38,6 +38,7 @@ function kareta_deploy_check(): void
         kareta_file_exists_status('release_status', $root . '/api/release_status.php'),
         kareta_file_exists_status('version_check', $root . '/api/version_check.php'),
         kareta_file_exists_status('post_deploy_check', $root . '/api/post_deploy_check.php'),
+        kareta_file_exists_status('provenance', $root . '/api/provenance.php'),
         kareta_file_exists_status('accessibility_check', $root . '/api/accessibility_check.php'),
         kareta_file_exists_status('storage_htaccess', $root . '/storage/.htaccess'),
         kareta_file_exists_status('backup_project', $root . '/tools/backup_project.php'),
