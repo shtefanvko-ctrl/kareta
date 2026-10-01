@@ -11,8 +11,10 @@ const obd=read('api/obd.php');
 const runner=read('js/next/obd_remote_jobs.js');
 const index=read('index.php');
 
-expect(config.includes("define('KARETA_DB_VERSION', 136);"),'DB version is not 136');
-expect(manifest.includes("'version' => 136"),'migration manifest target is not 136');
+const configVersion=Number((config.match(/define\('KARETA_DB_VERSION',\s*(\d+)\)/)||[])[1]||0);
+const manifestVersion=Number((manifest.match(/'version'\s*=>\s*(\d+)/)||[])[1]||0);
+expect(configVersion>=136,'DB version regressed below OBD migration 136');
+expect(manifestVersion>=136,'migration manifest target regressed below OBD migration 136');
 expect(manifest.includes("136_obd_remote_control_plane.php"),'migration 136 missing from manifest');
 expect(migration.includes('CREATE TABLE IF NOT EXISTS obd_mobile_devices'),'device table missing');
 expect(migration.includes('CREATE TABLE IF NOT EXISTS obd_diagnostic_jobs'),'job table missing');

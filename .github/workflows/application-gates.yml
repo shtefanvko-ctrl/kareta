@@ -80,6 +80,12 @@ jobs:
       - name: OBD remote control plane contract
         run: node tools/test_obd_remote_control_plane.js
 
+      - name: Geo platform core contract
+        run: |
+          php -l api/geo.php
+          php -l api/migrations/137_geo_platform_core.php
+          node tools/test_geo_platform_core.js
+
       - name: PWA fallback contract
         run: node tools/test_r1885568428_manifest_fallback.js
 

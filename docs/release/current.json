@@ -14,8 +14,8 @@
     "note": "84.152 is based on a two-parent reconciliation merge. Staging/deployed status is intentionally unverified until the exact candidate is deployed and verified."
   },
   "database": {
-    "canonicalVersion": 136,
-    "manifestVersion": 136,
+    "canonicalVersion": 137,
+    "manifestVersion": 137,
     "collisionBridgeVersions": [
       130,
       131,
@@ -26,10 +26,12 @@
     "schemaWorkResumesAt": 135,
     "obdSchemaMigration": "api/migrations/135_obd_elm327_diagnostics.php",
     "historicalPendingDirectory": "api/migrations_pending/historical",
-    "nextCanonicalVersion": 137,
+    "nextCanonicalVersion": 138,
     "note": "Versions 130-134 are side-effect-free compatibility slots because historical branches reused those version numbers with incompatible checksums.",
     "remoteControlMigration": "api/migrations/136_obd_remote_control_plane.php",
-    "remoteDelivery": "active_app_poll"
+    "remoteDelivery": "active_app_poll",
+    "geoPlatformMigration": "api/migrations/137_geo_platform_core.php",
+    "geoPlatform": "unified owner-scoped points; public nearby exact-only"
   },
   "verification": {
     "ciWorkflow": ".github/workflows/verify.yml",
