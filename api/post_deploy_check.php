@@ -89,6 +89,7 @@ function kareta_post_deploy_check(): void
         kareta_post_deploy_file('api/release_status.php'),
         kareta_post_deploy_file('api/version_check.php'),
         kareta_post_deploy_file('api/post_deploy_check.php'),
+        kareta_post_deploy_file('api/provenance.php'),
         kareta_post_deploy_file('api/static_quality_check.php'),
         kareta_post_deploy_file('api/css_quality_check.php'),
         kareta_post_deploy_file('api/accessibility_check.php'),

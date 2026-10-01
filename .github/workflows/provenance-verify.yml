@@ -1,0 +1,35 @@
+name: Provenance verify
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Deployed runtime base URL
+        required: true
+        default: https://s.kareta.kz
+      expected_sha:
+        description: Exact 40-character Git SHA expected on the target
+        required: true
+      expected_asset_version:
+        description: Optional exact KARETA asset version
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  provenance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compare expected SHA with runtime provenance
+        run: >-
+          python3 tools/verify_runtime_provenance.py
+          --base-url "${{ inputs.base_url }}"
+          --expected-sha "${{ inputs.expected_sha }}"
+          --expected-asset-version "${{ inputs.expected_asset_version }}"

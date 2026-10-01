@@ -1,0 +1,53 @@
+name: PHP syntax
+
+on:
+  pull_request:
+    paths:
+      - '**/*.php'
+      - '.github/workflows/php-syntax.yml'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.php'
+      - '.github/workflows/php-syntax.yml'
+
+jobs:
+  php-81-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP 8.1 compatibility floor
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+
+      - name: Lint repository-owned PHP
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -d '' files < <(
+            find . -type f -name '*.php' \
+              -not -path './storage/*' \
+              -not -path './vendor/*' \
+              -not -path './_patch_docs/*' \
+              -print0
+          )
+
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo 'No PHP files found in lint scope.'
+            exit 1
+          fi
+
+          echo "Linting ${#files[@]} PHP files with PHP $(php -r 'echo PHP_VERSION;')"
+          failed=0
+          for file in "${files[@]}"; do
+            if ! php -l "$file" >/tmp/php-lint.out 2>&1; then
+              cat /tmp/php-lint.out
+              failed=1
+            fi
+          done
+
+          test "$failed" -eq 0
+          echo 'PHP syntax gate PASS.'

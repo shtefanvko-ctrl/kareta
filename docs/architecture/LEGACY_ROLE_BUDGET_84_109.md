@@ -1,3 +1,5 @@
+> Historical 84.109 measurement. Current branch budget is `docs/architecture/LEGACY_ROLE_BUDGET_CURRENT.json`; current 84.146 inventory is 108 total / 96 in `api/db.php`.
+
 # KARETA.KZ — Legacy Role Authorization Budget 84.109
 
 Baseline: `R188.5.5.6.84.109`

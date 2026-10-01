@@ -23,6 +23,7 @@
     revision:0,
   };
   let loadFlight = null;
+  let logoutFlight = null;
 
   const clone = value => typeof structuredClone === 'function'
     ? structuredClone(value)
@@ -142,6 +143,37 @@
     return snapshot();
   }
 
+  function logout() {
+    if (logoutFlight) return logoutFlight;
+    logoutFlight = (async () => {
+      // The resolver revokes both the Identity cookie and the legacy PHP session.
+      // Keep the local session intact if the server could not confirm logout.
+      await request('/api/identity_session.php?action=logout', { method:'POST', body:JSON.stringify({ action:'logout' }) });
+      if (loadFlight) await loadFlight.catch(() => {});
+      reset('logout');
+      window.KaretaApiClient?.invalidate?.();
+      const next = window.KaretaNext?.state;
+      if (next) Object.assign(next, { user:null, session:null, identity:null, identityReady:false, context:null, capabilities:[] });
+      document.documentElement.dataset.identityMode = 'anonymous';
+      delete document.documentElement.dataset.userRole;
+      window.KaretaRoleAccess?.clearLegacyOverride?.();
+      window._karetaCookieRole = '';
+      window._karetaCookieOnbDone = false;
+      if (window.App?.logout) {
+        await window.App.logout();
+      } else {
+        for (const key of ['kareta.auth.user','kareta.profile.current','kareta.auth.phone','kareta_role','kareta_onboarding_completed_at']) {
+          try { localStorage.removeItem(key); sessionStorage.removeItem(key); } catch (_error) {}
+        }
+        window.KaretaOnboardingState?.reset?.();
+        window.KaretaOnboardingLifecycle?.resume?.({ source:'logout' });
+      }
+      emit('kareta:session-anonymous', { source:'logout', reason:'user_logout' });
+      return snapshot();
+    })().finally(() => { logoutFlight = null; });
+    return logoutFlight;
+  }
+
   function bootstrapSession(payload, source = 'session-bootstrap') {
     if (!payload || payload.authenticated !== true || !payload.account || !payload.currentContext) {
       const error = new Error('identity_bootstrap_invalid');
@@ -237,5 +269,5 @@
     });
   }
 
-  window.KaretaIdentity = Object.freeze({ load, select, reset, bootstrapSession, has, hasAny, hasAll, compatibilityRole, snapshot });
+  window.KaretaIdentity = Object.freeze({ load, select, reset, logout, bootstrapSession, has, hasAny, hasAll, compatibilityRole, snapshot });
 })();

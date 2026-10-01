@@ -1,0 +1,77 @@
+{
+  "schema": "kareta.release.current.v1",
+  "release": "188.5.5.6.84.152",
+  "sourceBranch": "release/reconcile-84.152",
+  "targetBranch": "main",
+  "branchState": {
+    "status": "reconciled_candidate",
+    "behindBy": 0,
+    "mainAncestor": true,
+    "reconciliationMergeCommit": "a7df986cee0d1e05895bbb93290dbc03111b9dac",
+    "mainHeadAtReconciliation": "d2873bbde16ec985ad14e8ff892df5ccbd7cf3b4",
+    "candidate84_151": "6685ad9e02531dfa653aacd1f1eaf1c7c5a4cecc",
+    "mergeBase": "5d333d5e67857d91a44a653e725fb2924eef2004",
+    "note": "84.152 is based on a two-parent reconciliation merge. Staging/deployed status is intentionally unverified until the exact candidate is deployed and verified."
+  },
+  "database": {
+    "canonicalVersion": 135,
+    "manifestVersion": 135,
+    "collisionBridgeVersions": [
+      130,
+      131,
+      132,
+      133,
+      134
+    ],
+    "schemaWorkResumesAt": 135,
+    "obdSchemaMigration": "api/migrations/135_obd_elm327_diagnostics.php",
+    "historicalPendingDirectory": "api/migrations_pending/historical",
+    "nextCanonicalVersion": 136,
+    "note": "Versions 130-134 are side-effect-free compatibility slots because historical branches reused those version numbers with incompatible checksums."
+  },
+  "verification": {
+    "ciWorkflow": ".github/workflows/verify.yml",
+    "stagingWorkflow": ".github/workflows/staging-verify.yml",
+    "stagingStatus": "NOT_VERIFIED_AFTER_84_152"
+  },
+  "ui": {
+    "notFound": "first_class_spa_route",
+    "desktopFrameMaxPx": 1280,
+    "masterShell": "css/next/master_shell_canonical_84_143.css",
+    "masterVisualContract": "84.150",
+    "masterContentFramePx": 1280,
+    "masterMobileMoreState": "single visual active state",
+    "masterMobileFab": "horizontal 2x44 rail above dock; hidden under overlays",
+    "routeLoadError": "sanitized fail-soft surface; raw details stay in runtime log",
+    "mastersFilterRail": "narrow-WebView full-bleed scroll-safe"
+  },
+  "authorization": {
+    "legacyDirectRoleGates": 108,
+    "dbPhpDirectRoleGates": 96,
+    "filesWithDirectRoleGates": 8,
+    "budget": "docs/architecture/LEGACY_ROLE_BUDGET_CURRENT.json"
+  },
+  "cache": {
+    "staticAssets": "service-worker cache-first inside release-scoped cache namespace",
+    "updateStrategy": "new release token creates a new cache namespace; HTML/version probes remain network-authoritative",
+    "missingStatic": "must return HTTP 404 and never SPA HTML",
+    "content": {
+      "strategy": "stale-while-revalidate",
+      "persistentScope": "release-scoped sessionStorage for Services and Masters; Community remains server-authoritative memory cache",
+      "routeRevisit": "show cached content first; do not replace usable content with skeletons",
+      "refresh": "TTL, connectivity recovery, WebView/app resume, and relevant realtime events",
+      "domUpdate": "repaint only when the content signature changes"
+    }
+  },
+  "androidNative": {
+    "apiVersion": 6,
+    "reconciledCommit": "d0660fa1f9c562e826c5f8e81707f837368075cf",
+    "preserved": [
+      "structured bridge errors",
+      "offlineAcknowledge",
+      "ECU-ready state",
+      "migration-owned OBD schema"
+    ],
+    "obdSchemaVersion": 135
+  }
+}

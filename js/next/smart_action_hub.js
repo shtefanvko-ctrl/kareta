@@ -86,9 +86,17 @@
   function ensure(){
     if(state.root&&document.body.contains(state.root))return state.root;
     const root=document.createElement('div');root.id='k-smart-action-hub';root.className='k-smart-action-hub k-more-window-host';root.hidden=true;root.dataset.contract=MORE_WINDOW_CONTRACT;
-    root.innerHTML=`<section class="k-more-window" role="region" aria-label="Ещё"><main class="k-more-window-main"><button type="button" class="k-more-window-profile" data-smart-action-route="cabinet"><span class="k-more-window-avatar" data-more-avatar></span><span class="k-more-window-profile__body"><span class="k-more-window-profile__context" data-more-context></span><strong data-more-profile-title></strong><span class="k-more-window-profile__meta"><span>${iconSvg('phone')}<i data-more-profile-phone>Телефон не указан</i></span><span>${iconSvg('location')}<i data-more-profile-city>Город не указан</i></span></span><span class="k-more-window-profile__stats"><span><b data-more-profile-vehicles>0</b><small>авто</small></span><span><b data-more-profile-promos>0</b><small>акции</small></span><span><b data-more-profile-chats>0</b><small>чаты</small></span></span></span><span class="k-more-window-profile__chevron">${iconSvg('chevronRight')}</span></button><div class="k-more-window-summary"><button type="button" class="k-more-window-summary-card" data-smart-action-route="cabinetGarage"><span class="k-more-window-summary-card__icon">${iconSvg('car')}</span><span><b>Гараж</b><small>Мои автомобили</small></span><strong data-more-garage-count>0</strong></button><button type="button" class="k-more-window-summary-card" data-smart-action-route="cabinetPromos"><span class="k-more-window-summary-card__icon">${iconSvg('discount')}</span><span><b>Акции</b><small>Выгодные предложения</small></span><strong data-more-promo-count>0</strong></button></div><section class="k-more-window-quick"><h2>Быстрый доступ</h2><div class="k-more-window-hub" data-more-actions></div></section><aside class="k-more-window-support"><span class="k-more-window-support__icon">${iconSvg('help')}</span><span><strong>Поддержка KARETA.KZ</strong><small>Мы поможем решить любой вопрос</small></span><button type="button" data-smart-action-route="help">Написать</button></aside><div class="k-more-window-status" data-more-status role="alert" hidden><span data-more-status-text></span><button type="button" data-more-retry>Повторить</button></div></main></section>`;
+    root.innerHTML=`<section class="k-more-window" role="region" aria-label="Ещё"><main class="k-more-window-main"><button type="button" class="k-more-window-profile" data-smart-action-route="cabinet"><span class="k-more-window-avatar" data-more-avatar></span><span class="k-more-window-profile__body"><span class="k-more-window-profile__context" data-more-context></span><strong data-more-profile-title></strong><span class="k-more-window-profile__meta"><span>${iconSvg('phone')}<i data-more-profile-phone>Телефон не указан</i></span><span>${iconSvg('location')}<i data-more-profile-city>Город не указан</i></span></span><span class="k-more-window-profile__stats"><span><b data-more-profile-vehicles>0</b><small>авто</small></span><span><b data-more-profile-promos>0</b><small>акции</small></span><span><b data-more-profile-chats>0</b><small>чаты</small></span></span></span><span class="k-more-window-profile__chevron">${iconSvg('chevronRight')}</span></button><div class="k-more-window-summary"><button type="button" class="k-more-window-summary-card" data-smart-action-route="cabinetGarage"><span class="k-more-window-summary-card__icon">${iconSvg('car')}</span><span><b>Гараж</b><small>Мои автомобили</small></span><strong data-more-garage-count>0</strong></button><button type="button" class="k-more-window-summary-card" data-smart-action-route="cabinetPromos"><span class="k-more-window-summary-card__icon">${iconSvg('discount')}</span><span><b>Акции</b><small>Выгодные предложения</small></span><strong data-more-promo-count>0</strong></button></div><section class="k-more-window-quick"><h2>Быстрый доступ</h2><div class="k-more-window-hub" data-more-actions></div></section><aside class="k-more-window-support"><span class="k-more-window-support__icon">${iconSvg('help')}</span><span><strong>Поддержка KARETA.KZ</strong><small>Мы поможем решить любой вопрос</small></span><button type="button" data-smart-action-route="help">Написать</button></aside><button type="button" class="k-more-window-logout" data-more-logout hidden>Выйти из аккаунта</button><div class="k-more-window-status" data-more-status role="alert" hidden><span data-more-status-text></span><button type="button" data-more-retry>Повторить</button></div></main></section>`;
     document.body.appendChild(root);
-    root.addEventListener('click',event=>{
+    root.addEventListener('click',async event=>{
+      const logout=event.target.closest('[data-more-logout]');
+      if(logout){
+        logout.disabled=true;
+        try{await window.KaretaIdentity.logout();close();}
+        catch(_error){state.error='Не удалось выйти из аккаунта. Проверьте соединение и повторите.';render();}
+        finally{logout.disabled=false;}
+        return;
+      }
       const retry=event.target.closest('[data-more-retry]');if(retry){state.error='';render();return;}
       const route=event.target.closest('[data-smart-action-route]');if(route&&!route.disabled){const key=route.dataset.smartActionRoute;close();navigate(key);return;}
     });
@@ -118,6 +126,7 @@
     const promoCount=root.querySelector('[data-more-promo-count]');if(promoCount)promoCount.textContent=String(promotionCount);
     const box=root.querySelector('[data-more-actions]');if(box)box.innerHTML=items.map(actionMarkup).join('')+`<span class="k-more-window-core" aria-hidden="true">${iconSvg('car')}</span>`;
     const support=root.querySelector('.k-more-window-support');if(support)support.hidden=kind()==='master';
+    const logout=root.querySelector('[data-more-logout]');if(logout)logout.hidden=!Boolean(snap.authenticated||user.phone);
     const quickTitle=root.querySelector('.k-more-window-quick h2');if(quickTitle)quickTitle.textContent=kind()==='master'?'Инструменты':'Быстрый доступ';
     const status=root.querySelector('[data-more-status]');if(status){const text=status.querySelector('[data-more-status-text]');status.hidden=!state.error;if(text)text.textContent=state.error||'';}
   }
@@ -135,6 +144,7 @@
   window.addEventListener('kareta:routechange',()=>{if(state.open)close();});
   window.addEventListener('kareta:context-changed',()=>{if(state.open)render();});
   window.addEventListener('kareta:identity-ready',()=>{if(state.open)render();});
+  window.addEventListener('kareta:session-anonymous',()=>{state.unreadChats=0;state.unreadNotifications=0;state.error='';if(state.open)close();});
   window.addEventListener('kareta:chat-unread',e=>setUnread('chat',e.detail?.count));
   window.addEventListener('kareta:notification-unread',e=>setUnread('notifications',e.detail?.count));
   window.KaretaSmartActionHub=Object.freeze({open,close,toggle,setLayout,savePreference,loadPreference,switchAccountContext,snapshot:()=>({...state,root:undefined})});

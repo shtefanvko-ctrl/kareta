@@ -4,7 +4,7 @@ declare(strict_types=1);
 // Generated release manifest. Only files listed here participate in runtime migration discovery.
 // Extra PHP files left in api/migrations by an overwrite deployment are treated as stale artifacts.
 return [
-    'version' => 129,
+    'version' => 135,
     'files' => [
         1 => ['file' => '001_initial_schema.php', 'checksum' => '15c3088fe6ce7aa6793007ef0efd96757c1880c1c9ddf35349f31c735b293b14'],
         2 => ['file' => '002_schema_columns_indexes.php', 'checksum' => '6a0444c00d5bb652e8ee25e5689064a96919f4a9df816d358e61532209f66a85'],
@@ -135,5 +135,11 @@ return [
         127 => ['file' => '127_sto_schedule_capacity_command_center.php', 'checksum' => '0d3825cb75f8fb8095e1a4658c975d6a3b3799196de20d1e60e2619db53c9f33'],
         128 => ['file' => '128_master_first_entry_onboarding.php', 'checksum' => '7dfdb2e67af93b4fb35e69891fa37a5acaaf377bb92cfd4c5d0f91d96d661461'],
         129 => ['file' => '129_client_first_entry_state.php', 'checksum' => 'abdb7189e231efd2b67c0912b4fabe7fea1c8daa7cb5acd5ac6ea096fcb7c292'],
+        130 => ['file' => '130_historical_collision_bridge.php', 'checksum' => '7a4ca8021b0bb47af1ed1b4c44de1eae0398097cd834651f18401c1f79f00359'],
+        131 => ['file' => '131_historical_collision_bridge.php', 'checksum' => '0e190280ad30c3fb69f3335a29aa4f263844b9523156859233c6ef4659b01c5c'],
+        132 => ['file' => '132_historical_collision_bridge.php', 'checksum' => 'ada40947a7f96a12e991864dd08304ed727f02498be4f24632829cf77a4c5d37'],
+        133 => ['file' => '133_historical_collision_bridge.php', 'checksum' => '0fc72a401e3ba54eee1c1fca9cdedda27d8573cf677d69288a8b6b245e9329bb'],
+        134 => ['file' => '134_historical_collision_bridge.php', 'checksum' => '574c5b412180b92145d3dc66c5e2438c8e22ad5baaaa45867401e3e3747a3cbe'],
+        135 => ['file' => '135_obd_elm327_diagnostics.php', 'checksum' => '1d8d0f223ee71082011d8efba3df0c16df2db3da9a39103ada1e405748b33d96'],
     ],
 ];
