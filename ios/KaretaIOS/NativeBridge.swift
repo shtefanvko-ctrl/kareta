@@ -773,8 +773,15 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
                 "application/json",
                 forHTTPHeaderField: "Accept"
             )
+            var logoutBody: [String: Any] = [
+                "action": "logout"
+            ]
+            let pushSnapshot = self.pushService.snapshot()
+            if let token = pushSnapshot["token"] as? String, !token.isEmpty {
+                logoutBody["pushToken"] = token
+            }
             request.httpBody = try? JSONSerialization.data(
-                withJSONObject: ["action": "logout"]
+                withJSONObject: logoutBody
             )
 
             let relevantCookies = cookies.filter {
@@ -820,6 +827,8 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
                         "Server logout returned HTTP \(status)"
                     )
                 }
+
+                _ = self.pushService.unregister()
 
                 let group = DispatchGroup()
                 for cookie in relevantCookies {
