@@ -59,6 +59,7 @@
     about:Object.freeze({ path:'#/about', label:'О платформе', icon:'ⓘ', description:'Возможности KARETA.KZ для каждой роли' }),
     rules:Object.freeze({ path:'#/rules', label:'Правила', icon:'✓', description:'Правила работы и ответственность участников' }),
     help:Object.freeze({ path:'#/help', label:'Помощь', icon:'?', description:'Ответы по услугам, товарам и заказам' }),
+    notFound:Object.freeze({ path:'#/404', label:'Страница не найдена', icon:'?', description:'Запрошенный адрес не существует', nav:false }),
     assistant:Object.freeze({ path:'#/assistant', label:'AI-консультант', icon:'✦', description:'Предварительная помощь по неисправности', nav:false }),
     diagnostics:Object.freeze({ path:'#/diagnostics', label:'Диагностика', icon:'⌁', description:'ELM327, OBD-II и офлайн-диагностика' }),
     privacy:Object.freeze({ path:'#/privacy', label:'Конфиденциальность', icon:'🔐', description:'Использование и защита данных' }),
@@ -79,7 +80,7 @@
     workDetail:'entity-window', serviceManagement:'workspace', masters:'workspace', masterOnboarding:'workspace', masterDashboard:'workspace', masterSchedule:'workspace', masterProfileOwner:'workspace', masterWallOwner:'workspace', masterWorks:'workspace', masterReviews:'workspace', masterExchange:'workspace', community:'workspace', stoDashboard:'workspace',
     parts:'workspace', usedParts:'workspace', seller:'workspace', sellerProducts:'workspace', sellerOrders:'workspace', orders:'workspace', workflow:'workspace', requestNew:'work-dialog', workOrder:'entity-window', vehicle:'entity-window', chats:'workspace', notifications:'deep-link-fallback',
     cabinet:'workspace', cabinetGarage:'workspace', cabinetData:'deep-link-fallback', cabinetHistory:'workspace', cabinetDocuments:'deep-link-fallback', cabinetPromos:'workspace', cabinetTariff:'deep-link-fallback', cabinetSettings:'deep-link-fallback',
-    about:'workspace', rules:'workspace', help:'workspace', assistant:'workspace', diagnostics:'workspace', privacy:'workspace', contacts:'workspace', lawyer:'workspace', towTruck:'workspace',
+    about:'workspace', rules:'workspace', help:'workspace', notFound:'deep-link-fallback', assistant:'workspace', diagnostics:'workspace', privacy:'workspace', contacts:'workspace', lawyer:'workspace', towTruck:'workspace',
     productDetail:'entity-window', serviceDetail:'entity-window', providerDetail:'entity-window', providerBooking:'entity-window', providerReviews:'entity-window'
   });
   const UX_SURFACE_TYPES = Object.freeze(['workspace','entity-window','work-dialog','deep-link-fallback']);
@@ -156,7 +157,7 @@
     if (hash === '#/cabinet/tariff') return 'cabinetTariff';
     if (hash === '#/cabinet/settings') return 'cabinetSettings';
     const found = Object.entries(ROUTES).find(([, route]) => route.path === hash);
-    return found ? found[0] : '';
+    return found ? found[0] : 'notFound';
   }
   function get(routeKey){ return ROUTES[routeKey] || ROUTES.home; }
   function has(routeKey){ return Object.prototype.hasOwnProperty.call(ROUTES, routeKey); }

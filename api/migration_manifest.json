@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "targetDbVersion": 129,
+  "targetDbVersion": 135,
   "migrations": [
     {
       "version": 1,
@@ -646,6 +646,36 @@
       "version": 129,
       "file": "129_client_first_entry_state.php",
       "sha256": "abdb7189e231efd2b67c0912b4fabe7fea1c8daa7cb5acd5ac6ea096fcb7c292"
+    },
+    {
+      "version": 130,
+      "file": "130_historical_collision_bridge.php",
+      "sha256": "7a4ca8021b0bb47af1ed1b4c44de1eae0398097cd834651f18401c1f79f00359"
+    },
+    {
+      "version": 131,
+      "file": "131_historical_collision_bridge.php",
+      "sha256": "0e190280ad30c3fb69f3335a29aa4f263844b9523156859233c6ef4659b01c5c"
+    },
+    {
+      "version": 132,
+      "file": "132_historical_collision_bridge.php",
+      "sha256": "ada40947a7f96a12e991864dd08304ed727f02498be4f24632829cf77a4c5d37"
+    },
+    {
+      "version": 133,
+      "file": "133_historical_collision_bridge.php",
+      "sha256": "0fc72a401e3ba54eee1c1fca9cdedda27d8573cf677d69288a8b6b245e9329bb"
+    },
+    {
+      "version": 134,
+      "file": "134_historical_collision_bridge.php",
+      "sha256": "574c5b412180b92145d3dc66c5e2438c8e22ad5baaaa45867401e3e3747a3cbe"
+    },
+    {
+      "version": 135,
+      "file": "135_obd_elm327_diagnostics.php",
+      "sha256": "1d8d0f223ee71082011d8efba3df0c16df2db3da9a39103ada1e405748b33d96"
     }
   ]
 }

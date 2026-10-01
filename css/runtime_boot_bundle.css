@@ -10271,6 +10271,9 @@ button .k-ui-icon,a .k-ui-icon{pointer-events:none}.k-icon-button{min-width:var(
 
 @media(min-width:861px){.k-smart-action-hub{bottom:0}}
 
+.k-more-window-logout{display:block;width:100%;min-height:44px;margin-top:12px;padding:10px 14px;border:1px solid var(--kmw-border);border-radius:12px;background:#fff;color:#a82e18;text-align:center;font-size:14px;font-weight:700;cursor:pointer}
+.k-more-window-logout[hidden]{display:none!important}.k-more-window-logout:disabled{opacity:.55;cursor:wait}
+
 
 /* ===== SOURCE: css/next/workspace_admin.css ===== */
 .k-page.k-sto-workplace-page{max-width:none;width:100%;padding-inline:clamp(12px,2vw,32px)}
