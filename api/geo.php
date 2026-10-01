@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/inc/request_logger.php';
 require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/identity/auth_resolver.php';
+require_once __DIR__ . '/geo_core.php';
 
 $pdo = kareta_pdo();
 if (!$pdo instanceof PDO) kareta_json(['ok'=>false,'error'=>'database_unavailable'],503);
@@ -192,21 +193,15 @@ if ($method==='POST' && $action==='upsert') {
     if ($address==='' && $lat===null && $city==='') kareta_json(['ok'=>false,'error'=>'geo_location_required'],422);
 
     kareta_idempotency_begin($pdo,'geo.upsert',$body);
-    $id=geo_id($ownerType,$ownerId,$kind);
-    $q=$pdo->prepare("INSERT INTO geo_points
-        (id,owner_type,owner_id,kind,label,country_code,city,address,latitude,longitude,source,visibility,metadata_json,verified_at,active)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,NULL,?)
-        ON DUPLICATE KEY UPDATE
-          label=VALUES(label),country_code=VALUES(country_code),city=VALUES(city),address=VALUES(address),
-          latitude=VALUES(latitude),longitude=VALUES(longitude),source=VALUES(source),visibility=VALUES(visibility),
-          metadata_json=VALUES(metadata_json),active=VALUES(active),updated_at=CURRENT_TIMESTAMP");
-    $metadata=is_array($body['metadata']??null)?json_encode($body['metadata'],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES):null;
-    $q->execute([$id,$ownerType,$ownerId,$kind,$label,$countryCode,$city,$address,$lat,$lng,$source,$visibility,$metadata,$active?1:0]);
-    kareta_json(['ok'=>true,'point'=>[
-        'id'=>$id,'ownerType'=>$ownerType,'ownerId'=>$ownerId,'kind'=>$kind,'label'=>$label,
-        'countryCode'=>$countryCode,'city'=>$city,'address'=>$address,'latitude'=>$lat,'longitude'=>$lng,
-        'source'=>$source,'visibility'=>$visibility,'active'=>$active
-    ]]);
+    try{
+        $point=kareta_geo_upsert_point($pdo,[
+            'ownerType'=>$ownerType,'ownerId'=>$ownerId,'kind'=>$kind,'label'=>$label,'countryCode'=>$countryCode,
+            'city'=>$city,'address'=>$address,'latitude'=>$lat,'longitude'=>$lng,'source'=>$source,
+            'visibility'=>$visibility,'active'=>$active,'publishExact'=>!empty($body['publishExact']),
+            'metadata'=>is_array($body['metadata']??null)?$body['metadata']:[]
+        ]);
+    }catch(InvalidArgumentException $e){kareta_json(['ok'=>false,'error'=>$e->getMessage()],422);}
+    kareta_json(['ok'=>true,'point'=>$point]);
 }
 
 kareta_json(['ok'=>false,'error'=>'not_found'],404);
