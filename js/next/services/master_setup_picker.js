@@ -14,6 +14,7 @@
     function progressKey(){return scopeKey?'kareta.master.setup:'+scopeKey:'';}
     function rememberStep(){const key=progressKey();if(!key)return;try{sessionStorage.setItem(key,JSON.stringify({mode,stage:Math.min(stage,2),group,pendingServices:[...desiredServices]}));}catch(_e){}}
     function sameSelection(a,b){const normal=rows=>JSON.stringify(rows.map(x=>[x.equipmentId,x.access]).sort((x,y)=>String(x[0]).localeCompare(String(y[0]))));return normal(a)===normal(b);}
+    function validDraft(raw){return raw&&raw.contextId===contextId&&Number.isInteger(raw.revision)&&raw.revision>=0&&typeof raw.group==='string'&&groups.some(g=>g.id===raw.group)&&Array.isArray(raw.selection)&&raw.selection.every(x=>x&&typeof x.equipmentId==='string'&&Object.prototype.hasOwnProperty.call(accessLabels,x.access))&&new Set(raw.selection.map(x=>x.equipmentId)).size===raw.selection.length;}
     function newMutation(){return window.crypto?.randomUUID?.()||Date.now().toString(36)+'.'+Math.random().toString(36).slice(2);}
     function markChanged(){dirty=true;error='';mutationId=newMutation();remember();clearTimeout(saveTimer);saveTimer=setTimeout(()=>saveEquipment(),250);}
     async function request(url,options={}) {
@@ -29,21 +30,21 @@
         if(contextId&&contextId!==data.contextId)throw new Error('Контекст изменился. Откройте оборудование заново.');
         contextId=data.contextId;groups=data.groups;items=data.items;group=data.groupId;
         if(first){revision=data.revision;stage=data.resumeStage===2?2:1;selection=new Map(data.selection.map(item=>[item.equipmentId,item]));dirty=false;
-          try{const raw=JSON.parse(sessionStorage.getItem(draftKey())||'null');if(raw&&raw.contextId===contextId){if(raw.revision===revision&&Array.isArray(raw.selection)){selection=new Map(raw.selection.map(item=>[item.equipmentId,item]));mutationId=raw.mutationId||newMutation();dirty=true;notice='Восстановлен несохранённый выбор';}else if(raw.revision!==revision){if(Array.isArray(raw.selection)&&sameSelection(raw.selection,data.selection)){sessionStorage.removeItem(draftKey());notice='Сохранено';}else{conflictDraft=raw;error='Есть несохранённый выбор другой версии. Выберите сохранённое или свой черновик.';}}}}catch(_e){}
+          try{const raw=JSON.parse(sessionStorage.getItem(draftKey())||'null');if(validDraft(raw)){if(raw.revision===revision){selection=new Map(raw.selection.map(item=>[item.equipmentId,item]));mutationId=raw.mutationId||newMutation();dirty=true;notice='Восстановлен несохранённый выбор';}else if(sameSelection(raw.selection,data.selection)&&raw.group===data.groupId){sessionStorage.removeItem(draftKey());notice='Сохранено';}else{conflictDraft=raw;error='Есть несохранённый выбор другой версии. Выберите сохранённое или свой черновик.';}}}catch(_e){}
         }
         if(!first)dirty=true;rememberStep();
       }catch(e){if(live&&token===generation&&e.name!=='AbortError')error=e.message;}
       finally{if(live&&token===generation){loading=false;paint();if(dirty&&!error){if(!first)markChanged();else{remember();saveTimer=setTimeout(()=>saveEquipment(),250);}}}}
     }
     async function saveEquipment() {
-      clearTimeout(saveTimer);if(!live||!dirty||saving||!contextId)return;
+      clearTimeout(saveTimer);if(!live||!dirty||saving||!contextId||conflictDraft)return;
       const version=JSON.stringify({selection:[...selection.values()].map(({equipmentId,access})=>({equipmentId,access})),group}),sent=JSON.parse(version);if(!mutationId)mutationId=newMutation();const sentMutation=mutationId;
       saving=true;error='';paint();
       try{
         const data=await request('api/master_onboarding.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'equipment.save',contextId,expectedRevision:revision,selection:sent.selection,lastGroupId:sent.group,mutationId:sentMutation})});
         if(!live)return;if(data.contextId!==contextId)throw new Error('Контекст изменился. Откройте оборудование заново.');
         revision=data.revision;dirty=version!==JSON.stringify({selection:[...selection.values()].map(({equipmentId,access})=>({equipmentId,access})),group});if(!dirty)mutationId='';notice=dirty?'':'Сохранено';remember();
-      }catch(e){if(live&&e.name!=='AbortError'){error=e.message;dirty=true;remember();}}
+      }catch(e){if(live&&e.name!=='AbortError'){error=e.message;dirty=true;remember();if(e.status===409&&e.payload?.error==='equipment_revision_conflict')await loadEquipment('',true);}}
       finally{if(live){saving=false;paint();if(dirty&&!error){saveTimer=setTimeout(()=>saveEquipment(),250);}}}
     }
     function serviceItems(category) {const snap=services.snapshot();return snap.catalog.filter(item=>item.category===category).map(item=>({id:item.id,name:item.name,shortName:item.name,iconId:window.KaretaUIIcons.serviceName(item.category),groupId:item.category}));}
@@ -66,7 +67,8 @@
       if(!live)return;const count=selection.size,title=mode==='equipment'?'Моя мастерская':'Мои направления';
       const stepLabels=mode==='equipment'?['Категория','Инструмент','Доступ']:['Категория','Услуги'];
       let content='';
-      if(loading)content='<div class="k-setup-message" role="status">Загружаю карточки…</div>';
+      if(conflictDraft)content='<div class="k-setup-message">Выбор изменился в другой вкладке. Сохранённая версия и ваш черновик доступны внизу. Сначала выберите, какой оставить.</div>';
+      else if(loading)content='<div class="k-setup-message" role="status">Загружаю карточки…</div>';
       else if(stage===1)content=`<p class="k-setup-lead">${mode==='equipment'?'Соберите свой набор оборудования':'Выберите направление, затем отметьте услуги'}</p><div class="k-setup-grid">${groups.map(g=>{const count=[...selection.values()].filter(x=>x.groupId===g.id).length;return `<button type="button" class="k-setup-tile ${count?'is-selected':''}" data-setup-group="${esc(g.id)}">${svg(g.icon_id)}<b>${esc(g.label)}</b><small>${count?count+' выбрано':''}</small></button>`;}).join('')}</div>`;
       else if(stage===2)content=`<div class="k-setup-category-bar"><button type="button" data-setup-stage="1">${svg('chevronLeft')}Категории</button><b>${esc(groups.find(x=>x.id===group)?.label||'')}</b></div><div class="k-setup-grid">${items.map(card).join('')}</div>${!items.length?'<p class="k-setup-message">Карточки пока недоступны</p>':''}`;
       else if(active)content=`<div class="k-setup-focus">${svg(active.iconId)}<h3>${esc(active.name)}</h3><div class="k-setup-access">${Object.entries(accessLabels).map(([key,label])=>`<button type="button" data-setup-access="${key}" aria-pressed="${selection.get(active.id)?.access===key}" class="${selection.get(active.id)?.access===key?'is-selected':''}">${svg(key==='need_buy'?'tabler:package':key==='owned'?'tabler:check':'tabler:car-garage')}<b>${label}</b></button>`).join('')}</div>${selection.has(active.id)?'<button type="button" data-setup-remove>Убрать из набора</button>':''}<button type="button" data-setup-stage="2">К инструментам</button></div>`;
@@ -86,7 +88,8 @@
       const target=event.target.closest('button');if(!target)return;
       if(target.hasAttribute('data-setup-close')){await close();return;}
       if(target.hasAttribute('data-setup-use-saved')){conflictDraft=null;dirty=false;error='';notice='Сохранено';remember();paint();return;}
-      if(target.hasAttribute('data-setup-use-draft')&&conflictDraft){selection=new Map(conflictDraft.selection.map(item=>[item.equipmentId,item]));conflictDraft=null;markChanged();paint();return;}
+      if(target.hasAttribute('data-setup-use-draft')&&conflictDraft){const draft=conflictDraft;selection=new Map(draft.selection.map(item=>[item.equipmentId,item]));group=draft.group;conflictDraft=null;markChanged();stage=2;await loadEquipment(group);return;}
+      if(conflictDraft)return;
       if(target.hasAttribute('data-setup-retry')){if(mode==='equipment'){if(contextId&&dirty)await saveEquipment();else await loadEquipment(group,!contextId);}else{await services.refresh?.();loadServices();if(groups.length){error='';for(const [id,enabled] of [...desiredServices]){const service=services.snapshot().catalog.find(x=>x.id===id);if(service)await toggleService({id,name:service.name,iconId:window.KaretaUIIcons.serviceName(service.category),groupId:service.category},enabled);}paint();}}return;}
       const nextStage=target.dataset.setupStage;if(nextStage){stage=Number(nextStage);rememberStep();paint();return;}
       const category=target.dataset.setupGroup;if(category){group=category;stage=2;active=null;rememberStep();if(mode==='equipment')await loadEquipment(group);else{items=serviceItems(group);paint();}return;}

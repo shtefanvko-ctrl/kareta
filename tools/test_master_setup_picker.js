@@ -27,7 +27,7 @@ const window={console,KaretaApiClient:{request:async(url,options)=>{
     if(failSave)return {ok:false,status:503,payload:{message:'offline'}};
     if(body.contextId!==currentContext)return {ok:false,status:409,payload:{message:'context changed'}};
     if(body.mutationId&&body.mutationId===p.mutationId)return {ok:true,payload:{data:{contextId:currentContext,revision:p.revision,selection:p.selection}}};
-    if(body.expectedRevision!==p.revision)return {ok:false,status:409,payload:{message:'revision conflict'}};
+    if(body.expectedRevision!==p.revision)return {ok:false,status:409,payload:{error:'equipment_revision_conflict',message:'revision conflict'}};
     p.revision++;p.selection=body.selection;p.group=body.lastGroupId;p.mutationId=body.mutationId;if(dropAfterCommit){dropAfterCommit=false;throw Error('response lost');}
     return {ok:true,payload:{data:{contextId:currentContext,revision:p.revision,selection:p.selection}}};
   }
@@ -80,5 +80,13 @@ const mount=()=>{const root=new Element(),cleanup=[];const controller=window.Kar
   const before=apiCalls.length;resolveLate({contextId:33,revision:0,selection:[],groups:equipment.groups,groupId:'diagnostic',items:[]});await opening;await tick();
   assert.equal(apiCalls.length,before,'destroyed context starts additional work');assert.equal(stopped.root.children.length,0);
   assert.ok(apiCalls.every(x=>x.cache===0),'private equipment catalog cached across users');
-  console.log(JSON.stringify({status:'PASS',transport:'MOCK',checks:['lazy-open','button-only','progressive-group','save-reopen','offline-draft','context-isolation','serialized-service-writes','service-draft-resume','late-response-cleanup','lost-reply-reconciliation'],browser:'NOT_RUN',database:'NOT_RUN'}));
+  currentContext=44;const conflict=mount();await conflict.controller.open('equipment');await conflict.dialog.click('data-setup-group','diagnostic');await conflict.dialog.click('data-setup-close');await conflict.controller.open('equipment');
+  await conflict.dialog.click('data-setup-item','obd_scanner');await conflict.dialog.click('data-setup-access','owned');
+  profile().revision++;profile().selection=[{equipmentId:'obd_scanner',access:'rented'}];
+  await conflict.dialog.click('data-setup-close');assert.ok(conflict.dialog.innerHTML.includes('data-setup-use-draft'),'409 does not expose conflict choice');assert.equal(profile().selection[0].access,'rented','409 overwrites other tab before choice');
+  const conflictingDraft=storage.get('kareta.master.equipment:44');await conflict.dialog.click('data-setup-group','engine');assert.equal(storage.get('kareta.master.equipment:44'),conflictingDraft,'browsing overwrites unresolved draft');
+  await conflict.dialog.click('data-setup-use-draft');await conflict.dialog.click('data-setup-close');assert.equal(profile().selection[0].access,'owned','chosen draft does not save against latest revision');
+  await conflict.controller.open('equipment');await conflict.dialog.click('data-setup-item','obd_scanner');await conflict.dialog.click('data-setup-access','need_buy');profile().revision++;profile().selection=[{equipmentId:'obd_scanner',access:'shared_sto'}];
+  await conflict.dialog.click('data-setup-close');await conflict.dialog.click('data-setup-use-saved');const savedRevision=profile().revision;await conflict.dialog.click('data-setup-close');assert.equal(profile().revision,savedRevision,'keep-saved writes over current version');assert.ok(!storage.has('kareta.master.equipment:44'));conflict.controller.destroy();
+  console.log(JSON.stringify({status:'PASS',transport:'MOCK',checks:['lazy-open','button-only','progressive-group','save-reopen','offline-draft','context-isolation','serialized-service-writes','service-draft-resume','late-response-cleanup','lost-reply-reconciliation','revision-conflict-choice','unresolved-draft-preserved','keep-saved-no-write'],browser:'NOT_RUN',database:'NOT_RUN'}));
 })().catch(error=>{console.error(error);process.exitCode=1;});
