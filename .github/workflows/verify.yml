@@ -85,6 +85,8 @@ jobs:
           node tools/test_booking_service_boundary_84_153.js
           node tools/test_notification_center_bridge_84_152.js
           node tools/test_idempotency_scope_84_154.js
+          node tools/test_health_readonly_boundary_84_154.js
+          node tools/test_runtime_maintenance_boundary_84_154.js
 
       - name: Staging verifier syntax
         run: python3 -m py_compile tools/verify_staging_current.py
