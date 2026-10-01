@@ -152,6 +152,7 @@ $focused = [
     '84.95' => 'tools/test_mobile_fab_badges_84_95.js',
     'master.more' => 'tools/test_master_more_contract.js',
     'cabinet.messaging' => 'tools/test_cabinet_settings_lazy_messaging.js',
+    'boot.accountWindow' => 'tools/test_lazy_account_window_boot.js',
 ];
 if ($node !== '') foreach ($focused as $label => $relative) {
     $path = $root . '/' . $relative;
