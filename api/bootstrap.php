@@ -621,9 +621,19 @@ function kareta_bootstrap_runtime(PDO $pdo): void
         // Another request can finish migrations while this request waits for the
         // lock. Re-check after lock acquisition and skip duplicate DDL if ready.
         if (kareta_schema_bootstrap_required($pdo)) {
+            $autoMigrate = !defined('KARETA_DB_AUTO_MIGRATE') || KARETA_DB_AUTO_MIGRATE;
+            $production = defined('KARETA_ENVIRONMENT') && KARETA_ENVIRONMENT === 'production';
+
+            // Production web traffic must never repair schema implicitly. The
+            // deployment/maintenance window is the only supported DDL path.
+            if ($production && !$autoMigrate) {
+                kareta_db_set_failure_context('bootstrap.migration_required');
+                throw new RuntimeException('Production schema migration required; runtime DDL is disabled outside the maintenance window');
+            }
+
             kareta_db_set_failure_context('bootstrap.create_schema');
             kareta_create_schema($pdo);
-            if (!defined('KARETA_DB_AUTO_MIGRATE') || KARETA_DB_AUTO_MIGRATE) {
+            if ($autoMigrate) {
                 kareta_db_set_failure_context('bootstrap.migrate');
                 kareta_migrate($pdo);
             }
