@@ -8,3 +8,5 @@
 .k-scan-page [data-scan-status]{overflow-wrap:anywhere}
 .k-scan-page [hidden]{display:none!important}
 .k-scan-page input[type=file]{display:block;max-width:100%;font:inherit;margin-top:8px}
+
+.k-scan-page [data-master-qr-code] canvas{display:block;width:min(100%,320px);height:auto;image-rendering:pixelated;background:#fff}

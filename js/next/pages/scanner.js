@@ -20,6 +20,7 @@
     return hash;
   }
   function render() {
+    if (mode() === 'masterQr') return '<section class="k-page k-scan-page" data-page="scanner"><a class="k-btn k-btn-secondary" href="#/master">Назад</a><h1>Мой QR</h1><p>Клиент или мастер сканирует код, открывает ваш профиль и переходит к записи.</p><div data-master-qr-code></div><p data-master-qr-status role="status" aria-live="polite">Загружаем ваш профиль…</p><a class="k-btn k-btn-secondary" data-master-qr-link hidden>Открыть мой профиль</a><button class="k-btn k-btn-secondary" type="button" data-master-qr-copy hidden>Скопировать ссылку</button></section>';
     const key = mode(), documentMode = key === 'scannerDocument';
     const back = key === 'scanner' ? home() : '#/scan';
     const title = key === 'scanner' ? 'Сканировать' : documentMode ? 'Техпаспорт автомобиля' : 'QR KARETA';
@@ -31,6 +32,7 @@
   function mount(context) {
     const root = document.querySelector('[data-page="scanner"]');
     if (!root || mode() === 'scanner') return;
+    if (mode() === 'masterQr') return mountMasterQr(root, context);
     const documentMode = mode() === 'scannerDocument';
     const lifecycle = context.lifecycle;
     let disposed = false, stream = null, cameraRun = 0, fileRun = 0, timer = null;
@@ -116,5 +118,45 @@
     lifecycle.addCleanup(cleanup);
     return cleanup;
   }
-  window.KaretaScannerPages = Object.freeze({ render, mount, qrTarget });
+  function masterQrUrl(data) {
+    const id = String(data?.profile?.id || '');
+    if (!/^[A-Za-z0-9_-]{1,128}$/.test(id)) throw new Error('Профиль мастера ещё не готов. Заполните профиль и повторите попытку.');
+    if (data.profile.profileVisible === false) throw new Error('Публичный профиль скрыт. Включите его показ в настройках профиля.');
+    return 'https://kareta.kz/#/masters/profile/master/' + id;
+  }
+  function mountMasterQr(root, context) {
+    const life = context.lifecycle;
+    let disposed = false;
+    const active = () => !disposed && life.isActive() && root.isConnected && role() === 'master';
+    life.addCleanup(() => { disposed = true; });
+    const status = root.querySelector('[data-master-qr-status]');
+    const link = root.querySelector('[data-master-qr-link]');
+    const copy = root.querySelector('[data-master-qr-copy]');
+    (async () => {
+      try {
+        if (role() !== 'master') throw new Error('Выберите контекст мастера.');
+        const response = await window.KaretaApiClient.request('api/db.php?action=masterProfile.get', { cacheTtlMs:0, force:true, signal:life.signal });
+        if (!active()) return;
+        if (!response?.ok) throw new Error('Не удалось загрузить ваш профиль. Откройте страницу ещё раз.');
+        const url = masterQrUrl(response.payload?.data || response.payload || response.data || {});
+        const qr = new window.KaretaQRCode(-1, 1); // L correction; byte payload is an ASCII URL.
+        qr.addData(url); qr.make();
+        const size = qr.getModuleCount(), canvas = document.createElement('canvas'), scale = 6;
+        canvas.width = canvas.height = (size + 8) * scale;
+        canvas.setAttribute('role','img'); canvas.setAttribute('aria-label','Личный QR мастера для записи');
+        const paint = canvas.getContext('2d');
+        paint.fillStyle = '#fff'; paint.fillRect(0,0,canvas.width,canvas.height);
+        paint.fillStyle = '#000';
+        for (let y=0;y<size;y++) for (let x=0;x<size;x++) if(qr.isDark(y,x)) paint.fillRect((x+4)*scale,(y+4)*scale,scale,scale);
+        root.querySelector('[data-master-qr-code]').replaceChildren(canvas);
+        link.href = url; link.hidden = false; copy.hidden = false;
+        status.textContent = 'Ваш личный QR готов. Покажите его для сканирования.';
+        life.listen(copy,'click',async () => {
+          try { await navigator.clipboard.writeText(url); if(active()) status.textContent='Ссылка скопирована.'; }
+          catch (_) { if(active()) status.textContent='Не удалось скопировать. Используйте ссылку «Открыть мой профиль».'; }
+        });
+      } catch(error) { if(active()) status.textContent=error.message; }
+    })();
+  }
+  window.KaretaScannerPages = Object.freeze({ render, mount, qrTarget, masterQrUrl });
 })();

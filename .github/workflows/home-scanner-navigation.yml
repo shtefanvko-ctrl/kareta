@@ -18,6 +18,7 @@ jobs:
           php-version: '8.1'
       - run: php -l inc/asset_registry.php
       - run: node tools/test_home_scanner_navigation.js
+      - run: node tools/test_master_personal_qr.js
       - run: node tools/test_route_lazy_runtime_84_68.js
       - run: node tools/test_lazy_account_window_boot.js
       - run: node tools/test_master_more_contract.js

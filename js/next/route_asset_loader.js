@@ -39,7 +39,7 @@
     'news','masterNews','masterNewsCreate','masterNewsEdit',
     'about','rules','help','privacy','contacts','lawyer','towTruck',
     'masterOnboarding','masterDashboard','masterSchedule','masterWorkplaceSettings','masterProfileOwner','masterWallOwner','masterWorks','masterReviews','providerReviews',
-    'platform','corePlatform','calendarBooking','finance','market','crm','assistant','diagnostics','scanner','scannerQr','scannerDocument',
+    'platform','corePlatform','calendarBooking','finance','market','crm','assistant','diagnostics','scanner','scannerQr','scannerDocument','masterQr',
   ]);
 
   const state={

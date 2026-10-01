@@ -31,7 +31,7 @@ location.hash = '#/scan/document';
 assert.match(scanner.render(), /Автоматическое распознавание полей техпаспорта пока недоступно/);
 const manifest = read('inc/asset_registry.php');
 assert.match(manifest, /'scannerDomain' => \[\s*'lazy' => true/);
-assert.match(manifest, /'routeKeys' => \['scanner','scannerQr','scannerDocument'\]/);
+assert.match(manifest, /'routeKeys' => \['scanner','scannerQr','scannerDocument','masterQr'\]/);
 for (const key of ['scanner','scannerQr','scannerDocument']) assert.ok(read('js/next/route_asset_loader.js').includes(`'${key}'`));
 assert.ok(read('js/next/pages/core.js').includes("route:'#/scan'"));
 assert.ok(read('js/next/pages/master_workplace.js').includes("quickAction('#/scan','camera'"));
