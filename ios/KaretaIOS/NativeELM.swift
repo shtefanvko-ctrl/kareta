@@ -16,6 +16,7 @@ final class NativeELMService: NSObject {
     private var scanTimer: Timer?
 
     private var connectCompletion: ((Result<[String: Any], Error>) -> Void)?
+    private var connectTimer: Timer?
     private var characteristicServicesPending = 0
 
     private var commandQueue: [CommandRequest] = []
@@ -157,6 +158,27 @@ final class NativeELMService: NSObject {
             self.connectedPeripheral = peripheral
             peripheral.delegate = self
             self.central?.connect(peripheral, options: nil)
+
+            self.connectTimer?.invalidate()
+            self.connectTimer = Timer.scheduledTimer(
+                withTimeInterval: 12.0,
+                repeats: false
+            ) { [weak self] _ in
+                guard let self, self.connectCompletion != nil else {
+                    return
+                }
+                if let current = self.connectedPeripheral {
+                    self.central?.cancelPeripheralConnection(current)
+                }
+                self.lastError = "BLE_CONNECT_TIMEOUT"
+                self.resetTransport(
+                    keepPeripheral: false,
+                    keepLastError: true
+                )
+                self.finishConnect(
+                    .failure(ELMError.connectTimeout)
+                )
+            }
         }
     }
 
@@ -203,14 +225,14 @@ final class NativeELMService: NSObject {
         protocolLabel = ""
 
         let commands: [(String, TimeInterval)] = [
-            ("ATZ", 5.0),
-            ("ATE0", 2.5),
-            ("ATL0", 2.5),
-            ("ATS0", 2.5),
-            ("ATH0", 2.5),
-            ("ATSP0", 3.0),
-            ("0100", 8.0),
-            ("ATDP", 3.0)
+            ("ATZ", 4.0),
+            ("ATE0", 2.0),
+            ("ATL0", 2.0),
+            ("ATS0", 2.0),
+            ("ATH0", 2.0),
+            ("ATSP0", 2.5),
+            ("0100", 6.0),
+            ("ATDP", 2.5)
         ]
 
         runSequence(
@@ -456,6 +478,8 @@ final class NativeELMService: NSObject {
     private func finishConnect(
         _ result: Result<[String: Any], Error>
     ) {
+        connectTimer?.invalidate()
+        connectTimer = nil
         let completion = connectCompletion
         connectCompletion = nil
         completion?(result)
@@ -465,6 +489,8 @@ final class NativeELMService: NSObject {
         keepPeripheral: Bool,
         keepLastError: Bool
     ) {
+        connectTimer?.invalidate()
+        connectTimer = nil
         commandTimer?.invalidate()
         commandTimer = nil
 
@@ -954,6 +980,7 @@ final class NativeELMService: NSObject {
         case deviceNotFound
         case noPreviousDevice
         case bluetoothUnavailable(String)
+        case connectTimeout
         case transportNotReady
         case characteristicNotFound
         case disconnected
@@ -973,6 +1000,8 @@ final class NativeELMService: NSObject {
                 return "No previous BLE ELM adapter is saved"
             case .bluetoothUnavailable(let state):
                 return "Bluetooth unavailable: \(state)"
+            case .connectTimeout:
+                return "BLE ELM connection timed out"
             case .transportNotReady:
                 return "BLE ELM transport is not ready"
             case .characteristicNotFound:
@@ -1138,27 +1167,26 @@ extension NativeELMService: CBPeripheralDelegate {
     ) {
         if let error {
             lastError = error.localizedDescription
-        } else {
-            for characteristic in service.characteristics ?? [] {
+        } else if writeCharacteristic == nil &&
+                    notifyCharacteristic == nil
+        {
+            let characteristics = service.characteristics ?? []
+            let localWrite = characteristics.first { characteristic in
                 let properties = characteristic.properties
+                return properties.contains(.writeWithoutResponse) ||
+                    properties.contains(.write)
+            }
+            let localNotify = characteristics.first { characteristic in
+                let properties = characteristic.properties
+                return properties.contains(.notify) ||
+                    properties.contains(.indicate)
+            }
 
-                if writeCharacteristic == nil &&
-                    (
-                        properties.contains(.writeWithoutResponse) ||
-                        properties.contains(.write)
-                    )
-                {
-                    writeCharacteristic = characteristic
-                }
-
-                if notifyCharacteristic == nil &&
-                    (
-                        properties.contains(.notify) ||
-                        properties.contains(.indicate)
-                    )
-                {
-                    notifyCharacteristic = characteristic
-                }
+            // A UART transport must use a coherent GATT service. Do not mix a
+            // write characteristic from one service with notifications from another.
+            if let localWrite, let localNotify {
+                writeCharacteristic = localWrite
+                notifyCharacteristic = localNotify
             }
         }
 
