@@ -135,6 +135,13 @@ foreach ($items as $item) {
     $dtc = is_array($payload['dtc'] ?? null) ? $payload['dtc'] : [];
     $source = strtolower(trim((string)($payload['source'] ?? $payload['platform'] ?? 'android')));
     if (!in_array($source, ['android','ios','web'], true)) $source = 'android';
+    $adapterAddress = trim((string)($adapter['address'] ?? ''));
+    if ($source === 'ios' && preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $adapterAddress)) {
+        // CoreBluetooth exposes a 36-character peripheral UUID while the existing
+        // schema intentionally stores adapter_address in VARCHAR(32). Compacting
+        // a canonical UUID preserves every hex digit without a schema migration.
+        $adapterAddress = str_replace('-', '', strtolower($adapterAddress));
+    }
     $vehicleId=trim((string)($payload['vehicleId'] ?? ''));
     if($vehicleId!==''&&!kareta_obd_vehicle_access($pdo,$vehicleId,$actorUserId,$phone,$actorRole)){
         kareta_json(['ok'=>false,'code'=>'VEHICLE_FORBIDDEN','vehicleId'=>$vehicleId],403);
@@ -144,7 +151,7 @@ foreach ($items as $item) {
         $vehicleId!==''?$vehicleId:null,
         substr($syncKey,0,120),
         substr(trim((string)($adapter['name'] ?? '')),0,120),
-        substr(trim((string)($adapter['address'] ?? '')),0,32),
+        substr($adapterAddress,0,32),
         substr(trim((string)($payload['vin'] ?? '')),0,32),
         substr(trim((string)($payload['protocol'] ?? '')),0,80),
         json_encode($dtc,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),
