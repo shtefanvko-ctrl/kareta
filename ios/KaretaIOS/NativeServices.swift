@@ -1,5 +1,7 @@
 import AVFoundation
 import CoreLocation
+import Contacts
+import ContactsUI
 import Foundation
 import PhotosUI
 import UIKit
@@ -470,6 +472,92 @@ enum NativePermissionService {
                 "granted": false,
                 "status": "unknown"
             ])
+        }
+    }
+}
+
+
+final class NativeContactService: NSObject, CNContactPickerDelegate {
+    private var completion: ((Result<[String: Any], Error>) -> Void)?
+
+    func pickContact(
+        completion: @escaping (Result<[String: Any], Error>) -> Void
+    ) {
+        DispatchQueue.main.async {
+            guard self.completion == nil else {
+                return completion(.failure(KaretaNativeServiceError.busy))
+            }
+            guard let presenter = KaretaPresentation.topViewController() else {
+                return completion(.failure(ContactError.unavailable))
+            }
+
+            self.completion = completion
+
+            let picker = CNContactPickerViewController()
+            picker.delegate = self
+            picker.displayedPropertyKeys = [
+                CNContactPhoneNumbersKey,
+                CNContactGivenNameKey,
+                CNContactFamilyNameKey,
+                CNContactOrganizationNameKey
+            ]
+            presenter.present(picker, animated: true)
+        }
+    }
+
+    func contactPicker(
+        _ picker: CNContactPickerViewController,
+        didSelect contact: CNContact
+    ) {
+        let phones = contact.phoneNumbers
+            .map { $0.value.stringValue }
+            .filter { !$0.isEmpty }
+
+        let personName = [
+            contact.givenName,
+            contact.familyName
+        ]
+        .filter { !$0.isEmpty }
+        .joined(separator: " ")
+
+        let name = personName.isEmpty
+            ? contact.organizationName
+            : personName
+
+        finish(.success([
+            "name": name,
+            "phone": phones.first ?? "",
+            "phones": phones
+        ]))
+    }
+
+    func contactPickerDidCancel(
+        _ picker: CNContactPickerViewController
+    ) {
+        finish(.failure(ContactError.cancelled))
+    }
+
+    private func finish(
+        _ result: Result<[String: Any], Error>
+    ) {
+        let callback = completion
+        completion = nil
+        DispatchQueue.main.async {
+            callback?(result)
+        }
+    }
+
+    private enum ContactError: LocalizedError {
+        case unavailable
+        case cancelled
+
+        var errorDescription: String? {
+            switch self {
+            case .unavailable:
+                return "Contact picker is unavailable"
+            case .cancelled:
+                return "Contact selection cancelled"
+            }
         }
     }
 }
