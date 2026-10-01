@@ -81,7 +81,7 @@ function geo_context_allows_owner(PDO $pdo,KaretaAuthResolution $auth,string $ow
     return false;
 }
 function geo_public_payload(array $row,float $distanceKm): array {
-    return [
+    $payload=[
         'id'=>(string)$row['id'],
         'ownerType'=>(string)$row['owner_type'],
         'ownerId'=>(string)$row['owner_id'],
@@ -95,6 +95,12 @@ function geo_public_payload(array $row,float $distanceKm): array {
         'distanceKm'=>round($distanceKm,2),
         'verifiedAt'=>$row['verified_at']??null,
     ];
+    if((string)($row['owner_type']??'')==='shop'){
+        $meta=json_decode((string)($row['metadata_json']??''),true);
+        $sellerUserId=(int)($meta['sellerUserId']??0);
+        if($sellerUserId>0)$payload['publicId']=$sellerUserId;
+    }
+    return $payload;
 }
 
 if ($method==='GET' && $action==='nearby') {
@@ -115,7 +121,7 @@ if ($method==='GET' && $action==='nearby') {
     $lngDelta=$radius/(111.32*$cos);
     $marks=implode(',',array_fill(0,count($requested),'?'));
     $params=[(float)$lat-$latDelta,(float)$lat+$latDelta,(float)$lng-$lngDelta,(float)$lng+$lngDelta,...$requested];
-    $sql="SELECT id,owner_type,owner_id,kind,label,country_code,city,address,latitude,longitude,verified_at
+    $sql="SELECT id,owner_type,owner_id,kind,label,country_code,city,address,latitude,longitude,metadata_json,verified_at
           FROM geo_points
           WHERE active=1
             AND visibility='exact'
@@ -142,7 +148,7 @@ if ($method==='GET' && $action==='entity') {
     $ownerType=strtolower(geo_text($_GET['ownerType']??'',32));
     $ownerId=geo_text($_GET['ownerId']??'',96);
     if (!in_array($ownerType,geo_owner_types(),true) || $ownerId==='') kareta_json(['ok'=>false,'error'=>'invalid_owner'],422);
-    $q=$pdo->prepare("SELECT id,owner_type,owner_id,kind,label,country_code,city,address,latitude,longitude,verified_at
+    $q=$pdo->prepare("SELECT id,owner_type,owner_id,kind,label,country_code,city,address,latitude,longitude,metadata_json,verified_at
                       FROM geo_points
                       WHERE owner_type=? AND owner_id=? AND active=1 AND visibility='exact'
                         AND latitude IS NOT NULL AND longitude IS NOT NULL
