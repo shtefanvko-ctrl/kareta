@@ -230,7 +230,7 @@ function seller_profile_save(?PDO $pdo,array $body): void {
         if($lat!==null&&$lng!==null){
             kareta_geo_upsert_point($pdo,['ownerType'=>'shop','ownerId'=>$profileId,'kind'=>'warehouse','label'=>$label,'city'=>$city,'address'=>$address,'latitude'=>$lat,'longitude'=>$lng,'source'=>$input['geoSource']??'manual','visibility'=>'hidden','active'=>true]);
             if(!empty($input['pickupPublic'])){
-                kareta_geo_upsert_point($pdo,['ownerType'=>'shop','ownerId'=>$profileId,'kind'=>'pickup','label'=>$label,'city'=>$city,'address'=>$address,'latitude'=>$lat,'longitude'=>$lng,'source'=>$input['geoSource']??'manual','visibility'=>'exact','active'=>true,'metadata'=>['pickup'=>true]]);
+                kareta_geo_upsert_point($pdo,['ownerType'=>'shop','ownerId'=>$profileId,'kind'=>'pickup','label'=>$label,'city'=>$city,'address'=>$address,'latitude'=>$lat,'longitude'=>$lng,'source'=>$input['geoSource']??'manual','visibility'=>'exact','active'=>true,'metadata'=>['pickup'=>true,'sellerUserId'=>(int)($user['id']??0)]]);
             }else{kareta_geo_set_owner_kind_active($pdo,'shop',$profileId,'pickup',false);}
         }elseif(empty($input['pickupPublic'])){kareta_geo_set_owner_kind_active($pdo,'shop',$profileId,'pickup',false);}
         $profile=seller_profile_row($pdo,(int)$user['id'])?:$profile;
