@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "data_version": "master_matching_draft_v1",
+  "data_version": "master_equipment_runtime_candidate_v1",
   "created_on": "2026-10-01",
-  "status": "DRAFT_NOT_RUNTIME_IMPORT",
+  "status": "RUNTIME_CANDIDATE_NOT_VERIFIED",
   "source_repository": "shtefanvko-ctrl/kareta",
   "service_source": "storage/catalog/services.json",
   "service_source_blob": "e3688e785be691fc81ad4030ad6fda34ec822f58",
@@ -1988,5 +1988,7 @@
       "evidence_status": "DRAFT_TAXONOMY",
       "capability_requires_confirmation": true
     }
-  ]
+  ],
+  "runtime_import_verified": false,
+  "technical_relations_expert_review": "NOT_RUN"
 }
