@@ -12,6 +12,29 @@ function kareta_geo_coords_valid(?float $lat,?float $lng): bool {
     if($lat===null&&$lng===null)return true;
     return $lat!==null&&$lng!==null&&$lat>=-90.0&&$lat<=90.0&&$lng>=-180.0&&$lng<=180.0;
 }
+function kareta_geo_sync_legacy_address(PDO $pdo,array $point): void {
+    $ownerType=(string)($point['ownerType']??'');$ownerId=(string)($point['ownerId']??'');$kind=(string)($point['kind']??'');
+    $city=(string)($point['city']??'');$address=(string)($point['address']??'');$lat=$point['latitude']??null;$lng=$point['longitude']??null;
+    if($ownerType==='master'&&$kind==='service'&&kareta_table_exists($pdo,'masters')){
+        $sets=['city=?','service_address=?'];$args=[$city,$address];
+        if(kareta_column_exists($pdo,'masters','service_lat')){$sets[]='service_lat=?';$args[]=$lat;}
+        if(kareta_column_exists($pdo,'masters','service_lng')){$sets[]='service_lng=?';$args[]=$lng;}
+        $args[]=$ownerId;$pdo->prepare("UPDATE masters SET ".implode(',',$sets)." WHERE BINARY id=BINARY ?")->execute($args);return;
+    }
+    if($ownerType==='sto'&&in_array($kind,['service','branch'],true)&&kareta_table_exists($pdo,'sto_profiles')){
+        $pdo->prepare("UPDATE sto_profiles SET city=?,address=?,updated_at=CURRENT_TIMESTAMP WHERE BINARY id=BINARY ?")->execute([$city,$address,$ownerId]);return;
+    }
+    if($ownerType==='organization'&&kareta_table_exists($pdo,'organizations')){
+        $pdo->prepare("UPDATE organizations SET city=?,address=?,updated_at=CURRENT_TIMESTAMP WHERE BINARY id=BINARY ?")->execute([$city,$address,$ownerId]);return;
+    }
+    if($ownerType==='organization_unit'&&kareta_table_exists($pdo,'organization_units')){
+        $pdo->prepare("UPDATE organization_units SET city=?,address=?,updated_at=CURRENT_TIMESTAMP WHERE BINARY id=BINARY ?")->execute([$city,$address,$ownerId]);return;
+    }
+    if($ownerType==='shop'&&$kind==='warehouse'&&kareta_table_exists($pdo,'seller_profiles')){
+        $pdo->prepare("UPDATE seller_profiles SET city=?,warehouse_address=?,updated_at=CURRENT_TIMESTAMP WHERE BINARY CAST(id AS CHAR)=BINARY ?")->execute([$city,$address,$ownerId]);
+    }
+}
+
 function kareta_geo_upsert_point(PDO $pdo,array $point): array {
     if(!kareta_table_exists($pdo,'geo_points'))throw new RuntimeException('geo_schema_missing');
     $ownerType=strtolower(trim((string)($point['ownerType']??$point['owner_type']??'')));
@@ -46,7 +69,9 @@ function kareta_geo_upsert_point(PDO $pdo,array $point): array {
         latitude=VALUES(latitude),longitude=VALUES(longitude),source=VALUES(source),visibility=VALUES(visibility),
         metadata_json=VALUES(metadata_json),verified_at=VALUES(verified_at),active=VALUES(active),updated_at=CURRENT_TIMESTAMP");
     $q->execute([$id,$ownerType,$ownerId,$kind,$label,$country,$city,$address,$lat,$lng,$source,$visibility,$metadata,$verifiedAt,$active?1:0]);
-    return ['id'=>$id,'ownerType'=>$ownerType,'ownerId'=>$ownerId,'kind'=>$kind,'label'=>$label,'countryCode'=>$country,'city'=>$city,'address'=>$address,'latitude'=>$lat,'longitude'=>$lng,'source'=>$source,'visibility'=>$visibility,'active'=>$active];
+    $result=['id'=>$id,'ownerType'=>$ownerType,'ownerId'=>$ownerId,'kind'=>$kind,'label'=>$label,'countryCode'=>$country,'city'=>$city,'address'=>$address,'latitude'=>$lat,'longitude'=>$lng,'source'=>$source,'visibility'=>$visibility,'active'=>$active];
+    kareta_geo_sync_legacy_address($pdo,$result);
+    return $result;
 }
 function kareta_geo_set_owner_kind_active(PDO $pdo,string $ownerType,string $ownerId,string $kind,bool $active): void {
     if(!kareta_table_exists($pdo,'geo_points'))return;
