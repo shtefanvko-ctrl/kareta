@@ -197,6 +197,7 @@ final class NativeELMService: NSObject {
     }
 
     func disconnect() -> [String: Any] {
+        let hadPendingConnect = connectCompletion != nil
         if let peripheral = connectedPeripheral {
             central?.cancelPeripheralConnection(peripheral)
         }
@@ -205,6 +206,9 @@ final class NativeELMService: NSObject {
             keepPeripheral: false,
             keepLastError: true
         )
+        if hadPendingConnect {
+            finishConnect(.failure(ELMError.disconnected))
+        }
 
         return [
             "connected": false,
@@ -1048,11 +1052,18 @@ extension NativeELMService: CBCentralManagerDelegate {
         if connectedPeripheral != nil &&
             central.state != .poweredOn
         {
+            let hadPendingConnect = connectCompletion != nil
+            let stateError = ELMError.bluetoothUnavailable(
+                bluetoothStateLabel(central.state)
+            )
             lastError = "BLUETOOTH_\(bluetoothStateLabel(central.state).uppercased())"
             resetTransport(
                 keepPeripheral: false,
                 keepLastError: true
             )
+            if hadPendingConnect {
+                finishConnect(.failure(stateError))
+            }
         }
     }
 
@@ -1120,6 +1131,9 @@ extension NativeELMService: CBCentralManagerDelegate {
 
         guard wasCurrent else { return }
 
+        let hadPendingConnect = connectCompletion != nil
+        let disconnectError = error ?? ELMError.disconnected
+
         if let error {
             lastError = error.localizedDescription
         }
@@ -1128,6 +1142,9 @@ extension NativeELMService: CBCentralManagerDelegate {
             keepPeripheral: false,
             keepLastError: true
         )
+        if hadPendingConnect {
+            finishConnect(.failure(disconnectError))
+        }
     }
 }
 
