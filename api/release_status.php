@@ -58,6 +58,7 @@ function kareta_release_status_check(): void
         kareta_release_status_endpoint('releaseStatus', 'release_status.php'),
         kareta_release_status_endpoint('versionCheck', 'version_check.php'),
         kareta_release_status_endpoint('postDeploy', 'post_deploy_check.php'),
+        kareta_release_status_endpoint('provenance', 'provenance.php'),
         kareta_release_status_endpoint('clientEvent', 'client_event.php'),
     ];
 
@@ -111,6 +112,7 @@ function kareta_release_status_check(): void
             'api/release_check.php',
             'api/version_check.php',
             'api/post_deploy_check.php',
+            'api/provenance.php',
             'window.KaretaGridContracts.audit()',
             'window.KaretaBlockGridContracts.audit()',
             'window.KaretaServicesQuick.audit()',
