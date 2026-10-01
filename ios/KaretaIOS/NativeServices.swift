@@ -375,10 +375,12 @@ final class NativeMediaService: NSObject,
             forTypeIdentifier: type
         ) { [weak self] data, error in
             if let error {
-                return self?.finish(.failure(error))
+                self?.finish(.failure(error))
+                return
             }
             guard let data, let image = UIImage(data: data) else {
-                return self?.finish(.failure(KaretaNativeServiceError.invalidImage))
+                self?.finish(.failure(KaretaNativeServiceError.invalidImage))
+                return
             }
             self?.finishImage(image, suggestedName: provider.suggestedName)
         }
