@@ -12,6 +12,13 @@ const manifestPhp=read('api/migration_manifest.php');
 const manifestJson=JSON.parse(read('api/migration_manifest.json'));
 const workflow=read('.github/workflows/application-gates.yml');
 const core=read('js/next/pages/core.js');
+const geoCore=read('api/geo_core.php');
+const bridge=read('js/mobile_native_bridge.js');
+const masterOnboarding=read('api/master_onboarding.php');
+const sellerApi=read('api/seller_shop.php');
+const sellerPage=read('js/next/pages/seller.js');
+const stoApi=read('api/sto_workplace.php');
+const stoPage=read('js/next/pages/sto_workplace.js');
 
 assert(migration.includes("'version' => 137"),'geo migration version mismatch');
 assert(migration.includes('CREATE TABLE IF NOT EXISTS `geo_points`'),'geo_points table missing');
@@ -37,10 +44,25 @@ assert(manifestPhp.includes("137 => ['file' => '137_geo_platform_core.php'"),'PH
 assert(workflow.includes('node tools/test_geo_platform_core.js'),'geo core contract not wired to application gates');
 assert(workflow.includes('php -l api/geo.php'),'geo endpoint syntax gate missing');
 assert(core.includes('window.KaretaMobile'),'client home must prefer the native mobile bridge when available');
-assert(core.includes('mobile.getLocation()'),'client home native location command missing');
-assert(core.includes('navigator.geolocation.getCurrentPosition'),'browser geolocation fallback missing');
+assert(bridge.includes('async function bestLocation'),'shared best-location bridge missing');
+assert(bridge.includes('call("getLocation"'),'native location bridge command missing');
+assert(bridge.includes('navigator.geolocation.getCurrentPosition'),'browser fallback missing from shared bridge');
+assert(core.includes('mobile.bestLocation'),'client home must use shared best-location bridge');
 assert(core.includes('api/geo.php?action=nearby'),'client home is not wired to Geo nearby API');
 assert(core.includes('types=sto,master'),'client home nearby provider scope changed unexpectedly');
 assert(core.includes('geoNearby=new Map()'),'client home Geo response index missing');
+
+assert(geoCore.includes("if($kind==='warehouse')$visibility='hidden';"),'shared core must force warehouse hidden');
+assert(geoCore.includes("if($kind==='mobile_origin'&&$visibility==='exact'"),'shared core mobile-origin privacy guard missing');
+assert(geoCore.includes('kareta_geo_sync_legacy_address'),'legacy address synchronization missing');
+assert(masterOnboarding.includes("'kind'=>'service'")&&masterOnboarding.includes("'visibility'=>'exact'"),'master onboarding must persist exact service point');
+assert(masterOnboarding.includes("'kind'=>'mobile_origin'")&&masterOnboarding.includes("'visibility'=>'city'"),'master onboarding must keep mobile origin non-public');
+assert(sellerApi.includes("'kind'=>'warehouse'")&&sellerApi.includes("'visibility'=>'hidden'"),'seller warehouse must stay hidden');
+assert(sellerApi.includes("'kind'=>'pickup'")&&sellerApi.includes("'visibility'=>'exact'"),'seller public pickup point missing');
+assert(sellerPage.includes('data-seller-geo-detect'),'seller GPS control missing');
+assert(sellerPage.includes('pickupPublic'),'seller explicit pickup publication control missing');
+assert(stoApi.includes("kareta_geo_owner_points($pdo,'sto'"),'STO workplace geo point read missing');
+assert(stoPage.includes('data-sto-window-open="location"'),'STO location window missing');
+assert(stoPage.includes("ownerType:'sto'")&&stoPage.includes("visibility:'exact'"),'STO point save contract missing');
 
 console.log('GEO_PLATFORM_CORE: PASS');
