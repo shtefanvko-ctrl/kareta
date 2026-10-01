@@ -15,7 +15,7 @@ const groups=Object.freeze({
     'js/next/page_ui.js','js/next/catalog_cards.js','js/next/social_cards.js','js/next/workflow_engine.js','js/next/core/ui_kit.js','js/next/api_client.js','js/next/core/realtime_client.js','js/next/social_state.js','js/next/runtime_integrity.js','js/next/toast.js','js/next/native_dialogs.js','js/next/swiper_loader.js','js/next/slider_runtime.js'
   ],
   'js/boot/runtime_core_bundle.js':[
-    'js/next/pages/core.js','js/next/request_window.js','js/next/client/client_cabinet_api.js','js/next/client/first_vehicle_flow.js','js/next/account_window.js','js/next/window_engine.js','js/next/client_viewport_runtime.js','js/next/client_surface_modernization_phase3.js'
+    'js/next/pages/core.js','js/next/request_window.js','js/next/client/client_cabinet_api.js','js/next/client/first_vehicle_flow.js','js/next/window_engine.js','js/next/client_viewport_runtime.js','js/next/client_surface_modernization_phase3.js'
   ]
 });
 function build(target,sources){
