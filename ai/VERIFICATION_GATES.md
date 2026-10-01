@@ -13,6 +13,14 @@ Purpose: ensure repository-owned PHP remains parse-compatible with the project's
 
 PASS means the workflow ran for the exact candidate and every scoped PHP file passed `php -l`. A skipped/not-run workflow is not PASS.
 
+### G0.5 — Application contract gate
+**GitHub Action:** .github/workflows/application-gates.yml
+
+Purpose: execute existing repository-owned regression checks instead of inferring correctness from prose. The gate runs the existing release checklist, asset URL hygiene and provenance unit contract, then generates a provenance artifact bound to the exact GitHub candidate SHA.
+
+Runtime/tooling is explicit in CI: PHP 8.2 and Node.js 22, matching the established verification workflow on the current release line. PHP 8.1 compatibility remains independently enforced by G0.
+
+PASS means this workflow ran successfully for the exact candidate. The generated provenance artifact is build evidence only; it is not proof of deployment until the runtime endpoint reports the same SHA.
 ### G1 — Readiness/runtime gate
 **Endpoint:** `GET /api/readiness.php`
 
@@ -65,8 +73,16 @@ Existing post-deploy browser checks exposed by the project include:
 
 Use these only according to their endpoint/runtime contract and authorization requirements. For release-sensitive work, evidence must be bound to the exact candidate/release identity available from the endpoint/runtime. Do not substitute a response from a different candidate.
 
+### G5.5 — Exact deployment provenance
+**Runtime endpoint:** GET /api/provenance.php
+**Generator:** tools/generate_deployment_manifest.php
+**Post-deploy verifier:** tools/verify_runtime_provenance.py
+
+The deployment manifest is generated from CI/deploy environment values for the exact candidate. Runtime validation fails closed when the manifest is missing, malformed, has an invalid Git SHA, or its asset version differs from the running asset version.
+
+A GitHub Actions provenance artifact is candidate/build evidence. DEPLOYED evidence requires the actual deploy mechanism to install the generated manifest as storage/deployment_manifest.json and the runtime verifier to match the expected SHA.
 ## Provenance limitation
-Current runtime gates provide asset/release identity and file-level hashes, but the inspected contracts do not directly expose the deployed Git commit SHA. Therefore asset-version consistency alone must not be represented as proof that a specific Git SHA is deployed.
+Legacy runtime gates provide asset/release identity and file-level hashes. The provenance endpoint exposes the deployed Git commit SHA only when the deploy mechanism has installed a generated deployment manifest. Therefore asset-version consistency alone must not be represented as proof that a specific Git SHA is deployed.
 
 Until commit provenance is added, report separately:
 - repository candidate SHA;
