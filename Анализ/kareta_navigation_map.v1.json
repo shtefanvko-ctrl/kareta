@@ -1,0 +1,223 @@
+{
+  "schema": "kareta.navigation.map.v1",
+  "date": "2026-10-01",
+  "status": "SOURCE_PARTIAL_NOT_RUNTIME_VERIFIED",
+  "dimensions": [
+    "context",
+    "router",
+    "route",
+    "page",
+    "view",
+    "steps",
+    "windows",
+    "cross",
+    "return"
+  ],
+  "routers": [
+    {
+      "id": "request",
+      "contexts": [
+        "client",
+        "master",
+        "sto"
+      ],
+      "routes": [
+        "#/orders/new"
+      ],
+      "steps": {
+        "client": [
+          "vehicle",
+          "offer",
+          "schedule",
+          "problem",
+          "review"
+        ],
+        "master": [
+          "vehicle",
+          "schedule",
+          "problem",
+          "review"
+        ]
+      },
+      "windows": [
+        "vehicle-picker",
+        "services-picker",
+        "city-picker",
+        "schedule-picker",
+        "rules"
+      ],
+      "cross": [
+        "garage->request(prefill vehicle)",
+        "repeat-order->request(prefill)"
+      ]
+    },
+    {
+      "id": "cabinet",
+      "contexts": [
+        "client",
+        "master",
+        "sto",
+        "seller"
+      ],
+      "routes": [
+        "#/cabinet",
+        "#/cabinet/garage",
+        "#/cabinet/history",
+        "#/cabinet/settings",
+        "#/notifications"
+      ],
+      "windows": [
+        "profile",
+        "documents",
+        "tariff",
+        "notifications",
+        "security",
+        "interface"
+      ],
+      "cross": [
+        "garage-car->request",
+        "cabinet->profile"
+      ]
+    },
+    {
+      "id": "garage",
+      "contexts": [
+        "client"
+      ],
+      "routes": [
+        "#/cabinet/garage",
+        "#/garage/car/:id"
+      ],
+      "windows": [
+        "garage category/service views",
+        "vehicle edit/add"
+      ],
+      "cross": [
+        "#/garage/car/:id->#/orders/new?vehicleId=:id"
+      ],
+      "return": [
+        "#/cabinet"
+      ]
+    },
+    {
+      "id": "master-workplace",
+      "contexts": [
+        "master"
+      ],
+      "routes": [
+        "#/master"
+      ],
+      "views": [
+        "overview",
+        "kpi",
+        "statistics",
+        "today",
+        "paused"
+      ],
+      "cross": [
+        "#/orders",
+        "#/master/exchange",
+        "#/master/schedule",
+        "#/services/manage",
+        "#/parts",
+        "#/chats",
+        "#/community"
+      ]
+    },
+    {
+      "id": "orders",
+      "contexts": [
+        "client",
+        "master",
+        "sto",
+        "organization"
+      ],
+      "routes": [
+        "#/orders",
+        "#/orders/item/:id"
+      ],
+      "windows": [
+        "order-actions",
+        "offer-selection",
+        "master-confirm",
+        "reschedule"
+      ],
+      "cross": [
+        "#/chats",
+        "#/workflow",
+        "#/orders/new"
+      ]
+    },
+    {
+      "id": "parts",
+      "contexts": [
+        "client",
+        "master",
+        "sto",
+        "seller"
+      ],
+      "routes": [
+        "#/parts",
+        "#/parts/used",
+        "#/parts/item/:id",
+        "#/parts/store/:id"
+      ],
+      "views": [
+        "new",
+        "used"
+      ],
+      "windows": [
+        "used-listing-wizard",
+        "used-detail",
+        "cart"
+      ],
+      "cross": [
+        "#/orders/item/:id",
+        "#/chats"
+      ]
+    },
+    {
+      "id": "masters",
+      "contexts": [
+        "client",
+        "sto"
+      ],
+      "routes": [
+        "#/masters",
+        "#/masters/profile/{master|sto}/:id",
+        "#/masters/reviews/{master|sto}/:id",
+        "#/masters/book/master/:id"
+      ],
+      "views": [
+        "provider-type",
+        "nearby/filter"
+      ],
+      "cross": [
+        "#/chats"
+      ]
+    },
+    {
+      "id": "community",
+      "contexts": [
+        "client",
+        "master",
+        "seller"
+      ],
+      "routes": [
+        "#/works",
+        "#/community",
+        "#/following",
+        "#/real-works",
+        "#/works/item/:id",
+        "#/profile/{person|organization}/:id"
+      ],
+      "aliases": {
+        "#/news": "#/works"
+      }
+    }
+  ],
+  "notes": [
+    "Map is source-derived and intentionally incomplete until remaining route modules are scanned.",
+    "No runtime/browser verification has been claimed."
+  ]
+}
