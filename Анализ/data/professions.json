@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "data_version": "master_matching_draft_v1",
+  "created_on": "2026-10-01",
+  "status": "DRAFT_NOT_RUNTIME_IMPORT",
+  "source_repository": "shtefanvko-ctrl/kareta",
+  "service_source": "storage/catalog/services.json",
+  "service_source_blob": "e3688e785be691fc81ad4030ad6fda34ec822f58",
+  "source_release_sha": "c20beb7fd2814e06b108451aa3e15bf414448123",
+  "no_copy_of_services": true,
+  "relations_are_proposals": true,
+  "items": [
+    {
+      "id": "mechanic",
+      "label_ru": "Автомеханик",
+      "label_mobile": "Автомеханик",
+      "label_tablet": "Автомеханик",
+      "icon_id": "tabler:tools",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "diagnostician",
+      "label_ru": "Диагност",
+      "label_mobile": "Диагност",
+      "label_tablet": "Диагност",
+      "icon_id": "tabler:device-desktop",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "auto_electrician",
+      "label_ru": "Автоэлектрик",
+      "label_mobile": "Автоэлектрик",
+      "label_tablet": "Автоэлектрик",
+      "icon_id": "tabler:bolt",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "engine_specialist",
+      "label_ru": "Моторист",
+      "label_mobile": "Моторист",
+      "label_tablet": "Моторист",
+      "icon_id": "tabler:engine",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "fuel_specialist",
+      "label_ru": "Топливщик",
+      "label_mobile": "Топливщик",
+      "label_tablet": "Топливщик",
+      "icon_id": "tabler:gas-station",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "diesel_specialist",
+      "label_ru": "Дизелист",
+      "label_mobile": "Дизелист",
+      "label_tablet": "Дизелист",
+      "icon_id": "tabler:gas-station",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "climate_specialist",
+      "label_ru": "Климат",
+      "label_mobile": "Климат",
+      "label_tablet": "Климат",
+      "icon_id": "tabler:snowflake",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "exhaust_specialist",
+      "label_ru": "Выхлоп",
+      "label_mobile": "Выхлоп",
+      "label_tablet": "Выхлоп",
+      "icon_id": "tabler:wind",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "transmission_specialist",
+      "label_ru": "Коробки",
+      "label_mobile": "Коробки",
+      "label_tablet": "Коробки",
+      "icon_id": "tabler:settings",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "suspension_specialist",
+      "label_ru": "Ходовая",
+      "label_mobile": "Ходовая",
+      "label_tablet": "Ходовая",
+      "icon_id": "tabler:car",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "brake_specialist",
+      "label_ru": "Тормоза",
+      "label_mobile": "Тормоза",
+      "label_tablet": "Тормоза",
+      "icon_id": "tabler:disc",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "tire_specialist",
+      "label_ru": "Шиномонтаж",
+      "label_mobile": "Шиномонтаж",
+      "label_tablet": "Шиномонтаж",
+      "icon_id": "tabler:disc",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "alignment_specialist",
+      "label_ru": "Развал",
+      "label_mobile": "Развал",
+      "label_tablet": "Развал",
+      "icon_id": "tabler:steering-wheel",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "body_specialist",
+      "label_ru": "Кузовщик",
+      "label_mobile": "Кузовщик",
+      "label_tablet": "Кузовщик",
+      "icon_id": "tabler:hammer",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "automotive_welder",
+      "label_ru": "Сварщик авто",
+      "label_mobile": "Сварщик авто",
+      "label_tablet": "Сварщик авто",
+      "icon_id": "tabler:flame",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "painter",
+      "label_ru": "Маляр",
+      "label_mobile": "Маляр",
+      "label_tablet": "Маляр",
+      "icon_id": "tabler:paint",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "glass_specialist",
+      "label_ru": "Автостёкла",
+      "label_mobile": "Автостёкла",
+      "label_tablet": "Автостёкла",
+      "icon_id": "tabler:wiper",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "detailer",
+      "label_ru": "Детейлер",
+      "label_mobile": "Детейлер",
+      "label_tablet": "Детейлер",
+      "icon_id": "tabler:brush",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "washer",
+      "label_ru": "Автомойка",
+      "label_mobile": "Автомойка",
+      "label_tablet": "Автомойка",
+      "icon_id": "tabler:bucket",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "accessories_installer",
+      "label_ru": "Установщик",
+      "label_mobile": "Установщик",
+      "label_tablet": "Установщик",
+      "icon_id": "tabler:plug-connected",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    },
+    {
+      "id": "ev_specialist",
+      "label_ru": "Электромобили",
+      "label_mobile": "Электромобили",
+      "label_tablet": "Электромобили",
+      "icon_id": "tabler:shield-check",
+      "confirmation": "master_confirmed_services_required",
+      "evidence_status": "DRAFT_TAXONOMY"
+    }
+  ]
+}

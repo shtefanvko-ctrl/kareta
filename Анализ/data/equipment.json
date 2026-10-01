@@ -1,0 +1,1992 @@
+{
+  "schema_version": 1,
+  "data_version": "master_matching_draft_v1",
+  "created_on": "2026-10-01",
+  "status": "DRAFT_NOT_RUNTIME_IMPORT",
+  "source_repository": "shtefanvko-ctrl/kareta",
+  "service_source": "storage/catalog/services.json",
+  "service_source_blob": "e3688e785be691fc81ad4030ad6fda34ec822f58",
+  "source_release_sha": "c20beb7fd2814e06b108451aa3e15bf414448123",
+  "no_copy_of_services": true,
+  "relations_are_proposals": true,
+  "groups": [
+    {
+      "id": "diagnostic",
+      "label": "Диагностика",
+      "icon_id": "tabler:device-desktop"
+    },
+    {
+      "id": "electrical",
+      "label": "Электрика",
+      "icon_id": "tabler:bolt"
+    },
+    {
+      "id": "lifting",
+      "label": "Подъём",
+      "icon_id": "tabler:car-crane"
+    },
+    {
+      "id": "hand_tools",
+      "label": "Инструмент",
+      "icon_id": "tabler:tools"
+    },
+    {
+      "id": "engine",
+      "label": "Двигатель",
+      "icon_id": "tabler:engine"
+    },
+    {
+      "id": "fuel",
+      "label": "Топливо",
+      "icon_id": "tabler:gas-station"
+    },
+    {
+      "id": "climate",
+      "label": "Климат",
+      "icon_id": "tabler:snowflake"
+    },
+    {
+      "id": "tires",
+      "label": "Шины",
+      "icon_id": "tabler:disc"
+    },
+    {
+      "id": "alignment",
+      "label": "Развал",
+      "icon_id": "tabler:steering-wheel"
+    },
+    {
+      "id": "brakes",
+      "label": "Тормоза",
+      "icon_id": "tabler:gauge"
+    },
+    {
+      "id": "welding",
+      "label": "Сварка",
+      "icon_id": "tabler:flame"
+    },
+    {
+      "id": "body",
+      "label": "Кузов",
+      "icon_id": "tabler:hammer"
+    },
+    {
+      "id": "painting",
+      "label": "Покраска",
+      "icon_id": "tabler:spray"
+    },
+    {
+      "id": "detailing",
+      "label": "Детейлинг",
+      "icon_id": "tabler:brush"
+    },
+    {
+      "id": "glass",
+      "label": "Стёкла",
+      "icon_id": "tabler:wiper"
+    },
+    {
+      "id": "safety",
+      "label": "Защита",
+      "icon_id": "tabler:shield-check"
+    },
+    {
+      "id": "battery",
+      "label": "АКБ",
+      "icon_id": "tabler:battery-automotive"
+    },
+    {
+      "id": "workshop",
+      "label": "Мастерская",
+      "icon_id": "tabler:car-garage"
+    }
+  ],
+  "items": [
+    {
+      "id": "obd_scanner",
+      "label_ru": "OBD-сканер",
+      "label_mobile": "OBD-сканер",
+      "label_tablet": "OBD-сканер",
+      "group_id": "diagnostic",
+      "icon_id": "tabler:device-desktop",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:device-desktop",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "oscilloscope",
+      "label_ru": "Осциллограф",
+      "label_mobile": "Осциллограф",
+      "label_tablet": "Осциллограф",
+      "group_id": "diagnostic",
+      "icon_id": "tabler:wave-sine",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:wave-sine",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "smoke_tester",
+      "label_ru": "Дымогенератор",
+      "label_mobile": "Дымогенератор",
+      "label_tablet": "Дымогенератор",
+      "group_id": "diagnostic",
+      "icon_id": "tabler:wind",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:wind",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "compression_tester",
+      "label_ru": "Компрессометр",
+      "label_mobile": "Компрессометр",
+      "label_tablet": "Компрессометр",
+      "group_id": "diagnostic",
+      "icon_id": "tabler:gauge",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:gauge",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "leak_down_tester",
+      "label_ru": "Тестер утечек",
+      "label_mobile": "Тестер утечек",
+      "label_tablet": "Тестер утечек",
+      "group_id": "diagnostic",
+      "icon_id": "tabler:gauge",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:gauge",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "borescope",
+      "label_ru": "Эндоскоп",
+      "label_mobile": "Эндоскоп",
+      "label_tablet": "Эндоскоп",
+      "group_id": "diagnostic",
+      "icon_id": "tabler:device-desktop",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:device-desktop",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "paint_thickness_gauge",
+      "label_ru": "Толщиномер",
+      "label_mobile": "Толщиномер",
+      "label_tablet": "Толщиномер",
+      "group_id": "diagnostic",
+      "icon_id": "tabler:ruler-measure",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:ruler-measure",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "multimeter",
+      "label_ru": "Мультиметр",
+      "label_mobile": "Мультиметр",
+      "label_tablet": "Мультиметр",
+      "group_id": "electrical",
+      "icon_id": "tabler:device-heart-monitor",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:device-heart-monitor",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "dc_current_clamp",
+      "label_ru": "Токовые клещи",
+      "label_mobile": "Токовые клещи",
+      "label_tablet": "Токовые клещи",
+      "group_id": "electrical",
+      "icon_id": "tabler:bolt",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:bolt",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "circuit_probe",
+      "label_ru": "Пробник цепей",
+      "label_mobile": "Пробник цепей",
+      "label_tablet": "Пробник цепей",
+      "group_id": "electrical",
+      "icon_id": "tabler:plug-connected",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:plug-connected",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "ecu_programmer",
+      "label_ru": "Программатор ЭБУ",
+      "label_mobile": "Программатор ЭБУ",
+      "label_tablet": "Программатор ЭБУ",
+      "group_id": "electrical",
+      "icon_id": "tabler:device-desktop",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:device-desktop",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "solder_station",
+      "label_ru": "Паяльная станция",
+      "label_mobile": "Паяльная станция",
+      "label_tablet": "Паяльная станция",
+      "group_id": "electrical",
+      "icon_id": "tabler:temperature",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:temperature",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "bench_power_supply",
+      "label_ru": "Блок питания",
+      "label_mobile": "Блок питания",
+      "label_tablet": "Блок питания",
+      "group_id": "electrical",
+      "icon_id": "tabler:plug-connected",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:plug-connected",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "can_interface",
+      "label_ru": "CAN-интерфейс",
+      "label_mobile": "CAN-интерфейс",
+      "label_tablet": "CAN-интерфейс",
+      "group_id": "electrical",
+      "icon_id": "tabler:device-desktop",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:device-desktop",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "crimp_tool",
+      "label_ru": "Кримпер",
+      "label_mobile": "Кримпер",
+      "label_tablet": "Кримпер",
+      "group_id": "electrical",
+      "icon_id": "tabler:tool",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:tool",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "wire_tracer",
+      "label_ru": "Трассоискатель",
+      "label_mobile": "Трассоискатель",
+      "label_tablet": "Трассоискатель",
+      "group_id": "electrical",
+      "icon_id": "tabler:bolt",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:bolt",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "automotive_lift",
+      "label_ru": "Автоподъёмник",
+      "label_mobile": "Автоподъёмник",
+      "label_tablet": "Автоподъёмник",
+      "group_id": "lifting",
+      "icon_id": "tabler:car-crane",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:car-crane",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "inspection_pit",
+      "label_ru": "Смотровая яма",
+      "label_mobile": "Смотровая яма",
+      "label_tablet": "Смотровая яма",
+      "group_id": "lifting",
+      "icon_id": "tabler:car-garage",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:car-garage",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "floor_jack",
+      "label_ru": "Домкрат",
+      "label_mobile": "Домкрат",
+      "label_tablet": "Домкрат",
+      "group_id": "lifting",
+      "icon_id": "tabler:car-crane",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:car-crane",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "jack_stands",
+      "label_ru": "Опоры авто",
+      "label_mobile": "Опоры авто",
+      "label_tablet": "Опоры авто",
+      "group_id": "lifting",
+      "icon_id": "tabler:car-crane",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:car-crane",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "engine_hoist",
+      "label_ru": "Кран двигателя",
+      "label_mobile": "Кран двигателя",
+      "label_tablet": "Кран двигателя",
+      "group_id": "lifting",
+      "icon_id": "tabler:car-crane",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:car-crane",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "transmission_jack",
+      "label_ru": "Стойка КПП",
+      "label_mobile": "Стойка КПП",
+      "label_tablet": "Стойка КПП",
+      "group_id": "lifting",
+      "icon_id": "tabler:car-crane",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:car-crane",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "socket_set",
+      "label_ru": "Головки",
+      "label_mobile": "Головки",
+      "label_tablet": "Головки",
+      "group_id": "hand_tools",
+      "icon_id": "tabler:tools",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:tools",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "torque_wrench",
+      "label_ru": "Динамоключ",
+      "label_mobile": "Динамоключ",
+      "label_tablet": "Динамоключ",
+      "group_id": "hand_tools",
+      "icon_id": "tabler:tool",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:tool",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "impact_wrench",
+      "label_ru": "Гайковёрт",
+      "label_mobile": "Гайковёрт",
+      "label_tablet": "Гайковёрт",
+      "group_id": "hand_tools",
+      "icon_id": "tabler:tool",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:tool",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "bearing_pullers",
+      "label_ru": "Съёмники",
+      "label_mobile": "Съёмники",
+      "label_tablet": "Съёмники",
+      "group_id": "hand_tools",
+      "icon_id": "tabler:tools",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:tools",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "hydraulic_press",
+      "label_ru": "Пресс",
+      "label_mobile": "Пресс",
+      "label_tablet": "Пресс",
+      "group_id": "hand_tools",
+      "icon_id": "tabler:hammer",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:hammer",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "spring_compressor",
+      "label_ru": "Стяжки пружин",
+      "label_mobile": "Стяжки пружин",
+      "label_tablet": "Стяжки пружин",
+      "group_id": "hand_tools",
+      "icon_id": "tabler:tool",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:tool",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "timing_lock_set",
+      "label_ru": "Фиксаторы ГРМ",
+      "label_mobile": "Фиксаторы ГРМ",
+      "label_tablet": "Фиксаторы ГРМ",
+      "group_id": "engine",
+      "icon_id": "tabler:engine",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:engine",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "engine_stand",
+      "label_ru": "Стенд двигателя",
+      "label_mobile": "Стенд двигателя",
+      "label_tablet": "Стенд двигателя",
+      "group_id": "engine",
+      "icon_id": "tabler:engine",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:engine",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "oil_drainer",
+      "label_ru": "Слив масла",
+      "label_mobile": "Слив масла",
+      "label_tablet": "Слив масла",
+      "group_id": "engine",
+      "icon_id": "tabler:bucket",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:bucket",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "oil_extractor",
+      "label_ru": "Экстрактор масла",
+      "label_mobile": "Экстрактор масла",
+      "label_tablet": "Экстрактор масла",
+      "group_id": "engine",
+      "icon_id": "tabler:bucket",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:bucket",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "cooling_pressure_tester",
+      "label_ru": "Опрессовка",
+      "label_mobile": "Опрессовка",
+      "label_tablet": "Опрессовка",
+      "group_id": "engine",
+      "icon_id": "tabler:gauge",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:gauge",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "injector_test_bench",
+      "label_ru": "Стенд форсунок",
+      "label_mobile": "Стенд форсунок",
+      "label_tablet": "Стенд форсунок",
+      "group_id": "fuel",
+      "icon_id": "tabler:gas-station",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:gas-station",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "ultrasonic_cleaner",
+      "label_ru": "УЗ-ванна",
+      "label_mobile": "УЗ-ванна",
+      "label_tablet": "УЗ-ванна",
+      "group_id": "fuel",
+      "icon_id": "tabler:wash-machine",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:wash-machine",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "fuel_pressure_gauge",
+      "label_ru": "Манометр топлива",
+      "label_mobile": "Манометр топлива",
+      "label_tablet": "Манометр топлива",
+      "group_id": "fuel",
+      "icon_id": "tabler:gauge",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:gauge",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "diesel_common_rail_bench",
+      "label_ru": "Стенд дизеля",
+      "label_mobile": "Стенд дизеля",
+      "label_tablet": "Стенд дизеля",
+      "group_id": "fuel",
+      "icon_id": "tabler:gas-station",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:gas-station",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "ac_service_station",
+      "label_ru": "Станция A/C",
+      "label_mobile": "Станция A/C",
+      "label_tablet": "Станция A/C",
+      "group_id": "climate",
+      "icon_id": "tabler:air-conditioning",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:air-conditioning",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "refrigerant_leak_detector",
+      "label_ru": "Течеискатель A/C",
+      "label_mobile": "Течеискатель A/C",
+      "label_tablet": "Течеискатель A/C",
+      "group_id": "climate",
+      "icon_id": "tabler:search",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:search",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "vacuum_pump",
+      "label_ru": "Вакуумный насос",
+      "label_mobile": "Вакуумный насос",
+      "label_tablet": "Вакуумный насос",
+      "group_id": "climate",
+      "icon_id": "tabler:wind",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:wind",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "manifold_gauge_set",
+      "label_ru": "Манометры A/C",
+      "label_mobile": "Манометры A/C",
+      "label_tablet": "Манометры A/C",
+      "group_id": "climate",
+      "icon_id": "tabler:gauge",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:gauge",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "tire_changer",
+      "label_ru": "Шиномонтаж",
+      "label_mobile": "Шиномонтаж",
+      "label_tablet": "Шиномонтаж",
+      "group_id": "tires",
+      "icon_id": "tabler:disc",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:disc",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "wheel_balancer",
+      "label_ru": "Балансировка",
+      "label_mobile": "Балансировка",
+      "label_tablet": "Балансировка",
+      "group_id": "tires",
+      "icon_id": "tabler:disc",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:disc",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "tire_repair_kit",
+      "label_ru": "Ремонт шин",
+      "label_mobile": "Ремонт шин",
+      "label_tablet": "Ремонт шин",
+      "group_id": "tires",
+      "icon_id": "tabler:tool",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:tool",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "tpms_tool",
+      "label_ru": "Программатор TPMS",
+      "label_mobile": "Программатор TPMS",
+      "label_tablet": "Программатор TPMS",
+      "group_id": "tires",
+      "icon_id": "tabler:device-desktop",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:device-desktop",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "rim_straightener",
+      "label_ru": "Правка дисков",
+      "label_mobile": "Правка дисков",
+      "label_tablet": "Правка дисков",
+      "group_id": "tires",
+      "icon_id": "tabler:disc",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:disc",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "alignment_rack",
+      "label_ru": "Стенд развала",
+      "label_mobile": "Стенд развала",
+      "label_tablet": "Стенд развала",
+      "group_id": "alignment",
+      "icon_id": "tabler:steering-wheel",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:steering-wheel",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "brake_bleeder",
+      "label_ru": "Прокачка тормозов",
+      "label_mobile": "Прокачка тормозов",
+      "label_tablet": "Прокачка тормозов",
+      "group_id": "brakes",
+      "icon_id": "tabler:gauge",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:gauge",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "brake_fluid_tester",
+      "label_ru": "Тестер жидкости",
+      "label_mobile": "Тестер жидкости",
+      "label_tablet": "Тестер жидкости",
+      "group_id": "brakes",
+      "icon_id": "tabler:device-heart-monitor",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:device-heart-monitor",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "brake_lathe",
+      "label_ru": "Проточка дисков",
+      "label_mobile": "Проточка дисков",
+      "label_tablet": "Проточка дисков",
+      "group_id": "brakes",
+      "icon_id": "tabler:disc",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:disc",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "mig_mag_welder",
+      "label_ru": "MIG/MAG",
+      "label_mobile": "MIG/MAG",
+      "label_tablet": "MIG/MAG",
+      "group_id": "welding",
+      "icon_id": "tabler:flame",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:flame",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "tig_welder",
+      "label_ru": "TIG-сварка",
+      "label_mobile": "TIG-сварка",
+      "label_tablet": "TIG-сварка",
+      "group_id": "welding",
+      "icon_id": "tabler:flame",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:flame",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "mma_welder",
+      "label_ru": "MMA-сварка",
+      "label_mobile": "MMA-сварка",
+      "label_tablet": "MMA-сварка",
+      "group_id": "welding",
+      "icon_id": "tabler:flame",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:flame",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "spot_welder",
+      "label_ru": "Точечная сварка",
+      "label_mobile": "Точечная сварка",
+      "label_tablet": "Точечная сварка",
+      "group_id": "welding",
+      "icon_id": "tabler:flame",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:flame",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "plasma_cutter",
+      "label_ru": "Плазморез",
+      "label_mobile": "Плазморез",
+      "label_tablet": "Плазморез",
+      "group_id": "welding",
+      "icon_id": "tabler:flame",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:flame",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "angle_grinder",
+      "label_ru": "Болгарка",
+      "label_mobile": "Болгарка",
+      "label_tablet": "Болгарка",
+      "group_id": "welding",
+      "icon_id": "tabler:tool",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:tool",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "body_frame_bench",
+      "label_ru": "Стапель",
+      "label_mobile": "Стапель",
+      "label_tablet": "Стапель",
+      "group_id": "body",
+      "icon_id": "tabler:car-garage",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:car-garage",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "dent_puller",
+      "label_ru": "Споттер",
+      "label_mobile": "Споттер",
+      "label_tablet": "Споттер",
+      "group_id": "body",
+      "icon_id": "tabler:hammer",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:hammer",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "pdr_tools",
+      "label_ru": "PDR-набор",
+      "label_mobile": "PDR-набор",
+      "label_tablet": "PDR-набор",
+      "group_id": "body",
+      "icon_id": "tabler:tools",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:tools",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "body_measuring_system",
+      "label_ru": "Геометрия кузова",
+      "label_mobile": "Геометрия кузова",
+      "label_tablet": "Геометрия кузова",
+      "group_id": "body",
+      "icon_id": "tabler:ruler-measure",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:ruler-measure",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "spray_gun",
+      "label_ru": "Краскопульт",
+      "label_mobile": "Краскопульт",
+      "label_tablet": "Краскопульт",
+      "group_id": "painting",
+      "icon_id": "tabler:spray",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:spray",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "paint_booth",
+      "label_ru": "Покрасочная камера",
+      "label_mobile": "Покрасочная камера",
+      "label_tablet": "Покрасочная камера",
+      "group_id": "painting",
+      "icon_id": "tabler:paint",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:paint",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "air_compressor",
+      "label_ru": "Компрессор",
+      "label_mobile": "Компрессор",
+      "label_tablet": "Компрессор",
+      "group_id": "workshop",
+      "icon_id": "tabler:wind",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:wind",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "air_dryer",
+      "label_ru": "Осушитель",
+      "label_mobile": "Осушитель",
+      "label_tablet": "Осушитель",
+      "group_id": "workshop",
+      "icon_id": "tabler:wind",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:wind",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "polisher",
+      "label_ru": "Полировальная",
+      "label_mobile": "Полировальная",
+      "label_tablet": "Полировальная",
+      "group_id": "detailing",
+      "icon_id": "tabler:brush",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:brush",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "pressure_washer",
+      "label_ru": "Мойка давления",
+      "label_mobile": "Мойка давления",
+      "label_tablet": "Мойка давления",
+      "group_id": "detailing",
+      "icon_id": "tabler:bucket",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:bucket",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "extractor_vacuum",
+      "label_ru": "Экстрактор салона",
+      "label_mobile": "Экстрактор салона",
+      "label_tablet": "Экстрактор салона",
+      "group_id": "detailing",
+      "icon_id": "tabler:wash-machine",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:wash-machine",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "steam_cleaner",
+      "label_ru": "Парогенератор",
+      "label_mobile": "Парогенератор",
+      "label_tablet": "Парогенератор",
+      "group_id": "detailing",
+      "icon_id": "tabler:wind",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:wind",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "heat_gun",
+      "label_ru": "Термофен",
+      "label_mobile": "Термофен",
+      "label_tablet": "Термофен",
+      "group_id": "detailing",
+      "icon_id": "tabler:temperature",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:temperature",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "glass_cutout_tool",
+      "label_ru": "Срез стекла",
+      "label_mobile": "Срез стекла",
+      "label_tablet": "Срез стекла",
+      "group_id": "glass",
+      "icon_id": "tabler:wiper",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:wiper",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "glass_repair_bridge",
+      "label_ru": "Ремонт сколов",
+      "label_mobile": "Ремонт сколов",
+      "label_tablet": "Ремонт сколов",
+      "group_id": "glass",
+      "icon_id": "tabler:wiper",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:wiper",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "glass_suction_lifters",
+      "label_ru": "Присоски стекла",
+      "label_mobile": "Присоски стекла",
+      "label_tablet": "Присоски стекла",
+      "group_id": "glass",
+      "icon_id": "tabler:wiper",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:wiper",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "battery_tester",
+      "label_ru": "Тестер АКБ",
+      "label_mobile": "Тестер АКБ",
+      "label_tablet": "Тестер АКБ",
+      "group_id": "battery",
+      "icon_id": "tabler:battery-automotive",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:battery-automotive",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "battery_charger",
+      "label_ru": "Зарядное АКБ",
+      "label_mobile": "Зарядное АКБ",
+      "label_tablet": "Зарядное АКБ",
+      "group_id": "battery",
+      "icon_id": "tabler:battery-automotive",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:battery-automotive",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "jump_starter",
+      "label_ru": "Пусковое",
+      "label_mobile": "Пусковое",
+      "label_tablet": "Пусковое",
+      "group_id": "battery",
+      "icon_id": "tabler:battery-automotive",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:battery-automotive",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "insulated_tools",
+      "label_ru": "Изолированный",
+      "label_mobile": "Изолированный",
+      "label_tablet": "Изолированный",
+      "group_id": "safety",
+      "icon_id": "tabler:shield-check",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:shield-check",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "hv_insulation_tester",
+      "label_ru": "Тестер изоляции",
+      "label_mobile": "Тестер изоляции",
+      "label_tablet": "Тестер изоляции",
+      "group_id": "safety",
+      "icon_id": "tabler:shield-check",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:shield-check",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "safety_ppe",
+      "label_ru": "Защита мастера",
+      "label_mobile": "Защита мастера",
+      "label_tablet": "Защита мастера",
+      "group_id": "safety",
+      "icon_id": "tabler:shield-check",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:shield-check",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "welding_fume_extractor",
+      "label_ru": "Вытяжка сварки",
+      "label_mobile": "Вытяжка сварки",
+      "label_tablet": "Вытяжка сварки",
+      "group_id": "safety",
+      "icon_id": "tabler:wind",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:wind",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "headlight_aim_tester",
+      "label_ru": "Стенд фар",
+      "label_mobile": "Стенд фар",
+      "label_tablet": "Стенд фар",
+      "group_id": "diagnostic",
+      "icon_id": "tabler:bulb",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:bulb",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "adas_calibration_system",
+      "label_ru": "Калибровка ADAS",
+      "label_mobile": "Калибровка ADAS",
+      "label_tablet": "Калибровка ADAS",
+      "group_id": "diagnostic",
+      "icon_id": "tabler:ruler-measure",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:ruler-measure",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    },
+    {
+      "id": "workbench_vice",
+      "label_ru": "Верстак и тиски",
+      "label_mobile": "Верстак и тиски",
+      "label_tablet": "Верстак и тиски",
+      "group_id": "workshop",
+      "icon_id": "tabler:hammer",
+      "illustration": {
+        "kind": "icon",
+        "icon_id": "tabler:hammer",
+        "photo_url": null,
+        "photo_status": "NOT COLLECTED"
+      },
+      "selection_mode": "buttons",
+      "access_choices": [
+        "owned",
+        "shared_sto",
+        "rented",
+        "need_buy"
+      ],
+      "evidence_status": "DRAFT_TAXONOMY",
+      "capability_requires_confirmation": true
+    }
+  ]
+}

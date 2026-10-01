@@ -1,0 +1,24 @@
+{
+  "candidate_service_sha": "c20beb7fd2814e06b108451aa3e15bf414448123",
+  "status": "PASS",
+  "checks": [
+    "unique IDs",
+    "unique normalized equipment/profession labels",
+    "all cross references",
+    "109 canonical service links",
+    "short mobile labels",
+    "hypothetical demand explicitly separated",
+    "no service price copies"
+  ],
+  "counts": {
+    "equipment": 82,
+    "professions": 21,
+    "service_links": 109,
+    "query_examples": 52,
+    "button_clarifications": 6
+  },
+  "errors": [],
+  "technical_relations_expert_review": "NOT RUN",
+  "real_search_demand_measurement": "NOT RUN",
+  "runtime_import": "NOT RUN"
+}

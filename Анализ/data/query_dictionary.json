@@ -1,0 +1,788 @@
+{
+  "schema_version": 1,
+  "data_version": "master_matching_draft_v1",
+  "created_on": "2026-10-01",
+  "status": "DRAFT_NOT_RUNTIME_IMPORT",
+  "source_repository": "shtefanvko-ctrl/kareta",
+  "service_source": "storage/catalog/services.json",
+  "service_source_blob": "e3688e785be691fc81ad4030ad6fda34ec822f58",
+  "source_release_sha": "c20beb7fd2814e06b108451aa3e15bf414448123",
+  "no_copy_of_services": true,
+  "relations_are_proposals": true,
+  "items": [
+    {
+      "id": "q_001",
+      "query_ru": "проверить ошибки",
+      "candidate_service_ids": [
+        "computer_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_002",
+      "query_ru": "горит чек",
+      "candidate_service_ids": [
+        "computer_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_003",
+      "query_ru": "чек двигателя",
+      "candidate_service_ids": [
+        "engine_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_004",
+      "query_ru": "не заводится",
+      "candidate_service_ids": [
+        "engine_diag",
+        "electric_diag",
+        "fuel_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": true,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_005",
+      "query_ru": "машина троит",
+      "candidate_service_ids": [
+        "engine_diag",
+        "fuel_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": true,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_006",
+      "query_ru": "течёт масло",
+      "candidate_service_ids": [
+        "leak_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_007",
+      "query_ru": "дымит мотор",
+      "candidate_service_ids": [
+        "engine_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_008",
+      "query_ru": "перегревается",
+      "candidate_service_ids": [
+        "engine_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": true,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_009",
+      "query_ru": "печка не греет",
+      "candidate_service_ids": [
+        "heater_radiator",
+        "thermostat_replace"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": true,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_010",
+      "query_ru": "кондиционер не холодит",
+      "candidate_service_ids": [
+        "ac_leak",
+        "ac_compressor"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": true,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_011",
+      "query_ru": "заправить кондей",
+      "candidate_service_ids": [
+        "ac_refill"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_012",
+      "query_ru": "уходит фреон",
+      "candidate_service_ids": [
+        "ac_leak"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_013",
+      "query_ru": "аккумулятор садится",
+      "candidate_service_ids": [
+        "leak_current",
+        "generator_repair"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": true,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_014",
+      "query_ru": "не крутит стартер",
+      "candidate_service_ids": [
+        "starter_repair",
+        "electric_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": true,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_015",
+      "query_ru": "нет зарядки",
+      "candidate_service_ids": [
+        "generator_repair"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_016",
+      "query_ru": "ремонт проводки",
+      "candidate_service_ids": [
+        "wiring_repair"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_017",
+      "query_ru": "утечка тока",
+      "candidate_service_ids": [
+        "leak_current"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_018",
+      "query_ru": "центральный замок",
+      "candidate_service_ids": [
+        "central_lock"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_019",
+      "query_ru": "CAN ошибки",
+      "candidate_service_ids": [
+        "can_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_020",
+      "query_ru": "горит airbag",
+      "candidate_service_ids": [
+        "srs_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_021",
+      "query_ru": "установка сигналки",
+      "candidate_service_ids": [
+        "alarm_install"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_022",
+      "query_ru": "автозапуск",
+      "candidate_service_ids": [
+        "remote_start"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_023",
+      "query_ru": "поставить магнитолу",
+      "candidate_service_ids": [
+        "media_install"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_024",
+      "query_ru": "камера заднего вида",
+      "candidate_service_ids": [
+        "camera_install"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_025",
+      "query_ru": "парктроники",
+      "candidate_service_ids": [
+        "parking_sensor"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_026",
+      "query_ru": "заменить масло",
+      "candidate_service_ids": [
+        "engine_oil"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_027",
+      "query_ru": "поменять антифриз",
+      "candidate_service_ids": [
+        "coolant_replace"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_028",
+      "query_ru": "замена грм",
+      "candidate_service_ids": [
+        "timing_replace"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_029",
+      "query_ru": "ремонт коробки",
+      "candidate_service_ids": [
+        "gearbox_service"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_030",
+      "query_ru": "пробуксовывает сцепление",
+      "candidate_service_ids": [
+        "clutch_replace"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_031",
+      "query_ru": "стук подвески",
+      "candidate_service_ids": [
+        "chassis_diag",
+        "noise_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": true,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_032",
+      "query_ru": "гудит ступица",
+      "candidate_service_ids": [
+        "wheel_bearing"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_033",
+      "query_ru": "машину тянет",
+      "candidate_service_ids": [
+        "wheel_geometry_check",
+        "chassis_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": true,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_034",
+      "query_ru": "сход развал",
+      "candidate_service_ids": [
+        "alignment"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_035",
+      "query_ru": "поменять колодки",
+      "candidate_service_ids": [
+        "front_pads",
+        "rear_pads"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": true,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_036",
+      "query_ru": "тормоза скрипят",
+      "candidate_service_ids": [
+        "full_brake_service"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": true,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_037",
+      "query_ru": "горит ABS",
+      "candidate_service_ids": [
+        "abs_sensor",
+        "electric_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": true,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_038",
+      "query_ru": "переобувка",
+      "candidate_service_ids": [
+        "tire_season"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_039",
+      "query_ru": "балансировка",
+      "candidate_service_ids": [
+        "wheel_balance"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_040",
+      "query_ru": "спустило колесо",
+      "candidate_service_ids": [
+        "puncture_repair"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_041",
+      "query_ru": "датчик давления",
+      "candidate_service_ids": [
+        "tpms_service"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_042",
+      "query_ru": "сварить порог",
+      "candidate_service_ids": [
+        "threshold_welding"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_043",
+      "query_ru": "сварка арки",
+      "candidate_service_ids": [
+        "threshold_welding"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_044",
+      "query_ru": "глушитель прогорел",
+      "candidate_service_ids": [
+        "exhaust_repair"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_045",
+      "query_ru": "заменить глушитель",
+      "candidate_service_ids": [
+        "muffler_replace"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_046",
+      "query_ru": "царапина кузова",
+      "candidate_service_ids": [
+        "scratch_remove"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_047",
+      "query_ru": "сколы краски",
+      "candidate_service_ids": [
+        "paint_chip"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_048",
+      "query_ru": "полировка",
+      "candidate_service_ids": [
+        "body_polish",
+        "headlight_polish",
+        "glass_polish"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": true,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_049",
+      "query_ru": "химчистка салона",
+      "candidate_service_ids": [
+        "interior_detail"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_050",
+      "query_ru": "керамика кузова",
+      "candidate_service_ids": [
+        "ceramic_coating"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_051",
+      "query_ru": "плёнка на кузов",
+      "candidate_service_ids": [
+        "film_protection"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    },
+    {
+      "id": "q_052",
+      "query_ru": "проверка перед покупкой",
+      "candidate_service_ids": [
+        "prebuy_diag"
+      ],
+      "evidence_status": "HYPOTHETICAL_QUERY",
+      "observed_count": null,
+      "clarification_required": false,
+      "automatic_diagnosis_allowed": false,
+      "domain": "automotive"
+    }
+  ],
+  "clarifications": [
+    {
+      "id": "welding_domain",
+      "trigger_terms": [
+        "сварщик",
+        "сварка"
+      ],
+      "question": "Что сварить?",
+      "buttons": [
+        {
+          "id": "auto_body",
+          "label": "Порог / арка",
+          "service_ids": [
+            "threshold_welding"
+          ]
+        },
+        {
+          "id": "auto_exhaust",
+          "label": "Выхлоп",
+          "service_ids": [
+            "exhaust_repair"
+          ]
+        },
+        {
+          "id": "auto_part",
+          "label": "Деталь авто",
+          "service_ids": [],
+          "requires_review": true
+        },
+        {
+          "id": "outside_auto",
+          "label": "Ворота / трубы",
+          "service_ids": [],
+          "domain": "outside_automotive"
+        }
+      ]
+    },
+    {
+      "id": "welding_material",
+      "question": "Материал детали?",
+      "buttons": [
+        {
+          "id": "steel",
+          "label": "Сталь"
+        },
+        {
+          "id": "aluminum",
+          "label": "Алюминий"
+        },
+        {
+          "id": "stainless",
+          "label": "Нержавейка"
+        },
+        {
+          "id": "unknown",
+          "label": "Не знаю"
+        }
+      ],
+      "equipment_alone_is_not_skill": true
+    },
+    {
+      "id": "location",
+      "question": "Как принять автомобиль?",
+      "buttons": [
+        {
+          "id": "stationary",
+          "label": "У мастера"
+        },
+        {
+          "id": "mobile",
+          "label": "Выезд"
+        },
+        {
+          "id": "both",
+          "label": "Оба варианта"
+        }
+      ]
+    },
+    {
+      "id": "equipment_access",
+      "question": "Доступ к оборудованию?",
+      "buttons": [
+        {
+          "id": "owned",
+          "label": "Есть"
+        },
+        {
+          "id": "shared_sto",
+          "label": "В СТО"
+        },
+        {
+          "id": "rented",
+          "label": "Аренда"
+        },
+        {
+          "id": "need_buy",
+          "label": "Нужно купить"
+        }
+      ]
+    },
+    {
+      "id": "electric_vehicle",
+      "question": "Тип автомобиля?",
+      "buttons": [
+        {
+          "id": "ice",
+          "label": "ДВС"
+        },
+        {
+          "id": "hybrid",
+          "label": "Гибрид"
+        },
+        {
+          "id": "ev",
+          "label": "Электро"
+        }
+      ]
+    },
+    {
+      "id": "work_status",
+      "question": "Готов принимать заявки?",
+      "buttons": [
+        {
+          "id": "open",
+          "label": "Принимаю"
+        },
+        {
+          "id": "paused",
+          "label": "Пауза"
+        },
+        {
+          "id": "closed",
+          "label": "Закрыто"
+        }
+      ]
+    }
+  ]
+}
