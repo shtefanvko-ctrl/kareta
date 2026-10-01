@@ -11,6 +11,7 @@ const api=read('api/geo.php');
 const manifestPhp=read('api/migration_manifest.php');
 const manifestJson=JSON.parse(read('api/migration_manifest.json'));
 const workflow=read('.github/workflows/application-gates.yml');
+const core=read('js/next/pages/core.js');
 
 assert(migration.includes("'version' => 137"),'geo migration version mismatch');
 assert(migration.includes('CREATE TABLE IF NOT EXISTS `geo_points`'),'geo_points table missing');
@@ -35,5 +36,11 @@ assert(manifestJson.migrations.some(x=>x.version===137&&x.file==='137_geo_platfo
 assert(manifestPhp.includes("137 => ['file' => '137_geo_platform_core.php'"),'PHP manifest geo migration missing');
 assert(workflow.includes('node tools/test_geo_platform_core.js'),'geo core contract not wired to application gates');
 assert(workflow.includes('php -l api/geo.php'),'geo endpoint syntax gate missing');
+assert(core.includes('window.KaretaMobile'),'client home must prefer the native mobile bridge when available');
+assert(core.includes('mobile.getLocation()'),'client home native location command missing');
+assert(core.includes('navigator.geolocation.getCurrentPosition'),'browser geolocation fallback missing');
+assert(core.includes('api/geo.php?action=nearby'),'client home is not wired to Geo nearby API');
+assert(core.includes('types=sto,master'),'client home nearby provider scope changed unexpectedly');
+assert(core.includes('geoNearby=new Map()'),'client home Geo response index missing');
 
 console.log('GEO_PLATFORM_CORE: PASS');
