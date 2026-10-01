@@ -40,7 +40,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     masterExchange:Object.freeze({ path:'#/master/exchange', label:'Биржа', icon:'⌁', nav:false }),
     community:Object.freeze({ path:'#/community', label:'Сообщество', icon:'◎', nav:false }),
     stoDashboard:Object.freeze({ path:'#/sto', label:'СТО', icon:'🏢' }),
-    parts:Object.freeze({ path:'#/parts', label:'Новые запчасти', icon:'▣' }),
+    parts:Object.freeze({ path:'#/parts', label:'Запчасти', icon:'▣' }),
     usedParts:Object.freeze({ path:'#/parts/used', label:'Биржа БУ', icon:'exchange', nav:false }),
     seller:Object.freeze({ path:'#/seller', label:'Магазин', icon:'🛒' }),
     sellerProducts:Object.freeze({ path:'#/seller/products', label:'Товары', icon:'▣' }),
