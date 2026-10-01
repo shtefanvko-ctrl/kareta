@@ -6776,7 +6776,8 @@ function shop_sellPart(?PDO $pdo, array $b): void {
     }
     $sale     = is_array($b['sale'] ?? null) ? $b['sale'] : $b;
     $qty      = max(1, (int)($sale['qty'] ?? 1));
-    $unit     = max(0, (int)($sale['unitPrice'] ?? 0));
+    // Server-authoritative sale price: never trust a client-supplied unitPrice.
+    $unit     = 0;
     $customer = trim((string)($sale['customerName'] ?? ''));
     $note     = trim((string)($sale['note'] ?? ''));
     $orderId  = trim((string)($sale['orderId'] ?? ''));
