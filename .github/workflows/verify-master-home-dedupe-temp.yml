@@ -1,0 +1,21 @@
+name: Verify master home dedupe
+
+on:
+  push:
+    branches:
+      - fix/master-home-dedupe-20261001
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Master UI cleanup 84.99
+        run: node tools/test_master_ui_cleanup_84_99.js
+      - name: Master More contract
+        run: node tools/test_master_more_contract.js
+      - name: Syntax
+        run: node --check js/next/pages/master_workplace.js
