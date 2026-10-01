@@ -15,6 +15,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ios-source-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   contracts:
     runs-on: ubuntu-latest
@@ -23,6 +27,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.1"
+          coverage: none
+      - name: PHP 8.1 syntax
+        run: php -l api/obd.php
       - name: Bridge parity
         run: node tools/test_ios_bridge_contract.js
       - name: Native phase 2
