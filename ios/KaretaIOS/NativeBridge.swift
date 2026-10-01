@@ -154,8 +154,18 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
 
         case "scanCode":
             let mode = payload["mode"] as? String ?? "qr"
-            scannerService.scan(mode: mode) { [weak self] result in
-                self?.complete(id: id, result: result)
+            NativePermissionService.requestCamera { [weak self] permission in
+                guard let self else { return }
+                guard permission["granted"] as? Bool == true else {
+                    return self.fail(
+                        id,
+                        "KARETA_NATIVE_PERMISSION_DENIED",
+                        "Camera permission is required for scanning"
+                    )
+                }
+                self.scannerService.scan(mode: mode) { [weak self] result in
+                    self?.complete(id: id, result: result)
+                }
             }
 
         case "offlineState":
