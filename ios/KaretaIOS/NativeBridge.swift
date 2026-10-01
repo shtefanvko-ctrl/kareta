@@ -20,6 +20,7 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
     private let network = NetworkState.shared
     private let locationService = NativeLocationService()
     private let mediaService = NativeMediaService()
+    private let contactService = NativeContactService()
     private let scannerService = NativeScannerService()
     private let pushService = PushNotificationService.shared
     private let offlineQueue = OfflineQueueStore.shared
@@ -147,6 +148,11 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
                 }
             }
 
+        case "pickContact":
+            contactService.pickContact { [weak self] result in
+                self?.complete(id: id, result: result)
+            }
+
         case "getLocation":
             locationService.currentLocation { [weak self] result in
                 self?.complete(id: id, result: result)
@@ -167,6 +173,9 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
                     self?.complete(id: id, result: result)
                 }
             }
+
+        case "actionSheet":
+            presentActionSheet(id: id, payload: payload)
 
         case "offlineState":
             send(id: id, data: offlineQueue.state())
@@ -386,6 +395,117 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
                 "KARETA_NATIVE_NOT_IMPLEMENTED",
                 "Command \(command) is not implemented on iOS yet"
             )
+        }
+    }
+
+    private func presentActionSheet(
+        id: String,
+        payload: [String: Any]
+    ) {
+        let title = payload["title"] as? String ?? ""
+        let rawActions = payload["actions"] as? [Any] ?? []
+
+        let actions: [[String: Any]] = rawActions.enumerated().compactMap {
+            index, raw in
+            if let dictionary = raw as? [String: Any] {
+                return dictionary
+            }
+            if let string = raw as? String {
+                return [
+                    "id": String(index),
+                    "title": string
+                ]
+            }
+            return nil
+        }
+
+        guard !actions.isEmpty else {
+            return fail(
+                id,
+                "KARETA_NATIVE_BAD_PAYLOAD",
+                "actions are required"
+            )
+        }
+
+        DispatchQueue.main.async {
+            guard let presenter = KaretaPresentation.topViewController() else {
+                return self.fail(
+                    id,
+                    "KARETA_NATIVE_UI_UNAVAILABLE",
+                    "Unable to present action sheet"
+                )
+            }
+
+            let controller = UIAlertController(
+                title: title.isEmpty ? nil : title,
+                message: nil,
+                preferredStyle: .actionSheet
+            )
+
+            for (index, item) in actions.enumerated() {
+                let itemTitle = item["title"] as? String
+                    ?? item["label"] as? String
+                    ?? "Action \(index + 1)"
+                let itemId = String(
+                    describing: item["id"] ?? index
+                )
+                let styleValue = (
+                    item["style"] as? String ?? ""
+                ).lowercased()
+
+                let style: UIAlertAction.Style
+                switch styleValue {
+                case "destructive":
+                    style = .destructive
+                case "cancel":
+                    style = .cancel
+                default:
+                    style = .default
+                }
+
+                controller.addAction(
+                    UIAlertAction(
+                        title: itemTitle,
+                        style: style
+                    ) { _ in
+                        self.send(id: id, data: [
+                            "id": itemId,
+                            "title": itemTitle,
+                            "index": index
+                        ])
+                    }
+                )
+            }
+
+            if !actions.contains(where: {
+                ($0["style"] as? String ?? "").lowercased() == "cancel"
+            }) {
+                controller.addAction(
+                    UIAlertAction(
+                        title: "Отмена",
+                        style: .cancel
+                    ) { _ in
+                        self.fail(
+                            id,
+                            "KARETA_NATIVE_CANCELLED",
+                            "Action sheet cancelled"
+                        )
+                    }
+                )
+            }
+
+            if let popover = controller.popoverPresentationController {
+                popover.sourceView = presenter.view
+                popover.sourceRect = CGRect(
+                    x: presenter.view.bounds.midX,
+                    y: presenter.view.bounds.midY,
+                    width: 1,
+                    height: 1
+                )
+                popover.permittedArrowDirections = []
+            }
+
+            presenter.present(controller, animated: true)
         }
     }
 
