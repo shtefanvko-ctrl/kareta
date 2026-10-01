@@ -63,7 +63,7 @@
             <div><span>1</span><h2>ELM327</h2></div>
             <button type="button" class="k-btn" data-obd-settings>Bluetooth</button>
           </div>
-          <p class="k-obd-muted">Сначала выполните сопряжение ELM327 в настройках Android. KARETA показывает уже сопряжённые Bluetooth-устройства.</p>
+          <p class="k-obd-muted">Включите ELM327 и Bluetooth. На Android KARETA использует доступные системные Bluetooth-устройства, на iPhone — совместимые BLE-адаптеры.</p>
           <div class="k-obd-actions">
             <button type="button" class="k-btn k-btn-primary" data-obd-devices>Выбрать ELM327</button>
             <button type="button" class="k-btn" data-obd-init disabled>Инициализировать</button>
@@ -270,9 +270,9 @@
     async function refreshStatus(){
       updateNetwork();
       if(!mobile?.available?.()){
-        nativeChip.textContent='Только Android';
+        nativeChip.textContent='Нужно приложение';
         nativeChip.classList.add('is-warn');
-        nativeText.textContent='ELM327 доступен в приложении KARETA.KZ - Автосервис. В обычном браузере раздел работает только как история диагностики.';
+        nativeText.textContent='ELM327 доступен в мобильном приложении KARETA.KZ. В обычном браузере раздел работает только как история диагностики.';
         setConnected(false);
         return;
       }
@@ -318,7 +318,7 @@
         const devices=Array.isArray(payload.devices)?payload.devices:[];
         deviceList.hidden=false;
         if(!devices.length){
-          deviceList.innerHTML='<p class="k-obd-muted">Нет сопряжённых устройств. Откройте Bluetooth и выполните сопряжение ELM327.</p>';
+          deviceList.innerHTML='<p class="k-obd-muted">Bluetooth-адаптеры не найдены. Проверьте питание ELM327, Bluetooth и совместимость адаптера с телефоном.</p>';
           return;
         }
         devices.sort((a,b)=>Number(!!b.likelyElm)-Number(!!a.likelyElm));
