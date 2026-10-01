@@ -4,7 +4,7 @@ declare(strict_types=1);
 // Generated release manifest. Only files listed here participate in runtime migration discovery.
 // Extra PHP files left in api/migrations by an overwrite deployment are treated as stale artifacts.
 return [
-    'version' => 135,
+    'version' => 136,
     'files' => [
         1 => ['file' => '001_initial_schema.php', 'checksum' => '15c3088fe6ce7aa6793007ef0efd96757c1880c1c9ddf35349f31c735b293b14'],
         2 => ['file' => '002_schema_columns_indexes.php', 'checksum' => '6a0444c00d5bb652e8ee25e5689064a96919f4a9df816d358e61532209f66a85'],
@@ -141,5 +141,6 @@ return [
         133 => ['file' => '133_historical_collision_bridge.php', 'checksum' => '0fc72a401e3ba54eee1c1fca9cdedda27d8573cf677d69288a8b6b245e9329bb'],
         134 => ['file' => '134_historical_collision_bridge.php', 'checksum' => '574c5b412180b92145d3dc66c5e2438c8e22ad5baaaa45867401e3e3747a3cbe'],
         135 => ['file' => '135_obd_elm327_diagnostics.php', 'checksum' => '1d8d0f223ee71082011d8efba3df0c16df2db3da9a39103ada1e405748b33d96'],
+        136 => ['file' => '136_obd_remote_control_plane.php', 'checksum' => '3105e6b701a4901d42cf8410e6e8f04e3d8c4421e66e457ef81b2586e039dad9'],
     ],
 ];
