@@ -26,6 +26,20 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
     private let elmService = NativeELMService.shared
     private let offlineQueue = OfflineQueueStore.shared
 
+    override init() {
+        super.init()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(pushTokenDidUpdate(_:)),
+            name: .karetaPushTokenUpdated,
+            object: nil
+        )
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
     func userContentController(
         _ userContentController: WKUserContentController,
         didReceive message: WKScriptMessage
@@ -116,15 +130,35 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
             performLogout(id: id)
 
         case "pushToken":
-            send(id: id, data: pushService.snapshot())
+            let snapshot = pushService.snapshot()
+            send(id: id, data: snapshot)
+            if let token = snapshot["token"] as? String, !token.isEmpty {
+                syncPushTokenToServer(token: token, action: "register")
+            }
 
         case "registerPush":
             pushService.register { [weak self] result in
-                self?.complete(id: id, result: result)
+                guard let self else { return }
+                self.complete(id: id, result: result)
+                let snapshot = self.pushService.snapshot()
+                if let token = snapshot["token"] as? String, !token.isEmpty {
+                    self.syncPushTokenToServer(
+                        token: token,
+                        action: "register"
+                    )
+                }
             }
 
         case "unregisterPush":
+            let snapshot = pushService.snapshot()
+            let token = snapshot["token"] as? String ?? ""
             send(id: id, data: pushService.unregister())
+            if !token.isEmpty {
+                syncPushTokenToServer(
+                    token: token,
+                    action: "unregister"
+                )
+            }
 
         case "requestPermission":
             handlePermission(id: id, payload: payload)
@@ -570,6 +604,97 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
             }
 
             presenter.present(controller, animated: true)
+        }
+    }
+
+    @objc private func pushTokenDidUpdate(_ notification: Notification) {
+        guard
+            let token = notification.userInfo?["token"] as? String,
+            !token.isEmpty
+        else {
+            return
+        }
+        syncPushTokenToServer(
+            token: token,
+            action: "register"
+        )
+    }
+
+    private func syncPushTokenToServer(
+        token: String,
+        action: String
+    ) {
+        guard
+            ["register", "unregister"].contains(action),
+            let webView,
+            let endpoint = URL(
+                string: "https://kareta.kz/api/mobile_push.php?action=\(action)"
+            )
+        else {
+            return
+        }
+
+        let bundle = Bundle.main
+        let appVersion = bundle.object(
+            forInfoDictionaryKey: "CFBundleShortVersionString"
+        ) as? String ?? "0"
+        let deviceId = UIDevice.current.identifierForVendor?
+            .uuidString ?? ""
+        let sdk = Int(
+            UIDevice.current.systemVersion
+                .split(separator: ".")
+                .first ?? "0"
+        ) ?? 0
+
+        var body: [String: Any] = [
+            "token": token,
+            "platform": "ios",
+            "deviceId": deviceId,
+            "appVersion": appVersion,
+            "model": UIDevice.current.model,
+            "sdk": sdk
+        ]
+        if action == "unregister" {
+            body = [
+                "token": token,
+                "platform": "ios"
+            ]
+        }
+
+        let cookieStore = webView.configuration.websiteDataStore.httpCookieStore
+        cookieStore.getAllCookies { cookies in
+            let relevantCookies = cookies.filter {
+                $0.domain == "kareta.kz" ||
+                $0.domain == ".kareta.kz" ||
+                $0.domain.hasSuffix(".kareta.kz")
+            }
+
+            var request = URLRequest(url: endpoint)
+            request.httpMethod = "POST"
+            request.timeoutInterval = 8
+            request.setValue(
+                "application/json",
+                forHTTPHeaderField: "Content-Type"
+            )
+            request.setValue(
+                "application/json",
+                forHTTPHeaderField: "Accept"
+            )
+            request.httpBody = try? JSONSerialization.data(
+                withJSONObject: body
+            )
+
+            let headers = HTTPCookie.requestHeaderFields(
+                with: relevantCookies
+            )
+            if let cookieHeader = headers["Cookie"] {
+                request.setValue(
+                    cookieHeader,
+                    forHTTPHeaderField: "Cookie"
+                )
+            }
+
+            URLSession.shared.dataTask(with: request).resume()
         }
     }
 
