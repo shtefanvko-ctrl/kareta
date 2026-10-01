@@ -1,11 +1,12 @@
 <?php
+declare(strict_types=1);
+
 $karetaHttpNotFound = isset($_GET['kareta_route_fallback']) && (string)$_GET['kareta_route_fallback'] === '1';
 $karetaHttpNotFoundPath = '';
 if ($karetaHttpNotFound) {
     $karetaHttpNotFoundPath = (string)($_SERVER['REQUEST_URI'] ?? '/');
     http_response_code(404);
 }
-declare(strict_types=1);
 
 require_once __DIR__ . '/inc/web_guard.php';
 
