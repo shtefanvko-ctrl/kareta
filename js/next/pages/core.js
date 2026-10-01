@@ -376,23 +376,16 @@
     locationClose?.addEventListener('click',closeLocation);
     locationDialog?.addEventListener('cancel',event=>{event.preventDefault();closeLocation();});
     cityChoices?.addEventListener('click',event=>{const button=event.target.closest('[data-home-city-value]');if(!button)return;selectedCity=safeText(button.dataset.homeCityValue)||selectedCity;userCoords=null;geoNearby=new Map();geoRequestSeq+=1;if(cityNode)cityNode.textContent=selectedCity;saveLocation();renderCities();renderNearby();closeLocation();});
-    const browserLocation=()=>new Promise((resolve,reject)=>{
-      if(!navigator.geolocation){reject(Object.assign(new Error('GEOLOCATION_UNAVAILABLE'),{code:'unavailable'}));return;}
-      navigator.geolocation.getCurrentPosition(position=>resolve({lat:Number(position.coords.latitude),lng:Number(position.coords.longitude),source:'browser'}),reject,{enableHighAccuracy:false,timeout:8000,maximumAge:300000});
-    });
     const resolveCurrentLocation=async()=>{
       const mobile=window.KaretaMobile;
-      if(mobile?.available?.()){
-        try{await mobile.requestPermission?.('location');}catch(_error){}
-        try{
-          const result=await mobile.getLocation();
-          const lat=Number(result?.latitude??result?.lat),lng=Number(result?.longitude??result?.lng);
-          if(Number.isFinite(lat)&&Number.isFinite(lng))return {lat,lng,source:'native'};
-        }catch(_error){}
+      if(mobile?.bestLocation){
+        const point=await mobile.bestLocation({enableHighAccuracy:false,timeout:8000,maximumAge:300000});
+        return {lat:Number(point.latitude),lng:Number(point.longitude),source:point.source||'unknown'};
       }
-      return browserLocation();
+      if(!navigator.geolocation)throw Object.assign(new Error('GEOLOCATION_UNAVAILABLE'),{code:'GEOLOCATION_UNAVAILABLE'});
+      return new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(position=>resolve({lat:Number(position.coords.latitude),lng:Number(position.coords.longitude),source:'browser'}),reject,{enableHighAccuracy:false,timeout:8000,maximumAge:300000}));
     };
-    locationDetect?.addEventListener('click',async()=>{locationDetect.disabled=true;setLocationStatus('Определяем местоположение…');try{const point=await resolveCurrentLocation();if(disposed)return;userCoords={lat:point.lat,lng:point.lng};saveLocation();await loadGeoNearby();if(disposed)return;setLocationStatus('Геопозиция определена. Расстояния пересчитаны.','success');renderNearby();window.setTimeout(closeLocation,500);}catch(error){setLocationStatus(error?.code===1?'Доступ к геопозиции не разрешён. Выберите город вручную.':'Не удалось определить геопозицию. Выберите город вручную.','error');}finally{locationDetect.disabled=false;}});
+    locationDetect?.addEventListener('click',async()=>{locationDetect.disabled=true;setLocationStatus('Определяем местоположение…');try{const point=await resolveCurrentLocation();if(disposed)return;userCoords={lat:point.lat,lng:point.lng};saveLocation();await loadGeoNearby();if(disposed)return;setLocationStatus('Геопозиция определена. Расстояния пересчитаны.','success');renderNearby();window.setTimeout(closeLocation,500);}catch(error){const denied=error?.code===1||error?.code==='GEOLOCATION_PERMISSION_DENIED';setLocationStatus(denied?'Доступ к геопозиции не разрешён. Выберите город вручную.':'Не удалось определить геопозицию. Выберите город вручную.','error');}finally{locationDetect.disabled=false;}});
 
     (async()=>{if(homeInterfaceRole(context)!=='client')return;try{if(cabinetApi?.get){const result=await cabinetApi.get();if(result?.ok)applyProfile(result.payload?.data||result.payload||{});}else if(api?.request){const result=await api.request('api/db.php?action=clientCabinet.get',{cacheTtlMs:15000,cacheKey:'client.cabinet.home'});if(result?.ok)applyProfile(result.payload?.data||result.payload||{});}}catch(_error){}})();
     (async()=>{if(!nearbyNode||!api?.request)return;try{const result=await api.request('api/db.php?action=masters.catalog',{cacheTtlMs:30000,cacheKey:'masters.catalog.home'});if(disposed)return;const payload=result?.payload?.data||result?.payload||{};catalog={stos:Array.isArray(payload.stos)?payload.stos:Array.isArray(payload.stations)?payload.stations:[],masters:Array.isArray(payload.masters)?payload.masters:[]};renderCities();if(userCoords)await loadGeoNearby();if(disposed)return;renderNearby();}catch(_error){if(!disposed&&nearbyNode)nearbyNode.innerHTML='<div class="k-home-ref-nearby-empty">Не удалось загрузить ближайшие СТО. Откройте каталог исполнителей.</div>';}})();
