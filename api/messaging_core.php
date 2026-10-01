@@ -8,6 +8,8 @@ declare(strict_types=1);
  * external transports. Provider secrets never leave server-side configuration.
  */
 
+require_once __DIR__ . '/messaging_whatsapp_routing.php';
+
 function kareta_messaging_config(): array
 {
     return defined('KARETA_MESSAGING') && is_array(KARETA_MESSAGING) ? KARETA_MESSAGING : ['enabled'=>false];
@@ -57,7 +59,7 @@ function kareta_messaging_public_config(): array
     ];
 }
 
-function kareta_messaging_install_schema(PDO $pdo): void
+function kareta_messaging_install_schema(PDO $pdo, bool $includeWhatsappRouting=true): void
 {
     $pdo->exec("CREATE TABLE IF NOT EXISTS messaging_channel_links (
         user_id BIGINT UNSIGNED NOT NULL,
@@ -151,6 +153,7 @@ function kareta_messaging_install_schema(PDO $pdo): void
         KEY idx_messaging_action_user(user_id,channel,expires_at),
         KEY idx_messaging_action_entity(entity_type,entity_id,expires_at)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    if ($includeWhatsappRouting) kareta_messaging_whatsapp_install_schema($pdo);
 }
 
 function kareta_messaging_schema(PDO $pdo): void
@@ -178,7 +181,7 @@ function kareta_messaging_schema(PDO $pdo): void
     if ($missing !== []) {
         $cfg = kareta_messaging_config();
         if (!empty($cfg['auto_schema'])) {
-            kareta_messaging_install_schema($pdo);
+            kareta_messaging_install_schema($pdo, false);
             $missing = [];
         }
     }
@@ -269,17 +272,18 @@ function kareta_messaging_consume_link_token(PDO $pdo, string $channel, string $
 {
     kareta_messaging_schema($pdo);
     $hash = hash('sha256',trim($rawToken));
-    $pdo->beginTransaction();
+    $ownTransaction = !$pdo->inTransaction();
+    if ($ownTransaction) $pdo->beginTransaction();
     try {
         $st=$pdo->prepare("SELECT user_id FROM messaging_link_tokens WHERE token_hash=? AND channel=? AND used_at IS NULL AND expires_at>NOW() LIMIT 1 FOR UPDATE");
         $st->execute([$hash,$channel]);
         $userId=(int)($st->fetchColumn()?:0);
-        if($userId<=0){$pdo->rollBack();return 0;}
+        if($userId<=0){if($ownTransaction)$pdo->rollBack();return 0;}
         $pdo->prepare("UPDATE messaging_link_tokens SET used_at=NOW() WHERE token_hash=?")->execute([$hash]);
-        $pdo->commit();
+        if ($ownTransaction) $pdo->commit();
         return $userId;
     } catch(Throwable $e) {
-        if($pdo->inTransaction())$pdo->rollBack();
+        if($ownTransaction && $pdo->inTransaction())$pdo->rollBack();
         throw $e;
     }
 }
@@ -290,7 +294,8 @@ function kareta_messaging_link(PDO $pdo, int $userId, string $channel, string $e
     kareta_messaging_schema($pdo);
     $displayName = mb_substr(trim($displayName),0,191,'UTF-8');
     $externalPhone = preg_replace('/\D+/','',$externalPhone) ?: '';
-    $pdo->beginTransaction();
+    $ownTransaction = !$pdo->inTransaction();
+    if ($ownTransaction) $pdo->beginTransaction();
     try {
         // One external identity belongs to only one KARETA account at a time.
         $pdo->prepare("DELETE FROM messaging_channel_links WHERE channel=? AND external_user_id=? AND user_id<>?")->execute([$channel,$externalUserId,$userId]);
@@ -298,8 +303,8 @@ function kareta_messaging_link(PDO $pdo, int $userId, string $channel, string $e
             VALUES(?,?,?,?,?,?,'linked',NOW(),NOW())
             ON DUPLICATE KEY UPDATE external_user_id=VALUES(external_user_id),external_chat_id=VALUES(external_chat_id),external_phone=VALUES(external_phone),display_name=VALUES(display_name),status='linked',verified_at=NOW(),last_inbound_at=NOW()")
             ->execute([$userId,$channel,$externalUserId,$externalChatId,$externalPhone,$displayName]);
-        $pdo->commit();
-    } catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();throw $e;}
+        if ($ownTransaction) $pdo->commit();
+    } catch(Throwable $e){if($ownTransaction && $pdo->inTransaction())$pdo->rollBack();throw $e;}
 }
 
 function kareta_messaging_unlink(PDO $pdo, int $userId, string $channel): void
@@ -484,11 +489,19 @@ function kareta_messaging_telegram_send_raw(string $chatId, string $text, string
     return ['ok'=>!empty($result['ok']),'externalMessageId'=>$messageId,'error'=>(string)($result['error']??'')];
 }
 
-function kareta_messaging_whatsapp_send_raw(string $waId, string $text): array
+function kareta_messaging_whatsapp_send_raw(PDO $pdo, string $waId, string $text): array
 {
     $cfg=kareta_messaging_config()['whatsapp']??[];
     if(!kareta_messaging_provider_configured('whatsapp'))return ['ok'=>false,'error'=>'provider_not_configured'];
     $base=rtrim((string)($cfg['graph_base_url']??''),'/');$phoneId=(string)($cfg['phone_number_id']??'');
+    if (kareta_messaging_whatsapp_customer($waId) !== $waId || $waId === '') return ['ok'=>false,'terminal'=>true,'error'=>'invalid_whatsapp_recipient'];
+    try {
+        $state = kareta_messaging_whatsapp_thread($pdo, $phoneId, $waId);
+        $blocked = kareta_messaging_whatsapp_block_reason($state, time());
+    } catch (Throwable $e) {
+        $blocked = 'whatsapp_routing_unavailable';
+    }
+    if ($blocked !== '') return ['ok'=>false,'terminal'=>false,'blocked'=>true,'error'=>$blocked];
     $payload=['messaging_product'=>'whatsapp','recipient_type'=>'individual','to'=>$waId,'type'=>'text','text'=>['preview_url'=>false,'body'=>mb_substr($text,0,4096,'UTF-8')]];
     $result=kareta_messaging_http_json($base.'/'.$phoneId.'/messages',$payload,['Authorization: Bearer '.(string)($cfg['access_token']??'')],5);
     $messageId=(string)($result['json']['messages'][0]['id']??'');
@@ -562,14 +575,12 @@ function kareta_messaging_dispatch_delivery(PDO $pdo, array $delivery): array
         return kareta_messaging_telegram_send_raw($target,$text,$chatId);
     }
     if($channel==='whatsapp'){
-        $lastInbound=strtotime((string)($link['last_inbound_at']??''))?:0;
-        if($lastInbound<=0||$lastInbound<time()-86400)return ['ok'=>false,'terminal'=>false,'blocked'=>true,'error'=>'whatsapp_service_window_closed'];
         if((string)($payload['kind']??'')==='notification'){
             $url=trim((string)($payload['actionUrl']??''));if($url!=='')$text.="\n".kareta_messaging_public_url($url);
         }else{
             $chatUrl=trim((string)($payload['chatUrl']??''));if($chatUrl!=='')$text.="\n".$chatUrl;
         }
-        return kareta_messaging_whatsapp_send_raw((string)($link['external_user_id']??''),$text);
+        return kareta_messaging_whatsapp_send_raw($pdo,(string)($link['external_user_id']??''),$text);
     }
     return ['ok'=>false,'terminal'=>true,'error'=>'invalid_channel'];
 }
@@ -627,11 +638,12 @@ function kareta_messaging_find_user_by_external(PDO $pdo,string $channel,string 
     kareta_messaging_schema($pdo);$st=$pdo->prepare("SELECT user_id FROM messaging_channel_links WHERE channel=? AND external_user_id=? AND status='linked' LIMIT 1");$st->execute([$channel,$externalUserId]);return (int)($st->fetchColumn()?:0);
 }
 
-function kareta_messaging_resolve_chat(PDO $pdo,int $userId,string $channel,string $replyExternalMessageId=''): string
+function kareta_messaging_resolve_chat(PDO $pdo,int $userId,string $channel,string $replyExternalMessageId='',bool $strictReplyMatch=false): string
 {
     kareta_messaging_schema($pdo);
     if($replyExternalMessageId!==''){
         $st=$pdo->prepare("SELECT chat_id FROM messaging_deliveries WHERE recipient_user_id=? AND channel=? AND external_message_id=? AND status='sent' ORDER BY id DESC LIMIT 1");$st->execute([$userId,$channel,$replyExternalMessageId]);$chatId=(string)($st->fetchColumn()?:'');if($chatId!==''&&kareta_messaging_user_can_access_chat($pdo,$userId,$chatId))return $chatId;
+        if ($strictReplyMatch) return '';
     }
     $st=$pdo->prepare("SELECT chat_id FROM messaging_deliveries WHERE recipient_user_id=? AND channel=? AND status='sent' AND updated_at>DATE_SUB(NOW(),INTERVAL 24 HOUR) ORDER BY updated_at DESC,id DESC LIMIT 1");$st->execute([$userId,$channel]);$chatId=(string)($st->fetchColumn()?:'');
     return $chatId!==''&&kareta_messaging_user_can_access_chat($pdo,$userId,$chatId)?$chatId:'';
@@ -652,14 +664,16 @@ function kareta_messaging_user_role(PDO $pdo,int $userId): string
     return in_array($role,['client','master','sto','seller','admin','owner'],true)?($role==='owner'?'admin':$role):'client';
 }
 
-function kareta_messaging_insert_external_message(PDO $pdo,int $userId,string $channel,string $externalMessageId,string $chatId,string $text): string
+function kareta_messaging_insert_external_message(PDO $pdo,int $userId,string $channel,string $externalMessageId,string $chatId,string $text,bool $allowLegacySchemaRepair=true): string
 {
     if(!kareta_messaging_user_can_access_chat($pdo,$userId,$chatId))throw new DomainException('chat_forbidden');
     $preferences=kareta_messaging_preferences($pdo,$userId);
     if(empty($preferences['allowExternalReplies']))throw new DomainException('external_replies_disabled');
     $text=trim($text);if($text==='')throw new InvalidArgumentException('empty_message');
-    try{kareta_ensure_column($pdo,'messages','client_message_id',"ALTER TABLE messages ADD COLUMN client_message_id VARCHAR(96) NULL DEFAULT NULL AFTER id");}catch(Throwable $_){}
-    try{kareta_ensure_index($pdo,'messages','uq_messages_client_message_id',"ALTER TABLE messages ADD UNIQUE KEY uq_messages_client_message_id (chat_id,from_role,client_message_id)");}catch(Throwable $_){}
+    if ($allowLegacySchemaRepair) {
+        try{kareta_ensure_column($pdo,'messages','client_message_id',"ALTER TABLE messages ADD COLUMN client_message_id VARCHAR(96) NULL DEFAULT NULL AFTER id");}catch(Throwable $_){}
+        try{kareta_ensure_index($pdo,'messages','uq_messages_client_message_id',"ALTER TABLE messages ADD UNIQUE KEY uq_messages_client_message_id (chat_id,from_role,client_message_id)");}catch(Throwable $_){}
+    }
     $role=kareta_messaging_user_role($pdo,$userId);$id='mx_'.substr(hash('sha256',$channel.'|'.$externalMessageId),0,32);$clientId=mb_substr($channel.':'.$externalMessageId,0,96,'UTF-8');
     $meta=json_encode(['externalChannel'=>$channel,'externalMessageId'=>$externalMessageId],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
     $st=$pdo->prepare("INSERT IGNORE INTO messages(id,client_message_id,chat_id,order_id,from_role,author_user_id,type,text,meta,time,created_at)
