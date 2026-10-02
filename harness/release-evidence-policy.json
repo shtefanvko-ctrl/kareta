@@ -26,13 +26,21 @@
           "id": "external:android-webview-visual-evidence",
           "description": "Narrow Android WebView screenshots/video proving WV-07..WV-11 visual acceptance."
         }
+      ],
+      "internalChecks": [
+        {
+          "id": "server-package",
+          "description": "Reproducible PHP/HTML server-test ZIP for the exact candidate passes package integrity and preflight checks."
+        }
       ]
     }
   ],
   "evidenceComment": {
     "enabled": true,
     "prefix": "HARNESS_EVIDENCE",
-    "authorizedActors": ["shtefanvko-ctrl"],
+    "authorizedActors": [
+      "shtefanvko-ctrl"
+    ],
     "maxPages": 10
   }
 }

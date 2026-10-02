@@ -267,7 +267,7 @@ if (!defined('KARETA_CONFIG_LOADED')) {
     $kareta_otp_temp_static_enabled = filter_var(kareta_config_value(
         'KARETA_OTP_TEMP_STATIC_ENABLED',
         'otp_temp_static_enabled',
-        true
+        false
     ), FILTER_VALIDATE_BOOLEAN);
     $kareta_otp_temp_static_deadline = $kareta_otp_temp_static_until !== '' ? strtotime($kareta_otp_temp_static_until) : false;
     $kareta_otp_temp_static_within_window = $kareta_otp_temp_static_until === ''

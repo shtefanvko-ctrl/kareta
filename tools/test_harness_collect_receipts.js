@@ -22,6 +22,8 @@ assert.strictEqual(conclusionToStatus('cancelled'), 'BLOCKED');
 assert.strictEqual(CHECK_SOURCES['geo-platform-core'].workflow, 'Application gates');
 assert.strictEqual(CHECK_SOURCES['migration-contract'].workflow, 'verify');
 assert.strictEqual(CHECK_SOURCES['asset-url-hygiene'].receiptId, 'application-gates');
+assert.strictEqual(CHECK_SOURCES['server-package'].workflow, 'Server package');
+assert.strictEqual(CHECK_SOURCES['server-package'].receiptId, 'server-package');
 
 assert.strictEqual(isApprovalCheck('approval:database-contract'), true);
 assert.strictEqual(isApprovalCheck('approval:deployment-sensitive'), true);

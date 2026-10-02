@@ -18,6 +18,8 @@ AddDefaultCharset UTF-8
   # Never expose internal deployment/documentation folders.
   RewriteRule ^(docs|storage/logs|storage/backups|tools)(/|$) - [F,L]
   RewriteRule ^config\.private\.php$ - [F,L]
+  RewriteRule ^config\.(?:private|server-test)\.example\.php$ - [F,L]
+  RewriteRule ^_SERVER_[A-Za-z0-9_.-]+$ - [F,L]
 
   # Protect dotfiles except well-known ACME folder.
   RewriteRule (^|/)\.(?!well-known/) - [F,L]

@@ -76,6 +76,10 @@ function addReleaseEvidenceRequirements(impact, meta) {
 
   for (const rule of releaseEvidencePolicy.rules || []) {
     if (!releaseRuleMatches(rule, meta)) continue;
+    for (const item of rule.internalChecks || []) {
+      const id = String(item && item.id || '').trim();
+      if (id) checks.add(id);
+    }
     for (const item of rule.requiredChecks || []) {
       const id = String(item && item.id || '').trim();
       if (!id) continue;

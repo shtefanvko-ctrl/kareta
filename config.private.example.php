@@ -32,9 +32,9 @@ return [
     'otp_test_code' => '',
     'otp_allow_test_fallback' => false,
 
-    // TEMPORARY commissioning override. Disable it when the SMS provider is connected.
+    // TEMPORARY commissioning override. Keep disabled in production unless explicitly approved.
     // Leave otp_temp_static_until empty for manual-off mode, or set a deadline explicitly.
-    'otp_temp_static_enabled' => true,
+    'otp_temp_static_enabled' => false,
     'otp_temp_static_until' => '',
 
     // Configure the real SMS provider:
