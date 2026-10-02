@@ -14,11 +14,11 @@ const release=(version.match(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/)||[])[1]||''
 const swRelease=(sw.match(/const RELEASE = '([^']+)'/)||[])[1]||'';
 
 const releaseRevision=Number(String(release).split('.').pop()||0);
-expect(/^188\\.5\\.5\\.6\\.84\\.\\d+$/.test(release)&&releaseRevision>=152,'84.152+ asset token missing');
+expect(/^188\.5\.5\.6\.84\.\d+$/.test(release)&&releaseRevision>=152,'84.152+ asset token missing');
 expect(swRelease===release,'84.152+ service worker token mismatch');
 expect(current.release===release,'84.152+ release metadata mismatch');
 expect(typeof current.sourceBranch==='string'&&current.sourceBranch.length>0,'current source branch missing');
-expect(/^NOT_VERIFIED_AFTER_84_\\d+$/.test(String(current.verification?.stagingStatus||'')),'staging verification state must remain explicit before deploy');
+expect(/^NOT_VERIFIED_AFTER_84_\d+$/.test(String(current.verification?.stagingStatus||'')),'staging verification state must remain explicit before deploy');
 expect(current.branchState?.reconciliationMergeCommit==='a7df986cee0d1e05895bbb93290dbc03111b9dac','reconciliation merge SHA mismatch');
 expect(current.branchState?.mainHeadAtReconciliation==='d2873bbde16ec985ad14e8ff892df5ccbd7cf3b4','current main SHA mismatch');
 expect(current.branchState?.candidate84_151==='6685ad9e02531dfa653aacd1f1eaf1c7c5a4cecc','84.151 candidate SHA mismatch');
