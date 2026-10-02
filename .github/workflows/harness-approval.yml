@@ -1,0 +1,64 @@
+name: Harness approval
+
+on:
+  workflow_dispatch:
+    inputs:
+      boundary:
+        description: Protected Harness boundary
+        required: true
+        type: choice
+        options:
+          - database-contract
+          - native-bridge-contract
+          - release-provenance
+          - deployment-sensitive
+      subject_sha:
+        description: Exact PR head SHA being approved
+        required: true
+        type: string
+      reason:
+        description: Reason for approving this protected boundary
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  approval:
+    name: harness-approval
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate subject commit exists
+        env:
+          KARETA_SUBJECT_SHA: ${{ inputs.subject_sha }}
+        run: |
+          git fetch --no-tags origin "$KARETA_SUBJECT_SHA"
+          git cat-file -e "$KARETA_SUBJECT_SHA^{commit}"
+
+      - name: Build approval receipt
+        env:
+          KARETA_BOUNDARY: ${{ inputs.boundary }}
+          KARETA_SUBJECT_SHA: ${{ inputs.subject_sha }}
+          KARETA_REASON: ${{ inputs.reason }}
+        run: |
+          node tools/harness_approval.js \
+            --boundary "$KARETA_BOUNDARY" \
+            --subject-sha "$KARETA_SUBJECT_SHA" \
+            --reason "$KARETA_REASON" \
+            --output "$RUNNER_TEMP/kareta-harness-approval.json"
+
+      - name: Upload approval receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-approval-${{ inputs.boundary }}-${{ inputs.subject_sha }}
+          path: ${{ runner.temp }}/kareta-harness-approval.json
+          if-no-files-found: error
+          retention-days: 30
