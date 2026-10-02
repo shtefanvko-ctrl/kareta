@@ -19,16 +19,23 @@
     "storage/"
   ],
   "opsFiles": [
+    "tools/server_preflight.php",
+    "tools/verify_runtime.php",
+    "tools/verify_runtime_provenance.py",
+    "tools/verify_staging_current.py",
+    "tools/generate_deployment_manifest.php",
     "tools/identity_migrate.php",
     "tools/messaging_schema_install.php",
     "tools/messaging_worker.php",
+    "tools/backup_project.php",
     "tools/cleanup_runtime.php",
-    "tools/verify_runtime.php"
+    "tools/verify_assets.php",
+    "tools/verify_connectivity.php"
   ],
   "artifactSidecars": [
     "config.server-test.example.php",
     "config.private.example.php",
-    "docs/deployment/SERVER_TEST_UPLOAD.md"
+    "docs/release/current.json"
   ],
   "emptyRuntimeDirs": [
     "storage/logs",
@@ -41,18 +48,20 @@
     ".git/",
     ".github/",
     "harness/",
-    "docs/",
     "ai/",
-    "print-banners/",
     "tools/archive/",
     "storage/logs/",
-    "storage/backups/"
+    "storage/backups/",
+    "storage/runtime/",
+    "storage/deployment_manifest.json"
   ],
   "forbiddenSuffixes": [
     ".sql",
     ".bak",
     ".pem",
     ".key",
+    ".p12",
+    ".pfx",
     "~"
   ],
   "forbiddenContentMarkers": [
