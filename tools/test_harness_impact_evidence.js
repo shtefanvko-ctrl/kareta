@@ -63,6 +63,7 @@ for (const id of [
 ]) {
   assert(releaseEvidence.impact.checks.includes(id), 'missing release evidence check '+id);
 }
+assert(releaseEvidence.impact.checks.includes('server-package'));
 assert.strictEqual(releaseEvidence.impact.releaseEvidenceRequired.length, 5);
 assert.strictEqual(releaseEvidence.baseRef, 'main');
 assert.strictEqual(releaseEvidence.headRef, 'release/reconcile-84.152');
