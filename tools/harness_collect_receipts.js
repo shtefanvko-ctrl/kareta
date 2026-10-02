@@ -9,6 +9,9 @@ const root = path.resolve(__dirname, '..');
 const approvalPolicy = JSON.parse(
   fs.readFileSync(path.join(root, 'harness', 'approval-policy.json'), 'utf8')
 );
+const releaseEvidencePolicy = JSON.parse(
+  fs.readFileSync(path.join(root, 'harness', 'release-evidence-policy.json'), 'utf8')
+);
 
 const CHECK_SOURCES = {
   'verification-gate': { workflow: 'verify', receiptId: 'verification-gate' },
@@ -32,6 +35,10 @@ function isApprovalCheck(checkId) {
   return /^approval:[a-z0-9-]+$/.test(String(checkId || ''));
 }
 
+function isExternalEvidenceCheck(checkId) {
+  return /^external:[a-z0-9-]+$/.test(String(checkId || ''));
+}
+
 function parseApprovalLine(line) {
   const cfg = approvalPolicy.commentApproval || {};
   const prefix = String(cfg.prefix || 'HARNESS_APPROVE').trim();
@@ -50,6 +57,28 @@ function parseApprovalLine(line) {
   if (reason.length < 5) return null;
 
   return { boundary, subjectSha, reason };
+}
+
+function parseExternalEvidenceLine(line) {
+  const cfg = releaseEvidencePolicy.evidenceComment || {};
+  const prefix = String(cfg.prefix || 'HARNESS_EVIDENCE').trim();
+  const text = String(line || '').trim();
+  if (!text.startsWith(prefix + ' ')) return null;
+
+  const parts = text.slice(prefix.length).trim().split(/\s+/);
+  if (parts.length < 4) return null;
+
+  const checkId = String(parts.shift() || '').toLowerCase();
+  const subjectSha = String(parts.shift() || '').toLowerCase();
+  const status = String(parts.shift() || '').toUpperCase();
+  const evidence = parts.join(' ').trim();
+
+  if (!/^external:[a-z0-9-]+$/.test(checkId)) return null;
+  if (!/^[0-9a-f]{40}$/.test(subjectSha)) return null;
+  if (status !== 'PASS') return null;
+  if (evidence.length < 5) return null;
+
+  return { checkId, subjectSha, status, evidence };
 }
 
 function findCommentApproval(checkId, headSha, comments) {
@@ -83,6 +112,45 @@ function findCommentApproval(checkId, headSha, comments) {
         actor,
         reason: parsed.reason,
         source: 'github-pr-comment',
+        commentId: String(comment.id || ''),
+        commentUrl: String(comment.html_url || '')
+      };
+    }
+  }
+
+  return null;
+}
+
+function findCommentExternalEvidence(checkId, headSha, comments) {
+  const cfg = releaseEvidencePolicy.evidenceComment || {};
+  if (cfg.enabled !== true) return null;
+
+  const actors = new Set(
+    (cfg.authorizedActors || []).map(v => String(v || '').toLowerCase())
+  );
+  const ordered = [...(comments || [])]
+    .sort((a, b) => Number(b.id || 0) - Number(a.id || 0));
+
+  for (const comment of ordered) {
+    const actor = String(
+      comment && comment.user && comment.user.login || ''
+    ).toLowerCase();
+    if (!actors.has(actor)) continue;
+
+    for (const line of String(comment.body || '').split(/\r?\n/)) {
+      const parsed = parseExternalEvidenceLine(line);
+      if (!parsed) continue;
+      if (parsed.checkId !== checkId) continue;
+      if (parsed.subjectSha !== headSha) continue;
+
+      return {
+        schema: 'kareta.harness.receipt.v1',
+        id: checkId,
+        subjectSha: headSha,
+        status: 'PASS',
+        actor,
+        evidence: parsed.evidence,
+        source: 'github-pr-external-evidence',
         commentId: String(comment.id || ''),
         commentUrl: String(comment.html_url || '')
       };
@@ -135,8 +203,11 @@ function githubGet(repo, apiPath, token) {
           ));
           return;
         }
-        try { resolve(JSON.parse(body)); }
-        catch (error) { reject(error); }
+        try {
+          resolve(JSON.parse(body));
+        } catch (error) {
+          reject(error);
+        }
       });
     });
     req.on('error', reject);
@@ -155,19 +226,12 @@ function latestRun(runs, workflowName, headSha) {
   return exact[0] || null;
 }
 
-async function fetchIssueComments(repo, prNumber, token) {
+async function fetchIssueComments(repo, prNumber, token, maxPages) {
   if (!prNumber) return [];
-
-  const maxPages = Math.max(
-    1,
-    Math.min(
-      20,
-      Number((approvalPolicy.commentApproval || {}).maxPages || 10)
-    )
-  );
+  const pages = Math.max(1, Math.min(20, Number(maxPages || 10)));
   const comments = [];
 
-  for (let page = 1; page <= maxPages; page += 1) {
+  for (let page = 1; page <= pages; page += 1) {
     const batch = await githubGet(
       repo,
       '/issues/' + prNumber + '/comments?per_page=100&page=' + page,
@@ -244,8 +308,7 @@ async function waitForApproval(
   prNumber
 ) {
   const boundary = String(checkId).slice('approval:'.length);
-  const artifactName =
-    'harness-approval-' + boundary + '-' + headSha;
+  const artifactName = 'harness-approval-' + boundary + '-' + headSha;
 
   while (Date.now() < deadline) {
     const data = await githubGet(
@@ -284,7 +347,12 @@ async function waitForApproval(
     }
 
     if (prNumber) {
-      const comments = await fetchIssueComments(repo, prNumber, token);
+      const comments = await fetchIssueComments(
+        repo,
+        prNumber,
+        token,
+        (approvalPolicy.commentApproval || {}).maxPages
+      );
       const approval = findCommentApproval(checkId, headSha, comments);
       if (approval) {
         approval.repository = repo;
@@ -302,11 +370,56 @@ async function waitForApproval(
   );
 }
 
+async function collectExternalEvidence(
+  checkId,
+  repo,
+  headSha,
+  token,
+  prNumber
+) {
+  if (!prNumber) {
+    return {
+      schema: 'kareta.harness.receipt.v1',
+      id: checkId,
+      subjectSha: headSha,
+      status: 'NOT_RUN',
+      repository: repo,
+      source: 'external-evidence-missing',
+      reason: 'pull-request-context-missing'
+    };
+  }
+
+  const comments = await fetchIssueComments(
+    repo,
+    prNumber,
+    token,
+    (releaseEvidencePolicy.evidenceComment || {}).maxPages
+  );
+  const evidence = findCommentExternalEvidence(checkId, headSha, comments);
+
+  if (evidence) {
+    evidence.repository = repo;
+    evidence.pullRequest = prNumber;
+    return evidence;
+  }
+
+  return {
+    schema: 'kareta.harness.receipt.v1',
+    id: checkId,
+    subjectSha: headSha,
+    status: 'NOT_RUN',
+    repository: repo,
+    pullRequest: prNumber,
+    source: 'external-evidence-missing',
+    reason: 'no-authorized-exact-sha-evidence'
+  };
+}
+
 function parseArgs(argv) {
   const out = {};
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
-    if (['--impact','--output','--timeout-seconds'].includes(arg)) {
+    if (['--impact', '--output', '--timeout-seconds'].includes(arg)) {
       if (!argv[i + 1]) throw new Error(arg + ' requires a value');
       out[arg.slice(2).replace(/-([a-z])/g, (_, c) => c.toUpperCase())] =
         argv[++i];
@@ -341,10 +454,7 @@ async function main() {
   const required = Array.from(
     new Set(((impact.impact || {}).checks || []).map(String))
   ).sort();
-  const timeoutSeconds = Math.max(
-    10,
-    Number(args.timeoutSeconds || 600)
-  );
+  const timeoutSeconds = Math.max(10, Number(args.timeoutSeconds || 600));
   const deadline = Date.now() + timeoutSeconds * 1000;
   const receipts = [];
   const prNumber = readPullRequestNumber();
@@ -367,9 +477,12 @@ async function main() {
     });
   }
 
-  for (const checkId of required) {
-    if (checkId === 'harness-self-test') continue;
+  const internalChecks = required.filter(
+    id => id !== 'harness-self-test' && !isExternalEvidenceCheck(id)
+  );
+  const externalChecks = required.filter(isExternalEvidenceCheck);
 
+  for (const checkId of internalChecks) {
     if (isApprovalCheck(checkId)) {
       receipts.push(
         await waitForApproval(
@@ -387,8 +500,21 @@ async function main() {
     if (!CHECK_SOURCES[checkId]) {
       throw new Error('unmapped required check: ' + checkId);
     }
+
     receipts.push(
       await waitForReceipt(checkId, repo, headSha, token, deadline)
+    );
+  }
+
+  for (const checkId of externalChecks) {
+    receipts.push(
+      await collectExternalEvidence(
+        checkId,
+        repo,
+        headSha,
+        token,
+        prNumber
+      )
     );
   }
 
@@ -420,9 +546,13 @@ if (require.main === module) {
 module.exports = {
   CHECK_SOURCES,
   isApprovalCheck,
+  isExternalEvidenceCheck,
   parseApprovalLine,
+  parseExternalEvidenceLine,
   findCommentApproval,
+  findCommentExternalEvidence,
   readPullRequestNumber,
   conclusionToStatus,
-  latestRun
+  latestRun,
+  collectExternalEvidence
 };
