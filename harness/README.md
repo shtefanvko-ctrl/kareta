@@ -117,3 +117,27 @@ Authorization is fail closed:
 - Release touching a protected boundary -> denied until the matching boundary approval is supplied.
 
 This is the repository-side policy engine. Absolute prevention of an authenticated administrator bypassing CI still requires GitHub repository rules/branch protection; the current connector does not expose administration writes for that setting.
+
+
+## Exact-SHA PR Comment Approvals
+
+When `workflow_dispatch` is unavailable, protected-boundary approval can be supplied by an authorized GitHub actor in the affected pull request.
+
+The syntax is strict and one approval is scoped to one boundary and one exact 40-character SHA:
+
+```text
+HARNESS_APPROVE database-contract <exact-head-sha> Migration chain and manifest reviewed
+HARNESS_APPROVE native-bridge-contract <exact-head-sha> Native bridge contract reviewed
+HARNESS_APPROVE release-provenance <exact-head-sha> Release and provenance contract reviewed
+HARNESS_APPROVE deployment-sensitive <exact-head-sha> Deployment-sensitive paths reviewed
+```
+
+The collector accepts a comment only when:
+
+- comment approvals are enabled in `harness/approval-policy.json`;
+- the comment author is in `authorizedActors`;
+- boundary exactly matches the required `approval:<boundary>`;
+- SHA exactly matches the current Harness head SHA;
+- the reason contains at least five characters.
+
+An approval for an older SHA is unusable after the head changes. Unauthorized authors, wrong boundaries, malformed lines and wrong SHAs are ignored.

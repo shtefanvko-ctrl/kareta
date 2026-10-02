@@ -17,5 +17,13 @@
       "checkId": "approval:deployment-sensitive",
       "description": "Deployment, staging verifier or server routing boundary."
     }
+  },
+  "commentApproval": {
+    "enabled": true,
+    "prefix": "HARNESS_APPROVE",
+    "authorizedActors": [
+      "shtefanvko-ctrl"
+    ],
+    "maxPages": 10
   }
 }

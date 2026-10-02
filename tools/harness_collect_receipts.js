@@ -2,7 +2,13 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
 const https = require('https');
+
+const root = path.resolve(__dirname, '..');
+const approvalPolicy = JSON.parse(
+  fs.readFileSync(path.join(root, 'harness', 'approval-policy.json'), 'utf8')
+);
 
 const CHECK_SOURCES = {
   'verification-gate': { workflow: 'verify', receiptId: 'verification-gate' },
@@ -26,6 +32,75 @@ function isApprovalCheck(checkId) {
   return /^approval:[a-z0-9-]+$/.test(String(checkId || ''));
 }
 
+function parseApprovalLine(line) {
+  const cfg = approvalPolicy.commentApproval || {};
+  const prefix = String(cfg.prefix || 'HARNESS_APPROVE').trim();
+  const text = String(line || '').trim();
+  if (!text.startsWith(prefix + ' ')) return null;
+
+  const parts = text.slice(prefix.length).trim().split(/\s+/);
+  if (parts.length < 3) return null;
+
+  const boundary = String(parts.shift() || '').toLowerCase();
+  const subjectSha = String(parts.shift() || '').toLowerCase();
+  const reason = parts.join(' ').trim();
+
+  if (!/^[a-z0-9-]+$/.test(boundary)) return null;
+  if (!/^[0-9a-f]{40}$/.test(subjectSha)) return null;
+  if (reason.length < 5) return null;
+
+  return { boundary, subjectSha, reason };
+}
+
+function findCommentApproval(checkId, headSha, comments) {
+  const cfg = approvalPolicy.commentApproval || {};
+  if (cfg.enabled !== true) return null;
+
+  const boundary = String(checkId || '').slice('approval:'.length);
+  const actors = new Set(
+    (cfg.authorizedActors || []).map(v => String(v || '').toLowerCase())
+  );
+  const ordered = [...(comments || [])]
+    .sort((a, b) => Number(b.id || 0) - Number(a.id || 0));
+
+  for (const comment of ordered) {
+    const actor = String(
+      comment && comment.user && comment.user.login || ''
+    ).toLowerCase();
+    if (!actors.has(actor)) continue;
+
+    for (const line of String(comment.body || '').split(/\r?\n/)) {
+      const parsed = parseApprovalLine(line);
+      if (!parsed) continue;
+      if (parsed.boundary !== boundary) continue;
+      if (parsed.subjectSha !== headSha) continue;
+
+      return {
+        schema: 'kareta.harness.receipt.v1',
+        id: checkId,
+        subjectSha: headSha,
+        status: 'PASS',
+        actor,
+        reason: parsed.reason,
+        source: 'github-pr-comment',
+        commentId: String(comment.id || ''),
+        commentUrl: String(comment.html_url || '')
+      };
+    }
+  }
+
+  return null;
+}
+
+function readPullRequestNumber() {
+  const eventPath = process.env.GITHUB_EVENT_PATH || '';
+  if (!eventPath || !fs.existsSync(eventPath)) return null;
+
+  const event = JSON.parse(fs.readFileSync(eventPath, 'utf8'));
+  const value = event && event.pull_request && event.pull_request.number;
+  return Number.isInteger(value) && value > 0 ? value : null;
+}
+
 function conclusionToStatus(value) {
   const v = String(value || '').toLowerCase();
   if (v === 'success') return 'PASS';
@@ -37,11 +112,11 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function githubGet(repo, path, token) {
+function githubGet(repo, apiPath, token) {
   return new Promise((resolve, reject) => {
     const req = https.request({
       hostname: 'api.github.com',
-      path: '/repos/' + repo + path,
+      path: '/repos/' + repo + apiPath,
       method: 'GET',
       headers: {
         'Accept': 'application/vnd.github+json',
@@ -55,7 +130,9 @@ function githubGet(repo, path, token) {
       res.on('data', chunk => { body += chunk; });
       res.on('end', () => {
         if (res.statusCode < 200 || res.statusCode >= 300) {
-          reject(new Error('GitHub API ' + res.statusCode + ': ' + body.slice(0, 500)));
+          reject(new Error(
+            'GitHub API ' + res.statusCode + ': ' + body.slice(0, 500)
+          ));
           return;
         }
         try { resolve(JSON.parse(body)); }
@@ -69,30 +146,76 @@ function githubGet(repo, path, token) {
 
 function latestRun(runs, workflowName, headSha) {
   const exact = (runs || [])
-    .filter(run => run && run.name === workflowName && String(run.head_sha || '').toLowerCase() === headSha)
+    .filter(run =>
+      run &&
+      run.name === workflowName &&
+      String(run.head_sha || '').toLowerCase() === headSha
+    )
     .sort((a, b) => Number(b.run_number || 0) - Number(a.run_number || 0));
   return exact[0] || null;
 }
 
+async function fetchIssueComments(repo, prNumber, token) {
+  if (!prNumber) return [];
+
+  const maxPages = Math.max(
+    1,
+    Math.min(
+      20,
+      Number((approvalPolicy.commentApproval || {}).maxPages || 10)
+    )
+  );
+  const comments = [];
+
+  for (let page = 1; page <= maxPages; page += 1) {
+    const batch = await githubGet(
+      repo,
+      '/issues/' + prNumber + '/comments?per_page=100&page=' + page,
+      token
+    );
+    if (!Array.isArray(batch)) {
+      throw new Error('GitHub comments response is not an array');
+    }
+    comments.push(...batch);
+    if (batch.length < 100) break;
+  }
+
+  return comments;
+}
+
 async function waitForReceipt(checkId, repo, headSha, token, deadline) {
   const source = CHECK_SOURCES[checkId];
-  if (!source) throw new Error('no workflow mapping for required check ' + checkId);
-  const workflowName = source.workflow;
-  const artifactName = 'harness-receipt-' + source.receiptId + '-' + headSha;
+  if (!source) {
+    throw new Error('no workflow mapping for required check ' + checkId);
+  }
+
+  const artifactName =
+    'harness-receipt-' + source.receiptId + '-' + headSha;
 
   while (Date.now() < deadline) {
-    const data = await githubGet(repo, '/actions/runs?head_sha=' + encodeURIComponent(headSha) + '&per_page=100', token);
-    const run = latestRun(data.workflow_runs, workflowName, headSha);
+    const data = await githubGet(
+      repo,
+      '/actions/runs?head_sha=' + encodeURIComponent(headSha) + '&per_page=100',
+      token
+    );
+    const run = latestRun(data.workflow_runs, source.workflow, headSha);
+
     if (run && run.status === 'completed') {
-      const artifacts = await githubGet(repo, '/actions/runs/' + run.id + '/artifacts?per_page=100', token);
-      const artifact = (artifacts.artifacts || []).find(item => item.name === artifactName && !item.expired);
+      const artifacts = await githubGet(
+        repo,
+        '/actions/runs/' + run.id + '/artifacts?per_page=100',
+        token
+      );
+      const artifact = (artifacts.artifacts || [])
+        .find(item => item.name === artifactName && !item.expired);
+
       if (artifact) {
         return {
           schema: 'kareta.harness.receipt.v1',
           id: checkId,
           subjectSha: headSha,
           status: conclusionToStatus(run.conclusion),
-          workflow: workflowName,
+          workflow: source.workflow,
           runId: String(run.id),
           runAttempt: String(run.run_attempt || ''),
           repository: repo,
@@ -103,24 +226,43 @@ async function waitForReceipt(checkId, repo, headSha, token, deadline) {
         };
       }
     }
+
     await sleep(5000);
   }
-  throw new Error('timed out waiting for exact-head receipt: ' + checkId + '@' + headSha);
+
+  throw new Error(
+    'timed out waiting for exact-head receipt: ' + checkId + '@' + headSha
+  );
 }
 
-async function waitForApproval(checkId, repo, headSha, token, deadline) {
+async function waitForApproval(
+  checkId,
+  repo,
+  headSha,
+  token,
+  deadline,
+  prNumber
+) {
   const boundary = String(checkId).slice('approval:'.length);
-  const artifactName = 'harness-approval-' + boundary + '-' + headSha;
+  const artifactName =
+    'harness-approval-' + boundary + '-' + headSha;
 
   while (Date.now() < deadline) {
     const data = await githubGet(
       repo,
-      '/actions/artifacts?name=' + encodeURIComponent(artifactName) + '&per_page=100',
+      '/actions/artifacts?name=' +
+        encodeURIComponent(artifactName) +
+        '&per_page=100',
       token
     );
     const artifact = (data.artifacts || [])
-      .filter(item => item && item.name === artifactName && !item.expired)
+      .filter(item =>
+        item &&
+        item.name === artifactName &&
+        !item.expired
+      )
       .sort((a, b) => Number(b.id || 0) - Number(a.id || 0))[0];
+
     if (artifact) {
       return {
         schema: 'kareta.harness.receipt.v1',
@@ -128,17 +270,36 @@ async function waitForApproval(checkId, repo, headSha, token, deadline) {
         subjectSha: headSha,
         status: 'PASS',
         workflow: 'Harness approval',
-        runId: String((artifact.workflow_run && artifact.workflow_run.id) || ''),
+        runId: String(
+          artifact.workflow_run && artifact.workflow_run.id || ''
+        ),
         repository: repo,
-        ref: String((artifact.workflow_run && artifact.workflow_run.head_branch) || ''),
+        ref: String(
+          artifact.workflow_run && artifact.workflow_run.head_branch || ''
+        ),
         source: 'github-actions-approval-artifact-index',
         receiptArtifactId: String(artifact.id),
         receiptArtifactName: artifact.name
       };
     }
+
+    if (prNumber) {
+      const comments = await fetchIssueComments(repo, prNumber, token);
+      const approval = findCommentApproval(checkId, headSha, comments);
+      if (approval) {
+        approval.repository = repo;
+        approval.pullRequest = prNumber;
+        return approval;
+      }
+    }
+
     await sleep(5000);
   }
-  throw new Error('timed out waiting for protected-boundary approval: ' + checkId + '@' + headSha);
+
+  throw new Error(
+    'timed out waiting for protected-boundary approval: ' +
+      checkId + '@' + headSha
+  );
 }
 
 function parseArgs(argv) {
@@ -147,7 +308,8 @@ function parseArgs(argv) {
     const arg = argv[i];
     if (['--impact','--output','--timeout-seconds'].includes(arg)) {
       if (!argv[i + 1]) throw new Error(arg + ' requires a value');
-      out[arg.slice(2).replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = argv[++i];
+      out[arg.slice(2).replace(/-([a-z])/g, (_, c) => c.toUpperCase())] =
+        argv[++i];
     } else {
       throw new Error('unknown argument: ' + arg);
     }
@@ -158,18 +320,34 @@ function parseArgs(argv) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (!args.impact || !args.output) {
-    throw new Error('usage: harness_collect_receipts.js --impact <impact.json> --output <receipts.json> [--timeout-seconds 600]');
+    throw new Error(
+      'usage: harness_collect_receipts.js --impact <impact.json> ' +
+      '--output <receipts.json> [--timeout-seconds 600]'
+    );
   }
+
   const impact = JSON.parse(fs.readFileSync(args.impact, 'utf8'));
   const headSha = String(impact.headSha || '').toLowerCase();
-  if (!/^[0-9a-f]{7,40}$/.test(headSha)) throw new Error('impact headSha is invalid');
+  if (!/^[0-9a-f]{7,40}$/.test(headSha)) {
+    throw new Error('impact headSha is invalid');
+  }
+
   const repo = process.env.GITHUB_REPOSITORY || '';
   const token = process.env.GITHUB_TOKEN || '';
-  if (!repo || !token) throw new Error('GITHUB_REPOSITORY and GITHUB_TOKEN are required');
-  const required = Array.from(new Set(((impact.impact || {}).checks || []).map(String))).sort();
-  const timeoutSeconds = Math.max(10, Number(args.timeoutSeconds || 600));
+  if (!repo || !token) {
+    throw new Error('GITHUB_REPOSITORY and GITHUB_TOKEN are required');
+  }
+
+  const required = Array.from(
+    new Set(((impact.impact || {}).checks || []).map(String))
+  ).sort();
+  const timeoutSeconds = Math.max(
+    10,
+    Number(args.timeoutSeconds || 600)
+  );
   const deadline = Date.now() + timeoutSeconds * 1000;
   const receipts = [];
+  const prNumber = readPullRequestNumber();
 
   if (required.includes('harness-self-test')) {
     receipts.push({
@@ -182,34 +360,69 @@ async function main() {
       runId: process.env.GITHUB_RUN_ID || '',
       runAttempt: process.env.GITHUB_RUN_ATTEMPT || '',
       repository: repo,
-      ref: process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || '',
+      ref: process.env.GITHUB_HEAD_REF ||
+        process.env.GITHUB_REF_NAME ||
+        '',
       source: 'harness-impact-local'
     });
   }
 
   for (const checkId of required) {
     if (checkId === 'harness-self-test') continue;
+
     if (isApprovalCheck(checkId)) {
-      receipts.push(await waitForApproval(checkId, repo, headSha, token, deadline));
+      receipts.push(
+        await waitForApproval(
+          checkId,
+          repo,
+          headSha,
+          token,
+          deadline,
+          prNumber
+        )
+      );
       continue;
     }
-    if (!CHECK_SOURCES[checkId]) throw new Error('unmapped required check: ' + checkId);
-    receipts.push(await waitForReceipt(checkId, repo, headSha, token, deadline));
+
+    if (!CHECK_SOURCES[checkId]) {
+      throw new Error('unmapped required check: ' + checkId);
+    }
+    receipts.push(
+      await waitForReceipt(checkId, repo, headSha, token, deadline)
+    );
   }
 
-  fs.writeFileSync(args.output, JSON.stringify({
-    schema: 'kareta.harness.receipts.v1',
-    subjectSha: headSha,
-    receipts
-  }, null, 2) + '\n');
-  console.log('HARNESS_RECEIPTS: ' + receipts.map(r => r.id + '=' + r.status).join(','));
+  fs.writeFileSync(
+    args.output,
+    JSON.stringify({
+      schema: 'kareta.harness.receipts.v1',
+      subjectSha: headSha,
+      receipts
+    }, null, 2) + '\n'
+  );
+
+  console.log(
+    'HARNESS_RECEIPTS: ' +
+      receipts.map(r => r.id + '=' + r.status).join(',')
+  );
 }
 
 if (require.main === module) {
   main().catch(error => {
-    console.error('HARNESS_RECEIPTS_FAIL:', error && error.message ? error.message : error);
+    console.error(
+      'HARNESS_RECEIPTS_FAIL:',
+      error && error.message ? error.message : error
+    );
     process.exit(1);
   });
 }
 
-module.exports = { CHECK_SOURCES, isApprovalCheck, conclusionToStatus, latestRun };
+module.exports = {
+  CHECK_SOURCES,
+  isApprovalCheck,
+  parseApprovalLine,
+  findCommentApproval,
+  readPullRequestNumber,
+  conclusionToStatus,
+  latestRun
+};
