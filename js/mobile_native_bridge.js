@@ -1,6 +1,7 @@
 (() => {
   const pending = new Map();
   let seq = 0;
+  let geoMapModulePromise = null;
 
   function nativeAvailable() {
     return !!window.KaretaNative?.postMessage;
@@ -112,6 +113,43 @@
     return { opened:true, source:"browser", url:target };
   }
 
+  function loadGeoMap() {
+    if (window.KaretaGeoMap?.open) return Promise.resolve(window.KaretaGeoMap);
+    if (geoMapModulePromise) return geoMapModulePromise;
+    geoMapModulePromise = new Promise((resolve, reject) => {
+      const release = String(window.KARETA_NEXT_ASSET_VERSION || 'next');
+      const wantedPath = '/js/next/geo_map.js';
+      const existing = Array.from(document.querySelectorAll('script[src]')).find(node => {
+        try { return new URL(node.src, location.href).pathname === wantedPath; } catch (_error) { return false; }
+      });
+      const done = () => {
+        if (window.KaretaGeoMap?.open) resolve(window.KaretaGeoMap);
+        else reject(new Error('GEO_MAP_MODULE_INVALID'));
+      };
+      if (existing) {
+        if (window.KaretaGeoMap?.open) { resolve(window.KaretaGeoMap); return; }
+        existing.addEventListener('load', done, { once:true });
+        existing.addEventListener('error', () => reject(new Error('GEO_MAP_MODULE_LOAD_FAILED')), { once:true });
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = wantedPath + '?v=' + encodeURIComponent(release);
+      script.async = true;
+      script.dataset.karetaGeoMap = '1';
+      script.dataset.karetaRelease = release;
+      script.addEventListener('load', done, { once:true });
+      script.addEventListener('error', () => {
+        geoMapModulePromise = null;
+        reject(new Error('GEO_MAP_MODULE_LOAD_FAILED'));
+      }, { once:true });
+      document.body.appendChild(script);
+    }).catch(error => {
+      geoMapModulePromise = null;
+      throw error;
+    });
+    return geoMapModulePromise;
+  }
+
   const api = {
     available: nativeAvailable,
     attach,
@@ -155,6 +193,7 @@
     openPhone: phone => call("openPhone", { phone }),
     openMap: (query, lat, lng) => call("openMap", { query, lat, lng }),
     openBestMap: (query, lat, lng) => bestMap(query, lat, lng),
+    loadGeoMap: () => loadGeoMap(),
     openExternal: url => call("openExternal", { url }),
     openSettings: () => call("openSettings"),
     vibrate: ms => call("vibrate", { ms }),
