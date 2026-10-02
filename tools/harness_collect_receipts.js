@@ -4,9 +4,22 @@
 const fs = require('fs');
 const https = require('https');
 
-const WORKFLOWS = {
-  'verification-gate': 'verify',
-  'application-gates': 'Application gates'
+const CHECK_SOURCES = {
+  'verification-gate': { workflow: 'verify', receiptId: 'verification-gate' },
+  'application-gates': { workflow: 'Application gates', receiptId: 'application-gates' },
+  'php-syntax': { workflow: 'verify', receiptId: 'verification-gate' },
+  'js-syntax': { workflow: 'Application gates', receiptId: 'application-gates' },
+  'lazy-route': { workflow: 'Application gates', receiptId: 'application-gates' },
+  'asset-url-hygiene': { workflow: 'Application gates', receiptId: 'application-gates' },
+  'api-contract': { workflow: 'Application gates', receiptId: 'application-gates' },
+  'migration-contract': { workflow: 'verify', receiptId: 'verification-gate' },
+  'release-migration-manifest': { workflow: 'Application gates', receiptId: 'application-gates' },
+  'geo-platform-core': { workflow: 'Application gates', receiptId: 'application-gates' },
+  'obd-remote-control-plane': { workflow: 'Application gates', receiptId: 'application-gates' },
+  'android-native-api6-contract': { workflow: 'verify', receiptId: 'verification-gate' },
+  'current-release': { workflow: 'verify', receiptId: 'verification-gate' },
+  'provenance': { workflow: 'Application gates', receiptId: 'application-gates' },
+  'staging-verifier-syntax': { workflow: 'verify', receiptId: 'verification-gate' }
 };
 
 function conclusionToStatus(value) {
@@ -58,9 +71,10 @@ function latestRun(runs, workflowName, headSha) {
 }
 
 async function waitForReceipt(checkId, repo, headSha, token, deadline) {
-  const workflowName = WORKFLOWS[checkId];
-  if (!workflowName) throw new Error('no workflow mapping for required check ' + checkId);
-  const artifactName = 'harness-receipt-' + checkId + '-' + headSha;
+  const source = CHECK_SOURCES[checkId];
+  if (!source) throw new Error('no workflow mapping for required check ' + checkId);
+  const workflowName = source.workflow;
+  const artifactName = 'harness-receipt-' + source.receiptId + '-' + headSha;
 
   while (Date.now() < deadline) {
     const data = await githubGet(repo, '/actions/runs?head_sha=' + encodeURIComponent(headSha) + '&per_page=100', token);
@@ -138,7 +152,7 @@ async function main() {
 
   for (const checkId of required) {
     if (checkId === 'harness-self-test') continue;
-    if (!WORKFLOWS[checkId]) continue;
+    if (!CHECK_SOURCES[checkId]) throw new Error('unmapped required check: ' + checkId);
     receipts.push(await waitForReceipt(checkId, repo, headSha, token, deadline));
   }
 
@@ -157,4 +171,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { WORKFLOWS, conclusionToStatus, latestRun };
+module.exports = { CHECK_SOURCES, conclusionToStatus, latestRun };
