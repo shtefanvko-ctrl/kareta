@@ -86,6 +86,8 @@ jobs:
           php -l api/migrations/137_geo_platform_core.php
           node tools/test_geo_platform_core.js
           node tools/test_geo_map_lazy.js
+          php tools/test_exchange_request_geo_privacy.php
+          node tools/test_exchange_request_geo_privacy.js
 
       - name: PWA fallback contract
         run: node tools/test_r1885568428_manifest_fallback.js
