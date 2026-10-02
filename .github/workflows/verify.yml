@@ -80,5 +80,15 @@ jobs:
           node tools/test_first_vehicle_account_isolation_84_151.js
           node tools/test_cabinet_session_isolation_84_151.js
 
-      - name: Staging verifier syntax
-        run: python3 -m py_compile tools/verify_staging_current.py
+      - name: Progressive garage catalog contract
+        run: |
+          node tools/test_progressive_json_catalog.js
+          node tools/test_garage_catalog_runtime.js
+          node tools/test_catalog_service_worker.js
+          node tools/test_messaging_core_84_86.js
+          php tools/test_catalog_asset_manifest.php
+
+      - name: Staging verifier contract
+        run: |
+          python3 -m py_compile tools/verify_staging_current.py
+          python3 tools/test_staging_catalog_verifier.py

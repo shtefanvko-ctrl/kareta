@@ -151,6 +151,8 @@ $focused = [
     '84.94' => 'tools/test_garage_mobile_layout_84_94.js',
     '84.95' => 'tools/test_mobile_fab_badges_84_95.js',
     'catalog.json' => 'tools/test_progressive_json_catalog.js',
+    'catalog.garage' => 'tools/test_garage_catalog_runtime.js',
+    'catalog.sw' => 'tools/test_catalog_service_worker.js',
 ];
 if ($node !== '') foreach ($focused as $label => $relative) {
     $path = $root . '/' . $relative;

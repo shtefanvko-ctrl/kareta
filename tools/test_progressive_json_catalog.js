@@ -28,25 +28,27 @@ expect(cabinetBundle.includes("'js/next/catalog/json_catalog_loader.js'"),'JSON 
 expect(cabinetBundle.indexOf("'js/next/catalog/json_catalog_loader.js'")<cabinetBundle.indexOf("'js/next/pages/cabinet.js'"),'JSON catalog loader must execute before cabinet page');
 expect(!page.includes('const serviceSystems=[')&&!page.includes('const serviceConsumables=['),'garage reference arrays remain embedded in cabinet JS');
 expect(page.includes("SERVICE_MAINTENANCE_CATALOG='assets/catalog/garage/service_maintenance.json'"),'garage catalog path contract missing');
-expect(page.includes("jsonCatalog.load(SERVICE_MAINTENANCE_CATALOG,{schema:1})"),'garage page does not use shared JSON loader');
+expect(page.includes("jsonCatalog.load(SERVICE_MAINTENANCE_CATALOG,{schema:1,force:serviceCatalogRetry})"),'garage page does not use shared JSON loader with recoverable retry');
 expect(page.includes("const lazyCatalog=key==='systems'||key==='consumables'"),'garage maps are not demand-loaded');
 expect(page.includes("await ensureServiceCatalog();")&&page.includes('Загрузка справочника…'),'garage progressive loading UI missing');
 expect(page.includes("garageCategory('systems','Карта узлов','Системы автомобиля',null)")&&page.includes("garageCategory('consumables','Расходники','Ресурс и замены',null)"),'garage summary still depends on unloaded catalog counts');
 expect(loader.includes('const cache=new Map()')&&loader.includes('const inFlight=new Map()'),'JSON loader cache/dedupe missing');
-expect(loader.includes("cache:'default'")&&loader.includes("?v=${encodeURIComponent(release)}"),'JSON loader release-scoped HTTP cache contract missing');
+expect(loader.includes("cache:force?'reload':'default'")&&loader.includes("?v=${encodeURIComponent(release)}"),'JSON loader release-scoped HTTP cache contract missing');
+expect(cabinetBundle.includes("'catalogs' => ['assets/catalog/garage/service_maintenance.json']"),'demand catalog missing from route inventory');
 expect(loader.includes("content-type")&&loader.includes("catalog_mime_invalid"),'JSON loader MIME guard missing');
 expect(gate.includes("'catalog.json' => 'tools/test_progressive_json_catalog.js'"),'release gate does not run progressive JSON regression');
 
 function response(payload,{status=200,type='application/json',jsonError=null}={}){
   return {ok:status>=200&&status<300,status,headers:{get:()=>type},json:async()=>{if(jsonError)throw jsonError;return payload;}};
 }
-function harness(responses,release='catalog-test-release'){
+function harness(responses,release='catalog-test-release',clock={setTimeout,clearTimeout}){
   const calls=[],window={KARETA_NEXT_ASSET_VERSION:release};
-  const context=vm.createContext({window,encodeURIComponent,fetch:async(url,options)=>{
+  const context=vm.createContext({window,encodeURIComponent,AbortController,...clock,fetch:async(url,options)=>{
     calls.push({url,options});
     if(!responses.length)throw new Error('unexpected_catalog_fetch');
     const next=responses.shift();
     if(next instanceof Error)throw next;
+    if(typeof next==='function')return next(url,options);
     return next;
   }});
   vm.runInContext(loader,context,{filename:path.join(root,'js/next/catalog/json_catalog_loader.js')});
@@ -107,6 +109,9 @@ async function runtimeChecks(){
   for(const [name,bad,pattern] of [
     ['HTTP error',response({}, {status:503}),/catalog_http_503/],
     ['HTML fallback',response({}, {type:'text/html'}),/catalog_mime_invalid/],
+    ['missing MIME',response({}, {type:''}),/catalog_mime_invalid/],
+    ['non-JSON MIME containing json',response({}, {type:'text/json'}),/catalog_mime_invalid/],
+    ['string schema',response({schema:'1'}),/catalog_schema_mismatch/],
     ['invalid JSON',response(null,{jsonError:new SyntaxError('catalog_test_json_invalid')}),/catalog_test_json_invalid/],
     ['array payload',response([]),/catalog_payload_invalid/],
     ['null payload',response(null),/catalog_payload_invalid/],
@@ -125,6 +130,31 @@ async function runtimeChecks(){
     await assert.rejects(h.api.load(catalogPath,{schema:1}),/catalog_test_network_failure/);
     assert.equal(h.api.audit().cached.length,0);
     assert.equal(h.api.audit().pending.length,0);
+    await h.api.load(catalogPath,{schema:1});
+    assert.equal(h.calls.length,2);
+  });
+  await check('JSON MIME accepts parameters and structured suffix',async()=>{
+    for(const type of ['application/json; charset=utf-8','Application/vnd.kareta+json; charset=UTF-8']){
+      await harness([response({schema:1},{type})]).api.load(catalogPath,{schema:1});
+    }
+  });
+  await check('force reload bypasses memory and HTTP cache',async()=>{
+    const h=harness([response({schema:1,revision:1}),response({schema:1,revision:2})]);
+    await h.api.load(catalogPath,{schema:1});
+    assert.equal((await h.api.load(catalogPath,{schema:1,force:true})).revision,2);
+    assert.equal(h.calls[1].options.cache,'reload');
+    assert.equal((await h.api.load(catalogPath,{schema:1})).revision,2);
+    assert.equal(h.calls.length,2);
+  });
+  await check('bounded request aborts, releases dedupe and recovers',async()=>{
+    let timer;const clock={setTimeout:(fn,ms)=>{timer={fn,ms};return 1;},clearTimeout:()=>{}};
+    const h=harness([(_url,options)=>new Promise((_resolve,reject)=>options.signal.addEventListener('abort',()=>reject(new Error('catalog_test_abort')))),response({schema:1})],'test',clock);
+    const pending=h.api.load(catalogPath,{schema:1});
+    assert.equal(timer.ms,15000);
+    const rejected=assert.rejects(pending,/catalog_test_abort/);
+    timer.fn();await rejected;
+    assert.equal(h.api.audit().pending.length,0);
+    assert.equal(h.api.audit().cached.length,0);
     await h.api.load(catalogPath,{schema:1});
     assert.equal(h.calls.length,2);
   });
