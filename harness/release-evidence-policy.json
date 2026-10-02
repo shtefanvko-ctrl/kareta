@@ -1,0 +1,38 @@
+{
+  "schema": "kareta.harness.release-evidence-policy.v1",
+  "rules": [
+    {
+      "id": "release-to-main",
+      "baseRef": "main",
+      "headPrefix": "release/",
+      "requiredChecks": [
+        {
+          "id": "external:staging-exact-runtime",
+          "description": "Exact release token, runtime readiness and lazy CSS/JS HTTP 200 + MIME verification on staging."
+        },
+        {
+          "id": "external:deployed-provenance",
+          "description": "Runtime /api/provenance.php reports the exact candidate Git SHA and release identity."
+        },
+        {
+          "id": "external:android-two-account-smoke",
+          "description": "Physical Android smoke using separate client/master accounts on the exact deployed candidate."
+        },
+        {
+          "id": "external:android-warm-route-two-pass",
+          "description": "Two-pass warm-route Android WebView smoke without clearing app/WebView state."
+        },
+        {
+          "id": "external:android-webview-visual-evidence",
+          "description": "Narrow Android WebView screenshots/video proving WV-07..WV-11 visual acceptance."
+        }
+      ]
+    }
+  ],
+  "evidenceComment": {
+    "enabled": true,
+    "prefix": "HARNESS_EVIDENCE",
+    "authorizedActors": ["shtefanvko-ctrl"],
+    "maxPages": 10
+  }
+}

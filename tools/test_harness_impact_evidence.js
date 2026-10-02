@@ -44,4 +44,40 @@ const bridgeApproval = buildEvidence(
 assert(bridgeApproval.impact.checks.includes('approval:native-bridge-contract'));
 assert(bridgeApproval.impact.approvalsRequired.some(item => item.checkId === 'approval:native-bridge-contract'));
 
+const releaseEvidence = buildEvidence(
+  ['docs/release/current.json'],
+  {
+    repository:'shtefanvko-ctrl/kareta',
+    baseSha:'AAAAAAAA',
+    headSha:'BBBBBBBB',
+    baseRef:'main',
+    headRef:'release/reconcile-84.152'
+  }
+);
+for (const id of [
+  'external:staging-exact-runtime',
+  'external:deployed-provenance',
+  'external:android-two-account-smoke',
+  'external:android-warm-route-two-pass',
+  'external:android-webview-visual-evidence'
+]) {
+  assert(releaseEvidence.impact.checks.includes(id), 'missing release evidence check '+id);
+}
+assert.strictEqual(releaseEvidence.impact.releaseEvidenceRequired.length, 5);
+assert.strictEqual(releaseEvidence.baseRef, 'main');
+assert.strictEqual(releaseEvidence.headRef, 'release/reconcile-84.152');
+
+const featureEvidence = buildEvidence(
+  ['harness/README.md'],
+  {
+    repository:'shtefanvko-ctrl/kareta',
+    baseSha:'AAAAAAAA',
+    headSha:'BBBBBBBB',
+    baseRef:'release/reconcile-84.152',
+    headRef:'harness/test'
+  }
+);
+assert.strictEqual(featureEvidence.impact.releaseEvidenceRequired.length, 0);
+assert(!featureEvidence.impact.checks.some(id => id.startsWith('external:')));
+
 console.log('HARNESS_IMPACT_EVIDENCE: PASS');
