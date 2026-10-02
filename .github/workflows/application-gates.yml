@@ -63,8 +63,11 @@ jobs:
       - name: Harness change intelligence
         run: |
           node --check tools/harness_plan.js
+          node --check tools/harness_evidence.js
           node --check tools/test_harness_change_intelligence.js
+          node --check tools/test_harness_impact_evidence.js
           node tools/test_harness_change_intelligence.js
+          node tools/test_harness_impact_evidence.js
 
       - name: Migration manifest integrity
         run: php tools/test_release_migration_manifest.php
