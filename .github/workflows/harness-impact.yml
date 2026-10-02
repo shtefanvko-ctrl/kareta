@@ -1,0 +1,60 @@
+name: Harness impact
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: harness-impact-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  impact:
+    name: harness-impact
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Harness self-tests
+        run: |
+          node --check tools/harness_plan.js
+          node --check tools/harness_evidence.js
+          node --check tools/test_harness_change_intelligence.js
+          node --check tools/test_harness_impact_evidence.js
+          node tools/test_harness_change_intelligence.js
+          node tools/test_harness_impact_evidence.js
+
+      - name: Build exact-head impact evidence
+        env:
+          KARETA_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          KARETA_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          node tools/harness_evidence.js \
+            --base "$KARETA_BASE_SHA" \
+            --head "$KARETA_HEAD_SHA" \
+            --output "$RUNNER_TEMP/kareta-harness-impact.json"
+
+      - name: Validate exact-head binding
+        env:
+          KARETA_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          KARETA_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          node -e "const fs=require('fs'); const p=JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP+'/kareta-harness-impact.json','utf8')); if(p.baseSha!==process.env.KARETA_BASE_SHA.toLowerCase()) throw new Error('base SHA mismatch'); if(p.headSha!==process.env.KARETA_HEAD_SHA.toLowerCase()) throw new Error('head SHA mismatch'); if(p.source!=='git-diff-base-head') throw new Error('evidence source mismatch'); console.log('HARNESS_EXACT_HEAD: PASS');"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: harness-impact-${{ github.event.pull_request.head.sha }}
+          path: ${{ runner.temp }}/kareta-harness-impact.json
+          if-no-files-found: error
+          retention-days: 30
