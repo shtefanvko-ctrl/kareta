@@ -48,7 +48,7 @@ assert(parts.includes("nearbyShops.slice(0,49)"),'parts public map point bound m
 assert(home.includes('data-home-nearby-map'),'client home nearby map trigger missing');
 assert(home.includes("title:'Рядом с вами'"),'client home map scope missing');
 assert(home.includes("geoNearby.has(geoKey(row))"),'client home map must use public Geo API points only');
-assert(home.includes("providerPoints.length"),'client home map must fail closed without public points');
+assert(home.includes("if(!mapPoints.length)throw new Error('GEO_MAP_NO_POINTS')"),'client home map must fail closed without public points');
 assert(home.includes('types=sto,master,shop'),'client home unified Geo query must include shops');
 assert(home.includes("String(point?.ownerType||'')==='shop'"),'client home map must consume public shop points');
 assert(home.includes("label:'Товары'"),'client home shop pin product action missing');
