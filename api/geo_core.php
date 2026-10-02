@@ -80,11 +80,11 @@ function kareta_geo_set_owner_kind_active(PDO $pdo,string $ownerType,string $own
 }
 function kareta_geo_owner_points(PDO $pdo,string $ownerType,string $ownerId,bool $publicOnly=false): array {
     if(!kareta_table_exists($pdo,'geo_points'))return [];
-    $sql="SELECT id,owner_type AS ownerType,owner_id AS ownerId,kind,label,country_code AS countryCode,city,address,latitude,longitude,source,visibility,verified_at AS verifiedAt,active,updated_at AS updatedAt FROM geo_points WHERE owner_type=? AND owner_id=? AND active=1";
+    $sql="SELECT id,owner_type AS ownerType,owner_id AS ownerId,kind,label,country_code AS countryCode,city,address,latitude,longitude,source,visibility,metadata_json AS metadataJson,verified_at AS verifiedAt,active,updated_at AS updatedAt FROM geo_points WHERE owner_type=? AND owner_id=? AND active=1";
     if($publicOnly)$sql.=" AND visibility='exact' AND latitude IS NOT NULL AND longitude IS NOT NULL";
     $sql.=" ORDER BY FIELD(kind,'service','branch','pickup','warehouse','mobile_origin'),updated_at DESC";
     $q=$pdo->prepare($sql);$q->execute([strtolower(trim($ownerType)),trim($ownerId)]);
     $rows=$q->fetchAll(PDO::FETCH_ASSOC)?:[];
-    foreach($rows as &$row){$row['active']=!empty($row['active']);if($row['latitude']!==null)$row['latitude']=(float)$row['latitude'];if($row['longitude']!==null)$row['longitude']=(float)$row['longitude'];}unset($row);
+    foreach($rows as &$row){$row['active']=!empty($row['active']);if($row['latitude']!==null)$row['latitude']=(float)$row['latitude'];if($row['longitude']!==null)$row['longitude']=(float)$row['longitude'];$meta=json_decode((string)($row['metadataJson']??''),true);$row['metadata']=is_array($meta)?$meta:[];unset($row['metadataJson']);}unset($row);
     return $rows;
 }
