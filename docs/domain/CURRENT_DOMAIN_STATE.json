@@ -1,0 +1,135 @@
+{
+  "schema": "kareta.current-domain-state.v1",
+  "generatedFrom": {
+    "releaseIdentity": "188.5.5.6.84.152",
+    "reconciliationPr": 22,
+    "reconciliationHead": "c20beb7fd2814e06b108451aa3e15bf414448123",
+    "recoveredRuntimePr": 37,
+    "recoveredRuntimeHead": "34331a52fb9386af5baa5ff0452540a2cce24b07",
+    "domainAuditPr": 43
+  },
+  "authority": [
+    "AGENTS.md",
+    "MB_MONITORING.md",
+    "ai/rules/*",
+    "ai/CHANGE_LANES.md",
+    "exact-SHA verification evidence",
+    "docs/engineering/CURRENT_PLAN.md"
+  ],
+  "stateSemantics": {
+    "desired": "approved or intended behavior",
+    "implemented": "code/schema/config exists on the named candidate",
+    "verified": "required repository/runtime evidence passed for the named candidate",
+    "deployed": "the exact candidate is proven present on the target environment"
+  },
+  "contexts": [
+    {
+      "id": "Identity",
+      "status": "PARTIALLY_VERIFIED",
+      "owns": [
+        "Account",
+        "Person",
+        "Context",
+        "Capability",
+        "AuthSession"
+      ],
+      "currentRules": [
+        "authorization is server-side and capability-oriented",
+        "Context and Capability are not aliases for Role",
+        "health observation must not rotate or repair Identity state"
+      ],
+      "evidence": [
+        "api/identity/",
+        "api/identity_health.php",
+        "ai/rules/security.md"
+      ]
+    },
+    {
+      "id": "Garage",
+      "status": "PARTIALLY_VERIFIED",
+      "owns": [
+        "GarageVehicle and vehicle-owned child state"
+      ],
+      "physicalStore": "client_vehicles",
+      "currentRules": [
+        "Service may reference a vehicle but does not own Garage vehicle state"
+      ],
+      "evidence": [
+        "api/client_cabinet.php",
+        "api/vehicle_passport.php"
+      ]
+    },
+    {
+      "id": "ServiceBooking",
+      "status": "VERIFIED_REPOSITORY_CI",
+      "contract": "Service owns legacy RepairOrder schedule projection writes; Booking/Master scheduling calls that owner contract.",
+      "exactHead": "34331a52fb9386af5baa5ff0452540a2cce24b07",
+      "gate": "tools/test_booking_service_boundary_84_153.js",
+      "liveIntegration": "NOT_RUN"
+    },
+    {
+      "id": "Communication",
+      "status": "VERIFIED_REPOSITORY_CI",
+      "contract": "notification_center is the canonical in-app read model for resolvable per-user legacy notifications; role-only ambiguity is not guessed.",
+      "exactHead": "34331a52fb9386af5baa5ff0452540a2cce24b07",
+      "gate": "tools/test_notification_center_bridge_84_152.js",
+      "backfill": {
+        "tool": "tools/backfill_notification_center_from_legacy.php",
+        "modePolicy": "DRY_RUN_FIRST",
+        "liveRun": "NOT_RUN"
+      }
+    },
+    {
+      "id": "PlatformReliability",
+      "status": "VERIFIED_REPOSITORY_CI",
+      "contracts": [
+        "authenticated idempotency uses stable actor scope rather than rotating PHP session id",
+        "health endpoints are observational/read-only",
+        "runtime maintenance is bounded and non-duplicative",
+        "production web traffic does not implicitly repair schema when auto-migrate is disabled"
+      ],
+      "exactHead": "34331a52fb9386af5baa5ff0452540a2cce24b07",
+      "gates": [
+        "tools/test_idempotency_scope_84_154.js",
+        "tools/test_health_readonly_boundary_84_154.js",
+        "tools/test_runtime_maintenance_boundary_84_154.js"
+      ],
+      "liveIntegration": "NOT_RUN"
+    },
+    {
+      "id": "Marketplace",
+      "status": "AUDIT_REQUIRED",
+      "knownState": "seller_* and market_* are not proven equivalent; no canonical physical store selected.",
+      "auditTool": "tools/audit_marketplace_dual_sot.php",
+      "nextAction": "Run read-only audit on an approved DB snapshot before selecting/migrating a physical source of truth."
+    },
+    {
+      "id": "FinanceAuthorization",
+      "status": "AUDIT_REQUIRED",
+      "knownState": "finance.manage capability coverage for intended master/organization contexts must be measured before adding broader POST gates.",
+      "auditTool": "tools/audit_operational_finance_authorization.php",
+      "nextAction": "Run read-only capability audit on an approved DB snapshot, then change gates only if evidence supports the intended capability sets."
+    },
+    {
+      "id": "ServiceProjection",
+      "status": "AUDIT_REQUIRED",
+      "auditTools": [
+        "tools/audit_service_domain_projection.php",
+        "tools/audit_service_projection_consistency.php"
+      ],
+      "nextAction": "Run read-only projection audits on an approved DB snapshot before any repair/backfill."
+    }
+  ],
+  "globalRules": [
+    "one mutable business entity should converge on one authoritative owner",
+    "do not create a third source of truth to bridge two existing stores",
+    "cross-context writes must use the owner contract",
+    "historical documentation does not outrank exact-SHA evidence",
+    "no data repair or migration is authorized by an audit result alone"
+  ],
+  "deferred": {
+    "hostingStaging": true,
+    "deploymentProof": "NOT_RUN",
+    "databaseLiveAudits": "NOT_RUN"
+  }
+}

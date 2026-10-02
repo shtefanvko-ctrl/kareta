@@ -88,5 +88,13 @@ jobs:
           node tools/test_health_readonly_boundary_84_154.js
           node tools/test_runtime_maintenance_boundary_84_154.js
 
+      - name: Domain audit tools syntax
+        run: |
+          php -l tools/audit_marketplace_dual_sot.php
+          php -l tools/audit_operational_finance_authorization.php
+          php -l tools/audit_service_domain_projection.php
+          php -l tools/audit_service_projection_consistency.php
+          node -e "JSON.parse(require('fs').readFileSync('docs/domain/CURRENT_DOMAIN_STATE.json','utf8')); console.log('CURRENT_DOMAIN_STATE_JSON: PASS')"
+
       - name: Staging verifier syntax
         run: python3 -m py_compile tools/verify_staging_current.py
