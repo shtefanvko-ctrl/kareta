@@ -179,6 +179,11 @@
     }
   }
 
+  function masterWorkZone(master){
+    const ready=String(master?.id||'')!=='';
+    return `<div class="k-master-home-work-zone" data-master-work-zone><div><span class="k-master-home-work-zone__icon">${icon('location')}</span><span><small>РАБОЧАЯ ЗОНА</small><b data-master-work-zone-mode>Моя рабочая зона</b><em data-master-work-zone-location>Точка, радиус выезда, ближайшие СТО и магазины</em><strong data-master-work-zone-radius>Загружается только при открытии карты</strong></span></div><button class="k-btn k-btn-secondary" type="button" data-master-work-zone-map ${ready?'':'disabled'}>${icon('location')}<span>Карта</span></button></div>`;
+  }
+
   function masterOrderList(orders,timerByOrder,emptyTitle,emptyText,emptyAction=''){
     const rows=Array.isArray(orders)?orders:[];
     return rows.length
@@ -199,7 +204,7 @@
     const openOrders=active.filter(order=>!CLOSED.has(String(order.status||'').toLowerCase()));
     const blocks={
       header:masterHomeBlock('header',`<header class="k-master-page-header"><div class="k-master-page-header__copy"><small>РАБОЧЕЕ МЕСТО</small><h1>Главная мастера</h1><p>Текущая смена, заявки и рабочий день.</p></div></header>`,'k-master-home-header'),
-      status:masterHomeBlock('status',`<div class="k-master-native-availability is-${esc(availability)}"><div><span aria-hidden="true"></span><small>СТАТУС ПРИЁМА</small><strong>${esc(running?'Занят':availabilityLabel(availability))}</strong><p>${running?`Работа с ${esc(fmtTime(running.startedAt))}`:'Управляет доступностью для новых записей'}</p></div><div class="k-master-home-status-actions"><button class="k-btn k-btn-secondary" type="button" data-master-status-open>Изменить статус</button><button class="k-btn k-btn-secondary" type="button" data-master-workspace-settings-open>${icon('settings')}<span>Настроить</span></button></div></div>`,'k-master-home-status'),
+      status:masterHomeBlock('status',`<div class="k-master-native-availability is-${esc(availability)}"><div><span aria-hidden="true"></span><small>СТАТУС ПРИЁМА</small><strong>${esc(running?'Занят':availabilityLabel(availability))}</strong><p>${running?`Работа с ${esc(fmtTime(running.startedAt))}`:'Управляет доступностью для новых записей'}</p></div><div class="k-master-home-status-actions"><button class="k-btn k-btn-secondary" type="button" data-master-status-open>Изменить статус</button><button class="k-btn k-btn-secondary" type="button" data-master-workspace-settings-open>${icon('settings')}<span>Настроить</span></button></div></div>${masterWorkZone(master)}`,'k-master-home-status'),
       'quick-actions':masterHomeBlock('quick-actions',`<header class="k-master-home-section-head"><div><small>БЫСТРЫЕ ДЕЙСТВИЯ</small><h2>Быстрые действия</h2></div></header><div class="k-master-native-actions">${quickAction('#/orders','orders','Мои заявки','Все обращения и ремонты')}${quickAction('#/master','edit','Заметки','Рабочие заметки','','data-master-home-jump="notes"')}${quickAction('#/services/manage','services','Услуги','Цены и доступность')}${quickAction('#/parts','parts','Запчасти','Подбор и товары')}</div>`,'k-master-home-quick-actions'),
       'my-requests':masterHomeBlock('my-requests',`<div class="k-master-native-queue"><header><div><small>МОИ ЗАЯВКИ</small><h2>Мои заявки</h2><p>Активные заказы, которые требуют работы мастера.</p></div><a href="#/orders">Все заявки</a></header>${masterOrderList(openOrders,timerByOrder,'Активных заявок нет','Новые принятые заявки появятся здесь.','<div class="k-master-empty-r84__actions"><a class="k-btn k-btn-primary" href="#/master/exchange">Открыть Биржу</a><a class="k-btn k-btn-secondary" href="#/orders">Все заявки</a></div>')}</div>`,'k-master-home-my-requests'),
       notes:masterHomeBlock('notes',`<div class="k-master-native-upcoming"><header><div><small>ЗАМЕТКИ</small><h2>Заметки</h2></div></header><div class="k-empty k-master-home-notes-empty"><h3>Заметок пока нет</h3><p>Здесь будут ваши рабочие заметки.</p></div></div>`,'k-master-home-notes'),
@@ -225,11 +230,32 @@
     const ensureAccess=()=>window.KaretaMasterOnboardingGate?.ensureCompleted?.({source:'master-workplace'})??Promise.resolve(false);
     let loading=false;
     let actionPending=false;
+    let currentData=null;
     let refreshTimer=0;
     const desktopWorkspaceMq=window.matchMedia?.('(min-width: 1100px)');
     const onWorkspaceViewport=()=>{if(desktopWorkspaceMq&&!desktopWorkspaceMq.matches)applyMasterWorkspaceView(root,'overview',{syncHistory:false});};
     desktopWorkspaceMq?.addEventListener?.('change',onWorkspaceViewport);
     const scheduleRefresh=data=>{clearInterval(refreshTimer);refreshTimer=0;const prefs=workplacePreferences(data);root.classList.toggle('is-compact',prefs.params.compactCards===true);const sec=Number(prefs.params.autoRefreshSec||0);if(sec>0)refreshTimer=window.setInterval(()=>{if(document.visibilityState==='visible'&&!actionPending&&!root.querySelector('dialog[open]'))load().catch(()=>{});},sec*1000);};
+    const openWorkZoneMap=async button=>{
+      const master=currentData?.master||{},masterId=String(master.id||'');
+      if(!masterId)throw new Error('MASTER_GEO_POINT_MISSING');
+      button.disabled=true;
+      try{
+        const mineResult=await context.api.request('api/geo.php?action=mine&ownerType=master&ownerId='+encodeURIComponent(masterId),{method:'GET',cacheTtlMs:5000,cacheKey:'geo.mine.master.'+masterId});
+        if(!mineResult?.ok)throw new Error(mineResult?.payload?.message||mineResult?.payload?.error||'MASTER_GEO_UNAVAILABLE');
+        const minePayload=mineResult?.payload?.data||mineResult?.payload||{},own=(Array.isArray(minePayload.items)?minePayload.items:[]).filter(point=>Number.isFinite(Number(point?.latitude))&&Number.isFinite(Number(point?.longitude))),service=own.find(point=>String(point.kind||'')==='service')||null,origin=own.find(point=>String(point.kind||'')==='mobile_origin')||null,mode=service&&origin?'both':origin?'mobile':'shop',primary=origin||service;
+        if(!primary)throw new Error('MASTER_GEO_POINT_MISSING');
+        const lat=Number(primary.latitude),lng=Number(primary.longitude),radius=Math.max(0,Number(origin?.metadata?.radiusKm||0)),searchRadius=Math.max(5,Math.min(100,radius||20)),zone=root.querySelector('[data-master-work-zone]');
+        const modeLabel=mode==='mobile'?'Выезд к клиенту':mode==='both'?'Приём + выезд':'Приём по адресу',location=[primary.city,primary.address].filter(Boolean).join(' · ')||'Рабочая точка',radiusLabel=radius>0?'Радиус выезда: '+radius+' км':'Без выездного радиуса';
+        if(zone){const modeNode=zone.querySelector('[data-master-work-zone-mode]'),locationNode=zone.querySelector('[data-master-work-zone-location]'),radiusNode=zone.querySelector('[data-master-work-zone-radius]');if(modeNode)modeNode.textContent=modeLabel;if(locationNode)locationNode.textContent=location;if(radiusNode)radiusNode.textContent=radiusLabel;}
+        const result=await context.api.request(`api/geo.php?action=nearby&lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radiusKm=${encodeURIComponent(searchRadius)}&types=sto,shop&limit=49`,{method:'GET',cacheTtlMs:15000,cacheKey:`geo.nearby.master-zone.${lat.toFixed(3)}.${lng.toFixed(3)}.${searchRadius}`});
+        const payload=result?.payload?.data||result?.payload||{},nearby=Array.isArray(payload.items)?payload.items:[];
+        const ownPoints=own.slice(0,2).map(point=>({id:'own:'+String(point.id||point.kind||''),label:String(point.kind||'')==='service'?'Место приёма':'Точка выезда',address:String(point.address||''),city:String(point.city||''),latitude:Number(point.latitude),longitude:Number(point.longitude),kind:String(point.kind||'work'),user:true,route:false,radiusKm:String(point.id||'')===String(primary.id||'')&&origin?radius:0}));
+        const nearbyPoints=nearby.map(point=>{const type=String(point.ownerType||''),ownerId=String(point.ownerId||''),publicId=Number(point.publicId||0),profile=type==='sto'?'#/masters/profile/sto/'+encodeURIComponent(ownerId):'';return {id:type+':'+ownerId,label:String(point.label||type),address:String(point.address||''),city:String(point.city||''),distanceKm:Number(point.distanceKm),latitude:Number(point.latitude),longitude:Number(point.longitude),kind:type,route:true,actions:type==='sto'?[{label:'Профиль',href:profile},{label:'Записаться',href:profile,primary:true}]:(type==='shop'&&publicId>0?[{label:'Товары',href:'#/parts/store/'+encodeURIComponent(String(publicId)),primary:true}]:[])};});
+        const geoMap=await window.KaretaMobile?.loadGeoMap?.();if(!geoMap?.open)throw new Error('GEO_MAP_UNAVAILABLE');
+        geoMap.open({title:'Рабочая зона мастера',points:[...ownPoints,...nearbyPoints].slice(0,50),center:{latitude:lat,longitude:lng}});
+      }finally{button.disabled=false;}
+    };
 
     const load=async()=>{
       if(loading)return;
@@ -240,6 +266,7 @@
         if(!response.ok)throw new Error(response.payload?.message||response.payload?.error||'Не удалось загрузить рабочее место');
         if(!root.isConnected)return;
         const data=response.payload?.data||{};
+        currentData=data;
         root.dataset.phase='ready';
         root.innerHTML=renderData(data);
         applyMasterWorkspaceView(root,masterWorkspaceViewFromHash(),{syncHistory:false});
@@ -270,6 +297,8 @@
       if(workspaceView){applyMasterWorkspaceView(root,workspaceView.dataset.masterWorkspaceView||'overview');return;}
       const reload=event.target.closest('[data-master-reload]');
       if(reload){load().catch(fail);return;}
+      const workZoneMap=event.target.closest('[data-master-work-zone-map]');
+      if(workZoneMap){try{await openWorkZoneMap(workZoneMap);}catch(error){window.KaretaToast?.error?.(error?.message==='MASTER_GEO_POINT_MISSING'?'Настройте рабочую точку в профиле мастера':'Карта рабочей зоны временно недоступна');}return;}
       const homeJump=event.target.closest('[data-master-home-jump]');
       if(homeJump){event.preventDefault();const key=String(homeJump.dataset.masterHomeJump||'');const target=[...root.querySelectorAll('[data-master-block]')].find(node=>node.dataset.masterBlock===key);target?.scrollIntoView?.({behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});return;}
       const openStatus=event.target.closest('[data-master-status-open]');

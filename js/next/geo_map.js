@@ -23,6 +23,7 @@
     address:String(point?.address||''),
     city:String(point?.city||''),
     distanceKm:Number.isFinite(Number(point?.distanceKm))?Number(point.distanceKm):null,
+    radiusKm:Number.isFinite(Number(point?.radiusKm))?Math.max(0,Number(point.radiusKm)):0,
     latitude:Number(point?.latitude??point?.lat),
     longitude:Number(point?.longitude??point?.lng),
     kind:String(point?.kind||'point'),
@@ -167,7 +168,7 @@
     providerItems.forEach(item=>{const key=clusterSize===1?item.point.id:(Math.floor(item.left/clusterSize)+':'+Math.floor(item.top/clusterSize));const list=buckets.get(key)||[];list.push(item);buckets.set(key,list);});
     state.clusters=new Map();
     const markerHtml=[];
-    userItems.forEach(item=>{const selected=state.selected===item.point.id?' is-selected':'';markerHtml.push(`<button type="button" class="k-geo-map-marker is-user${selected}" data-geo-map-point="${esc(item.point.id)}" style="left:${item.left}px;top:${item.top}px" title="${esc(item.point.label)}"><span>●</span></button>`);});
+    userItems.forEach(item=>{if(item.point.radiusKm>0){const metersPerPixel=Math.max(0.01,156543.03392*Math.cos(item.point.latitude*Math.PI/180)/Math.pow(2,zoom)),radiusPx=clamp(item.point.radiusKm*1000/metersPerPixel,8,2200);markerHtml.push(`<div class="k-geo-map-radius" style="left:${item.left}px;top:${item.top}px;width:${radiusPx*2}px;height:${radiusPx*2}px" aria-hidden="true"></div>`);}const selected=state.selected===item.point.id?' is-selected':'';markerHtml.push(`<button type="button" class="k-geo-map-marker is-user${selected}" data-geo-map-point="${esc(item.point.id)}" style="left:${item.left}px;top:${item.top}px" title="${esc(item.point.label)}"><span>●</span></button>`);});
     let clusterIndex=0;
     buckets.forEach(items=>{
       if(items.length===1){const item=items[0],selected=state.selected===item.point.id?' is-selected':'';markerHtml.push(`<button type="button" class="k-geo-map-marker${selected}" data-geo-map-point="${esc(item.point.id)}" style="left:${item.left}px;top:${item.top}px" title="${esc(item.point.label)}"><span>•</span></button>`);return;}
