@@ -10,6 +10,27 @@ if ($karetaHttpNotFound) {
 
 require_once __DIR__ . '/inc/web_guard.php';
 
+$geoMapConfig = defined('KARETA_GEO_MAP') && is_array(KARETA_GEO_MAP) ? KARETA_GEO_MAP : [];
+$geoTileUrl = trim((string)($geoMapConfig['tile_url'] ?? 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'));
+$geoTileParts = parse_url($geoTileUrl);
+$geoTileOrigin = '';
+if (
+    is_array($geoTileParts)
+    && strtolower((string)($geoTileParts['scheme'] ?? '')) === 'https'
+    && preg_match('/^[A-Za-z0-9.-]+$/', (string)($geoTileParts['host'] ?? ''))
+) {
+    $geoTileOrigin = 'https://' . (string)$geoTileParts['host'];
+    if (!empty($geoTileParts['port'])) $geoTileOrigin .= ':' . (int)$geoTileParts['port'];
+}
+$geoMapPublicConfig = [
+    'tileUrl'=>$geoTileUrl,
+    'attributionLabel'=>(string)($geoMapConfig['attribution_label'] ?? '© OpenStreetMap contributors'),
+    'attributionUrl'=>(string)($geoMapConfig['attribution_url'] ?? 'https://www.openstreetmap.org/copyright'),
+    'minZoom'=>(int)($geoMapConfig['min_zoom'] ?? 8),
+    'maxZoom'=>(int)($geoMapConfig['max_zoom'] ?? 17),
+    'defaultZoom'=>(int)($geoMapConfig['default_zoom'] ?? 13),
+];
+
 $requestPath = parse_url((string)($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH);
 if (in_array($requestPath, ['/sites/kareta.kz', '/sites/kareta.kz/'], true)) {
     $query = trim((string)($_SERVER['QUERY_STRING'] ?? ''));
@@ -23,7 +44,8 @@ header('X-Frame-Options: SAMEORIGIN');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 header('Permissions-Policy: geolocation=(self), camera=(self), microphone=(self)');
 header('Cross-Origin-Opener-Policy: same-origin-allow-popups');
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob: https://images.unsplash.com; media-src 'self' blob:; connect-src 'self' https://cdn.jsdelivr.net; font-src 'self' data:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'");
+$geoImgSource = $geoTileOrigin !== '' ? ' ' . $geoTileOrigin : '';
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob: https://images.unsplash.com{$geoImgSource}; media-src 'self' blob:; connect-src 'self' https://cdn.jsdelivr.net; font-src 'self' data:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'");
 header('X-Kareta-Request-Id: ' . KARETA_WEB_REQUEST_ID);
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('CDN-Cache-Control: no-store');
@@ -244,6 +266,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
     window.KARETA_NEXT_ASSET_VERSION = <?= json_encode($assetVersion, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
     window.KARETA_FRONTEND_MODE = 'next';
     window.KARETA_ASSET_MANIFEST_URL = '/asset_manifest.php?v=' + encodeURIComponent(window.KARETA_NEXT_ASSET_VERSION);
+    window.KARETA_GEO_MAP_CONFIG = Object.freeze(<?= json_encode($geoMapPublicConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>);
   </script>
 </head>
 <body>
@@ -544,7 +567,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
       })();
     })();
   </script>
-  <script src="/js/mobile_native_bridge.js?v=1"></script>
+  <script src="/js/mobile_native_bridge.js?v=<?= rawurlencode($assetVersion) ?>"></script>
   <script src="/js/next/obd_remote_jobs.js?v=<?= rawurlencode($assetVersion) ?>"></script>
 </body>
 </html>

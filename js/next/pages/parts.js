@@ -25,6 +25,7 @@
   let listingSaving=false;
   let nearbyShops=[];
   let nearbyShopsStatus='idle';
+  let nearbyUserPoint=null;
 
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const money=value=>`${new Intl.NumberFormat('ru-RU').format(Number(value||0))} ₸`;
@@ -224,7 +225,7 @@
   }
   function nearbyShopsSection(){
     if(isUsedSurface())return '';
-    return `<section class="k-parts-native-section k-parts-nearby-shops" data-parts-nearby-shops><header><div><small>ГЕО</small><h2>Магазины рядом</h2><p>Показываем только магазины, которые сами опубликовали точку самовывоза.</p></div><button class="k-btn k-btn-secondary" type="button" data-parts-nearby-detect>${icon('location')} Найти рядом</button></header><div data-parts-nearby-list><div class="k-parts-native-empty">Геопозиция используется только для расчёта расстояния.</div></div></section>`;
+    return `<section class="k-parts-native-section k-parts-nearby-shops" data-parts-nearby-shops><header><div><small>ГЕО</small><h2>Магазины рядом</h2><p>Показываем только магазины, которые сами опубликовали точку самовывоза.</p></div><div class="k-parts-section-actions"><button class="k-btn k-btn-secondary" type="button" data-parts-nearby-detect>${icon('location')} Найти рядом</button><button class="k-btn k-btn-secondary" type="button" data-parts-nearby-map>${icon('location')} Карта</button></div></header><div data-parts-nearby-list><div class="k-parts-native-empty">Геопозиция используется только для расчёта расстояния.</div></div></section>`;
   }
   function renderNearbyShops(){
     const root=document.querySelector('[data-parts-nearby-list]');if(!root)return;
@@ -240,7 +241,7 @@
       if(window.KaretaMobile?.bestLocation)point=await window.KaretaMobile.bestLocation({enableHighAccuracy:false,timeout:8000,maximumAge:300000});
       else if(navigator.geolocation)point=await new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(p=>resolve({latitude:p.coords.latitude,longitude:p.coords.longitude,source:'browser'}),reject,{enableHighAccuracy:false,timeout:8000,maximumAge:300000}));
       else throw new Error('GEOLOCATION_UNAVAILABLE');
-      const lat=Number(point?.latitude),lng=Number(point?.longitude);if(!Number.isFinite(lat)||!Number.isFinite(lng))throw new Error('GEOLOCATION_INVALID');
+      const lat=Number(point?.latitude),lng=Number(point?.longitude);if(!Number.isFinite(lat)||!Number.isFinite(lng))throw new Error('GEOLOCATION_INVALID');nearbyUserPoint={latitude:lat,longitude:lng};
       const result=await api.request(`api/geo.php?action=nearby&lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radiusKm=50&types=shop&limit=20`,{method:'GET',cacheTtlMs:15000,cacheKey:`geo.nearby.parts.${lat.toFixed(3)}.${lng.toFixed(3)}`});
       if(contextRef===null)return;
       const payload=result?.payload?.data||result?.payload||{};
@@ -348,6 +349,7 @@
       const close=event.target.closest('[data-dialog-close]');if(close){const map={filter:'parts-filter',vehicle:'parts-vehicle',listing:'used-form',category:'parts-category',market:'parts-market-list',delete:'delete',cart:'shop-cart'};closeDialog(map[close.dataset.dialogClose]||close.dataset.dialogClose);return;}
       if(event.target.closest('[data-shop-cart-open]')){openDialog('shop-cart');return;}
       if(event.target.closest('[data-parts-nearby-detect]')){await loadNearbyShops();return;}
+      const nearbyMap=event.target.closest('[data-parts-nearby-map]');if(nearbyMap){nearbyMap.disabled=true;try{if(nearbyShopsStatus!=='ready'||!nearbyUserPoint)await loadNearbyShops();if(!nearbyShops.length||!nearbyUserPoint)throw new Error('GEO_MAP_NO_POINTS');const geoMap=await window.KaretaMobile?.loadGeoMap?.();if(!geoMap?.open)throw new Error('GEO_MAP_UNAVAILABLE');geoMap.open({title:'Магазины рядом',points:[{id:'user',label:'Вы',latitude:nearbyUserPoint.latitude,longitude:nearbyUserPoint.longitude,user:true,kind:'you',route:false},...nearbyShops.slice(0,49).map(point=>({id:String(point.id||point.ownerId||''),label:String(point.label||'Магазин запчастей'),address:String(point.address||''),city:String(point.city||''),distanceKm:Number(point.distanceKm),latitude:Number(point.latitude),longitude:Number(point.longitude),kind:'pickup',route:true}))],center:nearbyUserPoint});}catch(error){window.KaretaToast?.error?.(error?.message==='GEO_MAP_NO_POINTS'?'Публичных точек самовывоза рядом пока нет':'Карта временно недоступна');}finally{nearbyMap.disabled=false;}return;}
       const nearbyRoute=event.target.closest('[data-parts-nearby-route]');if(nearbyRoute){const lat=Number(nearbyRoute.dataset.lat),lng=Number(nearbyRoute.dataset.lng),label=String(nearbyRoute.dataset.label||'Магазин');if(window.KaretaMobile?.openBestMap)await window.KaretaMobile.openBestMap(label,lat,lng);else window.open(`https://www.openstreetmap.org/?mlat=${encodeURIComponent(lat)}&mlon=${encodeURIComponent(lng)}#map=16/${encodeURIComponent(lat)}/${encodeURIComponent(lng)}`,'_blank','noopener,noreferrer');return;}
       if(event.target.closest('[data-parts-filter-open]')){renderFilter(store.getSnapshot());openDialog('parts-filter');return;}
       if(event.target.closest('[data-parts-vehicle-open]')){vehicleDialogMode='catalog';renderVehicles();openDialog('parts-vehicle');return;}
@@ -399,7 +401,7 @@
   }
 
   function mountParts(context){
-    unsubscribe?.();contextRef=context;usedRows=[];mineRows=[];listingWizard=null;listingSaving=false;usedLoading=false;usedError='';vehicles=[];vehiclesLoaded=false;selectedVehicleId='';vehicleDialogMode='catalog';marketMode='catalog';mineStatus='all';pendingMineFocusId='';nearbyShops=[];nearbyShopsStatus='idle';state={search:'',type:'all',category:'',city:'',sort:'newest'};const hashCtx=readHashContext();
+    unsubscribe?.();contextRef=context;usedRows=[];mineRows=[];listingWizard=null;listingSaving=false;usedLoading=false;usedError='';vehicles=[];vehiclesLoaded=false;selectedVehicleId='';vehicleDialogMode='catalog';marketMode='catalog';mineStatus='all';pendingMineFocusId='';nearbyShops=[];nearbyShopsStatus='idle';nearbyUserPoint=null;state={search:'',type:'all',category:'',city:'',sort:'newest'};const hashCtx=readHashContext();
     unsubscribe=store.subscribe(renderSnapshot);bind(context);store.load({search:'',category:'all',limit:100},{signal:context.lifecycle?.signal});if(isUsedSurface())loadUsed();else{usedRows=[];usedLoading=false;usedError='';}loadVehicles();
     if(hashCtx.mine==='1'){pendingMineFocusId=hashCtx.focus||'';loadMine().then(()=>{if(contextRef!==context)return;marketMode='mine';renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');});}
     return()=>{unsubscribe?.();unsubscribe=null;contextRef=null;store.cancel();};
