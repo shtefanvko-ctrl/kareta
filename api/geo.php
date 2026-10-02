@@ -144,6 +144,16 @@ if ($method==='GET' && $action==='nearby') {
     kareta_json(['ok'=>true,'items'=>$items,'meta'=>['radiusKm'=>$radius,'limit'=>$limit,'distanceMode'=>'straight_line','visibility'=>'exact_only']]);
 }
 
+if ($method==='GET' && $action==='mine') {
+    try {$auth=(new KaretaAuthResolver($pdo))->resolve(true);}
+    catch (DomainException $e) { kareta_json(['ok'=>false,'error'=>$e->getMessage()],$e->getMessage()==='session_identity_conflict'?409:401); }
+    $ownerType=strtolower(geo_text($_GET['ownerType']??'',32));
+    $ownerId=geo_text($_GET['ownerId']??'',96);
+    if (!in_array($ownerType,geo_owner_types(),true) || $ownerId==='') kareta_json(['ok'=>false,'error'=>'invalid_owner'],422);
+    if (!geo_context_allows_owner($pdo,$auth,$ownerType,$ownerId)) kareta_json(['ok'=>false,'error'=>'geo_owner_forbidden'],403);
+    kareta_json(['ok'=>true,'items'=>kareta_geo_owner_points($pdo,$ownerType,$ownerId,false),'meta'=>['scope'=>'owner','publicOnly'=>false]]);
+}
+
 if ($method==='GET' && $action==='entity') {
     $ownerType=strtolower(geo_text($_GET['ownerType']??'',32));
     $ownerId=geo_text($_GET['ownerId']??'',96);
