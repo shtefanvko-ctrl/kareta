@@ -22,6 +22,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -51,6 +53,27 @@ jobs:
           node --check js/next/pages/not_found.js
           node --check js/boot/runtime_identity_bundle.js
           node --check js/boot/runtime_shell_bundle.js
+
+      - name: Harness change intelligence
+        run: |
+          node --check tools/harness_plan.js
+          node --check tools/harness_evidence.js
+          node --check tools/harness_verdict.js
+          node --check tools/harness_receipt.js
+          node --check tools/harness_collect_receipts.js
+          node --check tools/harness_approval.js
+          node --check tools/test_harness_change_intelligence.js
+          node --check tools/test_harness_impact_evidence.js
+          node --check tools/test_harness_verdict.js
+          node --check tools/test_harness_receipt.js
+          node --check tools/test_harness_collect_receipts.js
+          node --check tools/test_harness_approval.js
+          node tools/test_harness_change_intelligence.js
+          node tools/test_harness_impact_evidence.js
+          node tools/test_harness_verdict.js
+          node tools/test_harness_receipt.js
+          node tools/test_harness_collect_receipts.js
+          node tools/test_harness_approval.js
 
       - name: Android Native API 6 contract
         run: node tools/test_android_native_api6_contract_84_148.js
@@ -82,3 +105,25 @@ jobs:
 
       - name: Staging verifier syntax
         run: python3 -m py_compile tools/verify_staging_current.py
+
+
+      - name: Write Harness receipt
+        if: always()
+        env:
+          KARETA_SUBJECT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          KARETA_JOB_STATUS: ${{ job.status }}
+        run: |
+          node tools/harness_receipt.js \
+            --id "verification-gate" \
+            --subject-sha "$KARETA_SUBJECT_SHA" \
+            --job-status "$KARETA_JOB_STATUS" \
+            --output "$RUNNER_TEMP/kareta-harness-receipt.json"
+
+      - name: Upload Harness receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-receipt-verification-gate-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/kareta-harness-receipt.json
+          if-no-files-found: error
+          retention-days: 30

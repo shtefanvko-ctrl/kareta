@@ -1,0 +1,105 @@
+name: Harness impact
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: harness-impact-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  impact:
+    name: harness-impact
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Harness self-tests
+        run: |
+          node --check tools/harness_plan.js
+          node --check tools/harness_evidence.js
+          node --check tools/harness_receipt.js
+          node --check tools/harness_collect_receipts.js
+          node --check tools/harness_approval.js
+          node --check tools/harness_verdict.js
+          node --check tools/test_harness_change_intelligence.js
+          node --check tools/test_harness_impact_evidence.js
+          node --check tools/test_harness_receipt.js
+          node --check tools/test_harness_collect_receipts.js
+          node --check tools/test_harness_approval.js
+          node --check tools/test_harness_verdict.js
+          node tools/test_harness_change_intelligence.js
+          node tools/test_harness_impact_evidence.js
+          node tools/test_harness_receipt.js
+          node tools/test_harness_collect_receipts.js
+          node tools/test_harness_approval.js
+          node tools/test_harness_verdict.js
+
+      - name: Build exact-head impact evidence
+        env:
+          KARETA_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          KARETA_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          node tools/harness_evidence.js \
+            --base "$KARETA_BASE_SHA" \
+            --head "$KARETA_HEAD_SHA" \
+            --output "$RUNNER_TEMP/kareta-harness-impact.json"
+
+      - name: Validate exact-head binding
+        env:
+          KARETA_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          KARETA_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          node -e "const fs=require('fs'); const p=JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP+'/kareta-harness-impact.json','utf8')); if(p.baseSha!==process.env.KARETA_BASE_SHA.toLowerCase()) throw new Error('base SHA mismatch'); if(p.headSha!==process.env.KARETA_HEAD_SHA.toLowerCase()) throw new Error('head SHA mismatch'); if(p.source!=='git-diff-base-head') throw new Error('evidence source mismatch'); console.log('HARNESS_EXACT_HEAD: PASS');"
+
+      - name: Upload impact evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-impact-${{ github.event.pull_request.head.sha }}
+          path: ${{ runner.temp }}/kareta-harness-impact.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Collect exact-head gate receipts
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          node tools/harness_collect_receipts.js \
+            --impact "$RUNNER_TEMP/kareta-harness-impact.json" \
+            --output "$RUNNER_TEMP/kareta-harness-receipts.json" \
+            --timeout-seconds 600
+
+      - name: Build Harness verdict
+        run: |
+          node tools/harness_verdict.js \
+            --impact "$RUNNER_TEMP/kareta-harness-impact.json" \
+            --receipts "$RUNNER_TEMP/kareta-harness-receipts.json" \
+            --output "$RUNNER_TEMP/kareta-harness-verdict.json"
+
+      - name: Upload Harness verdict
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-verdict-${{ github.event.pull_request.head.sha }}
+          path: |
+            ${{ runner.temp }}/kareta-harness-impact.json
+            ${{ runner.temp }}/kareta-harness-receipts.json
+            ${{ runner.temp }}/kareta-harness-verdict.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Enforce Harness verdict
+        run: |
+          node -e "const fs=require('fs'); const p=JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP+'/kareta-harness-verdict.json','utf8')); console.log('HARNESS_FINAL_VERDICT:',p.status); if(p.status!=='PASS') process.exit(1);"
