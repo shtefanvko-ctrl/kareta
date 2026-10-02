@@ -2,6 +2,8 @@
 
 This document is for the test/staging server only. It does not authorize production deployment.
 
+The upload archive is generated from the Harness server-package policy. Do not add CI, Harness, private config or local runtime files to the ZIP manually.
+
 ## Package identity
 
 The generated ZIP is bound to one exact Git SHA through:
