@@ -1,0 +1,71 @@
+{
+  "schema": "kareta.harness.permission-matrix.v1",
+  "defaultRole": "observer",
+  "protectedFlags": [
+    "database-contract",
+    "native-bridge-contract",
+    "release-provenance",
+    "deployment-sensitive"
+  ],
+  "roles": {
+    "observer": {
+      "level": 0,
+      "actions": ["read", "inspect"],
+      "writeAllow": [],
+      "protectedMode": "deny"
+    },
+    "analyst": {
+      "level": 1,
+      "actions": ["read", "inspect", "plan", "evidence", "write"],
+      "writeAllow": [
+        "docs/**",
+        "harness/README.md"
+      ],
+      "protectedMode": "deny"
+    },
+    "fixer": {
+      "level": 2,
+      "actions": ["read", "inspect", "plan", "evidence", "write", "test"],
+      "writeAllow": [
+        "api/**",
+        "inc/**",
+        "js/**",
+        "css/**",
+        "tools/**",
+        "index.php",
+        "sw.js",
+        "asset_manifest.php",
+        "docs/**"
+      ],
+      "writeDeny": [
+        ".github/**",
+        "harness/**"
+      ],
+      "protectedMode": "deny"
+    },
+    "verifier": {
+      "level": 3,
+      "actions": ["read", "inspect", "plan", "evidence", "write", "test", "verify"],
+      "writeAllow": [
+        "api/**",
+        "inc/**",
+        "js/**",
+        "css/**",
+        "tools/**",
+        "index.php",
+        "sw.js",
+        "asset_manifest.php",
+        "docs/**",
+        "harness/**",
+        ".github/workflows/**"
+      ],
+      "protectedMode": "deny"
+    },
+    "release": {
+      "level": 4,
+      "actions": ["read", "inspect", "plan", "evidence", "write", "test", "verify", "release"],
+      "writeAllow": ["**"],
+      "protectedMode": "approval-required"
+    }
+  }
+}
