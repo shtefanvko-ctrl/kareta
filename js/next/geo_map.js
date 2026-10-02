@@ -85,7 +85,7 @@
         <div class="k-geo-map-tiles" data-geo-map-tiles></div>
         <div class="k-geo-map-markers" data-geo-map-markers></div>
         <div class="k-geo-map-controls"><button type="button" data-geo-map-zoom="1" aria-label="Приблизить">+</button><button type="button" data-geo-map-zoom="-1" aria-label="Отдалить">−</button></div>
-        <div class="k-geo-map-attribution"><a href="${esc(config.attributionUrl)}" target="_blank" rel="noopener noreferrer">${esc(config.attributionLabel)}</a></div>
+        <div class="k-geo-map-attribution" data-geo-map-attribution><a href="${esc(config.attributionUrl)}" target="_blank" rel="noopener noreferrer">${esc(config.attributionLabel)}</a></div>
       </div>
       <section class="k-geo-map-detail" data-geo-map-detail><b>Выберите точку на карте</b><span>Адрес и маршрут появятся здесь.</span></section>
       <footer><span data-geo-map-count></span><button type="button" data-geo-map-close>Закрыть</button></footer>
