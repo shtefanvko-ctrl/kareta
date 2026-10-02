@@ -51,3 +51,22 @@ For pull requests, `.github/workflows/harness-impact.yml`:
 5. uploads `harness-impact-<head-sha>` for 30 days.
 
 Required checks in the impact artifact start as `NOT_RUN`. A planning artifact is not itself verification evidence and must never be interpreted as PASS.
+
+
+## Increment 3: Exact-SHA Staleness Policy
+
+`harness/status-policy.json` defines the canonical Harness states:
+
+`PASS`, `FAIL`, `BLOCKED`, `NOT_RUN`, `NOT_REQUIRED`, `STALE`.
+
+`tools/harness_verdict.js` accepts an impact artifact plus check receipts. A receipt can satisfy a required check only when its `subjectSha` equals the impact artifact's current `headSha`.
+
+Therefore:
+
+- PASS from an older SHA becomes `STALE`;
+- missing current-head evidence becomes `NOT_RUN`;
+- `STALE`, `NOT_RUN` or `BLOCKED` prevents an overall PASS;
+- an exact-head FAIL makes the verdict FAIL;
+- only exact-head `PASS` or `NOT_REQUIRED` can satisfy a required check.
+
+The regression test explicitly proves that an old PASS cannot satisfy a new PR head.
