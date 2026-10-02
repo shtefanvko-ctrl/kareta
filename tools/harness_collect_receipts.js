@@ -28,7 +28,8 @@ const CHECK_SOURCES = {
   'android-native-api6-contract': { workflow: 'verify', receiptId: 'verification-gate' },
   'current-release': { workflow: 'verify', receiptId: 'verification-gate' },
   'provenance': { workflow: 'Application gates', receiptId: 'application-gates' },
-  'staging-verifier-syntax': { workflow: 'verify', receiptId: 'verification-gate' }
+  'staging-verifier-syntax': { workflow: 'verify', receiptId: 'verification-gate' },
+  'server-package': { workflow: 'Server package', receiptId: 'server-package' }
 };
 
 function isApprovalCheck(checkId) {
