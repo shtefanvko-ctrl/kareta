@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__.'/geo_core.php';
+
 function kareta_master_workplace_identity_context(PDO $pdo): array {
     if (!class_exists('KaretaIdentityContextService')) return [];
     try {
@@ -541,6 +543,7 @@ function kareta_master_workplace_get(PDO $pdo): void {
     $completedToday=array_values(array_filter($orders,fn($o)=>(string)($o['date']??'')===$today && in_array(strtolower((string)($o['status']??'')),['completed','done','delivered','closed'],true)));
     $identity=kareta_master_workplace_identity_context($pdo);
     $business=kareta_master_workplace_business($pdo,$master,$orders);
+    $geoPoints=kareta_table_exists($pdo,'geo_points')?kareta_geo_owner_points($pdo,'master',$mid,false):[];
     kareta_json(['ok'=>true,'data'=>[
         'master'=>[
             'id'=>$mid,
@@ -551,6 +554,11 @@ function kareta_master_workplace_get(PDO $pdo): void {
             'availabilityLabel'=>kareta_master_availability_label((string)($master['availability']??'online')),
             'stoId'=>(string)($master['sto_id']??''),
             'stoName'=>(string)($master['sto_name']??''),
+            'city'=>(string)($master['city']??''),
+            'workMode'=>(string)($master['work_mode']??'shop'),
+            'serviceAddress'=>(string)($master['service_address']??''),
+            'serviceRadiusKm'=>(int)($master['service_radius_km']??0),
+            'geoPoints'=>$geoPoints,
         ],
         'context'=>$identity['context']??null,
         'orders'=>$orders,
