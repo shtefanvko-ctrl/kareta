@@ -102,6 +102,11 @@ for needle in [
 ]:
     assert needle in htaccess, needle
 
+workflow=(ROOT/".github/workflows/server-package.yml").read_text(encoding="utf-8")
+assert 'sha256sum "$OUT" > "$OUT.sha256"' not in workflow
+assert 'sha256sum "$(basename "$OUT")" > "$(basename "$OUT").sha256"' in workflow
+assert 'sha256sum -c "$(basename "$OUT").sha256"' in workflow
+
 config=(ROOT/"config.php").read_text(encoding="utf-8")
 assert "$kareta_private_candidates" in config
 assert "dirname(KARETA_ROOT) . '/.kareta/config.private.php'" in config
