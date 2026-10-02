@@ -1,0 +1,63 @@
+name: Hosting package 398891b
+
+on:
+  push:
+    branches:
+      - ops/hosting-package-398891b
+    paths:
+      - '.github/workflows/hosting-package-398891b.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact verified source
+        uses: actions/checkout@v4
+        with:
+          ref: 398891b861b434f24cc2ec46776262807346c019
+
+      - name: Build hosting payload
+        shell: bash
+        env:
+          KARETA_DEPLOY_GIT_SHA: 398891b861b434f24cc2ec46776262807346c019
+          KARETA_DEPLOY_GIT_REF: release/reconcile-84.152
+          KARETA_DEPLOY_WORKFLOW_RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          rm -rf dist hosting
+          mkdir -p dist hosting
+
+          cp -a .htaccess index.php config.php asset_manifest.php booking.php manifest.json sw.js hosting/
+          cp -a api assets css inc js media storage hosting/
+
+          rm -rf hosting/storage/logs hosting/storage/backups
+          mkdir -p hosting/storage/logs hosting/storage/backups
+
+          php tools/generate_deployment_manifest.php --output=hosting/storage/deployment_manifest.json >/tmp/kareta-deployment-manifest.out
+          php -r '$d=json_decode(file_get_contents("hosting/storage/deployment_manifest.json"),true,32,JSON_THROW_ON_ERROR); if(($d["gitSha"]??"")!=="398891b861b434f24cc2ec46776262807346c019"){fwrite(STDERR,"deployment manifest SHA mismatch\n"); exit(1);} echo "DEPLOYMENT_MANIFEST: PASS\n";'
+
+          test ! -e hosting/config.private.php
+          test ! -e hosting/.env
+          test ! -e hosting/.github
+          test ! -e hosting/tools
+          test ! -e hosting/docs
+          test ! -e hosting/ai
+
+          (cd hosting && zip -q -r ../dist/kareta-hosting-84.152-398891b.zip .)
+          sha256sum dist/kareta-hosting-84.152-398891b.zip > dist/kareta-hosting-84.152-398891b.zip.sha256
+
+          echo "PACKAGE_FILES=$(find hosting -type f | wc -l)"
+          echo "PACKAGE_BYTES=$(du -sb hosting | awk '{print $1}')"
+          cat dist/kareta-hosting-84.152-398891b.zip.sha256
+
+      - name: Upload hosting package
+        uses: actions/upload-artifact@v4
+        with:
+          name: kareta-hosting-84.152-398891b
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
