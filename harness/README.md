@@ -70,3 +70,50 @@ Therefore:
 - only exact-head `PASS` or `NOT_REQUIRED` can satisfy a required check.
 
 The regression test explicitly proves that an old PASS cannot satisfy a new PR head.
+
+
+## Increment 6: Agent Permission Matrix
+
+`harness/permission-matrix.json` defines five explicit execution roles. Missing or unknown roles fail closed.
+
+| Role | Purpose | Write boundary |
+| --- | --- | --- |
+| `observer` | Read/inspect only | No writes |
+| `analyst` | Plans, evidence, architecture notes | `docs/**` and `harness/README.md` only |
+| `fixer` | Product repair | App/API/tools/docs, but not Harness/CI and never protected boundaries |
+| `verifier` | Tests, Harness and CI maintenance | Fixer scope + `harness/**` + `.github/workflows/**`, but not protected boundaries |
+| `release` | Release-level operations | Repository-wide, but protected boundaries require explicit approval |
+
+Protected boundaries remain:
+
+- `database-contract`
+- `native-bridge-contract`
+- `release-provenance`
+- `deployment-sensitive`
+
+Examples:
+
+```bash
+node tools/harness_authorize.js \
+  --role fixer \
+  --action write \
+  --file js/next/pages/core.js
+
+node tools/harness_authorize.js \
+  --role release \
+  --action write \
+  --file api/migrations/137_geo_platform_core.php \
+  --approved-boundary database-contract
+```
+
+Authorization is fail closed:
+
+- no role -> `observer`;
+- unknown role -> denied;
+- an unlisted action -> denied;
+- a write without file paths -> denied;
+- a file outside the role's write scope -> denied;
+- Fixer/Verifier touching a protected boundary -> denied even if they claim approval;
+- Release touching a protected boundary -> denied until the matching boundary approval is supplied.
+
+This is the repository-side policy engine. Absolute prevention of an authenticated administrator bypassing CI still requires GitHub repository rules/branch protection; the current connector does not expose administration writes for that setting.
