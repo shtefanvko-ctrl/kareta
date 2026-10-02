@@ -15,7 +15,8 @@ const masters=read('js/next/pages/masters.js');
 const parts=read('js/next/pages/parts.js');
 const home=read('js/next/pages/core.js');
 const masterWorkplace=read('js/next/pages/master_workplace.js');
-const masterWorkplaceApi=read('api/master_workplace.php');
+const geoApi=read('api/geo.php');
+const geoCore=read('api/geo_core.php');
 const assetRegistry=read('inc/asset_registry.php');
 const bootBuilder=read('tools/build_boot_js_bundles.js');
 
@@ -67,12 +68,15 @@ assert(parts.includes("label:'Товары'"),'parts map product action missing'
 assert(map.includes("radiusKm:Number.isFinite(Number(point?.radiusKm))"),'generic radius normalization missing');
 assert(map.includes('k-geo-map-radius'),'work radius map overlay missing');
 assert(css.includes('.k-geo-map-radius'),'work radius map CSS missing');
-assert(masterWorkplaceApi.includes("kareta_geo_owner_points($pdo,'master',$mid,false)"),'master workplace must load owner-scoped private geo points');
-assert(masterWorkplaceApi.includes("'geoPoints'=>$geoPoints"),'master workplace geo payload missing');
+assert(geoApi.includes("$action==='mine'"),'owner-only Geo read action missing');
+assert(geoApi.includes("geo_context_allows_owner($pdo,$auth,$ownerType,$ownerId)"),'owner-only Geo read must enforce ownership');
+assert(geoApi.includes("kareta_geo_owner_points($pdo,$ownerType,$ownerId,false)"),'owner-only Geo read must include private owner points');
+assert(geoCore.includes("metadata_json AS metadataJson")&&geoCore.includes("$row['metadata']=is_array($meta)?$meta:[]"),'owner point metadata decode missing');
 assert(masterWorkplace.includes('data-master-work-zone'),'master home work-zone card missing');
 assert(masterWorkplace.includes("types=sto,shop&limit=49"),'master work-zone nearby scope must be public STO and shops');
 assert(masterWorkplace.includes("title:'Рабочая зона мастера'"),'master work-zone map title missing');
-assert(masterWorkplace.includes("radiusKm:String(point.id||'')===String(primary.id||'')"),'master mobile work radius missing from own point');
+assert(masterWorkplace.includes("action=mine&ownerType=master&ownerId="),'master work-zone must lazy-load owner-only point data');
+assert(masterWorkplace.includes("origin?.metadata?.radiusKm"),'master mobile work radius must come from owner-only point metadata');
 assert(masterWorkplace.includes("label:'Товары'")&&masterWorkplace.includes("label:'Записаться'"),'master work-zone pin actions missing');
 
 console.log('GEO_MAP_LAZY: PASS');
