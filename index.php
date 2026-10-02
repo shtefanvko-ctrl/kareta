@@ -545,5 +545,6 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
     })();
   </script>
   <script src="/js/mobile_native_bridge.js?v=1"></script>
+  <script src="/js/next/obd_remote_jobs.js?v=<?= rawurlencode($assetVersion) ?>"></script>
 </body>
 </html>

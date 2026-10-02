@@ -1,6 +1,6 @@
 # Pending and historical database migrations
 
-The canonical production migration chain now ends at **135**.
+The canonical production migration chain now ends at **136**.
 
 ## Canonical compatibility bridge
 
@@ -11,6 +11,7 @@ The migration runner preserves an already-applied version and records checksum c
 Real canonical schema work resumes at:
 
 - **135** — `obd_diagnostic_sessions` for Android Native API 6.
+- **136** — active-app OBD remote control plane (`obd_mobile_devices`, `obd_diagnostic_jobs`).
 
 This guarantees that OBD schema creation still runs even on a database carrying any historical 130–134 marker.
 
@@ -22,11 +23,11 @@ The original conflicting files are preserved under:
 
 They are source material only. They are not runtime migrations and must not be copied back to `api/migrations/` under their historical version numbers.
 
-Any still-required behavior from those files must be re-authored as a new idempotent migration starting at **136**, with explicit compatibility checks against production-like database snapshots.
+Any still-required behavior from those files must be re-authored as a new idempotent migration starting at **137**, with explicit compatibility checks against production-like database snapshots.
 
 ## Promotion Definition of Done
 
-1. Assign a new monotonic version >= 136.
+1. Assign a new monotonic version >= 137.
 2. Make the operation idempotent.
 3. Account for databases that may already contain historical 130–134 audit markers/checksums.
 4. Update both migration manifests and `KARETA_DB_VERSION` atomically.

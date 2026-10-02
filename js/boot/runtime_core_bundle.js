@@ -334,6 +334,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
     let catalog={masters:[],stos:[]};
     let selectedCity='Усть-Каменогорск';
     let userCoords=null;
+    let geoNearby=new Map();
+    let geoRequestSeq=0;
     const storageKey='kareta.home.location.v1';
     const safeText=value=>String(value||'').trim();
     const normalizeCity=value=>safeText(value).toLocaleLowerCase('ru-RU');
@@ -350,8 +352,26 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
     const applyProfile=data=>{if(disposed||!data)return;const user=data.user||data.profile||{};const name=homeFirstName(user.name||user.fullname||user.displayName);if(greetingNode)greetingNode.textContent=name?`Здравствуйте, ${name}!`:'Здравствуйте!';const profileCity=safeText(user.city)||safeText(user.location);if(profileCity&&!userCoords&&selectedCity==='Усть-Каменогорск'){selectedCity=profileCity;if(cityNode)cityNode.textContent=selectedCity;saveLocation();}};
     applyProfile({user:homeInitialUser(context)});
 
-    const allRows=()=>[...(Array.isArray(catalog.stos)?catalog.stos:[]),...(Array.isArray(catalog.masters)?catalog.masters:[])];
-    const renderNearby=()=>{if(!nearbyNode)return;const cityKey=normalizeCity(selectedCity);const seen=new Set();const rows=allRows().filter(row=>{const key=`${row.type||'sto'}:${row.id||''}`;if(seen.has(key))return false;seen.add(key);return true;}).map(row=>{const copy={...row};const coords=rowCoords(row);copy.distanceKm=userCoords&&coords?haversine(userCoords.lat,userCoords.lng,coords[0],coords[1]):null;copy.sameCity=!cityKey||normalizeCity(row.city)===cityKey;return copy;}).sort((a,b)=>{const ad=Number(a.distanceKm),bd=Number(b.distanceKm),af=Number.isFinite(ad),bf=Number.isFinite(bd);if(af!==bf)return af?-1:1;if(af&&bf&&ad!==bd)return ad-bd;if(a.sameCity!==b.sameCity)return a.sameCity?-1:1;return Number(b.rating||0)-Number(a.rating||0);}).slice(0,2);nearbyNode.innerHTML=rows.length?rows.map(homeNearbyCard).join(''):'<div class="k-home-ref-nearby-empty">Пока нет доступных исполнителей рядом.</div>';};
+    const allRows=()=>[
+      ...(Array.isArray(catalog.stos)?catalog.stos:[]).map(row=>({...row,type:row.type||'sto'})),
+      ...(Array.isArray(catalog.masters)?catalog.masters:[]).map(row=>({...row,type:row.type||'master'}))
+    ];
+    const geoKey=row=>`${String(row.type||'')}:${String(row.id||'')}`;
+    const loadGeoNearby=async()=>{
+      if(!userCoords||!api?.request){geoNearby=new Map();return;}
+      const seq=++geoRequestSeq;
+      const lat=Number(userCoords.lat),lng=Number(userCoords.lng);
+      if(!Number.isFinite(lat)||!Number.isFinite(lng)){geoNearby=new Map();return;}
+      try{
+        const url=`api/geo.php?action=nearby&lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radiusKm=100&types=sto,master&limit=100`;
+        const result=await api.request(url,{method:'GET',cacheTtlMs:15000,cacheKey:`geo.nearby.home.${lat.toFixed(3)}.${lng.toFixed(3)}`});
+        if(disposed||seq!==geoRequestSeq)return;
+        const payload=result?.payload?.data||result?.payload||{};
+        const items=Array.isArray(payload.items)?payload.items:[];
+        geoNearby=new Map(items.map(item=>[`${String(item.ownerType||'')}:${String(item.ownerId||'')}`,item]));
+      }catch(_error){if(seq===geoRequestSeq)geoNearby=new Map();}
+    };
+    const renderNearby=()=>{if(!nearbyNode)return;const cityKey=normalizeCity(selectedCity);const seen=new Set();const rows=allRows().filter(row=>{const key=geoKey(row);if(seen.has(key))return false;seen.add(key);return true;}).map(row=>{const copy={...row};const point=geoNearby.get(geoKey(copy));const coords=rowCoords(row);copy.distanceKm=point&&Number.isFinite(Number(point.distanceKm))?Number(point.distanceKm):(userCoords&&coords?haversine(userCoords.lat,userCoords.lng,coords[0],coords[1]):null);if(point){copy.service_lat=point.latitude;copy.service_lng=point.longitude;if(!safeText(copy.address)&&safeText(point.address))copy.address=point.address;}copy.sameCity=!cityKey||normalizeCity(row.city)===cityKey;return copy;}).sort((a,b)=>{const ad=Number(a.distanceKm),bd=Number(b.distanceKm),af=Number.isFinite(ad),bf=Number.isFinite(bd);if(af!==bf)return af?-1:1;if(af&&bf&&ad!==bd)return ad-bd;if(a.sameCity!==b.sameCity)return a.sameCity?-1:1;return Number(b.rating||0)-Number(a.rating||0);}).slice(0,2);nearbyNode.innerHTML=rows.length?rows.map(homeNearbyCard).join(''):'<div class="k-home-ref-nearby-empty">Пока нет доступных исполнителей рядом.</div>';};
     const renderCities=()=>{if(!cityChoices)return;const cities=[selectedCity,...allRows().map(row=>safeText(row.city))].filter(Boolean).filter((city,index,arr)=>arr.findIndex(x=>normalizeCity(x)===normalizeCity(city))===index).sort((a,b)=>a.localeCompare(b,'ru'));cityChoices.innerHTML=cities.map(city=>`<button type="button" class="${normalizeCity(city)===normalizeCity(selectedCity)?'is-active':''}" data-home-city-value="${esc(city)}">${esc(city)}</button>`).join('')||'<span>Города появятся после загрузки каталога.</span>';};
     const setLocationStatus=(message,type='info')=>{if(!locationStatus)return;locationStatus.hidden=!message;locationStatus.textContent=message||'';locationStatus.dataset.type=type;};
     const openLocation=()=>{renderCities();setLocationStatus('');if(locationDialog&&!locationDialog.open)locationDialog.showModal?.();};
@@ -359,11 +379,20 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
     locationButton?.addEventListener('click',openLocation);
     locationClose?.addEventListener('click',closeLocation);
     locationDialog?.addEventListener('cancel',event=>{event.preventDefault();closeLocation();});
-    cityChoices?.addEventListener('click',event=>{const button=event.target.closest('[data-home-city-value]');if(!button)return;selectedCity=safeText(button.dataset.homeCityValue)||selectedCity;userCoords=null;if(cityNode)cityNode.textContent=selectedCity;saveLocation();renderCities();renderNearby();closeLocation();});
-    locationDetect?.addEventListener('click',()=>{if(!navigator.geolocation){setLocationStatus('Геолокация недоступна в этом браузере.','error');return;}locationDetect.disabled=true;setLocationStatus('Определяем местоположение…');navigator.geolocation.getCurrentPosition(position=>{userCoords={lat:Number(position.coords.latitude),lng:Number(position.coords.longitude)};saveLocation();setLocationStatus('Геопозиция определена. Расстояния пересчитаны.','success');renderNearby();locationDetect.disabled=false;window.setTimeout(closeLocation,500);},error=>{setLocationStatus(error?.code===1?'Доступ к геопозиции не разрешён. Выберите город вручную.':'Не удалось определить геопозицию. Выберите город вручную.','error');locationDetect.disabled=false;},{enableHighAccuracy:false,timeout:8000,maximumAge:300000});});
+    cityChoices?.addEventListener('click',event=>{const button=event.target.closest('[data-home-city-value]');if(!button)return;selectedCity=safeText(button.dataset.homeCityValue)||selectedCity;userCoords=null;geoNearby=new Map();geoRequestSeq+=1;if(cityNode)cityNode.textContent=selectedCity;saveLocation();renderCities();renderNearby();closeLocation();});
+    const resolveCurrentLocation=async()=>{
+      const mobile=window.KaretaMobile;
+      if(mobile?.bestLocation){
+        const point=await mobile.bestLocation({enableHighAccuracy:false,timeout:8000,maximumAge:300000});
+        return {lat:Number(point.latitude),lng:Number(point.longitude),source:point.source||'unknown'};
+      }
+      if(!navigator.geolocation)throw Object.assign(new Error('GEOLOCATION_UNAVAILABLE'),{code:'GEOLOCATION_UNAVAILABLE'});
+      return new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(position=>resolve({lat:Number(position.coords.latitude),lng:Number(position.coords.longitude),source:'browser'}),reject,{enableHighAccuracy:false,timeout:8000,maximumAge:300000}));
+    };
+    locationDetect?.addEventListener('click',async()=>{locationDetect.disabled=true;setLocationStatus('Определяем местоположение…');try{const point=await resolveCurrentLocation();if(disposed)return;userCoords={lat:point.lat,lng:point.lng};saveLocation();await loadGeoNearby();if(disposed)return;setLocationStatus('Геопозиция определена. Расстояния пересчитаны.','success');renderNearby();window.setTimeout(closeLocation,500);}catch(error){const denied=error?.code===1||error?.code==='GEOLOCATION_PERMISSION_DENIED';setLocationStatus(denied?'Доступ к геопозиции не разрешён. Выберите город вручную.':'Не удалось определить геопозицию. Выберите город вручную.','error');}finally{locationDetect.disabled=false;}});
 
     (async()=>{if(homeInterfaceRole(context)!=='client')return;try{if(cabinetApi?.get){const result=await cabinetApi.get();if(result?.ok)applyProfile(result.payload?.data||result.payload||{});}else if(api?.request){const result=await api.request('api/db.php?action=clientCabinet.get',{cacheTtlMs:15000,cacheKey:'client.cabinet.home'});if(result?.ok)applyProfile(result.payload?.data||result.payload||{});}}catch(_error){}})();
-    (async()=>{if(!nearbyNode||!api?.request)return;try{const result=await api.request('api/db.php?action=masters.catalog',{cacheTtlMs:30000,cacheKey:'masters.catalog.home'});if(disposed)return;const payload=result?.payload?.data||result?.payload||{};catalog={stos:Array.isArray(payload.stos)?payload.stos:Array.isArray(payload.stations)?payload.stations:[],masters:Array.isArray(payload.masters)?payload.masters:[]};renderCities();renderNearby();}catch(_error){if(!disposed&&nearbyNode)nearbyNode.innerHTML='<div class="k-home-ref-nearby-empty">Не удалось загрузить ближайшие СТО. Откройте каталог исполнителей.</div>';}})();
+    (async()=>{if(!nearbyNode||!api?.request)return;try{const result=await api.request('api/db.php?action=masters.catalog',{cacheTtlMs:30000,cacheKey:'masters.catalog.home'});if(disposed)return;const payload=result?.payload?.data||result?.payload||{};catalog={stos:Array.isArray(payload.stos)?payload.stos:Array.isArray(payload.stations)?payload.stations:[],masters:Array.isArray(payload.masters)?payload.masters:[]};renderCities();if(userCoords)await loadGeoNearby();if(disposed)return;renderNearby();}catch(_error){if(!disposed&&nearbyNode)nearbyNode.innerHTML='<div class="k-home-ref-nearby-empty">Не удалось загрузить ближайшие СТО. Откройте каталог исполнителей.</div>';}})();
 
     const feedCleanups=[bindHomeSlider(worksRail),bindHomeSlider(communityRail)];
     const renderFeedError=(rail,message)=>{if(rail)rail.innerHTML=`<div class="k-home-feed-empty">${esc(message)}</div>`;};
