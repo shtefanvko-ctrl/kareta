@@ -36,3 +36,18 @@ A previous PASS is not evidence for a newer SHA after a relevant file changes.
 ## Safety boundary
 
 This increment is classification-only. It does not change product runtime, Android sources, database schema, migration execution or deployment.
+
+
+## Increment 2: Exact-head Impact Evidence
+
+`tools/harness_evidence.js` computes the changed-file list from the real Git range `base...head`, passes it through the change map, and writes `kareta.harness.impact-evidence.v1`.
+
+For pull requests, `.github/workflows/harness-impact.yml`:
+
+1. checks out the exact PR head;
+2. fetches full history needed for the merge-base diff;
+3. builds the impact manifest from the PR base SHA and head SHA;
+4. validates that the artifact is bound to those exact SHAs;
+5. uploads `harness-impact-<head-sha>` for 30 days.
+
+Required checks in the impact artifact start as `NOT_RUN`. A planning artifact is not itself verification evidence and must never be interpreted as PASS.
