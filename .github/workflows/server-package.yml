@@ -36,6 +36,7 @@ jobs:
       - name: Package tool syntax
         run: |
           python3 -m py_compile tools/build_server_package.py
+          python3 tools/test_server_test_package_contract.py
           php -l tools/verify_server_package.php
           php -l tools/server_preflight.php
 
