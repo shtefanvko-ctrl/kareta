@@ -1,0 +1,12 @@
+{
+  "schema": "kareta.harness.status-policy.v1",
+  "statuses": ["PASS", "FAIL", "BLOCKED", "NOT_RUN", "NOT_REQUIRED", "STALE"],
+  "subjectBinding": "exact-head-sha",
+  "rules": {
+    "mismatchedEvidenceSha": "STALE",
+    "missingRequiredReceipt": "NOT_RUN",
+    "failDominates": true,
+    "blockedStatuses": ["BLOCKED", "NOT_RUN", "STALE"],
+    "passingStatuses": ["PASS", "NOT_REQUIRED"]
+  }
+}
