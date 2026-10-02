@@ -5,8 +5,11 @@ const assert = require('assert');
 const {
   CHECK_SOURCES,
   isApprovalCheck,
+  isExternalEvidenceCheck,
   parseApprovalLine,
+  parseExternalEvidenceLine,
   findCommentApproval,
+  findCommentExternalEvidence,
   conclusionToStatus,
   latestRun
 } = require('./harness_collect_receipts');
@@ -23,6 +26,8 @@ assert.strictEqual(CHECK_SOURCES['asset-url-hygiene'].receiptId, 'application-ga
 assert.strictEqual(isApprovalCheck('approval:database-contract'), true);
 assert.strictEqual(isApprovalCheck('approval:deployment-sensitive'), true);
 assert.strictEqual(isApprovalCheck('verification-gate'), false);
+assert.strictEqual(isExternalEvidenceCheck('external:staging-exact-runtime'), true);
+assert.strictEqual(isExternalEvidenceCheck('approval:database-contract'), false);
 
 const sha='c21f1f8435a218d7eaca0a0fda21e60c3f8ee084';
 const parsed=parseApprovalLine(
@@ -74,6 +79,61 @@ assert.strictEqual(
     'approval:database-contract',
     'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     comments
+  ),
+  null
+);
+
+const externalLine =
+  'HARNESS_EVIDENCE external:staging-exact-runtime ' + sha +
+  ' PASS run:37027129475 staging verifier output';
+const parsedExternal = parseExternalEvidenceLine(externalLine);
+assert(parsedExternal);
+assert.strictEqual(parsedExternal.checkId, 'external:staging-exact-runtime');
+assert.strictEqual(parsedExternal.subjectSha, sha);
+assert.strictEqual(parsedExternal.status, 'PASS');
+assert.strictEqual(
+  parseExternalEvidenceLine(
+    'HARNESS_EVIDENCE external:staging-exact-runtime ' + sha +
+    ' FAIL failed evidence'
+  ),
+  null
+);
+
+const externalComments = [
+  {
+    id: 20,
+    user:{login:'someone-else'},
+    body:externalLine
+  },
+  {
+    id: 21,
+    user:{login:'shtefanvko-ctrl'},
+    body:
+      'HARNESS_EVIDENCE external:staging-exact-runtime ' +
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
+      ' PASS stale evidence'
+  },
+  {
+    id: 22,
+    user:{login:'shtefanvko-ctrl'},
+    html_url:'https://github.com/shtefanvko-ctrl/kareta/pull/22#issuecomment-22',
+    body:externalLine
+  }
+];
+const externalEvidence = findCommentExternalEvidence(
+  'external:staging-exact-runtime',
+  sha,
+  externalComments
+);
+assert(externalEvidence);
+assert.strictEqual(externalEvidence.status, 'PASS');
+assert.strictEqual(externalEvidence.actor, 'shtefanvko-ctrl');
+assert.strictEqual(externalEvidence.source, 'github-pr-external-evidence');
+assert.strictEqual(
+  findCommentExternalEvidence(
+    'external:deployed-provenance',
+    sha,
+    externalComments
   ),
   null
 );
