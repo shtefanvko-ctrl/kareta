@@ -13,6 +13,7 @@ const map=read('js/next/geo_map.js');
 const css=read('css/next/geo_map.css');
 const masters=read('js/next/pages/masters.js');
 const parts=read('js/next/pages/parts.js');
+const home=read('js/next/pages/core.js');
 const assetRegistry=read('inc/asset_registry.php');
 const bootBuilder=read('tools/build_boot_js_bundles.js');
 
@@ -44,5 +45,9 @@ assert(masters.includes("user:true"),'provider map must show local user point');
 assert(parts.includes('data-parts-nearby-map'),'parts map trigger missing');
 assert(parts.includes("title:'Магазины рядом'"),'parts map scope missing');
 assert(parts.includes("nearbyShops.slice(0,49)"),'parts public map point bound missing');
+assert(home.includes('data-home-nearby-map'),'client home nearby map trigger missing');
+assert(home.includes("title:'Рядом с вами'"),'client home map scope missing');
+assert(home.includes("geoNearby.has(geoKey(row))"),'client home map must use public Geo API points only');
+assert(home.includes("providerPoints.length"),'client home map must fail closed without public points');
 
 console.log('GEO_MAP_LAZY: PASS');
