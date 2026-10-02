@@ -1,0 +1,63 @@
+{
+  "schema": "kareta.harness.server-package-policy.v1",
+  "runtimeFiles": [
+    ".htaccess",
+    "index.php",
+    "booking.php",
+    "asset_manifest.php",
+    "manifest.json",
+    "sw.js",
+    "config.php"
+  ],
+  "runtimePrefixes": [
+    "api/",
+    "inc/",
+    "css/",
+    "js/",
+    "assets/",
+    "media/",
+    "storage/"
+  ],
+  "opsFiles": [
+    "tools/identity_migrate.php",
+    "tools/messaging_schema_install.php",
+    "tools/messaging_worker.php",
+    "tools/cleanup_runtime.php",
+    "tools/verify_runtime.php"
+  ],
+  "artifactSidecars": [
+    "config.server-test.example.php",
+    "config.private.example.php",
+    "docs/deployment/SERVER_TEST_UPLOAD.md"
+  ],
+  "emptyRuntimeDirs": [
+    "storage/logs",
+    "storage/backups",
+    "storage/uploads"
+  ],
+  "forbiddenPackagePaths": [
+    "config.private.php",
+    ".env",
+    ".git/",
+    ".github/",
+    "harness/",
+    "docs/",
+    "ai/",
+    "print-banners/",
+    "tools/archive/",
+    "storage/logs/",
+    "storage/backups/"
+  ],
+  "forbiddenSuffixes": [
+    ".sql",
+    ".bak",
+    ".pem",
+    ".key",
+    "~"
+  ],
+  "forbiddenContentMarkers": [
+    "-----BEGIN PRIVATE KEY-----",
+    "-----BEGIN RSA PRIVATE KEY-----",
+    "-----BEGIN OPENSSH PRIVATE KEY-----"
+  ]
+}
