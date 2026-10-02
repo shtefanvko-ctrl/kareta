@@ -57,7 +57,11 @@ jobs:
             --source-sha "$KARETA_HEAD_SHA" \
             --git-ref "$KARETA_HEAD_REF" \
             --workflow-run-id "${GITHUB_RUN_ID}"
-          sha256sum "$OUT" > "$OUT.sha256"
+          (
+            cd "$(dirname "$OUT")"
+            sha256sum "$(basename "$OUT")" > "$(basename "$OUT").sha256"
+            sha256sum -c "$(basename "$OUT").sha256"
+          )
 
       - name: Extract and verify package
         env:
