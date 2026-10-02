@@ -2,12 +2,15 @@
 'use strict';
 
 const assert = require('assert');
-const { conclusionToStatus, latestRun } = require('./harness_collect_receipts');
+const { CHECK_SOURCES, conclusionToStatus, latestRun } = require('./harness_collect_receipts');
 
 assert.strictEqual(conclusionToStatus('success'), 'PASS');
 assert.strictEqual(conclusionToStatus('failure'), 'FAIL');
 assert.strictEqual(conclusionToStatus('timed_out'), 'FAIL');
 assert.strictEqual(conclusionToStatus('cancelled'), 'BLOCKED');
+assert.strictEqual(CHECK_SOURCES['geo-platform-core'].workflow, 'Application gates');
+assert.strictEqual(CHECK_SOURCES['migration-contract'].workflow, 'verify');
+assert.strictEqual(CHECK_SOURCES['asset-url-hygiene'].receiptId, 'application-gates');
 
 const runs = [
   {name:'verify',head_sha:'abc1234',run_number:7,id:7},
