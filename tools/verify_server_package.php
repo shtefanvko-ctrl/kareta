@@ -24,6 +24,7 @@ $required = [
     'config.php',
     'config.private.example.php',
     'config.server-test.example.php',
+    'docs/deployment/SERVER_TEST_UPLOAD.md',
     'manifest.json',
     'sw.js',
     'asset_manifest.php',
@@ -66,11 +67,30 @@ if (!is_array($manifest) || ($manifest['schema'] ?? '') !== 'kareta.server-packa
     if ($expectedSha !== '' && strtolower((string)($manifest['sourceSha'] ?? '')) !== $expectedSha) {
         $errors[] = 'package_sha_mismatch';
     }
-    foreach (($manifest['checksums'] ?? []) as $rel => $expected) {
+    $checksums = is_array($manifest['checksums'] ?? null) ? $manifest['checksums'] : [];
+    foreach ($checksums as $rel => $expected) {
         $path = $root . '/' . $rel;
         if (!is_file($path)) { $errors[] = 'checksum_missing:' . $rel; continue; }
         $actual = hash_file('sha256', $path);
         if (!hash_equals((string)$expected, (string)$actual)) $errors[] = 'checksum_mismatch:' . $rel;
+    }
+
+    $actualPackageFiles = [];
+    $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS));
+    foreach ($it as $file) {
+        if (!$file->isFile()) continue;
+        $rel = str_replace('\\', '/', substr($file->getPathname(), strlen($root) + 1));
+        if ($rel === '_SERVER_PACKAGE_MANIFEST.json') continue;
+        $actualPackageFiles[] = $rel;
+    }
+    sort($actualPackageFiles);
+    $manifestFiles = array_keys($checksums);
+    sort($manifestFiles);
+    if ($actualPackageFiles !== $manifestFiles) {
+        $extra = array_values(array_diff($actualPackageFiles, $manifestFiles));
+        $missingCoverage = array_values(array_diff($manifestFiles, $actualPackageFiles));
+        if ($extra) $errors[] = 'manifest_untracked_files:' . implode(',', array_slice($extra, 0, 5));
+        if ($missingCoverage) $errors[] = 'manifest_stale_files:' . implode(',', array_slice($missingCoverage, 0, 5));
     }
 }
 
@@ -86,6 +106,15 @@ elseif ($expectedSha !== '' && strtolower((string)($prov['manifest']['gitSha'] ?
 $sw = (string)@file_get_contents($root . '/sw.js');
 if (!preg_match('/const\s+RELEASE\s*=\s*[\'\"]([^\'\"]+)/', $sw, $m) || ($m[1] ?? '') !== $release) {
     $errors[] = 'service_worker_release_mismatch';
+}
+
+$htaccess = (string)@file_get_contents($root . '/.htaccess');
+foreach ([
+    'RewriteRule ^config\\.(?:private|server-test)\\.example\\.php$ - [F,L]',
+    'RewriteRule ^_SERVER_[A-Za-z0-9_.-]+$ - [F,L]',
+    'RewriteRule ^(docs|storage/logs|storage/backups|tools)(/|$) - [F,L]',
+] as $needle) {
+    if (strpos($htaccess, $needle) === false) $errors[] = 'htaccess_package_guard_missing:' . $needle;
 }
 
 $prodExample = (string)@file_get_contents($root . '/config.private.example.php');
