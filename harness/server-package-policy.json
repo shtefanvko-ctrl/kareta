@@ -35,7 +35,8 @@
   "artifactSidecars": [
     "config.server-test.example.php",
     "config.private.example.php",
-    "docs/release/current.json"
+    "docs/release/current.json",
+    "docs/deployment/SERVER_TEST_UPLOAD.md"
   ],
   "emptyRuntimeDirs": [
     "storage/logs",
