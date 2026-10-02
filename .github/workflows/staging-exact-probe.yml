@@ -1,0 +1,81 @@
+name: staging-exact-probe
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  staging-exact-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout exact release candidate
+        uses: actions/checkout@v4
+        with:
+          ref: d73331435db2b5e5b6e85da9c43abb1e09d8bacb
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify staging release and lazy assets
+        run: |
+          python3 tools/verify_staging_current.py \
+            --base-url "https://s.kareta.kz" \
+            --expected-release "188.5.5.6.84.152"
+
+      - name: Verify deployed Git SHA provenance
+        env:
+          EXPECTED_SHA: d73331435db2b5e5b6e85da9c43abb1e09d8bacb
+          EXPECTED_RELEASE: 188.5.5.6.84.152
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          from urllib.error import HTTPError, URLError
+          from urllib.request import Request, urlopen
+
+          url = 'https://s.kareta.kz/storage/deployment_manifest.json'
+          req = Request(url, headers={
+              'Accept': 'application/json',
+              'User-Agent': 'KARETA-Staging-Provenance-Probe/1.0',
+              'Cache-Control': 'no-cache',
+          })
+          try:
+              with urlopen(req, timeout=15) as res:
+                  status = res.status
+                  body = res.read()
+          except HTTPError as exc:
+              print(f'PROVENANCE_HTTP: FAIL status={exc.code} url={url}', file=sys.stderr)
+              raise SystemExit(2)
+          except (URLError, TimeoutError, OSError) as exc:
+              print(f'PROVENANCE_FETCH: FAIL {exc}', file=sys.stderr)
+              raise SystemExit(3)
+
+          if status != 200:
+              print(f'PROVENANCE_HTTP: FAIL status={status}', file=sys.stderr)
+              raise SystemExit(4)
+
+          try:
+              data = json.loads(body.decode('utf-8'))
+          except Exception as exc:
+              print(f'PROVENANCE_JSON: FAIL {exc}', file=sys.stderr)
+              raise SystemExit(5)
+
+          expected_sha = os.environ['EXPECTED_SHA'].lower()
+          expected_release = os.environ['EXPECTED_RELEASE']
+          actual_sha = str(data.get('gitSha') or '').lower()
+          actual_release = str(data.get('assetVersion') or '')
+
+          if actual_sha != expected_sha:
+              print(f'PROVENANCE_SHA: FAIL actual={actual_sha or "<missing>"} expected={expected_sha}', file=sys.stderr)
+              raise SystemExit(6)
+          if actual_release != expected_release:
+              print(f'PROVENANCE_RELEASE: FAIL actual={actual_release or "<missing>"} expected={expected_release}', file=sys.stderr)
+              raise SystemExit(7)
+
+          print(f'PROVENANCE_EXACT_SHA: PASS sha={actual_sha} release={actual_release}')
+          PY
