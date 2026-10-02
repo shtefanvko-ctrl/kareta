@@ -34,18 +34,21 @@ jobs:
           node --check tools/harness_receipt.js
           node --check tools/harness_collect_receipts.js
           node --check tools/harness_approval.js
+          node --check tools/harness_authorize.js
           node --check tools/harness_verdict.js
           node --check tools/test_harness_change_intelligence.js
           node --check tools/test_harness_impact_evidence.js
           node --check tools/test_harness_receipt.js
           node --check tools/test_harness_collect_receipts.js
           node --check tools/test_harness_approval.js
+          node --check tools/test_harness_permission_matrix.js
           node --check tools/test_harness_verdict.js
           node tools/test_harness_change_intelligence.js
           node tools/test_harness_impact_evidence.js
           node tools/test_harness_receipt.js
           node tools/test_harness_collect_receipts.js
           node tools/test_harness_approval.js
+          node tools/test_harness_permission_matrix.js
           node tools/test_harness_verdict.js
 
       - name: Build exact-head impact evidence
