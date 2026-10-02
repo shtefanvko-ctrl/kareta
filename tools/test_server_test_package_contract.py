@@ -29,6 +29,7 @@ for sidecar in [
     "config.server-test.example.php",
     "config.private.example.php",
     "docs/release/current.json",
+    "docs/deployment/SERVER_TEST_UPLOAD.md",
 ]:
     assert sidecar in policy["artifactSidecars"], sidecar
 
@@ -83,6 +84,23 @@ for needle in [
 
 production_example=(ROOT/"config.private.example.php").read_text(encoding="utf-8")
 assert "'otp_temp_static_enabled' => false" in production_example
+
+runbook=(ROOT/"docs/deployment/SERVER_TEST_UPLOAD.md").read_text(encoding="utf-8")
+for needle in [
+    "PHP 8.1 or newer",
+    "db_auto_migrate",
+    "verify_staging_current.py",
+    "verify_runtime_provenance.py",
+    "HARNESS_EVIDENCE external:staging-exact-runtime",
+]:
+    assert needle in runbook, needle
+
+htaccess=(ROOT/".htaccess").read_text(encoding="utf-8")
+for needle in [
+    r"RewriteRule ^config\.(?:private|server-test)\.example\.php$ - [F,L]",
+    r"RewriteRule ^_SERVER_[A-Za-z0-9_.-]+$ - [F,L]",
+]:
+    assert needle in htaccess, needle
 
 config=(ROOT/"config.php").read_text(encoding="utf-8")
 assert "$kareta_private_candidates" in config
