@@ -7,9 +7,9 @@ This document is for the test/staging server only. It does not authorize product
 The generated ZIP is bound to one exact Git SHA through:
 
 - `storage/deployment_manifest.json`;
-- `storage/server_package_manifest.json`;
-- `package-report.json`;
-- `SHA256SUMS.txt`.
+- `_SERVER_PACKAGE_MANIFEST.json` inside the ZIP;
+- `storage/deployment_manifest.json` inside the ZIP;
+- the artifact-side `.zip.sha256` checksum.
 
 Do not rename a different build to the same release and do not edit either manifest by hand.
 
@@ -31,7 +31,7 @@ Do this before the first web request.
 
 The ZIP never contains `config.private.php`.
 
-Copy the artifact sidecar `config.server-test.example.php` to one of the private locations already supported by `config.php`, preferably:
+Use the packaged `config.server-test.example.php` only as a template. Copy it to one of the private locations already supported by `config.php`, preferably:
 
 ```text
 <parent-of-docroot>/.kareta/config.private.php
@@ -75,7 +75,7 @@ Before accepting staging, the test database must satisfy the canonical migration
 
 Use a new empty document root or a new immutable release directory. Do not unpack over the currently served tree.
 
-Verify `SHA256SUMS.txt`, then unpack the generated ZIP so that these paths are directly inside the document root:
+Verify the artifact `.zip.sha256` file, then unpack the generated ZIP so that these paths are directly inside the document root:
 
 ```text
 .htaccess
