@@ -22,6 +22,10 @@ const CHECK_SOURCES = {
   'staging-verifier-syntax': { workflow: 'verify', receiptId: 'verification-gate' }
 };
 
+function isApprovalCheck(checkId) {
+  return /^approval:[a-z0-9-]+$/.test(String(checkId || ''));
+}
+
 function conclusionToStatus(value) {
   const v = String(value || '').toLowerCase();
   if (v === 'success') return 'PASS';
@@ -104,6 +108,39 @@ async function waitForReceipt(checkId, repo, headSha, token, deadline) {
   throw new Error('timed out waiting for exact-head receipt: ' + checkId + '@' + headSha);
 }
 
+async function waitForApproval(checkId, repo, headSha, token, deadline) {
+  const boundary = String(checkId).slice('approval:'.length);
+  const artifactName = 'harness-approval-' + boundary + '-' + headSha;
+
+  while (Date.now() < deadline) {
+    const data = await githubGet(
+      repo,
+      '/actions/artifacts?name=' + encodeURIComponent(artifactName) + '&per_page=100',
+      token
+    );
+    const artifact = (data.artifacts || [])
+      .filter(item => item && item.name === artifactName && !item.expired)
+      .sort((a, b) => Number(b.id || 0) - Number(a.id || 0))[0];
+    if (artifact) {
+      return {
+        schema: 'kareta.harness.receipt.v1',
+        id: checkId,
+        subjectSha: headSha,
+        status: 'PASS',
+        workflow: 'Harness approval',
+        runId: String((artifact.workflow_run && artifact.workflow_run.id) || ''),
+        repository: repo,
+        ref: String((artifact.workflow_run && artifact.workflow_run.head_branch) || ''),
+        source: 'github-actions-approval-artifact-index',
+        receiptArtifactId: String(artifact.id),
+        receiptArtifactName: artifact.name
+      };
+    }
+    await sleep(5000);
+  }
+  throw new Error('timed out waiting for protected-boundary approval: ' + checkId + '@' + headSha);
+}
+
 function parseArgs(argv) {
   const out = {};
   for (let i = 0; i < argv.length; i += 1) {
@@ -152,6 +189,10 @@ async function main() {
 
   for (const checkId of required) {
     if (checkId === 'harness-self-test') continue;
+    if (isApprovalCheck(checkId)) {
+      receipts.push(await waitForApproval(checkId, repo, headSha, token, deadline));
+      continue;
+    }
     if (!CHECK_SOURCES[checkId]) throw new Error('unmapped required check: ' + checkId);
     receipts.push(await waitForReceipt(checkId, repo, headSha, token, deadline));
   }
@@ -171,4 +212,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { CHECK_SOURCES, conclusionToStatus, latestRun };
+module.exports = { CHECK_SOURCES, isApprovalCheck, conclusionToStatus, latestRun };
