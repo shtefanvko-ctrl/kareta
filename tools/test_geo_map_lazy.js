@@ -49,5 +49,18 @@ assert(home.includes('data-home-nearby-map'),'client home nearby map trigger mis
 assert(home.includes("title:'Рядом с вами'"),'client home map scope missing');
 assert(home.includes("geoNearby.has(geoKey(row))"),'client home map must use public Geo API points only');
 assert(home.includes("providerPoints.length"),'client home map must fail closed without public points');
+assert(home.includes('types=sto,master,shop'),'client home unified Geo query must include shops');
+assert(home.includes("String(point?.ownerType||'')==='shop'"),'client home map must consume public shop points');
+assert(home.includes("label:'Товары'"),'client home shop pin product action missing');
+assert(home.includes("label:'Профиль'")&&home.includes("label:'Записаться'"),'client home provider pin actions missing');
+assert(map.includes("actions:(Array.isArray(point?.actions)"),'generic point action normalization missing');
+assert(map.includes("data-geo-map-action"),'map action surface missing');
+assert(map.includes("state.clusters=new Map()"),'marker cluster state missing');
+assert(map.includes("data-geo-map-cluster"),'cluster marker interaction missing');
+assert(map.includes("Math.floor(item.left/clusterSize)"),'screen-space cluster bucket missing');
+assert(css.includes('.k-geo-map-cluster'),'cluster CSS missing');
+assert(css.includes('.k-geo-map-detail__actions'),'pin action CSS missing');
+assert(masters.includes("label:'Профиль'")&&masters.includes("label:'Записаться'"),'provider directory map actions missing');
+assert(parts.includes("label:'Товары'"),'parts map product action missing');
 
 console.log('GEO_MAP_LAZY: PASS');
