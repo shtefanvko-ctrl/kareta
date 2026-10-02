@@ -82,12 +82,15 @@ jobs:
           php "$DEST/tools/server_preflight.php" --allow-unconfigured
           find "$DEST/js" -type f -name '*.js' -print0 | xargs -0 -n1 -P8 node --check
 
-      - name: Export package evidence
+      - name: Export package evidence and operator sidecars
         env:
           KARETA_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          cp "$RUNNER_TEMP/server-package/_SERVER_PACKAGE_MANIFEST.json"              "$RUNNER_TEMP/kareta-server-package-manifest.json"
-          cp "$RUNNER_TEMP/server-package/storage/deployment_manifest.json"              "$RUNNER_TEMP/kareta-deployment-manifest.json"
+          cp "$RUNNER_TEMP/server-package/_SERVER_PACKAGE_MANIFEST.json" "$RUNNER_TEMP/kareta-server-package-manifest.json"
+          cp "$RUNNER_TEMP/server-package/storage/deployment_manifest.json" "$RUNNER_TEMP/kareta-deployment-manifest.json"
+          cp config.server-test.example.php "$RUNNER_TEMP/config.server-test.example.php"
+          cp config.private.example.php "$RUNNER_TEMP/config.private.example.php"
+          cp docs/deployment/SERVER_TEST_UPLOAD.md "$RUNNER_TEMP/SERVER_TEST_UPLOAD.md"
 
       - name: Upload server package
         if: success()
@@ -99,6 +102,9 @@ jobs:
             ${{ runner.temp }}/kareta-server-test-${{ github.event.pull_request.head.sha }}.zip.sha256
             ${{ runner.temp }}/kareta-server-package-manifest.json
             ${{ runner.temp }}/kareta-deployment-manifest.json
+            ${{ runner.temp }}/config.server-test.example.php
+            ${{ runner.temp }}/config.private.example.php
+            ${{ runner.temp }}/SERVER_TEST_UPLOAD.md
           if-no-files-found: error
           retention-days: 30
 
