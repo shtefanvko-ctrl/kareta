@@ -2,8 +2,12 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
 const cp = require('child_process');
 const { classify } = require('./harness_plan');
+
+const root = path.resolve(__dirname, '..');
+const approvalPolicy = JSON.parse(fs.readFileSync(path.join(root, 'harness', 'approval-policy.json'), 'utf8'));
 
 function parseArgs(argv) {
   const out = {};
@@ -36,8 +40,22 @@ function gitChangedFiles(baseSha, headSha) {
   return stdout.split(/\r?\n/).map(v => v.trim()).filter(Boolean);
 }
 
+function addApprovalRequirements(impact) {
+  const checks = new Set(impact.checks || []);
+  const approvalsRequired = [];
+  for (const flag of impact.flags || []) {
+    const entry = approvalPolicy.boundaries && approvalPolicy.boundaries[flag];
+    if (!entry) continue;
+    checks.add(entry.checkId);
+    approvalsRequired.push({ boundary: flag, checkId: entry.checkId });
+  }
+  impact.checks = [...checks].sort();
+  impact.approvalsRequired = approvalsRequired.sort((a,b) => a.checkId.localeCompare(b.checkId));
+  return impact;
+}
+
 function buildEvidence(files, meta) {
-  const impact = classify(files);
+  const impact = addApprovalRequirements(classify(files));
   return {
     schema: 'kareta.harness.impact-evidence.v1',
     phase: 'IMPACT_PLANNED',
@@ -82,4 +100,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { parseArgs, assertSha, gitChangedFiles, buildEvidence };
+module.exports = { parseArgs, assertSha, gitChangedFiles, addApprovalRequirements, buildEvidence };
