@@ -27,7 +27,12 @@
     longitude:Number(point?.longitude??point?.lng),
     kind:String(point?.kind||'point'),
     user:point?.user===true,
-    route:point?.route!==false
+    route:point?.route!==false,
+    actions:(Array.isArray(point?.actions)?point.actions:[]).slice(0,3).map(action=>({
+      label:String(action?.label||'').slice(0,40),
+      href:String(action?.href||'').startsWith('#/')?String(action.href):'',
+      primary:action?.primary===true
+    })).filter(action=>action.label&&action.href)
   });
 
   function ensureStyle(){
@@ -96,8 +101,12 @@
       if(event.target.closest('[data-geo-map-close]')){close();return;}
       const zoom=event.target.closest('[data-geo-map-zoom]');
       if(zoom&&state){state.zoom=clamp(state.zoom+Number(zoom.dataset.geoMapZoom||0),config.minZoom,config.maxZoom);render();return;}
+      const cluster=event.target.closest('[data-geo-map-cluster]');
+      if(cluster&&state){const item=state.clusters?.get(cluster.dataset.geoMapCluster);if(item){state.center={lat:item.latitude,lng:item.longitude};state.zoom=clamp(state.zoom+2,config.minZoom,config.maxZoom);state.selected='';render();}return;}
       const marker=event.target.closest('[data-geo-map-point]');
       if(marker&&state){selectPoint(marker.dataset.geoMapPoint);return;}
+      const action=event.target.closest('[data-geo-map-action]');
+      if(action){close();return;}
       const route=event.target.closest('[data-geo-map-route]');
       if(route&&state){const point=state.points.find(p=>p.id===route.dataset.geoMapRoute);if(point)await openRoute(point);}
     });
@@ -131,7 +140,9 @@
     state.selected=id;
     dialog.querySelectorAll('[data-geo-map-point]').forEach(node=>node.classList.toggle('is-selected',node.dataset.geoMapPoint===id));
     const detail=dialog.querySelector('[data-geo-map-detail]'),where=[point.city,point.address].filter(Boolean).join(' · '),distance=distanceText(point.distanceKm);
-    detail.innerHTML=`<div><small>${point.user?'ВАША ТОЧКА':esc(point.kind.toUpperCase())}</small><b>${esc(point.label)}</b><span>${esc([distance,where].filter(Boolean).join(' · ')||'Координаты подтверждены')}</span></div>${point.route&&!point.user?`<button type="button" data-geo-map-route="${esc(point.id)}">Маршрут</button>`:''}`;
+    const actions=point.actions.map(action=>`<a class="${action.primary?'is-primary':''}" data-geo-map-action href="${esc(action.href)}">${esc(action.label)}</a>`).join('');
+    const route=point.route&&!point.user?`<button type="button" data-geo-map-route="${esc(point.id)}">Маршрут</button>`:'';
+    detail.innerHTML=`<div class="k-geo-map-detail__copy"><small>${point.user?'ВАША ТОЧКА':esc(point.kind.toUpperCase())}</small><b>${esc(point.label)}</b><span>${esc([distance,where].filter(Boolean).join(' · ')||'Координаты подтверждены')}</span></div><div class="k-geo-map-detail__actions">${actions}${route}</div>`;
   }
   async function openRoute(point){
     if(window.KaretaMobile?.openBestMap)return window.KaretaMobile.openBestMap(point.label,point.latitude,point.longitude);
@@ -151,19 +162,27 @@
       tileHtml.push(`<img src="${esc(tileUrl(zoom,wrapped,ty))}" alt="" draggable="false" loading="eager" referrerpolicy="strict-origin-when-cross-origin" style="left:${left}px;top:${top}px" width="256" height="256">`);
     }
     tiles.innerHTML=tileHtml.join('');
-    markers.innerHTML=state.points.map((point,index)=>{
-      const p=world(point.latitude,point.longitude,zoom),left=width/2+(p.x-center.x),top=height/2+(p.y-center.y);
-      if(left<-40||left>width+40||top<-40||top>height+40)return '';
-      const selected=state.selected===point.id?' is-selected':'';
-      return `<button type="button" class="k-geo-map-marker${point.user?' is-user':''}${selected}" data-geo-map-point="${esc(point.id)}" style="left:${left}px;top:${top}px" title="${esc(point.label)}"><span>${point.user?'●':String(index+1)}</span></button>`;
-    }).join('');
+    const visible=state.points.map((point,index)=>{const p=world(point.latitude,point.longitude,zoom),left=width/2+(p.x-center.x),top=height/2+(p.y-center.y);return {point,index,left,top};}).filter(item=>item.left>=-40&&item.left<=width+40&&item.top>=-40&&item.top<=height+40);
+    const userItems=visible.filter(item=>item.point.user),providerItems=visible.filter(item=>!item.point.user),clusterSize=zoom>=config.maxZoom?1:52,buckets=new Map();
+    providerItems.forEach(item=>{const key=clusterSize===1?item.point.id:(Math.floor(item.left/clusterSize)+':'+Math.floor(item.top/clusterSize));const list=buckets.get(key)||[];list.push(item);buckets.set(key,list);});
+    state.clusters=new Map();
+    const markerHtml=[];
+    userItems.forEach(item=>{const selected=state.selected===item.point.id?' is-selected':'';markerHtml.push(`<button type="button" class="k-geo-map-marker is-user${selected}" data-geo-map-point="${esc(item.point.id)}" style="left:${item.left}px;top:${item.top}px" title="${esc(item.point.label)}"><span>●</span></button>`);});
+    let clusterIndex=0;
+    buckets.forEach(items=>{
+      if(items.length===1){const item=items[0],selected=state.selected===item.point.id?' is-selected':'';markerHtml.push(`<button type="button" class="k-geo-map-marker${selected}" data-geo-map-point="${esc(item.point.id)}" style="left:${item.left}px;top:${item.top}px" title="${esc(item.point.label)}"><span>•</span></button>`);return;}
+      const id='cluster_'+(clusterIndex++),latitude=items.reduce((sum,item)=>sum+item.point.latitude,0)/items.length,longitude=items.reduce((sum,item)=>sum+item.point.longitude,0)/items.length,left=items.reduce((sum,item)=>sum+item.left,0)/items.length,top=items.reduce((sum,item)=>sum+item.top,0)/items.length;
+      state.clusters.set(id,{latitude,longitude,count:items.length});
+      markerHtml.push(`<button type="button" class="k-geo-map-cluster" data-geo-map-cluster="${id}" style="left:${left}px;top:${top}px" title="Показать ${items.length} точек"><span>${items.length}</span></button>`);
+    });
+    markers.innerHTML=markerHtml.join('');
   }
 
   function open(options={}){
     const points=(Array.isArray(options.points)?options.points:[]).filter(validPoint).slice(0,50).map(normalizePoint);
     if(!points.length)throw new Error('GEO_MAP_POINTS_REQUIRED');
     const dlg=ensureDialog(),title=String(options.title||'Рядом'),center=validPoint(options.center)?normalizePoint(options.center,-1):centerOf(points);
-    state={points,center:{lat:center.latitude,lng:center.longitude},zoom:config.defaultZoom,selected:''};
+    state={points,center:{lat:center.latitude,lng:center.longitude},zoom:config.defaultZoom,selected:'',clusters:new Map()};
     dlg.querySelector('[data-geo-map-title]').textContent=title;
     dlg.querySelector('[data-geo-map-count]').textContent=points.length+' точек';
     dlg.querySelector('[data-geo-map-detail]').innerHTML='<b>Выберите точку на карте</b><span>Адрес и маршрут появятся здесь.</span>';
