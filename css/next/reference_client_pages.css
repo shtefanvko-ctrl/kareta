@@ -282,6 +282,9 @@
   html[data-user-role="client"] .k-home-reference--app .k-home-ref-section__head{align-items:center!important}
   html[data-user-role="client"] .k-home-reference--app .k-home-ref-section__head h2{font-size:25px!important;line-height:30px!important;font-weight:900!important;letter-spacing:-.035em!important;color:#0b0d0f!important}
   html[data-user-role="client"] .k-home-reference--app .k-home-ref-section__head a{font-size:17px!important;color:#7d848e!important;text-decoration:none!important}.k-home-reference--app .k-home-ref-section__head a span{color:var(--k-ref-app-orange);font-size:25px}
+  html[data-user-role="client"] .k-home-reference--app .k-home-ref-section__tools{display:flex;align-items:center;gap:10px}
+  html[data-user-role="client"] .k-home-reference--app .k-home-ref-section__tools>button{display:inline-flex;align-items:center;gap:5px;height:36px;padding:0 10px;border:1px solid #e6e9ee;border-radius:10px;background:#fff;color:#545d68;font-size:14px;font-weight:800}
+  html[data-user-role="client"] .k-home-reference--app .k-home-ref-section__tools>button svg{width:17px;height:17px;color:var(--k-ref-app-orange)}
   html[data-user-role="client"] .k-home-reference--app .k-home-ref-service-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;overflow:visible!important}
   html[data-user-role="client"] .k-home-reference--app .k-home-ref-service-card{display:block!important;min-width:0!important;padding:0!important;border:0!important;border-radius:18px!important;overflow:hidden!important;background:#fff!important;box-shadow:0 10px 28px rgba(15,23,42,.08)!important;text-decoration:none!important}
   html[data-user-role="client"] .k-home-ref-service-card__media{display:block;aspect-ratio:1.28/1;overflow:hidden;background:#eef1f4}.k-home-ref-service-card__media img{display:block;width:100%;height:100%;object-fit:cover}
