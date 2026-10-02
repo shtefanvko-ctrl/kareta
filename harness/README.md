@@ -141,3 +141,38 @@ The collector accepts a comment only when:
 - the reason contains at least five characters.
 
 An approval for an older SHA is unusable after the head changes. Unauthorized authors, wrong boundaries, malformed lines and wrong SHAs are ignored.
+
+
+## Increment 7: Release Readiness Evidence
+
+A code-correctness PASS is not the same as release readiness.
+
+For pull requests where the target is `main` and the source branch starts with `release/`, `harness/release-evidence-policy.json` adds external evidence checks to the exact-head impact:
+
+- `external:staging-exact-runtime`
+- `external:deployed-provenance`
+- `external:android-two-account-smoke`
+- `external:android-warm-route-two-pass`
+- `external:android-webview-visual-evidence`
+
+Missing external evidence is emitted as `NOT_RUN`, so the unified verdict becomes `BLOCKED`. CI success alone cannot make a release PR ready for `main`.
+
+External evidence is recorded on the release PR using strict exact-SHA syntax:
+
+```text
+HARNESS_EVIDENCE external:staging-exact-runtime <exact-head-sha> PASS <evidence reference>
+HARNESS_EVIDENCE external:deployed-provenance <exact-head-sha> PASS <evidence reference>
+HARNESS_EVIDENCE external:android-two-account-smoke <exact-head-sha> PASS <evidence reference>
+HARNESS_EVIDENCE external:android-warm-route-two-pass <exact-head-sha> PASS <evidence reference>
+HARNESS_EVIDENCE external:android-webview-visual-evidence <exact-head-sha> PASS <evidence reference>
+```
+
+The collector accepts the evidence only when:
+
+- the author is explicitly allowed by `release-evidence-policy.json`;
+- the evidence check ID is exact;
+- the SHA is the current 40-character PR head SHA;
+- status is exactly `PASS`;
+- an evidence reference/reason is present.
+
+If the release head advances, every previous external evidence receipt becomes unusable for the new head.
