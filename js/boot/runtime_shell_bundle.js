@@ -840,7 +840,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     'cabinet','cabinetGarage','cabinetData','cabinetHistory','cabinetDocuments','cabinetPromos','cabinetTariff','cabinetSettings',
     'chats','notifications','works','masterExchange','realWorks','workDetail','vehicle','orders','workflow',
     'news','masterNews','masterNewsCreate','masterNewsEdit',
-    'about','rules','help','privacy','contacts','lawyer','towTruck',
+    'about','rules','help','privacy','contacts','lawyer','towTruck','notFound',
     'masterOnboarding','masterDashboard','masterSchedule','masterProfileOwner','masterWallOwner','masterWorks','masterReviews','providerReviews',
     'platform','corePlatform','calendarBooking','finance','market','crm','assistant','diagnostics',
   ]);
