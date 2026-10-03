@@ -11,7 +11,9 @@
 - Browse all eight registration cities from the existing canonical city catalog without GPS or public points.
 - Use approximate GeoNames city centers only for browsing: no user marker, user distance, or user-coordinate persistence.
 - Keep empty-point and failed-API messages separate from tile loading status, with RU/KK/EN notices.
-- Reject missing stored user coordinates; retain provider profile/booking and shop product actions.
+- Reject missing stored user coordinates on Home and Masters; retain provider profile/booking and shop product actions.
+- Preserve raw provider/shop coordinates through map consumers so map validation cannot mistake null for 0.
+- Reject invalid owner work-zone coordinates before nearby requests, and invalid GPS responses in Masters/Parts.
 - Regenerate canonical onboarding and core boot bundles.
 
 ## Evidence
@@ -33,3 +35,10 @@ Approximate WGS84 browsing centers from GeoNames (CC BY 4.0), inspected 2026-10-
 - https://www.geonames.org/kz/largest-cities-in-kazakhstan.html
 - https://www.geonames.org/1521370/ridder.html
 - https://www.geonames.org/about.html
+
+## Next Geo analysis / implementation order
+1. Finish coordinate validity at all entry points and point-type contracts: service, mobile_origin and shop pickup; published-only browsing and owner-only work metadata remain separate.
+2. Extend city browsing to Masters/STO and Parts using the existing catalog/map rather than a second page or loader. Home is implemented; other city-only consumers are not yet implemented.
+3. Add category/radius controls and useful list fallback from the same response; distinguish empty data, API failure and tile failure.
+4. Specify production tile-provider availability and retry behavior; do not claim public tiles have an SLA or activate paid services implicitly.
+5. Browser/WebView/address visual verification is deferred at the user’s request. This remains open evidence, not PASS.
