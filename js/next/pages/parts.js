@@ -11,6 +11,11 @@
   let usedRows=[];
   let usedLoading=false;
   let usedError='';
+  let usedRequestId=0;
+  let usedQueryKey='';
+  let usedHasMore=false;
+  let usedNextOffset=0;
+  let usedMatchedTotal=0;
   let vehicles=[];
   let vehiclesLoaded=false;
   let selectedVehicleId='';
@@ -120,7 +125,7 @@
     return listingType(row)===state.type;
   }
   function storeRows(snapshot){return sortRows((snapshot.products||[]).filter(x=>textMatch(x,state.search,'store')&&categoryMatch(x)&&cityMatch(x,'store')&&typeMatch(x,'store')));}
-  function privateRows(){return sortRows(usedRows.filter(x=>textMatch(x,state.search,'used')&&categoryMatch(x)&&cityMatch(x,'used')&&typeMatch(x,'used')));}
+  function privateRows(){if(usedQueryKey===JSON.stringify(usedCatalogParams()))return usedRows;return sortRows(usedRows.filter(x=>textMatch(x,state.search,'used')&&categoryMatch(x)&&cityMatch(x,'used')&&typeMatch(x,'used')));}
   function marketItems(snapshot){
     const storeItems=storeRows(snapshot).filter(item=>productType(item)==='new').map(item=>({source:'store',item}));
     const usedItems=privateRows().filter(item=>['used','restored','exchange'].includes(listingType(item))).map(item=>({source:'used',item}));
@@ -222,7 +227,7 @@
   function renderMarketWindow(snapshot){
     const body=document.querySelector('[data-market-list-body]'); if(!body)return;
     const meta=marketWindowMeta(snapshot),entries=marketWindowEntries(snapshot),mineTools=marketMode==='mine'?mineStatusControls():'';
-    body.innerHTML=`<header><div><small>${esc(meta.eyebrow)}</small><h2>${esc(meta.title)}</h2><p>${esc(meta.subtitle)} · ${entries.length} предложений</p></div><button type="button" data-dialog-close="market">${icon('close')}</button></header>${mineTools}${usedLoading?'<div class="k-parts-native-loading">Обновляем объявления…</div>':''}${usedError?`<div class="k-parts-native-error">${esc(usedError)}</div>`:''}${itemGrid(entries,snapshot.categories||[],'По этим условиям ничего не найдено.')}`;
+    body.innerHTML=`<header><div><small>${esc(meta.eyebrow)}</small><h2>${esc(meta.title)}</h2><p>${esc(meta.subtitle)} · ${isUsedSurface()&&marketMode==='catalog'&&usedQueryKey===JSON.stringify(usedCatalogParams())?`${entries.length} / ${usedMatchedTotal}`:entries.length} предложений</p></div><button type="button" data-dialog-close="market">${icon('close')}</button></header>${mineTools}${usedLoading?'<div class="k-parts-native-loading">Обновляем объявления…</div>':''}${usedError?`<div class="k-parts-native-error">${esc(usedError)}</div>`:''}${usedLoading&&!entries.length?'':itemGrid(entries,snapshot.categories||[],'По этим условиям ничего не найдено.')}${usedPagingControls()}`;
     if(marketMode==='mine'&&pendingMineFocusId){requestAnimationFrame(()=>[...body.querySelectorAll('[data-used-card]')].find(card=>String(card.dataset.usedCard||'')===String(pendingMineFocusId))?.scrollIntoView?.({block:'center'}));}
   }
 
@@ -304,27 +309,47 @@
   function renderSnapshot(snapshot){
     const nav=document.querySelector('[data-shop-navigator]');if(!nav)return;
     const cats=document.querySelector('[data-parts-categories]');if(cats)cats.innerHTML=categoryGrid(snapshot);
-    nav.innerHTML=catalogContent(snapshot);
+    nav.innerHTML=(isUsedSurface()&&usedLoading&&!usedRows.length?'':catalogContent(snapshot))+usedPagingControls();
     renderFilter(snapshot);renderVehicles();renderCategoryChoice(snapshot);updateCounters(snapshot);if(document.querySelector('[data-parts-market-list-dialog]')?.open)renderMarketWindow(snapshot);
     const cartItems=document.querySelector('[data-shop-cart-items]'),cartTotal=document.querySelector('[data-shop-cart-total]');
     if(cartItems)cartItems.innerHTML=(snapshot.cart||[]).length?(snapshot.cart||[]).map(item=>`<article class="k-shop-cart-item"><div><b>${esc(item.name)}</b><small>${esc(item.storeName||'')}</small></div><div class="k-shop-cart-qty"><button type="button" data-shop-qty="${esc(item.id)}" data-delta="-1">−</button><span>${Number(item.qty||0)}</span><button type="button" data-shop-qty="${esc(item.id)}" data-delta="1">+</button></div><strong>${money(Number(item.price||0)*Number(item.qty||0))}</strong></article>`).join(''):'<div class="k-parts-native-empty">Корзина пуста.</div>';
     if(cartTotal)cartTotal.textContent=money((snapshot.cart||[]).reduce((s,x)=>s+Number(x.price||0)*Number(x.qty||0),0));
   }
 
-  async function loadUsed(){
+  function usedCatalogParams(){
+    return {surface:'used',search:state.search,category:state.category,city:state.city,sort:state.sort,type:state.type,favorites:marketMode==='favorites'?'1':'0',limit:50};
+  }
+  function usedPagingControls(){
+    if(!isUsedSurface()||marketMode==='mine')return '';
+    if(usedLoading)return `<p>${localized('Загружаем объявления…','Хабарландырулар жүктелуде…','Loading listings…')}</p>`;
+    if(usedError)return `<p role="alert">${esc(usedError)}</p><button type="button" data-used-retry>${localized('Повторить','Қайталау','Retry')}</button>`;
+    return usedHasMore?`<button type="button" data-used-more>${localized('Показать ещё','Тағы көрсету','Show more')}</button>`:'';
+  }
+  function refreshCatalog(){
+    if(isUsedSurface())return loadUsed();
+    return store.load({search:state.search,category:state.category||'all',limit:100},{signal:contextRef?.lifecycle?.signal});
+  }
+  async function loadUsed(append=false){
+    if(append&&(usedLoading||!usedHasMore||usedQueryKey!==JSON.stringify(usedCatalogParams())))return;
+    const requestId=++usedRequestId,context=contextRef,params=usedCatalogParams(),key=JSON.stringify(params),offset=append?usedNextOffset:0;
+    if(!append){usedRows=[];usedHasMore=false;usedNextOffset=0;usedMatchedTotal=0;usedQueryKey='';}
     usedLoading=true;usedError='';renderSnapshot(store.getSnapshot());
     try{
-      const params={sort:'newest'};
-      const res=await api.getUsedMarket(params,{signal:contextRef?.lifecycle?.signal});if(!res.ok)throw new Error(res.payload?.message||res.payload?.error||'Не удалось загрузить частные объявления');
-      usedRows=Array.isArray(res.payload?.items)?res.payload.items:[];
-    }catch(error){usedRows=[];usedError=error?.message||'Не удалось загрузить частные объявления';}
-    finally{usedLoading=false;renderSnapshot(store.getSnapshot());}
+      const res=await api.getUsedMarket({...params,offset},{signal:context?.lifecycle?.signal});
+      if(requestId!==usedRequestId||contextRef!==context||context?.lifecycle?.signal?.aborted)return;
+      if(!res.ok)throw new Error(res.payload?.message||res.payload?.error||'Не удалось загрузить частные объявления');
+      const rows=Array.isArray(res.payload?.items)?res.payload.items:[];
+      usedRows=append?[...new Map([...usedRows,...rows].map(row=>[String(row.id),row])).values()]:rows;
+      usedQueryKey=key;usedHasMore=res.payload?.hasMore===true;
+      usedNextOffset=Number(res.payload?.nextOffset??offset+rows.length);usedMatchedTotal=Number(res.payload?.matchedTotal??usedRows.length);
+    }catch(error){if(requestId!==usedRequestId||contextRef!==context)return;usedError=error?.message||'Не удалось загрузить частные объявления';}
+    finally{if(requestId===usedRequestId&&contextRef===context){usedLoading=false;renderSnapshot(store.getSnapshot());}}
   }
   async function loadVehicles(){
     try{const res=await api.request('api/db.php?action=clientCabinet.get',{cacheTtlMs:15000,cacheKey:'client.cabinet.parts',signal:contextRef?.lifecycle?.signal});vehicles=Array.isArray(res.payload?.data?.vehicles)?res.payload.data.vehicles:[];}catch(_e){vehicles=[];}finally{vehiclesLoaded=true;renderVehicles();if(selectedVehicleId&&!vehicles.some(v=>String(v.id)===String(selectedVehicleId)))selectedVehicleId='';renderSnapshot(store.getSnapshot());}
   }
   function applyFilters(){renderFilter(store.getSnapshot());updateCounters(store.getSnapshot());renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');}
-  function resetFilters(){state={search:'',type:'all',category:'',city:'',sort:'newest'};marketMode='catalog';const search=document.querySelector('[data-parts-search]');if(search)search.value='';renderFilter(store.getSnapshot());updateCounters(store.getSnapshot());}
+  function resetFilters(){state={search:'',type:'all',category:'',city:'',sort:'newest'};marketMode='catalog';const search=document.querySelector('[data-parts-search]');if(search)search.value='';refreshCatalog();renderFilter(store.getSnapshot());updateCounters(store.getSnapshot());}
   function openDialog(name){document.querySelector(`[data-${name}-dialog]`)?.showModal?.();}
   function closeDialog(name){document.querySelector(`[data-${name}-dialog]`)?.close?.();}
   function blankListingWizard(item=null){
@@ -356,6 +381,8 @@
   function bind(context){
     contextRef=context;const page=document.querySelector('.k-parts-native-page');if(!page)return;
     page.addEventListener('click',async event=>{
+      if(event.target.closest('[data-used-more]')){await loadUsed(true);return;}
+      if(event.target.closest('[data-used-retry]')){await loadUsed(usedRows.length>0&&usedHasMore);return;}
       const close=event.target.closest('[data-dialog-close]');if(close){const map={filter:'parts-filter',vehicle:'parts-vehicle',listing:'used-form',category:'parts-category',market:'parts-market-list',delete:'delete',cart:'shop-cart'};closeDialog(map[close.dataset.dialogClose]||close.dataset.dialogClose);return;}
       if(event.target.closest('[data-shop-cart-open]')){openDialog('shop-cart');return;}
       if(event.target.closest('[data-parts-nearby-detect]')){await loadNearbyShops();return;}
@@ -363,12 +390,12 @@
       const nearbyRoute=event.target.closest('[data-parts-nearby-route]');if(nearbyRoute){const lat=Number(nearbyRoute.dataset.lat),lng=Number(nearbyRoute.dataset.lng),label=String(nearbyRoute.dataset.label||'Магазин');if(window.KaretaMobile?.openBestMap)await window.KaretaMobile.openBestMap(label,lat,lng);else window.open(`https://www.openstreetmap.org/?mlat=${encodeURIComponent(lat)}&mlon=${encodeURIComponent(lng)}#map=16/${encodeURIComponent(lat)}/${encodeURIComponent(lng)}`,'_blank','noopener,noreferrer');return;}
       if(event.target.closest('[data-parts-filter-open]')){renderFilter(store.getSnapshot());openDialog('parts-filter');return;}
       if(event.target.closest('[data-parts-vehicle-open]')){vehicleDialogMode='catalog';renderVehicles();openDialog('parts-vehicle');return;}
-      const marketWindow=event.target.closest('[data-market-window]');if(marketWindow){state={search:'',type:marketWindow.dataset.marketWindow||'all',category:'',city:'',sort:'newest'};marketMode='catalog';renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');return;}
+      const marketWindow=event.target.closest('[data-market-window]');if(marketWindow){state={search:'',type:marketWindow.dataset.marketWindow||'all',category:'',city:'',sort:'newest'};marketMode='catalog';refreshCatalog();renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');return;}
       if(event.target.closest('[data-compatible-window]')){if(!selectedVehicle()){vehicleDialogMode='catalog';renderVehicles();openDialog('parts-vehicle');return;}marketMode='compatible';renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');return;}
-      const category=event.target.closest('[data-market-category]');if(category){state={...state,category:category.dataset.marketCategory||'',sort:'newest'};marketMode='catalog';renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');return;}
-      const refType=event.target.closest('[data-parts-ref-type]');if(refType){const value=refType.dataset.partsRefType||'all';state={...state,type:['sale','new','used','restored','exchange'].includes(value)?value:'all',category:'',sort:'newest'};renderSnapshot(store.getSnapshot());page.querySelectorAll('[data-parts-ref-type]').forEach(btn=>btn.classList.toggle('is-active',btn===refType));return;}
+      const category=event.target.closest('[data-market-category]');if(category){state={...state,category:category.dataset.marketCategory||'',sort:'newest'};marketMode='catalog';refreshCatalog();renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');return;}
+      const refType=event.target.closest('[data-parts-ref-type]');if(refType){const value=refType.dataset.partsRefType||'all';state={...state,type:['sale','new','used','restored','exchange'].includes(value)?value:'all',category:'',sort:'newest'};refreshCatalog();renderSnapshot(store.getSnapshot());page.querySelectorAll('[data-parts-ref-type]').forEach(btn=>btn.classList.toggle('is-active',btn===refType));return;}
       if(event.target.closest('[data-parts-reset]')){resetFilters();return;}
-      const mode=event.target.closest('[data-market-mode]');if(mode){marketMode=mode.dataset.marketMode||'catalog';mineStatus='all';pendingMineFocusId='';state={search:'',type:'all',category:'',city:'',sort:'newest'};if(marketMode==='mine')await loadMine();renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');return;}
+      const mode=event.target.closest('[data-market-mode]');if(mode){marketMode=mode.dataset.marketMode||'catalog';mineStatus='all';pendingMineFocusId='';state={search:'',type:'all',category:'',city:'',sort:'newest'};if(marketMode==='mine')await loadMine();else refreshCatalog();renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');return;}
       const mineFilter=event.target.closest('[data-mine-status]');if(mineFilter){mineStatus=mineFilter.dataset.mineStatus||'all';pendingMineFocusId='';renderMarketWindow(store.getSnapshot());return;}
       if(event.target.closest('[data-used-add]')){openListingWizard();return;}
       if(event.target.closest('[data-used-exchange]')){openListingWizard();listingWizard.listingType='exchange';renderListingWizard();return;}
@@ -376,7 +403,7 @@
       const fCat=event.target.closest('[data-filter-category]');if(fCat){state.category=fCat.dataset.filterCategory||'';renderFilter(store.getSnapshot());return;}
       const fSort=event.target.closest('[data-filter-sort]');if(fSort){state.sort=fSort.dataset.filterSort||'newest';renderFilter(store.getSnapshot());return;}
       if(event.target.closest('[data-parts-filter-reset]')){state={...state,type:'all',category:'',city:'',sort:'newest'};renderFilter(store.getSnapshot());updateCounters(store.getSnapshot());return;}
-      if(event.target.closest('[data-parts-filter-apply]')){state.city=String(document.querySelector('[data-filter-city]')?.value||'').trim();marketMode='catalog';closeDialog('parts-filter');renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');updateCounters(store.getSnapshot());return;}
+      if(event.target.closest('[data-parts-filter-apply]')){state.city=String(document.querySelector('[data-filter-city]')?.value||'').trim();marketMode='catalog';closeDialog('parts-filter');refreshCatalog();renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');updateCounters(store.getSnapshot());return;}
       const vBtn=event.target.closest('[data-vehicle-id]');if(vBtn){const id=vBtn.dataset.vehicleId||'';if(vehicleDialogMode==='listing'&&listingWizard){const v=vehicles.find(x=>String(x.id)===String(id));listingWizard.sourceVehicleId=id;if(v){listingWizard.donorVehicle={brand:v.brand||'',model:v.model||'',year:v.year||v.year_label||'',engine:v.engine||'',mileage:Number(v.mileage_km||v.mileage||0),note:'',unknown:false};if(!listingWizard.vehicle)listingWizard.vehicle=vehicleLabel(v);}closeDialog('parts-vehicle');renderListingWizard();}else{selectedVehicleId=id;closeDialog('parts-vehicle');renderSnapshot(store.getSnapshot());}return;}
       const wizardType=event.target.closest('[data-wizard-type]');if(wizardType&&listingWizard){listingWizard.listingType=wizardType.dataset.wizardType||'used';if(listingWizard.listingType==='new')listingWizard.condition='new';else if(listingWizard.listingType==='restored')listingWizard.condition='restored';else if(['new','restored'].includes(listingWizard.condition))listingWizard.condition='good';renderListingWizard();return;}
       const wizardCondition=event.target.closest('[data-wizard-condition]');if(wizardCondition&&listingWizard){listingWizard.condition=wizardCondition.dataset.wizardCondition||'good';renderListingWizard();return;}
@@ -404,7 +431,7 @@
       const qty=event.target.closest('[data-shop-qty]');if(qty){const item=store.getSnapshot().cart.find(x=>String(x.id)===String(qty.dataset.shopQty));if(item)store.setQty(item.id,Number(item.qty)+Number(qty.dataset.delta||0));return;}
       const delivery=event.target.closest('[data-delivery-type]');if(delivery){const form=document.querySelector('[data-shop-checkout]');form.elements.deliveryType.value=delivery.dataset.deliveryType;form.querySelectorAll('[data-delivery-type]').forEach(b=>b.classList.toggle('is-active',b===delivery));return;}
     });
-    let searchTimer=0;const searchInput=page.querySelector('[data-parts-search]');searchInput?.addEventListener('input',event=>{clearTimeout(searchTimer);const value=String(event.currentTarget.value||'').trim();searchTimer=setTimeout(()=>{state={...state,search:value,category:''};renderSnapshot(store.getSnapshot());},180);});searchInput?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();state={...state,search:String(event.currentTarget.value||'').trim(),category:''};renderSnapshot(store.getSnapshot());}});
+    let searchTimer=0;context.lifecycle?.signal?.addEventListener('abort',()=>clearTimeout(searchTimer),{once:true});const searchInput=page.querySelector('[data-parts-search]');searchInput?.addEventListener('input',event=>{clearTimeout(searchTimer);const value=String(event.currentTarget.value||'').trim();searchTimer=setTimeout(()=>{state={...state,search:value,category:''};refreshCatalog();renderSnapshot(store.getSnapshot());},180);});searchInput?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();clearTimeout(searchTimer);state={...state,search:String(event.currentTarget.value||'').trim(),category:''};refreshCatalog();renderSnapshot(store.getSnapshot());}});
     page.addEventListener('input',event=>{if(!listingWizard)return;const field=event.target.closest('[data-wizard-field]');if(field){const key=field.dataset.wizardField;listingWizard[key]=field.type==='number'?Number(field.value||0):String(field.value||'');return;}const donor=event.target.closest('[data-wizard-donor]');if(donor){const key=donor.dataset.wizardDonor;listingWizard.sourceVehicleId='';listingWizard.donorVehicle={...(listingWizard.donorVehicle||{}),unknown:false,[key]:donor.type==='number'?Number(donor.value||0):String(donor.value||'')};}});
     page.querySelector('[data-listing-gallery]')?.addEventListener('change',async event=>{await addListingPhotos(event.currentTarget.files);event.currentTarget.value='';});
     page.querySelector('[data-listing-camera]')?.addEventListener('change',async event=>{await addListingPhotos(event.currentTarget.files);event.currentTarget.value='';});
@@ -412,10 +439,10 @@
   }
 
   function mountParts(context){
-    unsubscribe?.();contextRef=context;usedRows=[];mineRows=[];listingWizard=null;listingSaving=false;usedLoading=false;usedError='';vehicles=[];vehiclesLoaded=false;selectedVehicleId='';vehicleDialogMode='catalog';marketMode='catalog';mineStatus='all';pendingMineFocusId='';nearbyShops=[];nearbyShopsStatus='idle';nearbyUserPoint=null;state={search:'',type:'all',category:'',city:'',sort:'newest'};const hashCtx=readHashContext();
-    unsubscribe=store.subscribe(renderSnapshot);bind(context);store.load({search:'',category:'all',limit:100},{signal:context.lifecycle?.signal});if(isUsedSurface())loadUsed();else{usedRows=[];usedLoading=false;usedError='';}loadVehicles();
+    unsubscribe?.();contextRef=context;usedRows=[];mineRows=[];listingWizard=null;listingSaving=false;usedLoading=false;usedError='';usedQueryKey='';usedHasMore=false;usedNextOffset=0;usedMatchedTotal=0;vehicles=[];vehiclesLoaded=false;selectedVehicleId='';vehicleDialogMode='catalog';marketMode='catalog';mineStatus='all';pendingMineFocusId='';nearbyShops=[];nearbyShopsStatus='idle';nearbyUserPoint=null;state={search:'',type:'all',category:'',city:'',sort:'newest'};const hashCtx=readHashContext();
+    unsubscribe=store.subscribe(renderSnapshot);bind(context);store.load({search:state.search,category:state.category||'all',limit:100},{signal:context.lifecycle?.signal});if(isUsedSurface())loadUsed();else{usedRows=[];usedLoading=false;usedError='';}loadVehicles();
     if(hashCtx.mine==='1'){pendingMineFocusId=hashCtx.focus||'';loadMine().then(()=>{if(contextRef!==context)return;marketMode='mine';renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');});}
-    return()=>{unsubscribe?.();unsubscribe=null;contextRef=null;store.cancel();};
+    return()=>{unsubscribe?.();unsubscribe=null;contextRef=null;usedRequestId++;store.cancel();};
   }
 
   window.KaretaPartsPages=Object.freeze({renderParts,mountParts});

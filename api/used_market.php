@@ -130,12 +130,19 @@ function kareta_used_market_list(PDO $pdo,array $q): void {
     if($mine){ if(!$uid)kareta_json(['ok'=>false,'error'=>'auth_required'],401); $where=["l.seller_user_id=?","l.status<>'deleted'"]; $params[]=$uid; }
     if($favorites){ if(!$uid)kareta_json(['ok'=>false,'error'=>'auth_required'],401); $where[]='f.user_id IS NOT NULL'; }
     foreach(['category','city','condition'] as $key){$v=trim((string)($q[$key]??''));if($v!==''){$col=$key==='condition'?'condition_code':$key;$where[]="l.$col=?";$params[]=$v;}}
-    $listingType=trim((string)($q['listingType']??$q['type']??'')); if($listingType!==''){ $where[]='l.listing_type=?'; $params[]=kareta_used_market_type($listingType); }
+    if(($q['surface']??'')==='used')$where[]="l.listing_type IN ('used','restored','exchange')";
+    $listingType=trim((string)($q['listingType']??$q['type']??''));
+    if($listingType==='sale')$where[]="l.listing_type IN ('used','restored')";
+    elseif($listingType!==''&&$listingType!=='all'){ $where[]='l.listing_type=?'; $params[]=kareta_used_market_type($listingType); }
     $search=trim((string)($q['search']??'')); if($search!==''){ $where[]='(l.title LIKE ? OR l.description LIKE ? OR l.defects_text LIKE ? OR l.brand LIKE ? OR l.oem_number LIKE ? OR l.vehicle LIKE ? OR l.exchange_note LIKE ?)';$like='%'.$search.'%';array_push($params,$like,$like,$like,$like,$like,$like,$like); }
     $sort=(string)($q['sort']??'newest'); $order=$sort==='price_asc'?'l.price ASC':($sort==='price_desc'?'l.price DESC':($sort==='popular'?'l.views DESC, l.created_at DESC':($mine?'l.updated_at DESC':'l.created_at DESC')));
-    $sql="SELECT l.*,COALESCE(u.name,u.phone,'Пользователь') seller_name,".($uid?"EXISTS(SELECT 1 FROM used_market_favorites fx WHERE fx.user_id={$uid} AND fx.listing_id=l.id)":"0")." is_favorite FROM used_market_listings l LEFT JOIN users u ON u.id=l.seller_user_id LEFT JOIN used_market_favorites f ON f.listing_id=l.id AND f.user_id=".($uid?:0)." WHERE ".implode(' AND ',$where)." ORDER BY $order LIMIT 200";
-    $st=$pdo->prepare($sql);$st->execute($params);$rows=array_map(fn($r)=>kareta_used_market_row($r,$uid),$st->fetchAll()?:[]);
-    kareta_json(['ok'=>true,'items'=>$rows,'total'=>count($rows)]);
+    $limit=max(1,min(200,(int)($q['limit']??200)));$offset=max(0,min(2000000000,(int)($q['offset']??0)));
+    $from=" FROM used_market_listings l LEFT JOIN users u ON u.id=l.seller_user_id LEFT JOIN used_market_favorites f ON f.listing_id=l.id AND f.user_id=".($uid?:0)." WHERE ".implode(' AND ',$where);
+    $count=$pdo->prepare('SELECT COUNT(*)'.$from);$count->execute($params);$matchedTotal=(int)$count->fetchColumn();
+    $sql="SELECT l.*,COALESCE(u.name,u.phone,'Пользователь') seller_name,".($uid?"EXISTS(SELECT 1 FROM used_market_favorites fx WHERE fx.user_id={$uid} AND fx.listing_id=l.id)":"0")." is_favorite".$from." ORDER BY $order, l.id ASC LIMIT ".($limit+1)." OFFSET $offset";
+    $st=$pdo->prepare($sql);$st->execute($params);$raw=$st->fetchAll()?:[];$hasMore=count($raw)>$limit;
+    $rows=array_map(fn($r)=>kareta_used_market_row($r,$uid),array_slice($raw,0,$limit));
+    kareta_json(['ok'=>true,'items'=>$rows,'total'=>count($rows),'matchedTotal'=>$matchedTotal,'limit'=>$limit,'offset'=>$offset,'hasMore'=>$hasMore,'nextOffset'=>$hasMore?$offset+count($rows):null]);
 }
 function kareta_used_market_detail(PDO $pdo,array $q): void {
     kareta_used_market_ensure($pdo); $viewer=kareta_used_market_viewer($pdo,false); $uid=(int)($viewer['id']??0);

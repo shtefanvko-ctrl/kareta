@@ -48,3 +48,13 @@ Rollback: revert this increment. Existing routes/API actions remain unchanged; n
 5. Existing stock adjustments read quantity then update an absolute value. Simultaneous deltas can lose one change; concurrency is not yet reproduced. Checkout separately uses row locks and must not be conflated with this path.
 
 The agent workflow now requires trigger -> call/data chain -> violated contract -> consequence -> reproducer -> fix -> regression evidence for every defect claim.
+
+## Search/pagination work checkpoint
+
+Work in progress, saved at the user's request regardless of verification state:
+
+- Used catalog sends search/category/city/type/sort/favorites to the server; sale groups used/restored.
+- Server adds bounded limit/offset, deterministic ID tie-breaker, lookahead hasMore/nextOffset and matchedTotal while retaining the existing per-page total field.
+- Client appends pages by listing ID, ignores obsolete requests, and exposes localized more/retry controls. New shop now passes search/category to its existing catalog API.
+- PHP/JS syntax, existing visual/exchange regressions and diff whitespace PASS. Dedicated pagination/race regressions, browser and live MySQL are NOT RUN. Offset pages can shift when inventory changes. New-shop pagination/city/type semantics and complete used-category enumeration remain pending.
+- This checkpoint is not release acceptance. Next: pagination/race tests; complete new-shop server filtering/pagination; live MySQL publication/concurrency verification and formal offer/deal states.
