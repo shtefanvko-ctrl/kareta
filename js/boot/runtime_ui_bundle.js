@@ -375,9 +375,9 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_ui_bundle","js/boot/runtime_ui
   // answer concurrent PHP bursts with HTTP 429 before db.php itself runs.
   // GET reads enter automatically. POST calls enter only when a wrapper explicitly
   // marks the operation dbSafeReplay=true (read-like or idempotent mutation).
-  const DB_READ_MIN_GAP_MS = 300;
-  const DB_READ_RETRY_DEFAULT_MS = 900;
-  const DB_READ_RETRY_MAX_MS = 3000;
+  const DB_READ_MIN_GAP_MS = 650;
+  const DB_READ_RETRY_DEFAULT_MS = 1500;
+  const DB_READ_RETRY_MAX_MS = 8000;
   let dbReadTail = Promise.resolve();
   let dbReadLastStartedAt = 0;
   let dbReadBackoffUntil = 0;
@@ -774,6 +774,11 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_ui_bundle","js/boot/runtime_ui
 (function(){
   'use strict';
   const RELEASE=String(window.KARETA_NEXT_ASSET_VERSION||'dev');
+  const CFG=window.KARETA_REALTIME_CONFIG||{};
+  const TRANSPORT=String(CFG.transport||'poll').toLowerCase()==='sse'?'sse':'poll';
+  const POLL_INTERVAL_MS=Math.max(10000,Number(CFG.pollIntervalMs||15000));
+  const FAILURE_BASE_MS=Math.max(5000,Number(CFG.failureBaseMs||10000));
+  const FAILURE_MAX_MS=Math.max(30000,Number(CFG.failureMaxMs||60000));
   // Historical release markers for regression tests only; runtime uses KARETA_NEXT_ASSET_VERSION above.
   // 20260806-r188555-runtime-dependency-bootstrap-r188556-security-hardening-r1885561-atomic-runtime-bootstrap-r1885562-identity-db-recovery-r1885563-migration98-onboarding-recovery-r1885564-fk-detach-schema-recovery-r1885565-serialized-schema-index-recovery-r1885566-test-otp-transport-recovery-r1885567-otp-length-resend-cooldown-r1885568-mobile-two-column-grids-r1885569-smart-action-account-r1885570-account-type-catalog-requests-r1885571-test-auto-approval-service-catalog-recovery-r1885572-private-db-config-recovery-r1885573-temporary-account-type-auto-activation-r1885574-home-service-category-grid-r1885575-profile-legacy-id-mobile-nav-recovery-r1885576-master-work-surfaces-r1885577-master-business-runtime-r1885578-master-order-full-lifecycle
   const CLIENT_KEY='kareta.realtime.client';
@@ -854,20 +859,20 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_ui_bundle","js/boot/runtime_ui
   const schedulePoll=ms=>{clearTimeout(pollTimer);if(started&&isLeader())pollTimer=setTimeout(poll,ms);};
   async function poll(){
     if(!started||!isLeader())return;
-    if(document.hidden||!navigator.onLine)return schedulePoll(10000);
+    if(document.hidden||!navigator.onLine)return schedulePoll(POLL_INTERVAL_MS);
     setStatus('polling');channel?.postMessage({type:'status',userId,contextId,mode:'polling'});
     try{
       const res=await fetch(`/api/realtime.php?mode=poll&cursor=${cursor()}&clientId=${encodeURIComponent(clientId)}`,{credentials:'same-origin',cache:'no-store'});
       if(res.status===401)return stop();
       const json=await res.json();if(!res.ok||!json?.ok)throw new Error('poll_failed');
       const data=json.data||{};(data.events||[]).forEach(e=>deliver(e,{unreadCount:data.unreadCount,source:'poll'}));
-      if(Number(data.cursor||0)>cursor())setCursor(data.cursor);failures=0;schedulePoll(10000);
-    }catch(_e){failures++;setStatus('offline',{failures});schedulePoll(Math.min(60000,5000*Math.max(1,failures)));}
+      if(Number(data.cursor||0)>cursor())setCursor(data.cursor);failures=0;schedulePoll(POLL_INTERVAL_MS);
+    }catch(_e){failures++;setStatus('offline',{failures});schedulePoll(Math.min(FAILURE_MAX_MS,FAILURE_BASE_MS*Math.max(1,failures)));}
   }
   function connect(){
     if(!started||!isLeader()||document.hidden||!navigator.onLine)return;
     stopTransport();
-    if(!('EventSource' in window))return poll();
+    if(TRANSPORT!=='sse'||!('EventSource' in window))return poll();
     setStatus('connecting');channel?.postMessage({type:'status',userId,contextId,mode:'connecting'});
     source=new EventSource(`/api/realtime.php?cursor=${cursor()}&clientId=${encodeURIComponent(clientId)}`);
     source.addEventListener('open',()=>{failures=0;setStatus('live');channel?.postMessage({type:'status',userId,contextId,mode:'live'});});
