@@ -6,7 +6,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
   'use strict';
 
   const scriptSource=document.currentScript?.src||'';
-  const dependencies=['KaretaRouteRegistry','KaretaDynamicNavigation','KaretaUIIcons'];
+  const dependencies=['KaretaRouteRegistry','KaretaDynamicNavigation'];
   if(window.KaretaRuntimeDependencies?.missing?.(dependencies).length){window.KaretaRuntimeDependencies.deferScript('navigation_core',dependencies,scriptSource);return;}
   if (window.__KARETA_NAVIGATION_CORE_MODULE__) {
     window.__KARETA_NAVIGATION_CORE_MODULE__.duplicateLoads += 1;
@@ -473,7 +473,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
 (() => {
   'use strict';
   const scriptSource=document.currentScript?.src||'';
-  const dependencies=['KaretaRouteRegistry','KaretaDynamicNavigation'];
+  const dependencies=['KaretaRouteRegistry','KaretaDynamicNavigation','KaretaUIIcons'];
   if(window.KaretaRuntimeDependencies?.missing?.(dependencies).length){window.KaretaRuntimeDependencies.deferScript('shell_menu',dependencies,scriptSource);return;}
   if(window.__KARETA_SHELL_MENU_MODULE__){window.__KARETA_SHELL_MENU_MODULE__.duplicateLoads+=1;return;}
   window.__KARETA_SHELL_MENU_MODULE__={duplicateLoads:0};
