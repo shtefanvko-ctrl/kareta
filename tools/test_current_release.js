@@ -32,6 +32,9 @@ const onboardingBundle=read('js/boot/runtime_onboarding_bundle.js');
 const bootstrap=read('api/bootstrap.php');
 const runtimeDiagnostics=read('api/runtime_diagnostics.php');
 const serverTestConfig=read('config.server-test.example.php');
+const canonicalUiCss=read('css/next/canonical_ui_84_157.css');
+const shellMenu=read('js/next/shell_menu.js');
+const routeAssetLoader=read('js/next/route_asset_loader.js');
 
 const assetRelease=(version.match(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/)||[])[1]||'';
 const swRelease=(sw.match(/const RELEASE = '([^']+)'/)||[])[1]||'';
@@ -93,5 +96,12 @@ expect(bootstrap.includes("db_upgrade.log"),'DB auto-upgrade audit log missing')
 expect(bootstrap.includes("Automatic DB upgrade version mismatch"),'post-upgrade target version guard missing');
 expect(runtimeDiagnostics.includes("'dbAutoUpgrade'"),'runtime diagnostics auto-upgrade state missing');
 expect(serverTestConfig.includes("'db_auto_upgrade' => true"),'server-test Plesk auto-upgrade default missing');
+expect(!registry.includes('assets/onboarding/kareta_logo_full.png'),'asset registry still references noncanonical full logo');
+expect(registry.includes('assets/logo/main/kareta_logo_full.png'),'canonical full logo missing from asset registry');
+expect(registry.includes('css/next/canonical_ui_84_157.css'),'canonical 84.157 UI layer missing');
+expect(shellMenu.includes("'KaretaUIIcons'")&&shellMenu.includes('k-menu-link__icon'),'burger icon contract missing');
+expect(shellMenu.includes('k-menu-profile__avatar'),'burger avatar fallback missing');
+expect(canonicalUiCss.includes('--k-radius-sm:5px')&&canonicalUiCss.includes('--k-radius-md:10px')&&canonicalUiCss.includes('--k-radius-lg:18px'),'canonical radius tokens missing');
+expect(routeAssetLoader.includes('if(link.sheet){complete();return;}')&&routeAssetLoader.includes('kareta_retry=1'),'lazy CSS recovery contract missing');
 
 console.log('CURRENT_RELEASE: PASS release='+assetRelease+' db='+configDb);
