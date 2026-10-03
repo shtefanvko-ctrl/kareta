@@ -87,6 +87,10 @@ def main() -> int:
     if not re.fullmatch(r"[0-9a-f]{40}",sha):
         raise SystemExit("source SHA must be exact 40-char SHA")
 
+    workflow_run_id=str(args.workflow_run_id or "").strip()
+    if workflow_run_id and not re.fullmatch(r"[0-9]{1,32}", workflow_run_id):
+        workflow_run_id=""
+
     policy=load_policy()
     release=release_version()
     tracked=tracked_files()
@@ -116,7 +120,7 @@ def main() -> int:
         "gitRef":args.git_ref,
         "assetVersion":release,
         "builtAt":built_at,
-        "workflowRunId":str(args.workflow_run_id or ""),
+        "workflowRunId":workflow_run_id,
     }
     deployment_bytes=(json.dumps(deployment,ensure_ascii=False,indent=2)+"\n").encode()
     readme_bytes=upload_readme(release,sha).encode()
@@ -140,7 +144,7 @@ def main() -> int:
         "sourceSha":sha,
         "gitRef":args.git_ref,
         "builtAt":built_at,
-        "workflowRunId":str(args.workflow_run_id or ""),
+        "workflowRunId":workflow_run_id,
         "purpose":"server-test",
         "fileCount":len(checksums),
         "checksums":dict(sorted(checksums.items())),
