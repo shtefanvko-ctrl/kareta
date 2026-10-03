@@ -1,17 +1,17 @@
 {
   "schema": "kareta.release.current.v1",
-  "release": "188.5.5.6.84.154",
-  "sourceBranch": "fix/staging-runtime-84-153-20261004",
+  "release": "188.5.5.6.84.155",
+  "sourceBranch": "fix/plesk-db-auto-upgrade-20261004",
   "targetBranch": "main",
   "branchState": {
-    "status": "staging_runtime_recovery_candidate",
+    "status": "plesk_db_auto_upgrade_candidate",
     "behindBy": 0,
     "mainAncestor": true,
     "reconciliationMergeCommit": "a7df986cee0d1e05895bbb93290dbc03111b9dac",
     "mainHeadAtReconciliation": "d2873bbde16ec985ad14e8ff892df5ccbd7cf3b4",
     "candidate84_151": "6685ad9e02531dfa653aacd1f1eaf1c7c5a4cecc",
     "mergeBase": "5d333d5e67857d91a44a653e725fb2924eef2004",
-    "note": "84.154 is the post-Plesk runtime recovery candidate: align notifications capability reads, serialize replay-safe DB POST reads against host 429, normalize local provenance workflowRunId, and use the canonical full-logo asset path. Exact-head staging verification is required before acceptance."
+    "note": "84.155 adds safe automatic canonical DB upgrades for staging/Plesk. Missing migrations run under the existing advisory lock and schema contract; production remains blocked unless explicitly enabled during a runtime migration window."
   },
   "database": {
     "canonicalVersion": 137,
@@ -31,12 +31,19 @@
     "remoteControlMigration": "api/migrations/136_obd_remote_control_plane.php",
     "remoteDelivery": "active_app_poll",
     "geoPlatformMigration": "api/migrations/137_geo_platform_core.php",
-    "geoPlatform": "unified owner-scoped points; public nearby exact-only"
+    "geoPlatform": "unified owner-scoped points; public nearby exact-only",
+    "autoUpgrade": {
+      "stagingDefault": true,
+      "productionDefault": false,
+      "productionRequires": "db_auto_upgrade=true + KARETA_DB_RUNTIME_MIGRATION_WINDOW=1",
+      "locking": "existing MySQL advisory schema lock",
+      "failureMode": "fail-closed with runtime diagnostics and db_upgrade.log"
+    }
   },
   "verification": {
     "ciWorkflow": ".github/workflows/verify.yml",
     "stagingWorkflow": ".github/workflows/staging-verify.yml",
-    "stagingStatus": "NOT_VERIFIED_AFTER_84_154"
+    "stagingStatus": "NOT_VERIFIED_AFTER_84_155"
   },
   "ui": {
     "notFound": "first_class_spa_route",
