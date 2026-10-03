@@ -90,9 +90,12 @@ function kareta_dispatch_master_row(PDO $pdo,string $masterId): array {
 
 function kareta_dispatch_service_match(PDO $pdo,string $masterId,array $order): float {
     static $offerCache=[];
-    if(!kareta_table_exists($pdo,'service_offers'))return 0.65;
-    $ids=json_decode((string)($order['service_ids']??'[]'),true);$ids=is_array($ids)?array_values(array_filter(array_map('strval',$ids))):[];
-    if(!$ids)return 0.70;
+    if(!kareta_table_exists($pdo,'service_offers'))return 0.0;
+    $ids=json_decode((string)($order['service_ids']??'[]'),true);
+    // Unknown requirements cannot establish eligibility for automatic dispatch.
+    if(!is_array($ids)||!array_is_list($ids)||!$ids)return 0.0;
+    foreach($ids as $id)if((!is_string($id)&&!is_int($id))||trim((string)$id)==='')return 0.0;
+    $ids=array_values(array_unique(array_map(static fn($id)=>trim((string)$id),$ids)));
     if(!array_key_exists($masterId,$offerCache)){
         $where=["owner_type='master'","BINARY owner_entity_id=BINARY ?"];
         if(kareta_column_exists($pdo,'service_offers','active'))$where[]='active=1';
@@ -126,7 +129,7 @@ function kareta_dispatch_score_master_for_order(PDO $pdo,string $masterId,array 
     $estimated=max(30,(int)($order['estimated_duration_min']??120));$etaStart=new DateTimeImmutable((string)$load['etaStart']);$etaEnd=$etaStart->modify('+'.$estimated.' minutes');
     $published=trim((string)($order['exchange_published_at']??$order['created_at']??''));$slaDue='';$slaState='ok';
     if($published!==''){try{$due=(new DateTimeImmutable($published))->modify('+'.$settings['responseSlaMin'].' minutes');$slaDue=$due->format('Y-m-d H:i:s');if($due<new DateTimeImmutable('now'))$slaState='breached';elseif($due<(new DateTimeImmutable('now'))->modify('+5 minutes'))$slaState='risk';}catch(Throwable $_){}}
-    return ['score'=>$score,'eligible'=>$serviceMatch>0,'serviceMatch'=>round($serviceMatch*100),'loadPct'=>$load['loadPct'],'overloaded'=>$load['overloaded'],'distanceKm'=>$distance,'distanceMode'=>'straight_line','requestPointAvailable'=>$distance!==null,'etaStart'=>$etaStart->format('Y-m-d H:i:s'),'etaEnd'=>$etaEnd->format('Y-m-d H:i:s'),'slaDueAt'=>$slaDue,'slaState'=>$slaState,'activeOrders'=>$load['activeOrders'],'capacityMinutes'=>$load['capacityMinutes'],'queuedMinutes'=>$load['queuedMinutes'],'masterName'=>(string)($m['name']??'Мастер'),'rating'=>$rating,'stoId'=>(string)($m['sto_id']??''),'tariffBlocked'=>false,'tariff'=>$quota];
+    return ['score'=>$score,'eligible'=>$serviceMatch===1.0,'eligibilityReason'=>$serviceMatch===1.0?'services_covered':($serviceMatch>0?'services_incomplete':'services_unverified'),'serviceMatch'=>round($serviceMatch*100),'loadPct'=>$load['loadPct'],'overloaded'=>$load['overloaded'],'distanceKm'=>$distance,'distanceMode'=>'straight_line','requestPointAvailable'=>$distance!==null,'etaStart'=>$etaStart->format('Y-m-d H:i:s'),'etaEnd'=>$etaEnd->format('Y-m-d H:i:s'),'slaDueAt'=>$slaDue,'slaState'=>$slaState,'activeOrders'=>$load['activeOrders'],'capacityMinutes'=>$load['capacityMinutes'],'queuedMinutes'=>$load['queuedMinutes'],'masterName'=>(string)($m['name']??'Мастер'),'rating'=>$rating,'stoId'=>(string)($m['sto_id']??''),'tariffBlocked'=>false,'tariff'=>$quota];
 }
 
 function kareta_dispatch_rank_order(PDO $pdo,array $order,string $stoId=''): array {
