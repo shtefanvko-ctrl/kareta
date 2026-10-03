@@ -18,6 +18,11 @@ return [
     // KARETA_DB_RUNTIME_MIGRATION_WINDOW=1 for the maintenance window.
     'db_auto_upgrade' => false,
     'db_auto_migrate' => false,
+
+    // Safe default for PHP-FPM/Plesk. Dedicated infrastructure may opt into 'sse'.
+    'realtime_transport' => 'poll',
+    'realtime_poll_interval_ms' => 15000,
+    'realtime_request_timeout_ms' => 8000,
     'runtime_maintenance_interval' => 900,
     'api_max_body_bytes' => 20971520,
     'db_timeout' => 5,
