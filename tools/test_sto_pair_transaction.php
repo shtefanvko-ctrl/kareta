@@ -33,7 +33,9 @@ final class PairPDO extends PDO {
         if(str_contains($sql,'FOR UPDATE')){
             if(!$this->inTransaction())throw new RuntimeException('Lock outside transaction');
             $this->locks[]=$sql;
-            if(getenv('KARETA_PAIR_WORKER')&&str_contains($sql,'sto_master_links')){
+            // Synchronize before the first locking read: MySQL may lock scanned
+            // order rows for the BINARY predicate before reaching resource locks.
+            if(getenv('KARETA_PAIR_WORKER')&&str_starts_with($sql,'SELECT * FROM orders')){
                 $barrier=(string)getenv('KARETA_PAIR_BARRIER');$worker=(string)getenv('KARETA_PAIR_WORKER');
                 file_put_contents($barrier.'/'.$worker,'ready');$deadline=microtime(true)+15;
                 while(count(glob($barrier.'/*')?:[])<2){if(microtime(true)>$deadline)throw new RuntimeException('Worker barrier timeout');usleep(10000);}
