@@ -24,6 +24,11 @@ return [
     'db_auto_migrate' => false,
     'db_timeout' => 5,
 
+    // Plesk/PHP-FPM: polling avoids long-lived workers held by SSE.
+    'realtime_transport' => 'poll',
+    'realtime_poll_interval_ms' => 15000,
+    'realtime_request_timeout_ms' => 8000,
+
     // Prefer an absolute writable path outside public_html.
     'storage_root' => '/var/lib/kareta-test',
 
