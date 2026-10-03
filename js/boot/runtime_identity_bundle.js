@@ -1,7 +1,8 @@
 /* KARETA R188.5.5.6.84.85 GENERATED BOOT BUNDLE — source order preserved. */
 window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runtime_identity_bundle.js");
 
-/* SOURCE: js/next/route_registry.js */(() => {
+/* SOURCE: js/next/route_registry.js */
+(() => {
   'use strict';
 
   const ROUTES = Object.freeze({
@@ -166,7 +167,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
   function has(routeKey){ return Object.prototype.hasOwnProperty.call(ROUTES, routeKey); }
 
   window.KaretaRouteRegistry = Object.freeze({ routes:ROUTES, desktopKeys:DESKTOP_KEYS, mobileKeys:MOBILE_KEYS, uxSurfaces:UX_SURFACE_BY_KEY, uxSurfaceTypes:UX_SURFACE_TYPES, surfaceForKey, uxAudit, normalizeHash, keyFromHash, get, has });
-})();;
+})();
+;
 
 /* SOURCE: js/next/production_guard.js */
 (() => {
@@ -580,7 +582,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
 })();
 ;
 
-/* SOURCE: js/next/dynamic_navigation.js */(() => {
+/* SOURCE: js/next/dynamic_navigation.js */
+(() => {
   'use strict';
 
   const scriptSource=document.currentScript?.src||'';
@@ -754,7 +757,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
   window.addEventListener('kareta:capabilities-changed', refresh);
   window.addEventListener('kareta:context-changed', refresh);
   window.KaretaDynamicNavigation = Object.freeze({ ITEMS, CAPABILITY_ALIASES, items, menuSections, canAccess, defaultRoute, refresh, snapshot });
-})();;
+})();
+;
 
 /* SOURCE: js/next/role_access.js */
 (() => {
