@@ -58,7 +58,7 @@ expect(/'cssMode' => 'route-domain-css-v[12]'/.test(registry)||registry.includes
 
 for(const key of [
   'cabinet','cabinetGarage','cabinetSettings','chats','notifications','works','masterExchange','realWorks','workDetail',
-  'vehicle','orders','workflow','news','masterNews','about','lawyer','masterOnboarding','masterDashboard',
+  'vehicle','orders','workflow','news','masterNews','about','lawyer','notFound','masterOnboarding','masterDashboard',
   'masterProfileOwner','masterWallOwner','masterWorks','masterReviews','providerReviews'
 ]){
   expect(loader.includes(`'${key}'`),`route loader lazy key missing: ${key}`);

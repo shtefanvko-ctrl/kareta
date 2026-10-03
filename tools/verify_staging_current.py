@@ -24,6 +24,18 @@ def fetch(url, accept='*/*', timeout=15):
     with urlopen(req,timeout=timeout) as res:
         return res.status, res.headers, res.read()
 
+def fetch_any_status(url, accept='*/*', timeout=15):
+    req=Request(url,headers={
+        'Accept':accept,
+        'User-Agent':'KARETA-Staging-Verify/1.1',
+        'Cache-Control':'no-cache',
+    })
+    try:
+        with urlopen(req,timeout=timeout) as res:
+            return res.status, res.headers, res.read()
+    except HTTPError as exc:
+        return exc.code, exc.headers, exc.read()
+
 def fail(msg):
     print('FAIL:',msg,file=sys.stderr)
     raise SystemExit(1)
@@ -124,6 +136,85 @@ def verify_lazy_assets(base,release):
     styles=sum(1 for row in assets if row.get('group')=='styles')
     scripts=sum(1 for row in assets if row.get('group')=='scripts')
     print(f'LAZY_ASSETS: PASS total={len(assets)} styles={styles} scripts={scripts}')
+    return manifest
+
+def _js_declares_lazy_key(source,key):
+    match=re.search(r'KNOWN_LAZY_ROUTE_KEYS\s*=\s*new Set\(\[([\s\S]*?)\]\)',source)
+    if not match:
+        return False
+    return re.search(r"['\"]"+re.escape(key)+r"['\"]",match.group(1)) is not None
+
+def _fetch_js_text(base,path,release):
+    target=base+'/'+path.lstrip('/')+'?'+urlencode({'v':release,'verify':str(int(time.time()))})
+    status,headers,body=fetch(target,'application/javascript,text/javascript,*/*;q=0.1')
+    if status!=200:
+        fail(f'{path} HTTP {status}')
+    content_type=str(headers.get('Content-Type') or '').lower()
+    if 'javascript' not in content_type and 'ecmascript' not in content_type:
+        fail(f'{path} MIME {content_type or "<missing>"}')
+    prefix=body[:256].lstrip().lower()
+    if prefix.startswith(b'<!doctype html') or prefix.startswith(b'<html'):
+        fail(f'{path} returned HTML instead of JavaScript')
+    return body.decode('utf-8','replace')
+
+def verify_not_found_contract(base,release,manifest):
+    bundles=manifest.get('routeBundles') or {}
+    matches=[]
+    for name,bundle in bundles.items():
+        if not isinstance(bundle,dict) or bundle.get('lazy') is not True:
+            continue
+        keys=[str(value) for value in (bundle.get('routeKeys') or [])]
+        if 'notFound' in keys:
+            matches.append((str(name),bundle))
+    if not matches:
+        fail('notFound lazy bundle is missing from route manifest')
+
+    expected_script='js/next/pages/not_found.js'
+    expected_global='KaretaNotFoundPages'
+    contract_bundle=None
+    for name,bundle in matches:
+        scripts=[str(value) for value in (bundle.get('scripts') or [])]
+        globals_=[str(value) for value in (bundle.get('globals') or [])]
+        if expected_script in scripts and expected_global in globals_:
+            contract_bundle=(name,bundle)
+            break
+    if contract_bundle is None:
+        fail('notFound bundle does not declare not_found.js + KaretaNotFoundPages')
+
+    not_found_assets=[
+        row for row in (manifest.get('assets') or [])
+        if str(row.get('group') or '')=='scripts'
+        and str(row.get('path') or '')==expected_script
+    ]
+    if not_found_assets:
+        asset_error=verify_lazy_asset(base,release,not_found_assets[0])
+        if asset_error:
+            fail('notFound route asset invalid: '+asset_error)
+
+    page_source=_fetch_js_text(base,expected_script,release)
+    if expected_global not in page_source:
+        fail('not_found.js does not export KaretaNotFoundPages')
+
+    for path in ('js/next/route_asset_loader.js','js/boot/runtime_shell_bundle.js'):
+        source=_fetch_js_text(base,path,release)
+        if not _js_declares_lazy_key(source,'notFound'):
+            fail(f'{path} does not declare notFound as a known lazy route')
+
+    probe_path='/__kareta_staging_verify_not_found__'
+    probe_url=base+probe_path+'?'+urlencode({'verify':str(int(time.time()))})
+    status,headers,body=fetch_any_status(probe_url,'text/html')
+    if status!=404:
+        fail(f'clean notFound probe HTTP {status} expected=404')
+    content_type=str(headers.get('Content-Type') or '').lower()
+    if 'text/html' not in content_type:
+        fail(f'clean notFound probe MIME {content_type or "<missing>"}')
+    html=body.decode('utf-8','replace')
+    if release not in html:
+        fail('clean notFound shell does not advertise expected release')
+    if 'KARETA_HTTP_NOT_FOUND_PATH' not in html:
+        fail('clean notFound shell is missing HTTP fallback path bootstrap')
+
+    print(f'NOT_FOUND_ROUTE: PASS release={release} bundle={contract_bundle[0]} http=404')
 
 def main():
     ap=argparse.ArgumentParser()
@@ -158,7 +249,8 @@ def main():
         html=body.decode('utf-8','replace')
         if release not in html: fail('root HTML does not advertise expected release')
 
-        verify_lazy_assets(base,release)
+        route_manifest=verify_lazy_assets(base,release)
+        verify_not_found_contract(base,release,route_manifest)
     except (HTTPError,URLError,TimeoutError,OSError,json.JSONDecodeError) as exc:
         fail(f'network/protocol error: {exc}')
 
