@@ -35,6 +35,10 @@ const serverTestConfig=read('config.server-test.example.php');
 const canonicalUiCss=read('css/next/canonical_ui_84_157.css');
 const shellMenu=read('js/next/shell_menu.js');
 const routeAssetLoader=read('js/next/route_asset_loader.js');
+const dynamicNavigation=read('js/next/dynamic_navigation.js');
+const roleAccess=read('js/next/role_access.js');
+const communityApi=read('js/next/community/community_api.js');
+const notificationsPage=read('js/next/pages/notifications.js');
 
 const assetRelease=(version.match(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/)||[])[1]||'';
 const swRelease=(sw.match(/const RELEASE = '([^']+)'/)||[])[1]||'';
@@ -103,5 +107,11 @@ expect(shellMenu.includes("'KaretaUIIcons'")&&shellMenu.includes('k-menu-link__i
 expect(shellMenu.includes('k-menu-profile__avatar'),'burger avatar fallback missing');
 expect(canonicalUiCss.includes('--k-radius-sm:5px')&&canonicalUiCss.includes('--k-radius-md:10px')&&canonicalUiCss.includes('--k-radius-lg:18px'),'canonical radius tokens missing');
 expect(routeAssetLoader.includes('if(link.sheet){complete();return;}')&&routeAssetLoader.includes('kareta_retry=1'),'lazy CSS recovery contract missing');
+expect(dynamicNavigation.includes("any:['notifications.read']"),'notifications navigation capability guard missing');
+expect(dynamicNavigation.includes("{ key:'following', section:'social', menu:110 }"),'following route must be authenticated-only');
+expect(roleAccess.includes("SESSION_ONLY_ROUTES = new Set(['notifications','following'])"),'direct protected-route session guard missing');
+expect(communityApi.includes("if(!hasProtectedSession())return new Set();"),'anonymous community following API suppression missing');
+expect(notificationsPage.includes("if(!identityAuthenticated())"),'notifications anonymous mount guard missing');
+expect(notificationsPage.includes("if(Number(error?.status||0)===401)"),'notifications session-expiry guard missing');
 
 console.log('CURRENT_RELEASE: PASS release='+assetRelease+' db='+configDb);
