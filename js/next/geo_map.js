@@ -114,7 +114,7 @@
         <div class="k-geo-map-controls"><button type="button" data-geo-map-zoom="1" aria-label="Приблизить">+</button><button type="button" data-geo-map-zoom="-1" aria-label="Отдалить">−</button></div>
         <div class="k-geo-map-attribution" data-geo-map-attribution><a href="${esc(config.attributionUrl)}" target="_blank" rel="noopener noreferrer">${esc(config.attributionLabel)}</a></div>
       </div>
-      <section class="k-geo-map-detail" data-geo-map-detail><b>Выберите точку на карте</b><span>Адрес и маршрут появятся здесь.</span></section>
+      <div data-geo-map-data-status role="status" aria-live="polite" hidden></div><section class="k-geo-map-detail" data-geo-map-detail><b>Выберите точку на карте</b><span>Адрес и маршрут появятся здесь.</span></section>
       <footer><span data-geo-map-count></span><span data-geo-map-status role="status" aria-live="polite"></span><button type="button" data-geo-map-close>Закрыть</button></footer>
     </div>`;
     document.body.appendChild(dialog);
@@ -212,12 +212,14 @@
 
   function open(options={}){
     const points=(Array.isArray(options.points)?options.points:[]).filter(validPoint).slice(0,50).map(normalizePoint);
-    if(!points.length)throw new Error('GEO_MAP_POINTS_REQUIRED');
+    if(!points.length&&!validPoint(options.center))throw new Error('GEO_MAP_POINTS_REQUIRED');
     const dlg=ensureDialog(),title=String(options.title||'Рядом'),center=validPoint(options.center)?normalizePoint(options.center,-1):centerOf(points);
     state={points,center:{lat:center.latitude,lng:center.longitude},zoom:config.defaultZoom,selected:'',clusters:new Map()};
     dlg.querySelector('[data-geo-map-title]').textContent=title;
-    dlg.querySelector('[data-geo-map-count]').textContent=points.length+' точек';
-    dlg.querySelector('[data-geo-map-detail]').innerHTML='<b>Выберите точку на карте</b><span>Адрес и маршрут появятся здесь.</span>';
+    dlg.querySelector('[data-geo-map-count]').textContent=points.length+' точек'+(options.center?.source==='GeoNames'?' · City centers: GeoNames (CC BY 4.0)':'');
+    const dataStatus=dlg.querySelector('[data-geo-map-data-status]');
+    dataStatus.textContent=String(options.notice||'');dataStatus.hidden=!dataStatus.textContent;
+    dlg.querySelector('[data-geo-map-detail]').innerHTML=points.length?'<b>Выберите точку на карте</b><span>Адрес и маршрут появятся здесь.</span>':'';
     try{dlg.showModal();}catch(_error){dlg.setAttribute('open','');}
     requestAnimationFrame(()=>{if(!state||!dlg.open)return;const viewport=dlg.querySelector('[data-geo-map-viewport]');state.zoom=fitZoom(points,viewport.clientWidth||320,viewport.clientHeight||320);render();});
     return {ok:true,count:points.length};
