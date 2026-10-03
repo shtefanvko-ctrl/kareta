@@ -87,7 +87,9 @@ jobs:
           node tools/test_harness_permission_matrix.js
 
       - name: Migration manifest integrity
-        run: php tools/test_release_migration_manifest.php
+        run: |
+          php tools/test_release_migration_manifest.php
+          node tools/test_db_auto_upgrade_84_155.js
 
       - name: Authorization guard
         run: node tools/test_r1885568427_master_workplace_auth_guard.js
