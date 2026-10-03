@@ -646,7 +646,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     { key:'adminMonitoring', section:'system', desktop:85, menu:85, any:['*'] },
     { key:'adminManagement', section:'system', desktop:86, menu:86, any:['*'] },
     { key:'chats', section:'communication', desktop:90, menu:90, mobilePriority:80, any:['chats.use'] },
-    { key:'notifications', section:'communication', menu:91, contextTypes:['personal','profile','organization'] },
+    { key:'notifications', section:'communication', menu:91, any:['notifications.read'], contextTypes:['personal','profile','organization'] },
     { key:'cabinet', section:'account', desktop:100, menu:100, mobilePriority:90, any:['profile.read'], masterAny:['profile.edit_own','profile.master'], personalDefault:true },
     { key:'cabinetGarage', section:'account', any:['vehicles.read'], contextTypes:['personal'] },
     { key:'cabinetData', section:'account', any:['profile.read'], contextTypes:['personal'] },
@@ -654,7 +654,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     { key:'cabinetDocuments', section:'account', any:['vehicles.read'], contextTypes:['personal'] },
     { key:'cabinetPromos', section:'account', any:['profile.read'], contextTypes:['personal'] },
     { key:'cabinetSettings', section:'account', menu:101, contextTypes:['personal','profile','organization'] },
-    { key:'following', section:'social', menu:110, public:true },
+    { key:'following', section:'social', menu:110 },
     { key:'realWorks', section:'social', menu:111, public:true },
     { key:'about', section:'info', menu:200, public:true },
     { key:'rules', section:'info', menu:201, public:true },
@@ -782,6 +782,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
   });
 
   const CLIENT_ONLY_ROUTES = new Set(['cabinetGarage','cabinetData','cabinetHistory','cabinetDocuments','cabinetPromos']);
+  const SESSION_ONLY_ROUTES = new Set(['notifications','following']);
   let forcedLegacyRole = '';
   const identitySnapshot = () => window.KaretaIdentity?.snapshot?.() || { authenticated:false, mode:'anonymous' };
   const identityActive = () => {
@@ -817,10 +818,15 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
   }
   function policy(role=currentRole()){ return LEGACY[normalizeRole(role)]; }
   function dynamic(){ return window.KaretaDynamicNavigation; }
+  function hasProtectedSession(){
+    if(identityActive())return true;
+    return String(document.documentElement?.dataset?.identityMode||'')==='legacy-fallback';
+  }
   function canAccess(routeKey, role=currentRole()){
     const key=String(routeKey||'');
     const normalizedRole=normalizeRole(role);
     if (!registry.has(key)) return false;
+    if (SESSION_ONLY_ROUTES.has(key) && !hasProtectedSession()) return false;
     if (identityActive()) {
       if(key==='diagnostics') return ['client','master','sto','admin','owner'].includes(normalizedRole);
       return dynamic()?.canAccess?.(key) === true;
