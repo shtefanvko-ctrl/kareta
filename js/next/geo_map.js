@@ -16,7 +16,11 @@
 
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
-  const validPoint=point=>Number.isFinite(Number(point?.latitude??point?.lat))&&Number.isFinite(Number(point?.longitude??point?.lng));
+  const coordinate=value=>value==null||(typeof value==='string'&&!value.trim())?NaN:Number(value);
+  const validPoint=point=>{
+    const lat=coordinate(point?.latitude??point?.lat),lng=coordinate(point?.longitude??point?.lng);
+    return Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=-90&&lat<=90&&lng>=-180&&lng<=180;
+  };
   const normalizePoint=(point,index)=>({
     id:String(point?.id||('point_'+index)),
     label:String(point?.label||point?.name||'Точка'),
@@ -58,10 +62,10 @@
     return {lat:clamp(lat,-85.05112878,85.05112878),lng:((lng+540)%360)-180};
   }
   function centerOf(points){
-    if(!points.length)return {lat:49.9483,lng:82.6285};
+    if(!points.length)return {latitude:49.9483,longitude:82.6285};
     const source=points.filter(p=>!p.user);
     const rows=source.length?source:points;
-    return {lat:rows.reduce((a,p)=>a+p.latitude,0)/rows.length,lng:rows.reduce((a,p)=>a+p.longitude,0)/rows.length};
+    return {latitude:rows.reduce((a,p)=>a+p.latitude,0)/rows.length,longitude:rows.reduce((a,p)=>a+p.longitude,0)/rows.length};
   }
   function fitZoom(points,width,height){
     if(points.length<2)return clamp(config.defaultZoom,config.minZoom,config.maxZoom);
@@ -188,7 +192,7 @@
     dlg.querySelector('[data-geo-map-count]').textContent=points.length+' точек';
     dlg.querySelector('[data-geo-map-detail]').innerHTML='<b>Выберите точку на карте</b><span>Адрес и маршрут появятся здесь.</span>';
     try{dlg.showModal();}catch(_error){dlg.setAttribute('open','');}
-    requestAnimationFrame(()=>{const viewport=dlg.querySelector('[data-geo-map-viewport]');state.zoom=fitZoom(points,viewport.clientWidth||320,viewport.clientHeight||320);render();});
+    requestAnimationFrame(()=>{if(!state||!dlg.open)return;const viewport=dlg.querySelector('[data-geo-map-viewport]');state.zoom=fitZoom(points,viewport.clientWidth||320,viewport.clientHeight||320);render();});
     return {ok:true,count:points.length};
   }
   function close(){if(!dialog)return;try{dialog.close();}catch(_error){dialog.removeAttribute('open');}state=null;drag=null;}
