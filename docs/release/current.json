@@ -1,17 +1,17 @@
 {
   "schema": "kareta.release.current.v1",
-  "release": "188.5.5.6.84.153",
+  "release": "188.5.5.6.84.154",
   "sourceBranch": "release/reconcile-84.152",
   "targetBranch": "main",
   "branchState": {
-    "status": "reconciled_hotfix_candidate",
+    "status": "runtime_recovery_candidate",
     "behindBy": 0,
     "mainAncestor": true,
     "reconciliationMergeCommit": "a7df986cee0d1e05895bbb93290dbc03111b9dac",
     "mainHeadAtReconciliation": "d2873bbde16ec985ad14e8ff892df5ccbd7cf3b4",
     "candidate84_151": "6685ad9e02531dfa653aacd1f1eaf1c7c5a4cecc",
     "mergeBase": "5d333d5e67857d91a44a653e725fb2924eef2004",
-    "note": "84.153 fixes the notFound lazy-route loader contract and advances the cache namespace; this candidate is being reconciled through release/reconcile-84.152 and exact-head staging remains unverified until deployment verification completes."
+    "note": "84.154 fixes the canonical Vehicle lazy-page export contract and prevents server packages from embedding non-numeric workflowRunId provenance; Geo schema migration remains deployment-owned and must be verified separately."
   },
   "database": {
     "canonicalVersion": 137,
@@ -36,7 +36,7 @@
   "verification": {
     "ciWorkflow": ".github/workflows/verify.yml",
     "stagingWorkflow": ".github/workflows/staging-verify.yml",
-    "stagingStatus": "NOT_VERIFIED_AFTER_84_153"
+    "stagingStatus": "NOT_VERIFIED_AFTER_84_154"
   },
   "ui": {
     "notFound": "first_class_spa_route",
@@ -48,7 +48,8 @@
     "masterMobileFab": "horizontal 2x44 rail above dock; hidden under overlays",
     "routeLoadError": "sanitized fail-soft surface; raw details stay in runtime log",
     "mastersFilterRail": "narrow-WebView full-bleed scroll-safe",
-    "notFoundLazyLoader": "route_asset_loader recognizes notFound and loads KaretaNotFoundPages before render"
+    "notFoundLazyLoader": "route_asset_loader recognizes notFound and loads KaretaNotFoundPages before render",
+    "vehicleLazyBinding": "KaretaVehiclePages exposes direct renderVehicle/mountVehicle bindings while preserving nested compatibility maps"
   },
   "authorization": {
     "legacyDirectRoleGates": 108,
@@ -78,5 +79,8 @@
       "migration-owned OBD schema"
     ],
     "obdSchemaVersion": 135
+  },
+  "deployment": {
+    "provenanceWorkflowRunId": "empty or numeric 1-32 digits; invalid values fail package construction"
   }
 }
