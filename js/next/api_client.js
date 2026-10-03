@@ -37,9 +37,9 @@
   // answer concurrent PHP bursts with HTTP 429 before db.php itself runs.
   // GET reads enter automatically. POST calls enter only when a wrapper explicitly
   // marks the operation dbSafeReplay=true (read-like or idempotent mutation).
-  const DB_READ_MIN_GAP_MS = 300;
-  const DB_READ_RETRY_DEFAULT_MS = 900;
-  const DB_READ_RETRY_MAX_MS = 3000;
+  const DB_READ_MIN_GAP_MS = 650;
+  const DB_READ_RETRY_DEFAULT_MS = 1500;
+  const DB_READ_RETRY_MAX_MS = 8000;
   let dbReadTail = Promise.resolve();
   let dbReadLastStartedAt = 0;
   let dbReadBackoffUntil = 0;
