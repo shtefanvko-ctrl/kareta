@@ -79,4 +79,33 @@ assert(masterWorkplace.includes("action=mine&ownerType=master&ownerId="),'master
 assert(masterWorkplace.includes("origin?.metadata?.radiusKm"),'master mobile work radius must come from owner-only point metadata');
 assert(masterWorkplace.includes("label:'Товары'")&&masterWorkplace.includes("label:'Записаться'"),'master work-zone pin actions missing');
 
+
+/* Execute coordinate/center helpers to catch runtime regressions missed by string contracts. */
+{
+  const vm = require('vm');
+  const coordinateStart = map.indexOf('  const coordinate=');
+  const normalizeStart = map.indexOf('  const normalizePoint=');
+  const centerStart = map.indexOf('  function centerOf(');
+  const fitStart = map.indexOf('  function fitZoom(');
+  assert(coordinateStart >= 0 && normalizeStart > coordinateStart && centerStart >= 0 && fitStart > centerStart);
+  const scope = {};
+  vm.runInNewContext(map.slice(coordinateStart, normalizeStart) + map.slice(centerStart, fitStart) +
+    '\nthis.validPoint=validPoint;this.centerOf=centerOf;', scope);
+  for (const point of [
+    {latitude:null,longitude:null}, {latitude:' ',longitude:''},
+    {latitude:91,longitude:82}, {latitude:49,longitude:181}
+  ]) assert.strictEqual(scope.validPoint(point), false, 'invalid map coordinates accepted');
+  assert.strictEqual(scope.validPoint({latitude:49.9483,longitude:82.6285}), true);
+  assert.strictEqual(scope.validPoint({lat:0,lng:0}), true, 'zero coordinates are legitimate');
+  const center = scope.centerOf([{latitude:49.9483,longitude:82.6285,user:false}]);
+  assert.strictEqual(center.latitude,49.9483);
+  assert.strictEqual(center.longitude,82.6285);
+  assert(Number.isFinite(scope.centerOf([]).latitude), 'fallback center invalid');
+}
+
+assert(masters.includes("if(!result?.ok)throw new Error('GEO_API_UNAVAILABLE')"),'directory must reject failed nearby API');
+assert(masters.includes("if(!geoReady)throw new Error('GEO_API_UNAVAILABLE')"),'directory map must distinguish API failure from no points');
+assert(parts.includes("nearbyShopsStatus==='error'"),'parts map must distinguish API failure from no points');
+assert(masterWorkplace.includes("if(!result?.ok)throw new Error('GEO_API_UNAVAILABLE')"),'work zone must reject failed nearby API');
+require('./test_geo_map_runtime.js');
 console.log('GEO_MAP_LAZY: PASS');

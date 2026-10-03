@@ -339,7 +339,7 @@
     const normalizeCity=value=>safeText(value).toLocaleLowerCase('ru-RU');
     const haversine=(lat1,lng1,lat2,lng2)=>{const r=6371,toRad=x=>Number(x)*Math.PI/180;const dLat=toRad(lat2-lat1),dLng=toRad(lng2-lng1);const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLng/2)**2;return 2*r*Math.asin(Math.sqrt(a));};
     const rowCoords=row=>{const lat=Number(row.service_lat??row.lat??row.latitude),lng=Number(row.service_lng??row.lng??row.longitude);return Number.isFinite(lat)&&Number.isFinite(lng)&&Math.abs(lat)<=90&&Math.abs(lng)<=180?[lat,lng]:null;};
-    const readLocation=()=>{try{const v=JSON.parse(localStorage.getItem(storageKey)||'null');if(v&&typeof v==='object'){if(safeText(v.city))selectedCity=safeText(v.city);const lat=Number(v.lat),lng=Number(v.lng);if(Number.isFinite(lat)&&Number.isFinite(lng))userCoords={lat,lng};}}catch(_e){}};
+    const readLocation=()=>{try{const v=JSON.parse(localStorage.getItem(storageKey)||'null');if(v&&typeof v==='object'){if(safeText(v.city))selectedCity=safeText(v.city);const lat=Number(v.lat),lng=Number(v.lng);if(v.lat!=null&&v.lng!=null&&String(v.lat).trim()!==''&&String(v.lng).trim()!==''&&Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=-90&&lat<=90&&lng>=-180&&lng<=180)userCoords={lat,lng};}}catch(_e){}};
     const saveLocation=()=>{try{localStorage.setItem(storageKey,JSON.stringify({city:selectedCity,lat:userCoords?.lat??null,lng:userCoords?.lng??null,updatedAt:Date.now()}));}catch(_e){}};
     readLocation();
     if(cityNode)cityNode.textContent=selectedCity;
@@ -356,25 +356,53 @@
     ];
     const geoKey=row=>`${String(row.type||'')}:${String(row.id||'')}`;
     const loadGeoNearby=async()=>{
-      if(!userCoords||!api?.request){geoNearby=new Map();return;}
+      if(!userCoords||!api?.request){geoNearby=new Map();return false;}
       const seq=++geoRequestSeq;
       const lat=Number(userCoords.lat),lng=Number(userCoords.lng);
       if(!Number.isFinite(lat)||!Number.isFinite(lng)){geoNearby=new Map();return;}
       try{
         const url=`api/geo.php?action=nearby&lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radiusKm=100&types=sto,master,shop&limit=100`;
         const result=await api.request(url,{method:'GET',cacheTtlMs:15000,cacheKey:`geo.nearby.home.${lat.toFixed(3)}.${lng.toFixed(3)}`});
-        if(disposed||seq!==geoRequestSeq)return;
+        if(disposed||seq!==geoRequestSeq)return false;
+        if(!result?.ok)throw new Error('GEO_API_UNAVAILABLE');
         const payload=result?.payload?.data||result?.payload||{};
         const items=Array.isArray(payload.items)?payload.items:[];
         geoNearby=new Map(items.map(item=>[`${String(item.ownerType||'')}:${String(item.ownerId||'')}`,item]));
-      }catch(_error){if(seq===geoRequestSeq)geoNearby=new Map();}
+        return true;
+      }catch(_error){if(seq===geoRequestSeq)geoNearby=new Map();return false;}
     };
     const renderNearby=()=>{if(!nearbyNode)return;const cityKey=normalizeCity(selectedCity),seen=new Set();nearbyRows=allRows().filter(row=>{const key=geoKey(row);if(seen.has(key))return false;seen.add(key);return true;}).map(row=>{const copy={...row};const point=geoNearby.get(geoKey(copy)),coords=rowCoords(row);copy.distanceKm=point&&Number.isFinite(Number(point.distanceKm))?Number(point.distanceKm):(userCoords&&coords?haversine(userCoords.lat,userCoords.lng,coords[0],coords[1]):null);if(point){copy.service_lat=point.latitude;copy.service_lng=point.longitude;if(!safeText(copy.address)&&safeText(point.address))copy.address=point.address;}copy.sameCity=!cityKey||normalizeCity(row.city)===cityKey;return copy;}).sort((a,b)=>{const ad=Number(a.distanceKm),bd=Number(b.distanceKm),af=Number.isFinite(ad),bf=Number.isFinite(bd);if(af!==bf)return af?-1:1;if(af&&bf&&ad!==bd)return ad-bd;if(a.sameCity!==b.sameCity)return a.sameCity?-1:1;return Number(b.rating||0)-Number(a.rating||0);});const rows=nearbyRows.slice(0,2);nearbyNode.innerHTML=rows.length?rows.map(homeNearbyCard).join(''):'<div class="k-home-ref-nearby-empty">Пока нет доступных исполнителей рядом.</div>';};
-    const renderCities=()=>{if(!cityChoices)return;const cities=[selectedCity,...allRows().map(row=>safeText(row.city))].filter(Boolean).filter((city,index,arr)=>arr.findIndex(x=>normalizeCity(x)===normalizeCity(city))===index).sort((a,b)=>a.localeCompare(b,'ru'));cityChoices.innerHTML=cities.map(city=>`<button type="button" class="${normalizeCity(city)===normalizeCity(selectedCity)?'is-active':''}" data-home-city-value="${esc(city)}">${esc(city)}</button>`).join('')||'<span>Города появятся после загрузки каталога.</span>';};
+    const renderCities=()=>{if(!cityChoices)return;const cities=[...(window.KaretaOnboardingSelectionCatalog?.cities||[]),selectedCity,...allRows().map(row=>safeText(row.city))].filter(Boolean).filter((city,index,arr)=>arr.findIndex(x=>normalizeCity(x)===normalizeCity(city))===index).sort((a,b)=>a.localeCompare(b,'ru'));cityChoices.innerHTML=cities.map(city=>`<button type="button" class="${normalizeCity(city)===normalizeCity(selectedCity)?'is-active':''}" data-home-city-value="${esc(city)}">${esc(city)}</button>`).join('')||'<span>Города появятся после загрузки каталога.</span>';};
     const setLocationStatus=(message,type='info')=>{if(!locationStatus)return;locationStatus.hidden=!message;locationStatus.textContent=message||'';locationStatus.dataset.type=type;};
     const openLocation=()=>{renderCities();setLocationStatus('');if(locationDialog&&!locationDialog.open)locationDialog.showModal?.();};
     const closeLocation=()=>{if(locationDialog?.open)locationDialog.close?.();};
-    const openNearbyMap=async()=>{if(!nearbyMapButton||disposed)return;nearbyMapButton.disabled=true;try{if(!userCoords){const point=await resolveCurrentLocation();if(disposed)return;userCoords={lat:point.lat,lng:point.lng};saveLocation();}await loadGeoNearby();if(disposed)return;renderNearby();const providerPoints=nearbyRows.filter(row=>{const coords=rowCoords(row);return !!coords&&geoNearby.has(geoKey(row));}).map(row=>{const coords=rowCoords(row),type=String(row.type||'master'),id=String(row.id||''),profile='#/masters/profile/'+(type==='sto'?'sto':'master')+'/'+encodeURIComponent(id),book=type==='sto'?profile:'#/masters/book/master/'+encodeURIComponent(id);return {id:geoKey(row),label:safeText(row.name)||(type==='sto'?'СТО':'Мастер'),address:safeText(row.address),city:safeText(row.city),distanceKm:Number(row.distanceKm),latitude:coords[0],longitude:coords[1],kind:type,route:true,actions:[{label:'Профиль',href:profile},{label:'Записаться',href:book,primary:true}]};});const shopPoints=[...geoNearby.values()].filter(point=>String(point?.ownerType||'')==='shop'&&String(point?.kind||'')==='pickup'&&Number.isFinite(Number(point?.latitude))&&Number.isFinite(Number(point?.longitude))).map(point=>{const publicId=Number(point.publicId||0);return {id:'shop:'+String(point.ownerId||point.id||''),label:safeText(point.label)||'Магазин запчастей',address:safeText(point.address),city:safeText(point.city),distanceKm:Number(point.distanceKm),latitude:Number(point.latitude),longitude:Number(point.longitude),kind:'shop',route:true,actions:publicId>0?[{label:'Товары',href:'#/parts/store/'+encodeURIComponent(String(publicId)),primary:true}]:[]};});const mapPoints=[...providerPoints,...shopPoints].sort((a,b)=>Number(a.distanceKm||9999)-Number(b.distanceKm||9999)).slice(0,49);if(!mapPoints.length)throw new Error('GEO_MAP_NO_POINTS');const geoMap=await window.KaretaMobile?.loadGeoMap?.();if(!geoMap?.open)throw new Error('GEO_MAP_UNAVAILABLE');geoMap.open({title:'Рядом с вами',points:[{id:'user',label:'Вы',latitude:userCoords.lat,longitude:userCoords.lng,user:true,kind:'you',route:false},...mapPoints],center:{latitude:userCoords.lat,longitude:userCoords.lng}});}catch(error){const denied=error?.code===1||error?.code==='GEOLOCATION_PERMISSION_DENIED';window.KaretaToast?.error?.(denied?'Разрешите доступ к геопозиции для карты':error?.message==='GEO_MAP_NO_POINTS'?'Публичных точек рядом пока нет':'Карта временно недоступна');}finally{nearbyMapButton.disabled=false;}};
+    const openCityMap=async()=>{
+      const center=window.KaretaOnboardingSelectionCatalog?.resolveCityCenter?.(selectedCity);
+      if(!center)throw new Error('GEO_CITY_UNKNOWN');
+      const geoMap=await window.KaretaMobile?.loadGeoMap?.();
+      if(!geoMap?.open)throw new Error('GEO_MAP_UNAVAILABLE');
+      const lang=String(document.documentElement.lang||'ru').split('-')[0];
+      const messages={
+        ru:['Публичных точек в этом районе пока нет. Вы просматриваете карту города.','Не удалось загрузить точки. Карта города доступна.'],
+        kk:['Бұл ауданда жария нүктелер әлі жоқ. Сіз қала картасын қарап отырсыз.','Нүктелер жүктелмеді. Қала картасы қолжетімді.'],
+        en:['No public points in this area yet. You are browsing the city map.','Points could not be loaded. The city map remains available.']
+      }[lang]||['No public points in this area yet. You are browsing the city map.','Points could not be loaded. The city map remains available.'];
+      let points=[],notice='';
+      try{
+        const result=await api.request('api/geo.php?action=nearby&lat='+encodeURIComponent(center.latitude)+'&lng='+encodeURIComponent(center.longitude)+'&radiusKm=50&types=sto,master,shop&limit=49',{method:'GET',cacheTtlMs:15000,cacheKey:'geo.city.home.'+center.city});
+        if(!result?.ok)throw new Error('GEO_API_UNAVAILABLE');
+        if(disposed)return;
+        const payload=result?.payload?.data||result?.payload||{};
+        points=(Array.isArray(payload.items)?payload.items:[]).filter(point=>['master','sto'].includes(point.ownerType)||(point.ownerType==='shop'&&point.kind==='pickup')).map(point=>{
+          const type=String(point.ownerType),id=String(point.ownerId||''),profile='#/masters/profile/'+type+'/'+encodeURIComponent(id),publicId=Number(point.publicId||0);
+          return {id:type+':'+id,label:String(point.label||type),address:String(point.address||''),city:String(point.city||''),latitude:point.latitude,longitude:point.longitude,kind:type,route:true,actions:type==='shop'?(publicId>0?[{label:'Товары',href:'#/parts/store/'+encodeURIComponent(String(publicId)),primary:true}]:[]):[{label:'Профиль',href:profile},{label:'Записаться',href:type==='sto'?profile:'#/masters/book/master/'+encodeURIComponent(id),primary:true}]};
+        });
+        if(!points.length)notice=messages[0];
+      }catch(_error){notice=messages[1];}
+      if(disposed)return;
+      geoMap.open({title:center.city,points,center,notice});
+    };
+    const openNearbyMap=async()=>{if(!nearbyMapButton||disposed)return;nearbyMapButton.disabled=true;try{if(!userCoords){await openCityMap();return;}if(!await loadGeoNearby())throw new Error('GEO_API_UNAVAILABLE');if(disposed)return;renderNearby();const providerPoints=nearbyRows.filter(row=>{const coords=rowCoords(row);return !!coords&&geoNearby.has(geoKey(row));}).map(row=>{const coords=rowCoords(row),type=String(row.type||'master'),id=String(row.id||''),profile='#/masters/profile/'+(type==='sto'?'sto':'master')+'/'+encodeURIComponent(id),book=type==='sto'?profile:'#/masters/book/master/'+encodeURIComponent(id);return {id:geoKey(row),label:safeText(row.name)||(type==='sto'?'СТО':'Мастер'),address:safeText(row.address),city:safeText(row.city),distanceKm:Number(row.distanceKm),latitude:coords[0],longitude:coords[1],kind:type,route:true,actions:[{label:'Профиль',href:profile},{label:'Записаться',href:book,primary:true}]};});const shopPoints=[...geoNearby.values()].filter(point=>String(point?.ownerType||'')==='shop'&&String(point?.kind||'')==='pickup'&&Number.isFinite(Number(point?.latitude))&&Number.isFinite(Number(point?.longitude))).map(point=>{const publicId=Number(point.publicId||0);return {id:'shop:'+String(point.ownerId||point.id||''),label:safeText(point.label)||'Магазин запчастей',address:safeText(point.address),city:safeText(point.city),distanceKm:Number(point.distanceKm),latitude:Number(point.latitude),longitude:Number(point.longitude),kind:'shop',route:true,actions:publicId>0?[{label:'Товары',href:'#/parts/store/'+encodeURIComponent(String(publicId)),primary:true}]:[]};});const mapPoints=[...providerPoints,...shopPoints].sort((a,b)=>Number(a.distanceKm||9999)-Number(b.distanceKm||9999)).slice(0,49);if(!mapPoints.length)throw new Error('GEO_MAP_NO_POINTS');const geoMap=await window.KaretaMobile?.loadGeoMap?.();if(!geoMap?.open)throw new Error('GEO_MAP_UNAVAILABLE');geoMap.open({title:'Рядом с вами',points:[{id:'user',label:'Вы',latitude:userCoords.lat,longitude:userCoords.lng,user:true,kind:'you',route:false},...mapPoints],center:{latitude:userCoords.lat,longitude:userCoords.lng}});}catch(error){const denied=error?.code===1||error?.code==='GEOLOCATION_PERMISSION_DENIED';window.KaretaToast?.error?.(denied?'Разрешите доступ к геопозиции для карты':error?.message==='GEO_MAP_NO_POINTS'?'Публичных точек рядом пока нет':'Карта временно недоступна');}finally{nearbyMapButton.disabled=false;}};
     locationButton?.addEventListener('click',openLocation);
     nearbyMapButton?.addEventListener('click',openNearbyMap);
     locationClose?.addEventListener('click',closeLocation);
@@ -404,3 +432,4 @@
 
   window.KaretaCorePages = Object.freeze({ renderHome, mountHome });
 })();
+
