@@ -5,6 +5,7 @@
   const text=v=>String(v??'').trim();
   const environment=()=>text(window.KARETA_ENVIRONMENT||'production').toLowerCase()||'production';
   const isProduction=()=>environment()==='production';
+  const hasProtectedSession=()=>window.KaretaIdentity?.snapshot?.()?.authenticated===true||String(document.documentElement?.dataset?.identityMode||'')==='legacy-fallback';
 
   // Development-only fixtures. They are never merged into a production feed.
   const DEV_GROUPS=Object.freeze([
@@ -42,6 +43,7 @@
   function currentCity(){return text(window.KaretaNext?.state?.user?.city||window.KaretaNext?.state?.user?.location);}
 
   async function followingKeys(signal){
+    if(!hasProtectedSession())return new Set();
     try{
       const r=await api.getFollowingMasters({signal});
       if(!r?.ok)return new Set();
