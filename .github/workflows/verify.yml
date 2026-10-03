@@ -88,6 +88,7 @@ jobs:
           php tools/test_migration_collision_bridge_84_149.php
           node tools/test_db_auto_upgrade_84_155.js
           node tools/test_plesk_runtime_pressure_84_156.js
+          node tools/test_canonical_ui_84_157.js
 
       - name: Legacy authorization no-growth
         run: node tools/audit_legacy_role_authorization_current.js
