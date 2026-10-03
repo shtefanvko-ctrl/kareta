@@ -126,7 +126,7 @@ if ($method === 'GET' && $action === 'entities.list') {
 }
 
 if ($method === 'GET' && $action === 'notifications.list') {
-    kareta_require_capability($pdo,$user,'notifications.manageOwn');
+    kareta_require_capability($pdo,$user,'notifications.read');
     $limit=max(1,min(100,(int)($_GET['limit']??50)));
     $stmt=$pdo->prepare("SELECT id,notification_type AS eventType,title,body,action_url AS actionUrl,entity_type AS entityType,entity_key AS entityKey,status,(status='read') AS isRead,created_at AS createdAt,read_at AS readAt FROM notification_center WHERE user_id=? ORDER BY id DESC LIMIT ".$limit);
     $stmt->execute([$uid]);$items=$stmt->fetchAll(PDO::FETCH_ASSOC)?:[];
@@ -309,11 +309,11 @@ if ($method === 'POST') {
         kareta_json(['ok'=>true,'paymentKey'=>$key,'status'=>'pending','entityType'=>'payment','entityId'=>$key],201);
     }
     if ($action === 'notification.read') {
-        kareta_require_capability($pdo,$user,'notifications.manageOwn');
+        kareta_require_capability($pdo,$user,'notifications.read');
         $id=(int)($body['id']??0);if($id<=0)kareta_json(['ok'=>false,'error'=>'invalid_notification'],422);$stmt=$pdo->prepare("UPDATE notification_center SET status='read',read_at=NOW() WHERE id=? AND user_id=?");$stmt->execute([$id,$uid]);if($stmt->rowCount()===0)kareta_json(['ok'=>false,'error'=>'notification_not_found'],404);kareta_json(['ok'=>true]);
     }
     if ($action === 'notification.readAll') {
-        kareta_require_capability($pdo,$user,'notifications.manageOwn');
+        kareta_require_capability($pdo,$user,'notifications.read');
         $stmt=$pdo->prepare("UPDATE notification_center SET status='read',read_at=COALESCE(read_at,NOW()) WHERE user_id=? AND status<>'read'");$stmt->execute([$uid]);kareta_json(['ok'=>true,'updated'=>$stmt->rowCount()]);
     }
 }

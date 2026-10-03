@@ -188,7 +188,7 @@
     const action=step==='role'?'back-welcome':step==='profile'?'back-role':'back-profile';
     return `<header class="k-flow-header">
       <button type="button" class="k-flow-back" data-action="${action}" aria-label="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6"/></svg></button>
-      <img class="k-flow-logo" src="assets/onboarding/kareta_logo_full.png" alt="KARETA.KZ">
+      <img class="k-flow-logo" src="assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ">
       <span class="k-flow-header-spacer" aria-hidden="true"></span>
     </header>`;
   }
@@ -206,7 +206,7 @@
   function welcomeStepHtml(){
     return `<section id="onb2-step-welcome" class="onb2-step active" data-step="welcome">
       <div class="onb2-welcome-card onb2-flow-shell">
-        <div class="onb2-flow-brand"><img class="onb2-welcome-logo" src="assets/onboarding/kareta_logo_full.png" alt="KARETA.KZ Автосервис"></div>
+        <div class="onb2-flow-brand"><img class="onb2-welcome-logo" src="assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ Автосервис"></div>
         ${progressHtml('welcome')}
         <div class="onb2-welcome-copy">
           <h1>Добро пожаловать!</h1>

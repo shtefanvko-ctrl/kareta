@@ -73,6 +73,7 @@
       body:JSON.stringify({ action:'orders.getAll' }),
       cacheTtlMs:0,
       dedupe:false,
+      dbSafeReplay:true,
       signal:options.signal,
     });
     if (!result || !result.ok) {
@@ -98,19 +99,19 @@
     if (!api || typeof api.request !== 'function') throw new Error('Exchange API requires KaretaApi.request');
     const result = await api.request('api/db.php', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(Object.assign({action},body)), cacheTtlMs:0, dedupe:false, signal:options.signal,
+      body:JSON.stringify(Object.assign({action},body)), cacheTtlMs:0, dedupe:false, dbSafeReplay:options.dbSafeReplay===true, signal:options.signal,
     });
     if(!result || !result.ok){const payload=result&&result.payload||{};const error=new Error(String(payload.message||payload.error||'Операция биржи не выполнена'));error.status=result?result.status:0;error.payload=payload;throw error;}
     return result.payload||{};
   }
-  function exchangeDashboard(api, options={}){return exchangeRequest(api,'clientExchange.dashboard',{page:options.page||1,limit:options.limit||20,status:options.status||'all'},options);}
-  function previewExchangeSchedule(api, orderId, responseId, options={}){return exchangeRequest(api,'clientExchange.schedulePreview',{orderId,responseId},options);}
+  function exchangeDashboard(api, options={}){return exchangeRequest(api,'clientExchange.dashboard',{page:options.page||1,limit:options.limit||20,status:options.status||'all'},{...options,dbSafeReplay:true});}
+  function previewExchangeSchedule(api, orderId, responseId, options={}){return exchangeRequest(api,'clientExchange.schedulePreview',{orderId,responseId},{...options,dbSafeReplay:true});}
   function acceptExchangeResponse(api, orderId, responseId, options={}){return exchangeRequest(api,'clientExchange.acceptResponse',{orderId,responseId,confirmScheduleConflict:options.confirmScheduleConflict===true},options);}
   function declineExchangeResponse(api, orderId, responseId, options={}){return exchangeRequest(api,'clientExchange.declineResponse',{orderId,responseId},options);}
   function republishExchangeOrder(api, orderId, options={}){return exchangeRequest(api,'clientExchange.republish',{orderId,days:options.days||3,maxResponses:options.maxResponses||20},options);}
-  function rescheduleProposals(api, options={}){return exchangeRequest(api,'clientSchedule.reschedule.list',{},options);}
+  function rescheduleProposals(api, options={}){return exchangeRequest(api,'clientSchedule.reschedule.list',{}, {...options,dbSafeReplay:true});}
   function respondReschedule(api, proposalId, decision, options={}){return exchangeRequest(api,'clientSchedule.reschedule.respond',{proposalId,decision,note:options.note||''},options);}
-  function arrivalStates(api, options={}){return exchangeRequest(api,'clientSchedule.arrival.list',{},options);}
+  function arrivalStates(api, options={}){return exchangeRequest(api,'clientSchedule.arrival.list',{}, {...options,dbSafeReplay:true});}
   function setArrival(api, orderId, status, options={}){return exchangeRequest(api,'clientSchedule.arrival.set',{orderId,status,etaMinutes:Number(options.etaMinutes||0),note:options.note||''},options);}
 
   window.KaretaOrdersApi = Object.freeze({

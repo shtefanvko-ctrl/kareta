@@ -25,6 +25,10 @@ const catalogState=read('js/next/catalog/catalog_state.js');
 const masters=read('js/next/pages/masters.js');
 const communityState=read('js/next/community/community_state.js');
 const community=read('js/next/pages/community.js');
+const domainApi=read('api/domain.php');
+const ordersApi=read('js/next/orders/orders_api.js');
+const serverPackage=read('tools/build_server_package.py');
+const onboardingBundle=read('js/boot/runtime_onboarding_bundle.js');
 
 const assetRelease=(version.match(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/)||[])[1]||'';
 const swRelease=(sw.match(/const RELEASE = '([^']+)'/)||[])[1]||'';
@@ -71,5 +75,14 @@ expect(catalogState.includes('kareta.catalog.snapshot:'),'services release-scope
 expect(masters.includes('kareta.masters.snapshot:'),'masters release-scoped cache missing');
 expect(communityState.includes('fetchedAt:0'),'community freshness timestamp missing');
 expect(community.includes("changed?'loaded':'revalidated'"),'community unchanged-content repaint guard missing');
+
+expect(!domainApi.includes("'notifications.manageOwn'"),'notifications still require unavailable manageOwn capability');
+expect((domainApi.match(/'notifications\.read'/g)||[]).length>=3,'notifications read capability contract missing');
+expect(ordersApi.includes('dbSafeReplay:true'),'orders.getAll is not protected by the DB safe-replay gate');
+expect(ordersApi.includes("clientExchange.dashboard")&&ordersApi.includes("{...options,dbSafeReplay:true}"),'client exchange read burst is not serialized');
+expect(ordersApi.includes("clientSchedule.reschedule.list")&&ordersApi.includes("clientSchedule.arrival.list"),'client schedule read actions missing');
+expect(serverPackage.includes('if workflow_run_id and not re.fullmatch(r"[0-9]{1,32}", workflow_run_id):'),'local provenance workflowRunId normalization missing');
+expect(indexPhp.includes("assets/logo/main/kareta_logo_full.png"),'index uses non-canonical full logo path');
+expect(onboardingBundle.includes('assets/logo/main/kareta_logo_full.png'),'onboarding bundle uses non-canonical full logo path');
 
 console.log('CURRENT_RELEASE: PASS release='+assetRelease+' db='+configDb);

@@ -1,17 +1,17 @@
 {
   "schema": "kareta.release.current.v1",
-  "release": "188.5.5.6.84.153",
-  "sourceBranch": "release/reconcile-84.152",
+  "release": "188.5.5.6.84.154",
+  "sourceBranch": "fix/staging-runtime-84-153-20261004",
   "targetBranch": "main",
   "branchState": {
-    "status": "reconciled_hotfix_candidate",
+    "status": "staging_runtime_recovery_candidate",
     "behindBy": 0,
     "mainAncestor": true,
     "reconciliationMergeCommit": "a7df986cee0d1e05895bbb93290dbc03111b9dac",
     "mainHeadAtReconciliation": "d2873bbde16ec985ad14e8ff892df5ccbd7cf3b4",
     "candidate84_151": "6685ad9e02531dfa653aacd1f1eaf1c7c5a4cecc",
     "mergeBase": "5d333d5e67857d91a44a653e725fb2924eef2004",
-    "note": "84.153 fixes the notFound lazy-route loader contract and advances the cache namespace; this candidate is being reconciled through release/reconcile-84.152 and exact-head staging remains unverified until deployment verification completes."
+    "note": "84.154 is the post-Plesk runtime recovery candidate: align notifications capability reads, serialize replay-safe DB POST reads against host 429, normalize local provenance workflowRunId, and use the canonical full-logo asset path. Exact-head staging verification is required before acceptance."
   },
   "database": {
     "canonicalVersion": 137,
@@ -36,7 +36,7 @@
   "verification": {
     "ciWorkflow": ".github/workflows/verify.yml",
     "stagingWorkflow": ".github/workflows/staging-verify.yml",
-    "stagingStatus": "NOT_VERIFIED_AFTER_84_153"
+    "stagingStatus": "NOT_VERIFIED_AFTER_84_154"
   },
   "ui": {
     "notFound": "first_class_spa_route",
