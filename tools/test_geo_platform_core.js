@@ -40,7 +40,7 @@ assert(api.includes("exact_mobile_origin_requires_explicit_consent"),'mobile ori
 assert(api.includes("$pdo->prepare"),'geo API must use parameterized queries');
 assert(!api.includes("visibility IN ('exact','approximate')"),'approximate private coordinates must not leak through public nearby');
 
-assert.strictEqual(manifestJson.targetDbVersion,137,'JSON migration target must be 137');
+assert(manifestJson.targetDbVersion>=137,'JSON migration target must include geo version 137');
 assert(manifestJson.migrations.some(x=>x.version===137&&x.file==='137_geo_platform_core.php'),'JSON manifest geo migration missing');
 assert(manifestPhp.includes("137 => ['file' => '137_geo_platform_core.php'"),'PHP manifest geo migration missing');
 assert(workflow.includes('node tools/test_geo_platform_core.js'),'geo core contract not wired to application gates');

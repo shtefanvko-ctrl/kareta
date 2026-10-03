@@ -1,0 +1,65 @@
+name: Dispatch city and reservation contracts
+on:
+  push:
+    branches: [fix/dispatch-service-constraints-20261003]
+  pull_request:
+    paths:
+      - 'api/city_catalog.php'
+      - 'api/production_dispatch.php'
+      - 'api/sto_workplace.php'
+      - 'api/migrations/138_order_city_snapshot.php'
+      - 'tools/test_*dispatch*'
+      - 'tools/test_order_city_snapshot.php'
+      - 'tools/test_sto_pair_transaction.php'
+      - '.github/workflows/dispatch-contract.yml'
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        php: ['8.1', '8.2']
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: kareta_test_only
+          MYSQL_DATABASE: kareta_dispatch_test
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, pdo_mysql, pdo_sqlite
+          coverage: none
+      - name: Syntax and schema contracts
+        run: |
+          php -l api/city_catalog.php
+          php -l api/db.php
+          php -l api/production_dispatch.php
+          php -l api/sto_workplace.php
+          php -l tools/test_sto_pair_transaction.php
+          php tools/test_migration_contract.php
+          php tools/test_release_migration_manifest.php
+      - name: City and dispatch behavior
+        run: |
+          php tools/test_order_city_snapshot.php
+          php tools/test_dispatch_location_constraints.php
+          php tools/test_sto_pair_transaction.php
+      - name: MySQL concurrent master and bay reservations
+        env:
+          KARETA_PAIR_MYSQL_TEST: '1'
+          KARETA_PAIR_MYSQL_DSN: 'mysql:host=127.0.0.1;port=3306;dbname=kareta_dispatch_test;charset=utf8mb4'
+          KARETA_PAIR_MYSQL_USER: root
+          KARETA_PAIR_MYSQL_PASSWORD: kareta_test_only
+        run: php tools/test_sto_pair_transaction.php

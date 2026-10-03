@@ -14,8 +14,8 @@
     "note": "84.153 fixes the notFound lazy-route loader contract and advances the cache namespace; this candidate is being reconciled through release/reconcile-84.152 and exact-head staging remains unverified until deployment verification completes."
   },
   "database": {
-    "canonicalVersion": 137,
-    "manifestVersion": 137,
+    "canonicalVersion": 138,
+    "manifestVersion": 138,
     "collisionBridgeVersions": [
       130,
       131,
@@ -26,12 +26,13 @@
     "schemaWorkResumesAt": 135,
     "obdSchemaMigration": "api/migrations/135_obd_elm327_diagnostics.php",
     "historicalPendingDirectory": "api/migrations_pending/historical",
-    "nextCanonicalVersion": 138,
+    "nextCanonicalVersion": 139,
     "note": "Versions 130-134 are side-effect-free compatibility slots because historical branches reused those version numbers with incompatible checksums.",
     "remoteControlMigration": "api/migrations/136_obd_remote_control_plane.php",
     "remoteDelivery": "active_app_poll",
     "geoPlatformMigration": "api/migrations/137_geo_platform_core.php",
-    "geoPlatform": "unified owner-scoped points; public nearby exact-only"
+    "geoPlatform": "unified owner-scoped points; public nearby exact-only",
+    "orderCityMigration": "api/migrations/138_order_city_snapshot.php"
   },
   "verification": {
     "ciWorkflow": ".github/workflows/verify.yml",

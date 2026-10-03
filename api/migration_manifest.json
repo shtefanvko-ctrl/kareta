@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "targetDbVersion": 137,
+  "targetDbVersion": 138,
   "migrations": [
     {
       "version": 1,
@@ -686,6 +686,11 @@
       "version": 137,
       "file": "137_geo_platform_core.php",
       "sha256": "0c6c324014470280c951c9ec5564ac15522df96e1424834df027da2e5073c1ed"
+    },
+    {
+      "version": 138,
+      "file": "138_order_city_snapshot.php",
+      "sha256": "57b494ae688f369859c06f34c950d6d4822b12c57791e6399d36ab173d9cc91e"
     }
   ]
 }

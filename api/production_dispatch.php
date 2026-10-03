@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__ . '/city_catalog.php';
 
 function kareta_dispatch_valid_coords(?float $lat,?float $lng): bool {
     return $lat!==null&&$lng!==null&&is_finite($lat)&&is_finite($lng)&&$lat>=-90.0&&$lat<=90.0&&$lng>=-180.0&&$lng<=180.0;
@@ -34,10 +35,14 @@ function kareta_dispatch_master_order_distance(PDO $pdo,string $masterId,array $
     return kareta_dispatch_distance_km((float)$origin['lat'],(float)$origin['lng'],(float)$point['lat'],(float)$point['lng']);
 }
 function kareta_dispatch_city_key(string $city): string {
-    $city=mb_strtolower(trim($city),'UTF-8');
-    return preg_replace('/[\s\p{Pd}_]+/u',' ',$city)??'';
+    return kareta_city_id($city)?:kareta_city_normalize($city);
 }
 function kareta_dispatch_order_city(array $order): string {
+    if(trim((string)($order['city_id']??''))!==''){
+        $id=kareta_city_id((string)$order['city_id']);
+        if($id===''||kareta_city_id((string)($order['city']??''))!==$id)return '';
+        return $id;
+    }
     $cities=[];
     $explicit=kareta_dispatch_city_key((string)($order['city']??''));
     if($explicit!=='')$cities[]=$explicit;

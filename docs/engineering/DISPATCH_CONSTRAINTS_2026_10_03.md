@@ -69,3 +69,36 @@ Limitations / next three increments:
 3. Transactional reservation and repeat/concurrency handling with MySQL evidence. No migration execution or live DB changes in this increment.
 
 Rollback: revert the second increment to return to the first service-coverage boundary. No data transformation.
+
+## Third increment — city snapshot and transactional STO pair assignment
+
+### Implemented boundary
+- Single server-side city registry for the 19 existing onboarding cities, with RU/KK/EN aliases and stable kz:* IDs. Unknown names are rejected when supplied as a new request city rather than assigned invented IDs.
+- orders_create saves city/city_id. For stationary visits a selected, server-resolved STO supplies the destination city; mobile visits retain the request city. API returns cityId. Persisted valid snapshot outranks the old customer-city note; inconsistent stored city/ID fails closed.
+- Additive migration 138 creates the two order columns without inferred backfill. Config and both migration manifests target 138; existing Geo 137 entry/checksum remains unchanged. The Geo gate now checks inclusion of 137, while the migration contract still enforces exact config/manifest/current-version agreement.
+- New order creation returns order_city_schema_required (503) until schema 138 is installed; no new ad hoc ALTER was added to the handler.
+- stoCapacity.assignPair begins its transaction before reading assignment state, then locks order, active linked master, bay and existing plan. Shared interval validation checks shift/order/break conflicts plus bay overlap/incidents. Overlap reads use FOR UPDATE when locked; the transaction remains open through all assignment writes. Rejections and exceptions roll back.
+- alternatives uses the same service/city eligibility and interval guard. Identical repeats reuse the existing order plan and bay assignment.
+
+### Causal evidence
+City: source inspection showed form city was present only in notes and not in the order INSERT. Existing notes are consumed as compatibility input and then represented by explicit columns for new orders.
+Race: source inspection showed assignPair validated master/bay availability before beginning a transaction and locked only its own order. Different order rows do not serialize access to shared master/bay resources. A real simultaneous MySQL reproducer was not run locally.
+
+### Verification
+Local PHP 8.3.6 / Node 24.19.0:
+- PASS: 22 service + 30 location tests (SQLite).
+- PASS: 67 city/migration/actual INSERT SQL-shape checks (SQLite; not the full orders_create handler).
+- PASS: 24 real assignPair handler checks (SQLite), including repeat without duplication, occupied master, occupied bay, adjacent intervals, shift bounds, completed-order rejection, transaction requirement and rollback after injected plan-write failure. SQLite does not implement MySQL row locks; the test observes lock SQL only.
+- PASS: PHP syntax of affected PHP; migration contract / checksum manifest (138), current release contract, Geo platform contract, YAML parsing and diff whitespace.
+- MySQL two-process tests added in dispatch-contract.yml for PHP 8.1 and 8.2 / MySQL 8. Three rounds cover shared master+bay, shared bay with different masters, and shared master with different bays. Test database is explicitly restricted to isolated kareta_dispatch_test. Tariff policy is stubbed in this focused resource test; it does not prove production tariff concurrency.
+- Exact-head CI and MySQL concurrency: pending execution. Browser, full orders_create integration, live migration / staging / deployment: NOT RUN.
+
+### Scope and remaining work
+This is the STO assignPair path, not proof that every booking writer is serialized. Automatic dispatch_plan_order, general calendar booking, exchange acceptance and reschedule paths need to adopt the same resource admission/locking protocol before claiming global double-booking protection. Existing equipment capability checks and temporary expiring holds are not supplied by this increment.
+Old orders are not guessed/backfilled; those without trustworthy location remain excluded from automatic selection. City IDs are resolved for profile names but not yet persisted in every profile/map/onboarding table or exposed by all option endpoints.
+Locking can produce deadlocks with other scheduling writers; rollback is safe, but cross-writer lock ordering and retry handling still require verification.
+
+Rollout: backup database, verify/apply migration 138 on an isolated MySQL clone, run exact-head concurrency tests and then full create/assignment smoke before deployment. Do not deploy this ZIP as a ready hosting release.
+Rollback: revert code/config/manifests together to the preceding candidate; retain additive city columns and stored snapshots. Do not drop user data on rollback.
+
+Next three steps: run exact-head MySQL CI; unify other booking writers and resource lock ordering; verify complete creation-to-assignment behavior on a MySQL clone and browser.

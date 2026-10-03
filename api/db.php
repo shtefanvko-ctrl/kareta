@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once dirname(__DIR__) . '/config.php';
+require_once __DIR__.'/city_catalog.php';
 /* R88: diagnostics must be registered before any dependency is loaded. */
 $karetaDbRequestId = 'db_' . date('YmdHis') . '_' . bin2hex(random_bytes(4));
 $karetaDbStartedAt = microtime(true);
@@ -2020,6 +2021,8 @@ function db_health(?PDO $pdo): void
 
 /* ── Форматирование строк ─────────────────────────────────────────── */
 function _fmt_order(array $o): array {
+    $o['cityId'] = (string)($o['city_id']??'');
+    $o['city'] = (string)($o['city']??'');
     $o['serviceIds']   = json_decode($o['service_ids'] ?? '[]', true) ?: [];
     $o['serviceNames'] = $o['service_names'];
     $o['stages']       = json_decode($o['stages']  ?? '[]', true) ?: [];
@@ -3708,6 +3711,9 @@ function orders_create(?PDO $pdo, array $b): void {
 
     try { kareta_ensure_order_events_table($pdo); } catch (Throwable $_) {}
 
+    if(!kareta_column_exists($pdo,'orders','city')||!kareta_column_exists($pdo,'orders','city_id'))kareta_json(['ok'=>false,'error'=>'order_city_schema_required','requiredMigration'=>138],503);
+    try{$citySnapshot=kareta_order_city_snapshot($o,$stoOrderId!==''?($stoOrder??null):null);}
+    catch(DomainException $e){kareta_json(['ok'=>false,'error'=>$e->getMessage()],422);}
     $pdo->beginTransaction();
     try {
         if($actorRole==='client')kareta_tariff_client_guard($pdo,'activeRequests',$clientUserId,$clientPhone,true);
@@ -3908,9 +3914,9 @@ function orders_create(?PDO $pdo, array $b): void {
         $partsRequestJson = $type === 'parts_request' ? json_encode($partsRequestPayload, JSON_UNESCAPED_UNICODE) : null;
 
         $pdo->prepare("INSERT INTO `orders`
-            (id,num,type,status,priority,category,source,deferred,client_id,client_user_id,client_vehicle_id,vehicle_title,vehicle_vin,vehicle_plate,client_name,client_phone,client_car,address,district,lat,lng,field_service,route_url,map_provider,distance_km,
+            (id,num,type,status,priority,category,source,deferred,client_id,client_user_id,client_vehicle_id,vehicle_title,vehicle_vin,vehicle_plate,client_name,client_phone,client_car,city,city_id,address,district,lat,lng,field_service,route_url,map_provider,distance_km,
              master_id,master_user_id,assigned_admin_user_id,master_name,sto_id,sto_name,service_ids,service_names,price,date,time,time_mode,notes,parts_request_json,parts_request_status,parts_vin,parts_oem,parts_requested_name,parts_maker_preference,parts_qty,parts_urgency,stages,reports,created_at)
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
             ->execute([
                 $id,
                 $num,
@@ -3929,6 +3935,8 @@ function orders_create(?PDO $pdo, array $b): void {
                 $clientName,
                 $clientPhone,
                 kareta_clean_text($vehicleTitleResolved, 160),
+                $citySnapshot['city'],
+                $citySnapshot['cityId'],
                 $orderAddress ?: null,
                 $orderDistrict ?: null,
                 $orderLat,
