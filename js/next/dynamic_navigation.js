@@ -44,6 +44,7 @@
     { key:'masterWorks', section:'work', any:['profile.manage','profile.manage_own','profile.master'], contextTypes:['profile'], contextProfiles:['master'] },
     { key:'masterReviews', section:'work', any:['profile.manage','profile.manage_own','profile.master'], contextTypes:['profile'], contextProfiles:['master'] },
     { key:'masterExchange', section:'work', menu:63.1, mobilePriority:20, contextTypes:['profile'], contextProfiles:['master'] },
+    { key:'assistant', section:'work', menu:63.2, contextProfiles:['master'], allowOrganization:true },
     { key:'stoDashboard', section:'work', desktop:64, menu:64, mobilePriority:10, any:['organization.read','work_orders.manage'], contextTypes:['organization'] },
     { key:'seller', section:'commerce', desktop:65, menu:65, mobilePriority:10, any:['warehouse.stock.manage','market.products.manage'], contextProfiles:['seller'], allowOrganization:true },
     { key:'sellerProducts', section:'commerce', desktop:65.1, menu:65.1, mobilePriority:20, any:['warehouse.stock.manage','market.products.manage'], contextProfiles:['seller'], allowOrganization:true },
