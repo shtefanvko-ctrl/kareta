@@ -1,17 +1,17 @@
 {
   "schema": "kareta.release.current.v1",
   "release": "188.5.5.6.84.153",
-  "sourceBranch": "fix/not-found-lazy-route-20261002",
-  "targetBranch": "harness/server-package-checksum-portable-20261002",
+  "sourceBranch": "release/reconcile-84.152",
+  "targetBranch": "main",
   "branchState": {
-    "status": "hotfix_candidate",
+    "status": "reconciled_hotfix_candidate",
     "behindBy": 0,
     "mainAncestor": true,
     "reconciliationMergeCommit": "a7df986cee0d1e05895bbb93290dbc03111b9dac",
     "mainHeadAtReconciliation": "d2873bbde16ec985ad14e8ff892df5ccbd7cf3b4",
     "candidate84_151": "6685ad9e02531dfa653aacd1f1eaf1c7c5a4cecc",
     "mergeBase": "5d333d5e67857d91a44a653e725fb2924eef2004",
-    "note": "84.153 fixes the notFound lazy-route loader contract and advances the cache namespace; exact-head staging remains unverified until CI/package verification completes."
+    "note": "84.153 fixes the notFound lazy-route loader contract and advances the cache namespace; this candidate is being reconciled through release/reconcile-84.152 and exact-head staging remains unverified until deployment verification completes."
   },
   "database": {
     "canonicalVersion": 137,
