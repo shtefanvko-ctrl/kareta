@@ -60,7 +60,7 @@
     rules:Object.freeze({ path:'#/rules', label:'Правила', icon:'✓', description:'Правила работы и ответственность участников' }),
     help:Object.freeze({ path:'#/help', label:'Помощь', icon:'?', description:'Ответы по услугам, товарам и заказам' }),
     notFound:Object.freeze({ path:'#/404', label:'Страница не найдена', icon:'?', description:'Запрошенный адрес не существует', nav:false }),
-    assistant:Object.freeze({ path:'#/assistant', label:'AI-консультант', icon:'✦', description:'Предварительная помощь по неисправности', nav:false }),
+    assistant:Object.freeze({ path:'#/assistant', label:'Помощник электрика', icon:'⚡', description:'Пошаговая диагностика электрических цепей, DTC и ELM327', nav:false }),
     diagnostics:Object.freeze({ path:'#/diagnostics', label:'Диагностика', icon:'⌁', description:'ELM327, OBD-II и офлайн-диагностика' }),
     privacy:Object.freeze({ path:'#/privacy', label:'Конфиденциальность', icon:'🔐', description:'Использование и защита данных' }),
     contacts:Object.freeze({ path:'#/contacts', label:'Контакты', icon:'☎', description:'Связь и поддержка платформы' }),
