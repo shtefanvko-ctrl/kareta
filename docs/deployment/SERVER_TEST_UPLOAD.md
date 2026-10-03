@@ -129,12 +129,12 @@ Verify from a network that can reach the staging host:
 ```bash
 python3 tools/verify_staging_current.py \
   --base-url https://s.kareta.kz \
-  --expected-release 188.5.5.6.84.152
+  --expected-release 188.5.5.6.84.155
 
 python3 tools/verify_runtime_provenance.py \
   --base-url https://s.kareta.kz \
   --expected-sha <exact-package-sha> \
-  --expected-asset-version 188.5.5.6.84.152
+  --expected-asset-version 188.5.5.6.84.155
 ```
 
 The following runtime surfaces must agree on the release before the server test is accepted:
