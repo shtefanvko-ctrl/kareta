@@ -310,11 +310,36 @@ if ($method === 'POST') {
     }
     if ($action === 'notification.read') {
         kareta_require_capability($pdo,$user,'notifications.manageOwn');
-        $id=(int)($body['id']??0);if($id<=0)kareta_json(['ok'=>false,'error'=>'invalid_notification'],422);$stmt=$pdo->prepare("UPDATE notification_center SET status='read',read_at=NOW() WHERE id=? AND user_id=?");$stmt->execute([$id,$uid]);if($stmt->rowCount()===0)kareta_json(['ok'=>false,'error'=>'notification_not_found'],404);kareta_json(['ok'=>true]);
+        $id=(int)($body['id']??0);
+        if($id<=0)kareta_json(['ok'=>false,'error'=>'invalid_notification'],422);
+        $find=$pdo->prepare("SELECT payload_json FROM notification_center WHERE id=? AND user_id=? LIMIT 1");
+        $find->execute([$id,$uid]);
+        $notification=$find->fetch(PDO::FETCH_ASSOC);
+        if(!$notification)kareta_json(['ok'=>false,'error'=>'notification_not_found'],404);
+        $stmt=$pdo->prepare("UPDATE notification_center SET status='read',read_at=COALESCE(read_at,NOW()) WHERE id=? AND user_id=?");
+        $stmt->execute([$id,$uid]);
+        $payload=$decode($notification['payload_json']??null);
+        $legacyNotificationId=(int)($payload['legacyNotificationId']??0);
+        if($legacyNotificationId>0 && kareta_table_exists($pdo,'notifications')){
+            try{$pdo->prepare("UPDATE notifications SET is_read=1,read_at=COALESCE(read_at,NOW()) WHERE id=?")->execute([$legacyNotificationId]);}catch(Throwable $_){}
+        }
+        kareta_json(['ok'=>true,'updated'=>$stmt->rowCount()]);
     }
     if ($action === 'notification.readAll') {
         kareta_require_capability($pdo,$user,'notifications.manageOwn');
-        $stmt=$pdo->prepare("UPDATE notification_center SET status='read',read_at=COALESCE(read_at,NOW()) WHERE user_id=? AND status<>'read'");$stmt->execute([$uid]);kareta_json(['ok'=>true,'updated'=>$stmt->rowCount()]);
+        $stmt=$pdo->prepare("UPDATE notification_center SET status='read',read_at=COALESCE(read_at,NOW()) WHERE user_id=? AND status<>'read'");
+        $stmt->execute([$uid]);
+        $updated=$stmt->rowCount();
+        if(kareta_table_exists($pdo,'notifications')){
+            try{
+                $phone=kareta_normalize_phone((string)($user['phone']??''));
+                $legacySql="UPDATE notifications SET is_read=1,read_at=COALESCE(read_at,NOW()) WHERE recipient_user_id=?";
+                $legacyArgs=[$uid];
+                if($phone!==''){$legacySql.=" OR recipient_phone=?";$legacyArgs[]=$phone;}
+                $pdo->prepare($legacySql)->execute($legacyArgs);
+            }catch(Throwable $_){}
+        }
+        kareta_json(['ok'=>true,'updated'=>$updated]);
     }
 }
 kareta_json(['ok'=>false,'error'=>'not_found'],404);
