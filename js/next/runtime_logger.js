@@ -259,6 +259,7 @@
   let flushing = false;
   let timer = null;
   let retryDelayMs = 1200;
+  let serverStressUntil = 0;
   const buffer = [];
 
   const clean = (value, depth = 0) => {
@@ -306,12 +307,22 @@
 
   function schedule(){
     if (timer) return;
-    timer = setTimeout(() => { timer = null; flush(); }, retryDelayMs);
+    const delay=Math.max(retryDelayMs,serverStressUntil>Date.now()?serverStressUntil-Date.now():0);
+    timer = setTimeout(() => { timer = null; flush(); }, delay);
+  }
+
+  function markServerStress(ms=30000){
+    const delay=Math.max(5000,Number(ms)||30000);
+    serverStressUntil=Math.max(serverStressUntil,Date.now()+delay);
+    retryDelayMs=Math.max(retryDelayMs,Math.min(60000,delay));
+    if(timer){clearTimeout(timer);timer=null;}
+    schedule();
   }
 
   async function flush(useBeacon = false){
     if (flushing || !buffer.length) return;
     if (!navigator.onLine && !useBeacon) { retryDelayMs = Math.min(60000, Math.max(5000, retryDelayMs * 2)); schedule(); return; }
+    if (!useBeacon && Date.now()<serverStressUntil) { schedule(); return; }
     const batch = buffer.splice(0, Math.min(buffer.length, 30));
     persist();
     const body = JSON.stringify({ sessionId, version:VERSION, url:location.href, events:batch });
@@ -474,6 +485,9 @@
       const failed = !response.ok || applicationFailed;
       const expectedFailure = expectedAnonymousContext || authLifecycleFailure || expectedOtpFailure;
       const details = {traceId, method, url, action, status:response.status, ok:response.ok, applicationOk:responseMeta.ok, expected:expectedFailure, authLifecycleFailure, expectedOtpFailure, durationMs:Math.round(performance.now()-started), ...responseMeta};
+      if([429,502,503,504].includes(response.status)){
+        markServerStress(Math.max(30000,Number(responseMeta.retryAfter||0)*1000));
+      }
       add('fetch.end', details, failed && !expectedFailure ? 'error' : failed ? 'warn' : 'info');
       if (failed && !expectedAnonymousContext && /\/api\//.test(url)) {
         if(authLifecycleFailure){
@@ -486,6 +500,7 @@
       }
       return response;
     } catch (error) {
+      markServerStress(30000);
       add('fetch.error', {traceId, method, url, action, durationMs:Math.round(performance.now()-started), error}, 'error');
       throw error;
     }
