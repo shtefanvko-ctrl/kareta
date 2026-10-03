@@ -227,7 +227,7 @@
   function renderMarketWindow(snapshot){
     const body=document.querySelector('[data-market-list-body]'); if(!body)return;
     const meta=marketWindowMeta(snapshot),entries=marketWindowEntries(snapshot),mineTools=marketMode==='mine'?mineStatusControls():'';
-    body.innerHTML=`<header><div><small>${esc(meta.eyebrow)}</small><h2>${esc(meta.title)}</h2><p>${esc(meta.subtitle)} · ${isUsedSurface()&&marketMode==='catalog'&&usedQueryKey===JSON.stringify(usedCatalogParams())?`${entries.length} / ${usedMatchedTotal}`:entries.length} предложений</p></div><button type="button" data-dialog-close="market">${icon('close')}</button></header>${mineTools}${usedLoading?'<div class="k-parts-native-loading">Обновляем объявления…</div>':''}${usedError?`<div class="k-parts-native-error">${esc(usedError)}</div>`:''}${usedLoading&&!entries.length?'':itemGrid(entries,snapshot.categories||[],'По этим условиям ничего не найдено.')}${usedPagingControls()}`;
+    body.innerHTML=`<header><div><small>${esc(meta.eyebrow)}</small><h2>${esc(meta.title)}</h2><p>${esc(meta.subtitle)} · ${isUsedSurface()&&marketMode==='catalog'&&usedQueryKey===JSON.stringify(usedCatalogParams())?`${entries.length} / ${usedMatchedTotal}`:entries.length} предложений</p></div><button type="button" data-dialog-close="market">${icon('close')}</button></header>${mineTools}${usedLoading?'<div class="k-parts-native-loading">Обновляем объявления…</div>':''}${(usedLoading||usedError)&&!entries.length?'':itemGrid(entries,snapshot.categories||[],'По этим условиям ничего не найдено.')}${usedPagingControls()}`;
     if(marketMode==='mine'&&pendingMineFocusId){requestAnimationFrame(()=>[...body.querySelectorAll('[data-used-card]')].find(card=>String(card.dataset.usedCard||'')===String(pendingMineFocusId))?.scrollIntoView?.({block:'center'}));}
   }
 
@@ -309,7 +309,7 @@
   function renderSnapshot(snapshot){
     const nav=document.querySelector('[data-shop-navigator]');if(!nav)return;
     const cats=document.querySelector('[data-parts-categories]');if(cats)cats.innerHTML=categoryGrid(snapshot);
-    nav.innerHTML=(isUsedSurface()&&usedLoading&&!usedRows.length?'':catalogContent(snapshot))+usedPagingControls();
+    nav.innerHTML=(isUsedSurface()&&(usedLoading||usedError)&&!usedRows.length?'':catalogContent(snapshot))+usedPagingControls();
     renderFilter(snapshot);renderVehicles();renderCategoryChoice(snapshot);updateCounters(snapshot);if(document.querySelector('[data-parts-market-list-dialog]')?.open)renderMarketWindow(snapshot);
     const cartItems=document.querySelector('[data-shop-cart-items]'),cartTotal=document.querySelector('[data-shop-cart-total]');
     if(cartItems)cartItems.innerHTML=(snapshot.cart||[]).length?(snapshot.cart||[]).map(item=>`<article class="k-shop-cart-item"><div><b>${esc(item.name)}</b><small>${esc(item.storeName||'')}</small></div><div class="k-shop-cart-qty"><button type="button" data-shop-qty="${esc(item.id)}" data-delta="-1">−</button><span>${Number(item.qty||0)}</span><button type="button" data-shop-qty="${esc(item.id)}" data-delta="1">+</button></div><strong>${money(Number(item.price||0)*Number(item.qty||0))}</strong></article>`).join(''):'<div class="k-parts-native-empty">Корзина пуста.</div>';

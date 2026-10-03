@@ -27,7 +27,7 @@ Base: release/reconcile-84.152, 4d969dbd9c779f4722a4afc4acf087f2eaba2948 (asset 
 
 - Offer acceptance/rejection/counteroffer, reservation, completion, dispute and two-party confirmation do not yet have a dedicated transaction model. Sending a chat message does not sell or reserve a listing.
 - Reproduced old compatibility false positives: Toyota Camry 2012 matched Honda Civic 2012 (year only) and Toyota Corolla (brand only). Removed any-token/description matching. Brand and model must now occur together in explicit vehicle/fitment data; UI marks this as a candidate, not guaranteed fit. OEM, year and engine verification still require a richer contract.
-- Catalog requests are bounded. Pagination and server-filtered category browsing remain necessary for inventories beyond the currently loaded page.
+- Used-catalog server filtering and progressive pages are implemented and tested below. New-shop pagination/city/type semantics and complete used-category enumeration remain pending.
 - Category photos use available loaded inventory; missing photographs fall back to existing reference imagery or icons rather than invented product photographs.
 - Existing page text is not fully localized; this increment supplies RU/KK/EN for new controls only.
 
@@ -42,19 +42,21 @@ Rollback: revert this increment. Existing routes/API actions remain unchanged; n
 ## Causal findings from current source
 
 1. Original usedMarket.status activated drafts without the publish validation used in usedMarket.save. Chain: incomplete draft -> status=active update -> public list WHERE active -> incomplete storefront card. Source-confirmed; MySQL reproducer NOT RUN. Implemented shared publish validator and owner-scoped locked status transition; PHP syntax and 33 validation/control-flow cases PASS on PHP 8.3, live MySQL verification pending.
-2. Catalog loads at most 100 new / 200 private listings and UI filtering runs on this page. Chain: desired item outside page -> local filter sees nothing -> false empty result. Fix next: pass filters to server and add real pagination/count semantics.
+2. Originally the catalog loaded at most 100 new / 200 private listings and UI filtering ran on this page. Chain: desired item outside page -> local filter sees nothing -> false empty result. Used-catalog filters now reach the server with bounded pages/count semantics; item beyond the original page and page traversal are verified on SQLite. New-shop pagination/city/type semantics remain pending.
 3. No dedicated used-item offer/deal state model exists in inspected marketplace handlers. Current offers are private chat messages. Chain: text agreement -> no atomic acceptance/reservation -> no proof of transfer/completion. Fix next: explicit offer/deal state machine with two-party confirmation, snapshot/version and audit.
 4. Existing owner check before used listing INSERT ... ON DUPLICATE KEY UPDATE is not atomic with that write. A simultaneous arbitrary-ID collision is a potential authorization race; not reproduced. Fix next: separate create/update and enforce owner in the mutation itself.
 5. Existing stock adjustments read quantity then update an absolute value. Simultaneous deltas can lose one change; concurrency is not yet reproduced. Checkout separately uses row locks and must not be conflated with this path.
 
 The agent workflow now requires trigger -> call/data chain -> violated contract -> consequence -> reproducer -> fix -> regression evidence for every defect claim.
 
-## Search/pagination work checkpoint
+## Search/pagination verification increment
 
-Work in progress, saved at the user's request regardless of verification state:
+The implementation was first saved as a work checkpoint at the user's request. Focused checks now pass:
 
 - Used catalog sends search/category/city/type/sort/favorites to the server; sale groups used/restored.
 - Server adds bounded limit/offset, deterministic ID tie-breaker, lookahead hasMore/nextOffset and matchedTotal while retaining the existing per-page total field.
 - Client appends pages by listing ID, ignores obsolete requests, and exposes localized more/retry controls. New shop now passes search/category to its existing catalog API.
-- PHP/JS syntax, existing visual/exchange regressions and diff whitespace PASS. Dedicated pagination/race regressions, browser and live MySQL are NOT RUN. Offset pages can shift when inventory changes. New-shop pagination/city/type semantics and complete used-category enumeration remain pending.
-- This checkpoint is not release acceptance. Next: pagination/race tests; complete new-shop server filtering/pagination; live MySQL publication/concurrency verification and formal offer/deal states.
+- Client VM regression PASS: request filters, server results beyond initial page, append/dedup, double-click suppression, obsolete success/error responses, error/retry, failed append preservation, page disposal/abort, favorites and new-shop search/category requests. Network failure no longer also renders an empty catalog/search.
+- Server regression PASS: 18 requests execute the real list SELECTs against an isolated SQLite database with 205 used records plus alternate type/city/status/owner fixtures. Covers stable page traversal, search beyond the old cap, sale/exchange, favorites, mine/auth rejection, bounded inputs, parameterized search, final-page metadata and server sorting. Runtime MySQL DDL is bypassed; this is not live MySQL evidence.
+- PHP/JS syntax, existing visual/exchange regressions and diff whitespace PASS. New tests are wired into Application gates with mbstring/pdo_sqlite. Exact-head CI, browser and live MySQL are NOT RUN. Offset pages can shift when inventory changes. New-shop pagination/city/type semantics and complete used-category enumeration remain pending.
+- This increment is not release acceptance. Next: complete new-shop server filtering/pagination; live MySQL publication/concurrency verification; formal offer/deal states.
