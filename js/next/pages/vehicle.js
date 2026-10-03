@@ -122,5 +122,5 @@
     document.addEventListener('click',click);document.addEventListener('submit',submit);
     lifecycle.addCleanup?.(()=>{document.removeEventListener('click',click);document.removeEventListener('submit',submit);closeModal();});
   }
-  window.KaretaVehiclePages=Object.freeze({renderers:Object.freeze({vehicle:renderVehicle}),mounts:Object.freeze({vehicle:mountVehicle})});
+  window.KaretaVehiclePages=Object.freeze({renderVehicle,mountVehicle,renderers:Object.freeze({vehicle:renderVehicle}),mounts:Object.freeze({vehicle:mountVehicle})});
 })();
