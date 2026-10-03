@@ -40,7 +40,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     masterExchange:Object.freeze({ path:'#/master/exchange', label:'Биржа', icon:'⌁', nav:false }),
     community:Object.freeze({ path:'#/community', label:'Сообщество', icon:'◎', nav:false }),
     stoDashboard:Object.freeze({ path:'#/sto', label:'СТО', icon:'🏢' }),
-    parts:Object.freeze({ path:'#/parts', label:'Новые запчасти', icon:'▣' }),
+    parts:Object.freeze({ path:'#/parts', label:'Запчасти', icon:'▣' }),
     usedParts:Object.freeze({ path:'#/parts/used', label:'Биржа БУ', icon:'exchange', nav:false }),
     seller:Object.freeze({ path:'#/seller', label:'Магазин', icon:'🛒' }),
     sellerProducts:Object.freeze({ path:'#/seller/products', label:'Товары', icon:'▣' }),
@@ -63,6 +63,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     about:Object.freeze({ path:'#/about', label:'О платформе', icon:'ⓘ', description:'Возможности KARETA.KZ для каждой роли' }),
     rules:Object.freeze({ path:'#/rules', label:'Правила', icon:'✓', description:'Правила работы и ответственность участников' }),
     help:Object.freeze({ path:'#/help', label:'Помощь', icon:'?', description:'Ответы по услугам, товарам и заказам' }),
+    notFound:Object.freeze({ path:'#/404', label:'Страница не найдена', icon:'?', description:'Запрошенный адрес не существует', nav:false }),
     assistant:Object.freeze({ path:'#/assistant', label:'AI-консультант', icon:'✦', description:'Предварительная помощь по неисправности', nav:false }),
     diagnostics:Object.freeze({ path:'#/diagnostics', label:'Диагностика', icon:'⌁', description:'ELM327, OBD-II и офлайн-диагностика' }),
     privacy:Object.freeze({ path:'#/privacy', label:'Конфиденциальность', icon:'🔐', description:'Использование и защита данных' }),
@@ -83,7 +84,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     workDetail:'entity-window', serviceManagement:'workspace', masters:'workspace', masterOnboarding:'workspace', masterDashboard:'workspace', masterSchedule:'workspace', masterProfileOwner:'workspace', masterWallOwner:'workspace', masterWorks:'workspace', masterReviews:'workspace', masterExchange:'workspace', community:'workspace', stoDashboard:'workspace',
     parts:'workspace', usedParts:'workspace', seller:'workspace', sellerProducts:'workspace', sellerOrders:'workspace', orders:'workspace', workflow:'workspace', requestNew:'work-dialog', workOrder:'entity-window', vehicle:'entity-window', chats:'workspace', notifications:'deep-link-fallback',
     cabinet:'workspace', cabinetGarage:'workspace', cabinetData:'deep-link-fallback', cabinetHistory:'workspace', cabinetDocuments:'deep-link-fallback', cabinetPromos:'workspace', cabinetTariff:'deep-link-fallback', cabinetSettings:'deep-link-fallback',
-    about:'workspace', rules:'workspace', help:'workspace', assistant:'workspace', diagnostics:'workspace', privacy:'workspace', contacts:'workspace', lawyer:'workspace', towTruck:'workspace',
+    about:'workspace', rules:'workspace', help:'workspace', notFound:'deep-link-fallback', assistant:'workspace', diagnostics:'workspace', privacy:'workspace', contacts:'workspace', lawyer:'workspace', towTruck:'workspace',
     productDetail:'entity-window', serviceDetail:'entity-window', providerDetail:'entity-window', providerBooking:'entity-window', providerReviews:'entity-window'
   });
   const UX_SURFACE_TYPES = Object.freeze(['workspace','entity-window','work-dialog','deep-link-fallback']);
@@ -160,7 +161,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     if (hash === '#/cabinet/tariff') return 'cabinetTariff';
     if (hash === '#/cabinet/settings') return 'cabinetSettings';
     const found = Object.entries(ROUTES).find(([, route]) => route.path === hash);
-    return found ? found[0] : '';
+    return found ? found[0] : 'notFound';
   }
   function get(routeKey){ return ROUTES[routeKey] || ROUTES.home; }
   function has(routeKey){ return Object.prototype.hasOwnProperty.call(ROUTES, routeKey); }
@@ -265,6 +266,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     revision:0,
   };
   let loadFlight = null;
+  let logoutFlight = null;
 
   const clone = value => typeof structuredClone === 'function'
     ? structuredClone(value)
@@ -384,6 +386,37 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     return snapshot();
   }
 
+  function logout() {
+    if (logoutFlight) return logoutFlight;
+    logoutFlight = (async () => {
+      // The resolver revokes both the Identity cookie and the legacy PHP session.
+      // Keep the local session intact if the server could not confirm logout.
+      await request('/api/identity_session.php?action=logout', { method:'POST', body:JSON.stringify({ action:'logout' }) });
+      if (loadFlight) await loadFlight.catch(() => {});
+      reset('logout');
+      window.KaretaApiClient?.invalidate?.();
+      const next = window.KaretaNext?.state;
+      if (next) Object.assign(next, { user:null, session:null, identity:null, identityReady:false, context:null, capabilities:[] });
+      document.documentElement.dataset.identityMode = 'anonymous';
+      delete document.documentElement.dataset.userRole;
+      window.KaretaRoleAccess?.clearLegacyOverride?.();
+      window._karetaCookieRole = '';
+      window._karetaCookieOnbDone = false;
+      if (window.App?.logout) {
+        await window.App.logout();
+      } else {
+        for (const key of ['kareta.auth.user','kareta.profile.current','kareta.auth.phone','kareta_role','kareta_onboarding_completed_at']) {
+          try { localStorage.removeItem(key); sessionStorage.removeItem(key); } catch (_error) {}
+        }
+        window.KaretaOnboardingState?.reset?.();
+        window.KaretaOnboardingLifecycle?.resume?.({ source:'logout' });
+      }
+      emit('kareta:session-anonymous', { source:'logout', reason:'user_logout' });
+      return snapshot();
+    })().finally(() => { logoutFlight = null; });
+    return logoutFlight;
+  }
+
   function bootstrapSession(payload, source = 'session-bootstrap') {
     if (!payload || payload.authenticated !== true || !payload.account || !payload.currentContext) {
       const error = new Error('identity_bootstrap_invalid');
@@ -479,7 +512,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     });
   }
 
-  window.KaretaIdentity = Object.freeze({ load, select, reset, bootstrapSession, has, hasAny, hasAll, compatibilityRole, snapshot });
+  window.KaretaIdentity = Object.freeze({ load, select, reset, logout, bootstrapSession, has, hasAny, hasAll, compatibilityRole, snapshot });
 })();
 ;
 

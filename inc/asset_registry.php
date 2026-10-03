@@ -10,6 +10,11 @@ function kareta_asset_registry(): array
     return [
         'styles' => [
             'css/runtime_boot_bundle.css',
+            // Role-scoped shell authority. Eager by design so direct Master deep-links
+            // never depend on which route happened to load first.
+            'css/next/master_shell_canonical_84_143.css',
+            // One owner for desktop route-root width/gutters across all roles.
+            'css/next/page_geometry_canonical_84_146.css',
         ],
         'scripts' => [
             'js/next/runtime_logger.js',
@@ -491,7 +496,7 @@ function kareta_route_asset_plan(): array
             'routeKeys' => ['cabinet','cabinetGarage','cabinetData','cabinetHistory','cabinetDocuments','cabinetPromos','cabinetTariff','cabinetSettings'],
             'routes' => ['#/cabinet','#/cabinet/garage','#/cabinet/data','#/cabinet/history','#/cabinet/documents','#/cabinet/promotions','#/cabinet/tariff','#/cabinet/settings'],
             'styles' => ['css/next/client_cabinet.css'],
-            'scripts' => ['js/next/messaging_settings.js','js/next/pages/cabinet.js'],
+            'scripts' => ['js/next/messaging_settings.js','js/next/catalog/json_catalog_loader.js','js/next/pages/cabinet.js'],
             'globals' => ['KaretaMessagingSettings','KaretaCabinetPages'],
         ],
         'chats' => [
@@ -572,6 +577,14 @@ function kareta_route_asset_plan(): array
             'scripts' => ['js/next/pages/info.js'],
             'globals' => ['KaretaInfoPages'],
         ],
+        'notFound' => [
+            'lazy' => true,
+            'routeKeys' => ['notFound'],
+            'routes' => ['#/404'],
+            'styles' => ['css/next/not_found_84_146.css'],
+            'scripts' => ['js/next/pages/not_found.js'],
+            'globals' => ['KaretaNotFoundPages'],
+        ],
         'clientLegacyPhase1' => [
             'lazy' => true,
             'routeKeys' => ['notifications','serviceDetail','profile','following'],
@@ -598,7 +611,7 @@ function kareta_route_asset_plan(): array
         ],
         'masterWorkplaceApi' => [
             'lazy' => true,
-            'routeKeys' => ['masterDashboard','masterWorkplaceSettings'],
+            'routeKeys' => ['masterDashboard','cabinetSettings'],
             'routes' => ['#/master','#/cabinet/settings'],
             'styles' => ['css/next/master_requests_workplace_services.css'],
             'scripts' => ['js/next/work_orders/master_workplace_api.js'],
@@ -719,7 +732,7 @@ function kareta_route_asset_plan(): array
             'cascade' => 'last',
             'routeKeys' => ['masterDashboard','masterSchedule','masterExchange','serviceManagement','masterProfileOwner','masterWallOwner','masterWorks','masterReviews','cabinet','cabinetSettings','orders','chats','parts','community'],
             'routes' => ['#/master','#/master/schedule','#/master/exchange','#/services/manage','#/master/profile','#/master/wall','#/master/works','#/master/reviews','#/cabinet','#/cabinet/settings','#/orders','#/chats','#/parts','#/community'],
-            'styles' => ['css/next/master_ui_foundation.css','css/next/master_role_skin.css','css/next/master_surface_contract.css'],
+            'styles' => ['css/next/master_ui_foundation.css','css/next/master_role_skin.css','css/next/master_surface_contract.css','css/routes/master_reference_final_84_130.css','css/next/master_shell_canonical_84_143.css'],
             'scripts' => [],
             'globals' => [],
         ],

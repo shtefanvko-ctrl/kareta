@@ -125,7 +125,7 @@ $accepted = [];
 foreach ($items as $item) {
     if (!is_array($item)) continue;
     $payload = isset($item['payload']) && is_array($item['payload']) ? $item['payload'] : $item;
-    $syncKey = trim((string)($item['id'] ?? $payload['syncKey'] ?? ''));
+    $syncKey = trim((string)($payload['syncKey'] ?? $item['id'] ?? ''));
     if ($syncKey === '') $syncKey = 'obd_'.bin2hex(random_bytes(12));
     $id = 'obd_'.substr(hash('sha256',$accountId.'|'.$syncKey),0,40);
     $capturedMs = (int)($payload['capturedAt'] ?? $item['createdAt'] ?? 0);
@@ -151,6 +151,13 @@ foreach ($items as $item) {
         'android',
         $capturedAt
     ]);
+    $jobId = trim((string)($payload['jobId'] ?? ''));
+    if ($jobId !== '' && kareta_table_exists($pdo,'obd_diagnostic_jobs')) {
+        $completeJob = $pdo->prepare("UPDATE obd_diagnostic_jobs
+            SET status='completed',result_sync_key=?,error_code='',error_message='',completed_at=NOW()
+            WHERE id=? AND account_id=? AND status IN ('pending','claimed')");
+        $completeJob->execute([$syncKey,substr($jobId,0,80),$accountId]);
+    }
     $accepted[] = $syncKey;
 }
 kareta_json(['ok'=>true,'accepted'=>$accepted,'count'=>count($accepted)]);

@@ -120,6 +120,30 @@ if (!defined('KARETA_CONFIG_LOADED')) {
         'booking_phone' => (string) kareta_config_value('KARETA_BOOKING_PHONE', 'booking_phone', '+77072980649'),
     ]);
 
+    // Public map tiles are loaded only after the user opens an inline map.
+    // The URL is deployment-configurable so KARETA can move from the OSM
+    // community service to a commercial/self-hosted provider without a code release.
+    define('KARETA_GEO_MAP', [
+        'tile_url' => (string) kareta_config_value(
+            'KARETA_GEO_TILE_URL',
+            'geo_tile_url',
+            'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+        ),
+        'attribution_label' => (string) kareta_config_value(
+            'KARETA_GEO_ATTRIBUTION_LABEL',
+            'geo_attribution_label',
+            '© OpenStreetMap contributors'
+        ),
+        'attribution_url' => (string) kareta_config_value(
+            'KARETA_GEO_ATTRIBUTION_URL',
+            'geo_attribution_url',
+            'https://www.openstreetmap.org/copyright'
+        ),
+        'min_zoom' => max(3, (int) kareta_config_value('KARETA_GEO_MIN_ZOOM', 'geo_min_zoom', 8)),
+        'max_zoom' => min(19, (int) kareta_config_value('KARETA_GEO_MAX_ZOOM', 'geo_max_zoom', 17)),
+        'default_zoom' => (int) kareta_config_value('KARETA_GEO_DEFAULT_ZOOM', 'geo_default_zoom', 13),
+    ]);
+
     $kareta_db_host = kareta_config_value('KARETA_DB_HOST', 'db_host', null);
     if ($kareta_db_host === null || $kareta_db_host === '') {
         $kareta_db_host = kareta_env_first(['DB_HOST', 'MYSQL_HOST'], '127.0.0.1');
@@ -178,7 +202,7 @@ if (!defined('KARETA_CONFIG_LOADED')) {
      * KARETA_DB_VERSION — актуальная версия migration runner.
      * Версию увеличивать при добавлении новой migration file.
      */
-    define('KARETA_DB_VERSION', 129);
+    define('KARETA_DB_VERSION', 137);
 
     $kareta_environment = strtolower(trim((string) kareta_config_value('KARETA_ENVIRONMENT', 'environment', 'production')));
     if (!in_array($kareta_environment, ['production','staging','development','test'], true)) {
@@ -243,7 +267,7 @@ if (!defined('KARETA_CONFIG_LOADED')) {
     $kareta_otp_temp_static_enabled = filter_var(kareta_config_value(
         'KARETA_OTP_TEMP_STATIC_ENABLED',
         'otp_temp_static_enabled',
-        true
+        false
     ), FILTER_VALIDATE_BOOLEAN);
     $kareta_otp_temp_static_deadline = $kareta_otp_temp_static_until !== '' ? strtotime($kareta_otp_temp_static_until) : false;
     $kareta_otp_temp_static_within_window = $kareta_otp_temp_static_until === ''

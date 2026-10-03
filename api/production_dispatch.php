@@ -1,11 +1,52 @@
 <?php
 declare(strict_types=1);
 
+function kareta_dispatch_valid_coords(?float $lat,?float $lng): bool {
+    return $lat!==null&&$lng!==null&&is_finite($lat)&&is_finite($lng)&&$lat>=-90.0&&$lat<=90.0&&$lng>=-180.0&&$lng<=180.0;
+}
 function kareta_dispatch_distance_km(?float $lat1, ?float $lng1, ?float $lat2, ?float $lng2): ?float {
-    if ($lat1===null||$lng1===null||$lat2===null||$lng2===null) return null;
+    if (!kareta_dispatch_valid_coords($lat1,$lng1)||!kareta_dispatch_valid_coords($lat2,$lng2)) return null;
     $r=6371.0; $dLat=deg2rad($lat2-$lat1); $dLng=deg2rad($lng2-$lng1);
     $a=sin($dLat/2)**2+cos(deg2rad($lat1))*cos(deg2rad($lat2))*sin($dLng/2)**2;
     return round($r*2*atan2(sqrt($a),sqrt(max(0,1-$a))),1);
+}
+
+function kareta_dispatch_master_origin(PDO $pdo,string $masterId,array $masterRow=[]): ?array {
+    $m=$masterRow?:kareta_dispatch_master_row($pdo,$masterId);
+    $mode=strtolower(trim((string)($m['work_mode']??'shop')));
+    if(kareta_table_exists($pdo,'geo_points')){
+        $preferred=$mode==='mobile'?['mobile_origin','service']:($mode==='both'?['mobile_origin','service']:['service','mobile_origin']);
+        $q=$pdo->prepare("SELECT kind,latitude,longitude FROM geo_points WHERE owner_type='master' AND BINARY owner_id=BINARY ? AND active=1 AND latitude IS NOT NULL AND longitude IS NOT NULL");
+        $q->execute([$masterId]);$rows=$q->fetchAll(PDO::FETCH_ASSOC)?:[];
+        foreach($preferred as $kind)foreach($rows as $row){if((string)($row['kind']??'')!==$kind)continue;$lat=(float)$row['latitude'];$lng=(float)$row['longitude'];if(kareta_dispatch_valid_coords($lat,$lng))return ['lat'=>$lat,'lng'=>$lng,'kind'=>$kind];}
+    }
+    $lat=isset($m['service_lat'])&&$m['service_lat']!==null?(float)$m['service_lat']:null;$lng=isset($m['service_lng'])&&$m['service_lng']!==null?(float)$m['service_lng']:null;
+    return kareta_dispatch_valid_coords($lat,$lng)?['lat'=>$lat,'lng'=>$lng,'kind'=>'legacy_service']:null;
+}
+function kareta_dispatch_request_point(array $order): ?array {
+    $lat=isset($order['lat'])&&$order['lat']!==null&&$order['lat']!==''?(float)$order['lat']:null;$lng=isset($order['lng'])&&$order['lng']!==null&&$order['lng']!==''?(float)$order['lng']:null;
+    return kareta_dispatch_valid_coords($lat,$lng)?['lat'=>$lat,'lng'=>$lng]:null;
+}
+function kareta_dispatch_master_order_distance(PDO $pdo,string $masterId,array $order,array $masterRow=[]): ?float {
+    $origin=kareta_dispatch_master_origin($pdo,$masterId,$masterRow);$point=kareta_dispatch_request_point($order);
+    if(!$origin||!$point)return null;
+    return kareta_dispatch_distance_km((float)$origin['lat'],(float)$origin['lng'],(float)$point['lat'],(float)$point['lng']);
+}
+function kareta_master_exchange_safe_notes(string $notes): string {
+    $lines=preg_split('/\R/u',$notes)?:[];
+    $safe=array_values(array_filter($lines,static fn($line)=>!preg_match('/^\s*(?:Адрес|Address)\s*:/ui',(string)$line)));
+    return trim(implode("\n",$safe));
+}
+function kareta_master_exchange_sanitize_geo(array $item,?float $distance,bool $revealExact=false): array {
+    $item['notes']=kareta_master_exchange_safe_notes((string)($item['notes']??''));
+    if($revealExact)return $item;
+    $item['geo']=[
+        'hasPoint'=>$distance!==null,
+        'distanceKm'=>$distance,
+        'distanceMode'=>'straight_line',
+        'precision'=>'hidden',
+    ];
+    return $item;
 }
 
 function kareta_dispatch_master_settings(PDO $pdo,string $masterId): array {
@@ -74,8 +115,7 @@ function kareta_dispatch_score_master_for_order(PDO $pdo,string $masterId,array 
         if(!$alreadyAssigned&&empty($quota['canAccept']))return ['score'=>0,'eligible'=>false,'tariffBlocked'=>true,'tariff'=>$quota,'blockedMetric'=>(string)($quota['blockedMetric']??'')];
     }
     $load=kareta_dispatch_master_load($pdo,$masterId);$settings=$load['settings'];$serviceMatch=kareta_dispatch_service_match($pdo,$masterId,$order);
-    $distance=kareta_dispatch_distance_km(isset($m['service_lat'])?(float)$m['service_lat']:null,isset($m['service_lng'])?(float)$m['service_lng']:null,isset($order['lat'])?(float)$order['lat']:null,isset($order['lng'])?(float)$order['lng']:null);
-    if($distance===null&&isset($order['distance_km'])&&$order['distance_km']!=='')$distance=(float)$order['distance_km'];
+    $distance=kareta_dispatch_master_order_distance($pdo,$masterId,$order,$m);
     $radius=max(1,(int)($m['service_radius_km']??0)?:$settings['preferredRadiusKm']);
     $distanceScore=$distance===null?0.65:max(0,1-($distance/max(1,$radius*1.5)));
     $rating=min(5,max(0,(float)($m['rating']??0)));$availability=in_array((string)($m['availability']??'online'),['online','available','free'],true)?1.0:0.55;
@@ -86,7 +126,7 @@ function kareta_dispatch_score_master_for_order(PDO $pdo,string $masterId,array 
     $estimated=max(30,(int)($order['estimated_duration_min']??120));$etaStart=new DateTimeImmutable((string)$load['etaStart']);$etaEnd=$etaStart->modify('+'.$estimated.' minutes');
     $published=trim((string)($order['exchange_published_at']??$order['created_at']??''));$slaDue='';$slaState='ok';
     if($published!==''){try{$due=(new DateTimeImmutable($published))->modify('+'.$settings['responseSlaMin'].' minutes');$slaDue=$due->format('Y-m-d H:i:s');if($due<new DateTimeImmutable('now'))$slaState='breached';elseif($due<(new DateTimeImmutable('now'))->modify('+5 minutes'))$slaState='risk';}catch(Throwable $_){}}
-    return ['score'=>$score,'eligible'=>$serviceMatch>0,'serviceMatch'=>round($serviceMatch*100),'loadPct'=>$load['loadPct'],'overloaded'=>$load['overloaded'],'distanceKm'=>$distance,'etaStart'=>$etaStart->format('Y-m-d H:i:s'),'etaEnd'=>$etaEnd->format('Y-m-d H:i:s'),'slaDueAt'=>$slaDue,'slaState'=>$slaState,'activeOrders'=>$load['activeOrders'],'capacityMinutes'=>$load['capacityMinutes'],'queuedMinutes'=>$load['queuedMinutes'],'masterName'=>(string)($m['name']??'Мастер'),'rating'=>$rating,'stoId'=>(string)($m['sto_id']??''),'tariffBlocked'=>false,'tariff'=>$quota];
+    return ['score'=>$score,'eligible'=>$serviceMatch>0,'serviceMatch'=>round($serviceMatch*100),'loadPct'=>$load['loadPct'],'overloaded'=>$load['overloaded'],'distanceKm'=>$distance,'distanceMode'=>'straight_line','requestPointAvailable'=>$distance!==null,'etaStart'=>$etaStart->format('Y-m-d H:i:s'),'etaEnd'=>$etaEnd->format('Y-m-d H:i:s'),'slaDueAt'=>$slaDue,'slaState'=>$slaState,'activeOrders'=>$load['activeOrders'],'capacityMinutes'=>$load['capacityMinutes'],'queuedMinutes'=>$load['queuedMinutes'],'masterName'=>(string)($m['name']??'Мастер'),'rating'=>$rating,'stoId'=>(string)($m['sto_id']??''),'tariffBlocked'=>false,'tariff'=>$quota];
 }
 
 function kareta_dispatch_rank_order(PDO $pdo,array $order,string $stoId=''): array {
@@ -225,7 +265,7 @@ function kareta_master_exchange_feed_fallback(PDO $pdo,array $ctx,array $state,s
     if(!isset($items)){
         $responseCountSql=kareta_table_exists($pdo,'master_exchange_responses')?"(SELECT COUNT(*) FROM master_exchange_responses r WHERE r.request_id=o.id AND r.active=1 AND r.response_status NOT IN ('declined','cancelled','withdrawn'))":"0";
         $rows=kareta_try_query_all($pdo,"SELECT o.*,(SELECT c.id FROM chats c WHERE c.order_id=o.id ORDER BY c.id ASC LIMIT 1) chat_id,$responseCountSql responses_count FROM orders o WHERE ".implode(' AND ',$where)." ORDER BY o.created_at DESC LIMIT ".min(180,$limit*3),$params,[],'MASTER_EXCHANGE_FALLBACK_FEED');
-        $items=[];foreach($rows as $row){$id=(string)($row['id']??'');if(isset($hidden[$id])&&$tab==='new')continue;if($tab==='new'&&isset($responseMap[$id]))continue;$item=_fmt_order($row);$item['saved']=in_array($id,$savedIds,true);$item['myResponse']=$responseMap[$id]??null;$item['responsesCount']=(int)($row['responses_count']??0);$matched=kareta_master_exchange_row_matches($row,$offerIds);if($serviceScope==='mine'&&!$matched)continue;$item['clientName']='Клиент';$item['clientPhone']='';$item['dispatch']=['score'=>0,'eligible'=>true,'serviceMatch'=>$matched?100:0,'loadPct'=>0,'overloaded'=>false,'distanceKm'=>null,'etaStart'=>'','etaEnd'=>'','slaDueAt'=>'','slaState'=>'ok','degraded'=>true];$item['matchReason']=$matched?'Совпадает с «Моими услугами»':'Вне «Моих услуг» · заявка доступна';$items[]=$item;if(count($items)>=$limit)break;}
+        $items=[];foreach($rows as $row){$id=(string)($row['id']??'');if(isset($hidden[$id])&&$tab==='new')continue;if($tab==='new'&&isset($responseMap[$id]))continue;$distance=null;try{$distance=kareta_dispatch_master_order_distance($pdo,$masterId,$row);}catch(Throwable $_distanceError){}if($distanceMax>0&&($distance===null||$distance>$distanceMax))continue;$item=_fmt_order($row);$item=kareta_master_exchange_sanitize_geo($item,$distance,$tab==='accepted');$item['saved']=in_array($id,$savedIds,true);$item['myResponse']=$responseMap[$id]??null;$item['responsesCount']=(int)($row['responses_count']??0);$matched=kareta_master_exchange_row_matches($row,$offerIds);if($serviceScope==='mine'&&!$matched)continue;$item['clientName']='Клиент';$item['clientPhone']='';$item['dispatch']=['score'=>0,'eligible'=>true,'serviceMatch'=>$matched?100:0,'loadPct'=>0,'overloaded'=>false,'distanceKm'=>$distance,'distanceMode'=>'straight_line','requestPointAvailable'=>$distance!==null,'etaStart'=>'','etaEnd'=>'','slaDueAt'=>'','slaState'=>'ok','degraded'=>true];$item['matchReason']=$matched?'Совпадает с «Моими услугами»':'Вне «Моих услуг» · заявка доступна';$items[]=$item;if(count($items)>=$limit)break;}
     }
     if($tab==='new'){try{kareta_master_exchange_notify_matching_items($pdo,$masterId,$ctx['actorUserId']??null,$items);}catch(Throwable $notifyError){kareta_log_error('MASTER_EXCHANGE_NOTIFY_FALLBACK',$notifyError->getMessage());}}
     $responded=count($responses);$won=count(array_filter($responses,static fn($r)=>in_array((string)($r['response_status']??''),['accepted','won'],true)));$pending=count(array_filter($responses,static fn($r)=>in_array((string)($r['response_status']??''),['pending','viewed'],true)));
@@ -247,7 +287,7 @@ function kareta_master_exchange_feed_v2(PDO $pdo): void {
         if($q!==''){$like='%'.$q.'%';$where[]="(o.service_names LIKE ? OR o.client_car LIKE ? OR o.notes LIKE ? OR o.vehicle_title LIKE ?)";array_push($params,$like,$like,$like,$like);}if($urgent==='urgent'&&kareta_column_exists($pdo,'orders','priority'))$where[]="o.priority IN ('urgent','high')";elseif($urgent==='normal'&&kareta_column_exists($pdo,'orders','priority'))$where[]="o.priority NOT IN ('urgent','high')";if($priceMin>0&&kareta_column_exists($pdo,'orders','price')){$where[]='o.price>=?';$params[]=$priceMin;}if($priceMax>0&&kareta_column_exists($pdo,'orders','price')){$where[]='o.price<=?';$params[]=$priceMax;}
         $responseCountSql=kareta_table_exists($pdo,'master_exchange_responses')?"(SELECT COUNT(*) FROM master_exchange_responses r WHERE r.request_id=o.id AND r.active=1 AND r.response_status NOT IN ('declined','cancelled','withdrawn'))":"0";
         $sql="SELECT o.*,(SELECT c.id FROM chats c WHERE c.order_id=o.id ORDER BY c.id ASC LIMIT 1) chat_id,$responseCountSql responses_count FROM orders o WHERE ".implode(' AND ',$where)." ORDER BY o.created_at DESC LIMIT ".min(180,$limit*3);$s=$pdo->prepare($sql);$s->execute($params);$rows=$s->fetchAll(PDO::FETCH_ASSOC)?:[];
-        $items=[];foreach($rows as $row){$id=(string)$row['id'];if(isset($hidden[$id])&&$tab==='new')continue;if($tab==='new'&&isset($responseMap[$id]))continue;try{$score=kareta_dispatch_score_master_for_order($pdo,$masterId,$row);}catch(Throwable $metricError){kareta_log_error('MASTER_EXCHANGE_ITEM_METRICS',$metricError->getMessage());$score=['score'=>0,'eligible'=>true,'serviceMatch'=>0,'loadPct'=>0,'overloaded'=>false,'distanceKm'=>null,'etaStart'=>'','etaEnd'=>'','slaDueAt'=>'','slaState'=>'ok','degraded'=>true];}if($distanceMax>0&&$score['distanceKm']!==null&&(float)$score['distanceKm']>$distanceMax)continue;$item=_fmt_order($row);$item['saved']=in_array($id,$savedIds,true);$item['myResponse']=$responseMap[$id]??null;$item['responsesCount']=(int)($row['responses_count']??0);$item['clientName']='Клиент';$item['clientPhone']='';$item['dispatch']=$score;$matchPct=(int)($score['serviceMatch']??0);if($serviceScope==='mine'&&$matchPct<=0)continue;$item['matchReason']=!empty($score['degraded'])?'Заявка доступна · метрики обновляются':($matchPct>0?'Совпадение '.$matchPct.'% · загрузка '.(int)($score['loadPct']??0).'%':'Вне «Моих услуг» · заявку всё равно можно посмотреть и принять');$items[]=$item;if(count($items)>=$limit)break;}
+        $items=[];foreach($rows as $row){$id=(string)$row['id'];if(isset($hidden[$id])&&$tab==='new')continue;if($tab==='new'&&isset($responseMap[$id]))continue;try{$score=kareta_dispatch_score_master_for_order($pdo,$masterId,$row);}catch(Throwable $metricError){kareta_log_error('MASTER_EXCHANGE_ITEM_METRICS',$metricError->getMessage());$score=['score'=>0,'eligible'=>true,'serviceMatch'=>0,'loadPct'=>0,'overloaded'=>false,'distanceKm'=>null,'etaStart'=>'','etaEnd'=>'','slaDueAt'=>'','slaState'=>'ok','degraded'=>true];}if($distanceMax>0&&($score['distanceKm']===null||(float)$score['distanceKm']>$distanceMax))continue;$item=_fmt_order($row);$item=kareta_master_exchange_sanitize_geo($item,isset($score['distanceKm'])&&$score['distanceKm']!==null?(float)$score['distanceKm']:null,$tab==='accepted');$item['saved']=in_array($id,$savedIds,true);$item['myResponse']=$responseMap[$id]??null;$item['responsesCount']=(int)($row['responses_count']??0);$item['clientName']='Клиент';$item['clientPhone']='';$item['dispatch']=$score;$matchPct=(int)($score['serviceMatch']??0);if($serviceScope==='mine'&&$matchPct<=0)continue;$item['matchReason']=!empty($score['degraded'])?'Заявка доступна · метрики обновляются':($matchPct>0?'Совпадение '.$matchPct.'% · загрузка '.(int)($score['loadPct']??0).'%':'Вне «Моих услуг» · заявку всё равно можно посмотреть и принять');$items[]=$item;if(count($items)>=$limit)break;}
         if($tab==='new'){try{kareta_master_exchange_notify_matching_items($pdo,$masterId,$ctx['actorUserId']??null,$items);}catch(Throwable $notifyError){kareta_log_error('MASTER_EXCHANGE_NOTIFY_PRIMARY',$notifyError->getMessage());}}
         usort($items,static function($a,$b)use($sort){$da=$a['dispatch']??[];$db=$b['dispatch']??[];return match($sort){'distance'=>(($da['distanceKm']??99999)<=>($db['distanceKm']??99999)),'eta'=>strcmp((string)($da['etaStart']??''),(string)($db['etaStart']??'')),'price_desc'=>((float)($b['price']??0)<=> (float)($a['price']??0)),'price_asc'=>((float)($a['price']??0)<=> (float)($b['price']??0)),'responses'=>((int)($a['responsesCount']??0)<=> (int)($b['responsesCount']??0)),default=>((float)($db['score']??0)<=> (float)($da['score']??0))};});
         kareta_json(['ok'=>true,'data'=>['items'=>$items,'kpi'=>kareta_master_exchange_kpi_v2($pdo,$masterId,$state),'state'=>$state,'tabCounts'=>kareta_master_exchange_tab_counts($pdo,$masterId,$state),'load'=>kareta_dispatch_master_load($pdo,$masterId),'degraded'=>false,'serviceScope'=>$serviceScope]]);

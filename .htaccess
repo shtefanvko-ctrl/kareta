@@ -18,6 +18,8 @@ AddDefaultCharset UTF-8
   # Never expose internal deployment/documentation folders.
   RewriteRule ^(docs|storage/logs|storage/backups|tools)(/|$) - [F,L]
   RewriteRule ^config\.private\.php$ - [F,L]
+  RewriteRule ^config\.(?:private|server-test)\.example\.php$ - [F,L]
+  RewriteRule ^_SERVER_[A-Za-z0-9_.-]+$ - [F,L]
 
   # Protect dotfiles except well-known ACME folder.
   RewriteRule (^|/)\.(?!well-known/) - [F,L]
@@ -31,8 +33,16 @@ AddDefaultCharset UTF-8
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # SPA fallback for clean URLs.
-  RewriteRule ^ index.php [L]
+  # Missing static resources must never fall through to the SPA document.
+  # Returning index.php for a .css/.js request produces text/html + nosniff and
+  # manifests in WebView as route_style_load_failed / route_script_load_failed.
+  RewriteCond %{REQUEST_URI} \.(?:css|js|mjs|map|png|jpe?g|webp|svg|gif|ico|woff2?|ttf)$ [NC]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^ - [R=404,L]
+
+  # SPA fallback for clean URLs. Mark the internal fallback so index.php can
+  # return a real HTTP 404 while still rendering the application 404 surface.
+  RewriteRule ^ index.php?kareta_route_fallback=1 [QSA,L]
 </IfModule>
 
 <IfModule mod_expires.c>

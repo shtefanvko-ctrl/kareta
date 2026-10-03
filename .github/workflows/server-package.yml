@@ -1,0 +1,134 @@
+name: Server package
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: server-package-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  server-package:
+    name: server-package
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: pdo_mysql
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Package tool syntax
+        run: |
+          python3 -m py_compile tools/build_server_package.py
+          python3 tools/test_server_test_package_contract.py
+          php -l tools/verify_server_package.php
+          php -l tools/server_preflight.php
+
+      - name: Focused release contracts
+        run: |
+          php tools/test_release_migration_manifest.php
+          php tools/test_deployment_provenance.php
+          node tools/test_current_release.js
+
+      - name: Build exact-head server ZIP
+        env:
+          KARETA_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          KARETA_HEAD_REF: ${{ github.head_ref }}
+        run: |
+          OUT="$RUNNER_TEMP/kareta-server-test-${KARETA_HEAD_SHA}.zip"
+          python3 tools/build_server_package.py \
+            --output "$OUT" \
+            --source-sha "$KARETA_HEAD_SHA" \
+            --git-ref "$KARETA_HEAD_REF" \
+            --workflow-run-id "${GITHUB_RUN_ID}"
+          (
+            cd "$(dirname "$OUT")"
+            sha256sum "$(basename "$OUT")" > "$(basename "$OUT").sha256"
+            sha256sum -c "$(basename "$OUT").sha256"
+          )
+
+      - name: Extract and verify package
+        env:
+          KARETA_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          OUT="$RUNNER_TEMP/kareta-server-test-${KARETA_HEAD_SHA}.zip"
+          DEST="$RUNNER_TEMP/server-package"
+          mkdir -p "$DEST"
+          python3 - "$OUT" "$DEST" <<'PY'
+          import sys, zipfile
+          archive, dest = sys.argv[1], sys.argv[2]
+          with zipfile.ZipFile(archive) as zf:
+              for info in zf.infolist():
+                  name = info.filename.replace('\\','/')
+                  if name.startswith('/') or '..' in name.split('/'):
+                      raise SystemExit('unsafe zip path: ' + name)
+              zf.extractall(dest)
+          PY
+          php tools/verify_server_package.php \
+            --root="$DEST" \
+            --expected-sha="$KARETA_HEAD_SHA"
+          php "$DEST/tools/server_preflight.php" --allow-unconfigured
+          find "$DEST/js" -type f -name '*.js' -print0 | xargs -0 -n1 -P8 node --check
+
+      - name: Export package evidence and operator sidecars
+        env:
+          KARETA_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          cp "$RUNNER_TEMP/server-package/_SERVER_PACKAGE_MANIFEST.json" "$RUNNER_TEMP/kareta-server-package-manifest.json"
+          cp "$RUNNER_TEMP/server-package/storage/deployment_manifest.json" "$RUNNER_TEMP/kareta-deployment-manifest.json"
+          cp config.server-test.example.php "$RUNNER_TEMP/config.server-test.example.php"
+          cp config.private.example.php "$RUNNER_TEMP/config.private.example.php"
+          cp docs/deployment/SERVER_TEST_UPLOAD.md "$RUNNER_TEMP/SERVER_TEST_UPLOAD.md"
+
+      - name: Upload server package
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kareta-server-test-${{ github.event.pull_request.head.sha }}
+          path: |
+            ${{ runner.temp }}/kareta-server-test-${{ github.event.pull_request.head.sha }}.zip
+            ${{ runner.temp }}/kareta-server-test-${{ github.event.pull_request.head.sha }}.zip.sha256
+            ${{ runner.temp }}/kareta-server-package-manifest.json
+            ${{ runner.temp }}/kareta-deployment-manifest.json
+            ${{ runner.temp }}/config.server-test.example.php
+            ${{ runner.temp }}/config.private.example.php
+            ${{ runner.temp }}/SERVER_TEST_UPLOAD.md
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Write Harness receipt
+        if: always()
+        env:
+          KARETA_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          KARETA_JOB_STATUS: ${{ job.status }}
+        run: |
+          node tools/harness_receipt.js \
+            --id server-package \
+            --subject-sha "$KARETA_HEAD_SHA" \
+            --job-status "$KARETA_JOB_STATUS" \
+            --output "$RUNNER_TEMP/kareta-harness-server-package.json"
+
+      - name: Upload Harness receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-receipt-server-package-${{ github.event.pull_request.head.sha }}
+          path: ${{ runner.temp }}/kareta-harness-server-package.json
+          if-no-files-found: error
+          retention-days: 30

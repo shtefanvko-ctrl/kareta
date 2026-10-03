@@ -4,7 +4,9 @@
   const api = window.KaretaCatalogApi;
   if (!api) throw new Error('KaretaCatalogApi is required before catalog_state.js');
 
+  const RELEASE=String(window.KARETA_NEXT_ASSET_VERSION||'dev');
   const CACHE_TTL = 30000;
+  const PERSIST_KEY=`kareta.catalog.snapshot:${RELEASE}`;
   const listeners = new Set();
   let requestId = 0;
   let inFlight = null;
@@ -13,6 +15,29 @@
     metrics:Object.freeze({ services:0, products:0, productsInStock:0 }),
     error:null, fetchedAt:0, stale:false, serviceSource:'',
   });
+
+  function signatureOf(value){
+    try{return JSON.stringify({
+      services:(value?.services||[]).map(row=>[row.id,row.name,row.category,row.basePrice,row.minOfferPrice,row.offerCount]),
+      products:(value?.products||[]).map(row=>[row.id,row.name,row.priceLabel,row.stock]),
+      categories:(value?.serviceCategories||[]).map(row=>[row.key,row.name,row.count]),
+    });}catch(_e){return'';}
+  }
+  function persist(value){
+    try{sessionStorage.setItem(PERSIST_KEY,JSON.stringify({
+      status:'ready',services:value.services||[],products:value.products||[],
+      serviceCategories:value.serviceCategories||[],productCategories:value.productCategories||[],
+      metrics:value.metrics||{},fetchedAt:Number(value.fetchedAt||0),stale:true,
+      serviceSource:String(value.serviceSource||'')
+    }));}catch(_e){}
+  }
+  try{
+    const cached=JSON.parse(sessionStorage.getItem(PERSIST_KEY)||'null');
+    if(cached&&Array.isArray(cached.services)&&cached.services.length){
+      snapshot=Object.freeze({...snapshot,...cached,status:'ready',error:null,stale:true});
+    }
+  }catch(_e){}
+  let lastSignature=signatureOf(snapshot);
 
   function categories(rows, field){
     const counts = new Map();
@@ -39,9 +64,11 @@
     const services = Array.isArray(payload?.services) ? payload.services : [];
     const suppliedServiceCategories = Array.isArray(payload?.serviceCategories) ? payload.serviceCategories : [];
     const products = Array.isArray(payload?.products) ? payload.products : [];
-    return emit({
-      status:'ready', services, products,
-      serviceCategories:(suppliedServiceCategories.length ? suppliedServiceCategories.map(item => Object.freeze({ ...item, count:services.filter(service => service.category === item.key).length })) : categories(services, 'category')),
+    const serviceCategories=suppliedServiceCategories.length
+      ? suppliedServiceCategories.map(item => Object.freeze({ ...item, count:services.filter(service => service.category === item.key).length }))
+      : categories(services, 'category');
+    const next={
+      status:'ready', services, products, serviceCategories,
       productCategories:categories(products, 'category'),
       metrics:Object.freeze({
         services:services.length,
@@ -52,26 +79,48 @@
       fetchedAt:Number(meta.fetchedAt || payload?.fetchedAt || Date.now()),
       stale:meta.stale === true,
       serviceSource:String(payload?.serviceSource || meta.serviceSource || ''),
-    });
+    };
+    const nextSignature=signatureOf(next);
+    if(snapshot.status==='ready'&&nextSignature&&nextSignature===lastSignature){
+      snapshot=Object.freeze({...snapshot,fetchedAt:next.fetchedAt,stale:next.stale,error:null,serviceSource:next.serviceSource});
+      persist(snapshot);
+      return snapshot;
+    }
+    lastSignature=nextSignature;
+    const value=emit(next);
+    persist(value);
+    return value;
   }
 
   async function load(options = {}){
     const id = ++requestId;
     const force = options.force === true;
-    if (!force && snapshot.status === 'ready' && (Date.now() - snapshot.fetchedAt) < CACHE_TTL) return snapshot;
-    emit({ status:'loading', error:null, stale:false });
-    try {
-      if (!inFlight || force) {
-        inFlight = api.load({ force, cacheTtlMs:CACHE_TTL }).finally(() => { inFlight = null; });
+    const hasCached=Boolean(snapshot.services.length||snapshot.products.length);
+    const fresh=snapshot.status==='ready'&&(Date.now()-snapshot.fetchedAt)<CACHE_TTL;
+    if(!force&&fresh)return snapshot;
+    const refresh=async()=>{
+      try{
+        const payload=await api.load({force:force||hasCached,cacheTtlMs:CACHE_TTL});
+        if(id!==requestId)return snapshot;
+        return apply(payload);
+      }catch(error){
+        if(id!==requestId)return snapshot;
+        if(hasCached){
+          snapshot=Object.freeze({...snapshot,status:'ready',error:null,stale:true});
+          persist(snapshot);
+          return snapshot;
+        }
+        return emit({status:'error',error});
       }
-      const payload = await inFlight;
-      if (id !== requestId) return snapshot;
-      return apply(payload);
-    } catch (error) {
-      if (id !== requestId) return snapshot;
-      if (snapshot.services.length || snapshot.products.length) return emit({ status:'ready', error:null, stale:true });
-      return emit({ status:'error', error });
+    };
+    if(hasCached){
+      // Stale-while-revalidate: keep current content visible and refresh silently.
+      if(!inFlight)inFlight=refresh().finally(()=>{inFlight=null;});
+      return snapshot;
     }
+    emit({status:'loading',error:null,stale:false});
+    if(!inFlight)inFlight=refresh().finally(()=>{inFlight=null;});
+    return inFlight;
   }
 
   function hydrate(responsePayload){
@@ -99,6 +148,12 @@
   }
 
   function cancel(){ requestId += 1; }
+
+  window.addEventListener('kareta:realtime:event',event=>{
+    const type=String(event.detail?.event?.eventType||'');
+    if(/^(service|serviceOffer|catalog)\./i.test(type))void load({force:true,background:true});
+  });
+  window.addEventListener('online',()=>{if(snapshot.services.length)void load({force:true,background:true});});
 
   window.KaretaCatalogState = Object.freeze({
     load, hydrate, cancel, subscribe, getSnapshot:() => snapshot,

@@ -1,0 +1,82 @@
+/* KARETA.KZ canonical route geometry — hardened through R188.5.5.6.84.150 */
+:root{
+  --k-route-frame-max:1280px;
+  --k-route-frame-gutter:clamp(18px,2.4vw,36px);
+}
+#k-page-outlet.k-page-outlet{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+@media(min-width:901px){
+  #k-page-outlet.k-page-outlet{
+    padding-left:var(--k-route-frame-gutter)!important;
+    padding-right:var(--k-route-frame-gutter)!important;
+  }
+  html body #k-page-outlet.k-page-outlet > :where(section,main,article,div)[class]{
+    width:100%!important;
+    max-width:var(--k-route-frame-max)!important;
+    min-width:0!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    padding-left:0!important;
+    padding-right:0!important;
+    box-sizing:border-box!important;
+  }
+  html[data-user-role="master"] #k-page-outlet > .k-master-surface-page{
+    max-width:var(--k-route-frame-max)!important;
+  }
+}
+@media(min-width:1600px){
+  :root{--k-route-frame-max:1320px}
+}
+@media(max-width:900px){
+  #k-page-outlet.k-page-outlet{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+  #k-page-outlet.k-page-outlet > *{
+    min-width:0!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+}
+
+/* 84.150 — compact fail-soft route surface. Internal loader paths stay in runtime logs only. */
+.k-route-load-error{
+  min-height:min(520px,calc(100dvh - 160px))!important;
+  display:grid!important;
+  place-items:center!important;
+  align-content:center!important;
+}
+.k-route-load-error__panel{
+  width:min(100%,560px);
+  display:grid;
+  grid-template-columns:52px minmax(0,1fr);
+  gap:14px 16px;
+  align-items:start;
+  padding:22px;
+  border:1px solid #e4e7ec;
+  border-radius:20px;
+  background:#fff;
+  box-shadow:0 14px 40px rgba(15,23,42,.07);
+}
+.k-route-load-error__mark{
+  width:52px;height:52px;display:grid;place-items:center;
+  border-radius:15px;background:#fff1ec;color:#e84a12;
+  font:900 24px/1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.k-route-load-error__copy{min-width:0}
+.k-route-load-error__copy small{display:block;margin-bottom:4px;color:#a43e18;font-size:10px;font-weight:900;letter-spacing:.12em}
+.k-route-load-error__copy h1{margin:0;color:#17191d;font-size:clamp(23px,3vw,31px);line-height:1.08;letter-spacing:-.035em}
+.k-route-load-error__copy p{max-width:480px;margin:8px 0 0;color:#69717e;font-size:13px;line-height:1.5}
+.k-route-load-error__actions{grid-column:2;display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:520px){
+  .k-route-load-error{min-height:360px!important;place-items:start stretch!important;padding-top:12px!important}
+  .k-route-load-error__panel{grid-template-columns:42px minmax(0,1fr);padding:16px;border-radius:17px}
+  .k-route-load-error__mark{width:42px;height:42px;border-radius:12px;font-size:20px}
+  .k-route-load-error__copy h1{font-size:24px}
+  .k-route-load-error__actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}
+}

@@ -1,0 +1,232 @@
+{
+  "schema": "kareta.harness.change-map.v1",
+  "default": {
+    "subsystems": [
+      "unknown"
+    ],
+    "checks": [
+      "verification-gate"
+    ],
+    "risk": "review",
+    "requiresReview": true
+  },
+  "rules": [
+    {
+      "id": "harness",
+      "include": [
+        "harness/**",
+        "tools/harness_*.js",
+        "tools/test_harness_*.js"
+      ],
+      "subsystems": [
+        "harness"
+      ],
+      "checks": [
+        "harness-self-test"
+      ],
+      "risk": "low"
+    },
+    {
+      "id": "ci",
+      "include": [
+        ".github/workflows/**"
+      ],
+      "subsystems": [
+        "ci"
+      ],
+      "checks": [
+        "verification-gate",
+        "application-gates"
+      ],
+      "risk": "high",
+      "requiresReview": true
+    },
+    {
+      "id": "web",
+      "include": [
+        "js/**",
+        "css/**",
+        "index.php",
+        "sw.js",
+        "asset_manifest.php"
+      ],
+      "subsystems": [
+        "web"
+      ],
+      "checks": [
+        "js-syntax",
+        "lazy-route",
+        "asset-url-hygiene"
+      ],
+      "risk": "medium"
+    },
+    {
+      "id": "api",
+      "include": [
+        "api/**",
+        "inc/**"
+      ],
+      "subsystems": [
+        "api"
+      ],
+      "checks": [
+        "php-syntax",
+        "api-contract"
+      ],
+      "risk": "medium"
+    },
+    {
+      "id": "database-contract",
+      "include": [
+        "api/migrations/**",
+        "api/migration_manifest.json",
+        "api/migration_manifest.php",
+        "config.php"
+      ],
+      "subsystems": [
+        "db"
+      ],
+      "checks": [
+        "migration-contract",
+        "release-migration-manifest"
+      ],
+      "risk": "high",
+      "requiresReview": true,
+      "flags": [
+        "database-contract"
+      ]
+    },
+    {
+      "id": "geo",
+      "include": [
+        "api/geo.php",
+        "api/geo_core.php",
+        "api/migrations/137_geo_platform_core.php",
+        "api/master_onboarding.php",
+        "api/seller_shop.php",
+        "api/sto_workplace.php",
+        "js/next/geo_map.js",
+        "css/next/geo_map.css",
+        "js/next/pages/masters.js",
+        "js/next/pages/parts.js",
+        "js/next/pages/request.js",
+        "tools/test_geo_*.js",
+        "tools/test_exchange_request_geo_privacy.js",
+        "tools/test_exchange_request_geo_privacy.php"
+      ],
+      "subsystems": [
+        "geo"
+      ],
+      "checks": [
+        "geo-platform-core"
+      ],
+      "risk": "high",
+      "requiresReview": true
+    },
+    {
+      "id": "obd",
+      "include": [
+        "api/obd.php",
+        "api/obd_jobs.php",
+        "api/migrations/136_obd_remote_control_plane.php",
+        "js/next/obd_remote_jobs.js",
+        "tools/test_obd_*.js"
+      ],
+      "subsystems": [
+        "obd"
+      ],
+      "checks": [
+        "obd-remote-control-plane"
+      ],
+      "risk": "high",
+      "requiresReview": true
+    },
+    {
+      "id": "native-bridge",
+      "include": [
+        "js/mobile_native_bridge.js"
+      ],
+      "subsystems": [
+        "native-bridge"
+      ],
+      "checks": [
+        "android-native-api6-contract"
+      ],
+      "risk": "high",
+      "requiresReview": true,
+      "flags": [
+        "native-bridge-contract"
+      ]
+    },
+    {
+      "id": "release-provenance",
+      "include": [
+        "docs/release/current.json",
+        "tools/test_current_release.js",
+        "tools/test_reconciliation_84_152.js",
+        "tools/test_deployment_provenance.php",
+        "tools/generate_deployment_manifest.php"
+      ],
+      "subsystems": [
+        "release"
+      ],
+      "checks": [
+        "current-release",
+        "provenance",
+        "server-package"
+      ],
+      "risk": "high",
+      "requiresReview": true,
+      "flags": [
+        "release-provenance"
+      ]
+    },
+    {
+      "id": "deployment",
+      "include": [
+        ".htaccess",
+        "tools/verify_staging_current.py",
+        ".github/workflows/staging-verify.yml"
+      ],
+      "subsystems": [
+        "deployment"
+      ],
+      "checks": [
+        "staging-verifier-syntax",
+        "server-package"
+      ],
+      "risk": "critical",
+      "requiresReview": true,
+      "flags": [
+        "deployment-sensitive"
+      ]
+    },
+    {
+      "id": "server-package",
+      "include": [
+        "config.php",
+        "config.private.example.php",
+        "config.server-test.example.php",
+        "harness/server-package-policy.json",
+        "tools/build_server_package.py",
+        "tools/verify_server_package.php",
+        "tools/server_preflight.php",
+        "tools/test_server_test_package_contract.py",
+        "docs/deployment/SERVER_TEST_UPLOAD.md",
+        ".github/workflows/server-package.yml"
+      ],
+      "subsystems": [
+        "deployment",
+        "release"
+      ],
+      "checks": [
+        "server-package"
+      ],
+      "risk": "high",
+      "requiresReview": true,
+      "flags": [
+        "deployment-sensitive"
+      ]
+    }
+  ]
+}

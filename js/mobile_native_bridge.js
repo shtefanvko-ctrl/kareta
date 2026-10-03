@@ -1,6 +1,7 @@
 (() => {
   const pending = new Map();
   let seq = 0;
+  let geoMapModulePromise = null;
 
   function nativeAvailable() {
     return !!window.KaretaNative?.postMessage;
@@ -55,6 +56,100 @@
     return true;
   }
 
+  function browserLocation(options = {}) {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        const error = new Error("GEOLOCATION_UNAVAILABLE");
+        error.code = "GEOLOCATION_UNAVAILABLE";
+        reject(error);
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(position => {
+        resolve({
+          latitude:Number(position.coords?.latitude),
+          longitude:Number(position.coords?.longitude),
+          accuracy:Number(position.coords?.accuracy || 0),
+          source:"browser"
+        });
+      }, error => {
+        const wrapped = new Error(error?.message || "GEOLOCATION_FAILED");
+        wrapped.code = Number(error?.code || 0) === 1 ? "GEOLOCATION_PERMISSION_DENIED" : "GEOLOCATION_FAILED";
+        reject(wrapped);
+      }, {
+        enableHighAccuracy:options.enableHighAccuracy === true,
+        timeout:Math.max(1000, Number(options.timeout || 8000)),
+        maximumAge:Math.max(0, Number(options.maximumAge ?? 300000))
+      });
+    });
+  }
+
+  async function bestLocation(options = {}) {
+    if (nativeAvailable()) {
+      try { await call("requestPermission", { permission:"location" }, 12000); } catch (_error) {}
+      try {
+        const result = await call("getLocation", {}, 20000);
+        const latitude = Number(result?.latitude ?? result?.lat);
+        const longitude = Number(result?.longitude ?? result?.lng);
+        if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+          return { ...result, latitude, longitude, accuracy:Number(result?.accuracy || 0), source:"native" };
+        }
+      } catch (_error) {}
+    }
+    return browserLocation(options);
+  }
+
+
+  async function bestMap(query, lat, lng) {
+    const latitude=Number(lat),longitude=Number(lng);
+    if(nativeAvailable()){
+      try { return await call("openMap", { query:String(query||''), lat:latitude, lng:longitude }, 15000); }
+      catch(_error) {}
+    }
+    const hasCoords=Number.isFinite(latitude)&&Number.isFinite(longitude);
+    const target=hasCoords
+      ? `https://www.openstreetmap.org/?mlat=${encodeURIComponent(latitude)}&mlon=${encodeURIComponent(longitude)}#map=16/${encodeURIComponent(latitude)}/${encodeURIComponent(longitude)}`
+      : `https://www.openstreetmap.org/search?query=${encodeURIComponent(String(query||''))}`;
+    window.open(target,'_blank','noopener,noreferrer');
+    return { opened:true, source:"browser", url:target };
+  }
+
+  function loadGeoMap() {
+    if (window.KaretaGeoMap?.open) return Promise.resolve(window.KaretaGeoMap);
+    if (geoMapModulePromise) return geoMapModulePromise;
+    geoMapModulePromise = new Promise((resolve, reject) => {
+      const release = String(window.KARETA_NEXT_ASSET_VERSION || 'next');
+      const wantedPath = '/js/next/geo_map.js';
+      const existing = Array.from(document.querySelectorAll('script[src]')).find(node => {
+        try { return new URL(node.src, location.href).pathname === wantedPath; } catch (_error) { return false; }
+      });
+      const done = () => {
+        if (window.KaretaGeoMap?.open) resolve(window.KaretaGeoMap);
+        else reject(new Error('GEO_MAP_MODULE_INVALID'));
+      };
+      if (existing) {
+        if (window.KaretaGeoMap?.open) { resolve(window.KaretaGeoMap); return; }
+        existing.addEventListener('load', done, { once:true });
+        existing.addEventListener('error', () => reject(new Error('GEO_MAP_MODULE_LOAD_FAILED')), { once:true });
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = wantedPath + '?v=' + encodeURIComponent(release);
+      script.async = true;
+      script.dataset.karetaGeoMap = '1';
+      script.dataset.karetaRelease = release;
+      script.addEventListener('load', done, { once:true });
+      script.addEventListener('error', () => {
+        geoMapModulePromise = null;
+        reject(new Error('GEO_MAP_MODULE_LOAD_FAILED'));
+      }, { once:true });
+      document.body.appendChild(script);
+    }).catch(error => {
+      geoMapModulePromise = null;
+      throw error;
+    });
+    return geoMapModulePromise;
+  }
+
   const api = {
     available: nativeAvailable,
     attach,
@@ -72,6 +167,7 @@
     takePhoto: () => call("takePhoto", {}, 60000),
     pickContact: () => call("pickContact", {}, 60000),
     getLocation: () => call("getLocation", {}, 20000),
+    bestLocation: options => bestLocation(options),
     scanCode: mode => call("scanCode", { mode: mode || "qr" }, 60000),
     scanQr: () => call("scanCode", { mode: "qr" }, 60000),
     scanVin: () => call("scanCode", { mode: "vin" }, 60000),
@@ -96,6 +192,8 @@
     copy: text => call("copy", { text }),
     openPhone: phone => call("openPhone", { phone }),
     openMap: (query, lat, lng) => call("openMap", { query, lat, lng }),
+    openBestMap: (query, lat, lng) => bestMap(query, lat, lng),
+    loadGeoMap: () => loadGeoMap(),
     openExternal: url => call("openExternal", { url }),
     openSettings: () => call("openSettings"),
     vibrate: ms => call("vibrate", { ms }),

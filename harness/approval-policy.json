@@ -1,0 +1,29 @@
+{
+  "schema": "kareta.harness.approval-policy.v1",
+  "boundaries": {
+    "database-contract": {
+      "checkId": "approval:database-contract",
+      "description": "Database schema, migration manifest or canonical DB version boundary."
+    },
+    "native-bridge-contract": {
+      "checkId": "approval:native-bridge-contract",
+      "description": "Android/WebView native bridge contract boundary."
+    },
+    "release-provenance": {
+      "checkId": "approval:release-provenance",
+      "description": "Release identity and deployment provenance boundary."
+    },
+    "deployment-sensitive": {
+      "checkId": "approval:deployment-sensitive",
+      "description": "Deployment, staging verifier or server routing boundary."
+    }
+  },
+  "commentApproval": {
+    "enabled": true,
+    "prefix": "HARNESS_APPROVE",
+    "authorizedActors": [
+      "shtefanvko-ctrl"
+    ],
+    "maxPages": 10
+  }
+}

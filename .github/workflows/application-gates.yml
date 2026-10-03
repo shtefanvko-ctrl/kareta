@@ -8,11 +8,12 @@ on:
       - 'js/**'
       - 'css/**'
       - 'tools/**'
+      - 'harness/**'
       - 'asset_manifest.php'
       - 'index.php'
       - 'sw.js'
       - '.htaccess'
-      - '.github/workflows/application-gates.yml'
+      - '.github/workflows/**'
   push:
     branches: [main]
     paths:
@@ -21,11 +22,12 @@ on:
       - 'js/**'
       - 'css/**'
       - 'tools/**'
+      - 'harness/**'
       - 'asset_manifest.php'
       - 'index.php'
       - 'sw.js'
       - '.htaccess'
-      - '.github/workflows/application-gates.yml'
+      - '.github/workflows/**'
 
 permissions:
   contents: read
@@ -40,6 +42,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
@@ -58,6 +62,30 @@ jobs:
           find js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
           node --check tools/test_api_contract_current.js
 
+      - name: Harness change intelligence
+        run: |
+          node --check tools/harness_plan.js
+          node --check tools/harness_evidence.js
+          node --check tools/harness_verdict.js
+          node --check tools/harness_receipt.js
+          node --check tools/harness_collect_receipts.js
+          node --check tools/harness_approval.js
+          node --check tools/harness_authorize.js
+          node --check tools/test_harness_change_intelligence.js
+          node --check tools/test_harness_impact_evidence.js
+          node --check tools/test_harness_verdict.js
+          node --check tools/test_harness_receipt.js
+          node --check tools/test_harness_collect_receipts.js
+          node --check tools/test_harness_approval.js
+          node --check tools/test_harness_permission_matrix.js
+          node tools/test_harness_change_intelligence.js
+          node tools/test_harness_impact_evidence.js
+          node tools/test_harness_verdict.js
+          node tools/test_harness_receipt.js
+          node tools/test_harness_collect_receipts.js
+          node tools/test_harness_approval.js
+          node tools/test_harness_permission_matrix.js
+
       - name: Migration manifest integrity
         run: php tools/test_release_migration_manifest.php
 
@@ -67,8 +95,27 @@ jobs:
       - name: Identity API recovery contract
         run: node tools/test_r1885607_identity_api_client_garage_recovery.js
 
+      - name: Current lazy-route regressions
+        run: |
+          node tools/test_route_lazy_runtime_84_68.js
+          if [ -f tools/test_progressive_json_catalog.js ]; then
+            node tools/test_progressive_json_catalog.js
+          fi
+
       - name: Current API happy and negative paths
         run: node tools/test_api_contract_current.js
+
+      - name: OBD remote control plane contract
+        run: node tools/test_obd_remote_control_plane.js
+
+      - name: Geo platform core contract
+        run: |
+          php -l api/geo.php
+          php -l api/migrations/137_geo_platform_core.php
+          node tools/test_geo_platform_core.js
+          node tools/test_geo_map_lazy.js
+          php tools/test_exchange_request_geo_privacy.php
+          node tools/test_exchange_request_geo_privacy.js
 
       - name: PWA fallback contract
         run: node tools/test_r1885568428_manifest_fallback.js
@@ -95,5 +142,27 @@ jobs:
         with:
           name: deployment-provenance-${{ github.sha }}
           path: /tmp/kareta-deployment-manifest.json
+          if-no-files-found: error
+          retention-days: 30
+
+
+      - name: Write Harness receipt
+        if: always()
+        env:
+          KARETA_SUBJECT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          KARETA_JOB_STATUS: ${{ job.status }}
+        run: |
+          node tools/harness_receipt.js \
+            --id "application-gates" \
+            --subject-sha "$KARETA_SUBJECT_SHA" \
+            --job-status "$KARETA_JOB_STATUS" \
+            --output "$RUNNER_TEMP/kareta-harness-receipt.json"
+
+      - name: Upload Harness receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-receipt-application-gates-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/kareta-harness-receipt.json
           if-no-files-found: error
           retention-days: 30

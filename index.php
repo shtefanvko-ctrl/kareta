@@ -1,7 +1,35 @@
 <?php
 declare(strict_types=1);
 
+$karetaHttpNotFound = isset($_GET['kareta_route_fallback']) && (string)$_GET['kareta_route_fallback'] === '1';
+$karetaHttpNotFoundPath = '';
+if ($karetaHttpNotFound) {
+    $karetaHttpNotFoundPath = (string)($_SERVER['REQUEST_URI'] ?? '/');
+    http_response_code(404);
+}
+
 require_once __DIR__ . '/inc/web_guard.php';
+
+$geoMapConfig = defined('KARETA_GEO_MAP') && is_array(KARETA_GEO_MAP) ? KARETA_GEO_MAP : [];
+$geoTileUrl = trim((string)($geoMapConfig['tile_url'] ?? 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'));
+$geoTileParts = parse_url($geoTileUrl);
+$geoTileOrigin = '';
+if (
+    is_array($geoTileParts)
+    && strtolower((string)($geoTileParts['scheme'] ?? '')) === 'https'
+    && preg_match('/^[A-Za-z0-9.-]+$/', (string)($geoTileParts['host'] ?? ''))
+) {
+    $geoTileOrigin = 'https://' . (string)$geoTileParts['host'];
+    if (!empty($geoTileParts['port'])) $geoTileOrigin .= ':' . (int)$geoTileParts['port'];
+}
+$geoMapPublicConfig = [
+    'tileUrl'=>$geoTileUrl,
+    'attributionLabel'=>(string)($geoMapConfig['attribution_label'] ?? '© OpenStreetMap contributors'),
+    'attributionUrl'=>(string)($geoMapConfig['attribution_url'] ?? 'https://www.openstreetmap.org/copyright'),
+    'minZoom'=>(int)($geoMapConfig['min_zoom'] ?? 8),
+    'maxZoom'=>(int)($geoMapConfig['max_zoom'] ?? 17),
+    'defaultZoom'=>(int)($geoMapConfig['default_zoom'] ?? 13),
+];
 
 $requestPath = parse_url((string)($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH);
 if (in_array($requestPath, ['/sites/kareta.kz', '/sites/kareta.kz/'], true)) {
@@ -16,7 +44,8 @@ header('X-Frame-Options: SAMEORIGIN');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 header('Permissions-Policy: geolocation=(self), camera=(self), microphone=(self)');
 header('Cross-Origin-Opener-Policy: same-origin-allow-popups');
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob: https://images.unsplash.com; media-src 'self' blob:; connect-src 'self' https://cdn.jsdelivr.net; font-src 'self' data:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'");
+$geoImgSource = $geoTileOrigin !== '' ? ' ' . $geoTileOrigin : '';
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob: https://images.unsplash.com{$geoImgSource}; media-src 'self' blob:; connect-src 'self' https://cdn.jsdelivr.net; font-src 'self' data:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'");
 header('X-Kareta-Request-Id: ' . KARETA_WEB_REQUEST_ID);
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('CDN-Cache-Control: no-store');
@@ -105,6 +134,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
     (() => {
       const release = <?= json_encode($assetVersion, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
       const errorCatalog = <?= json_encode($errorCodeCatalog, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>;
+      window.KARETA_HTTP_NOT_FOUND_PATH = <?= json_encode($karetaHttpNotFoundPath, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>;
       window.KARETA_BOOT_RELEASE=release;
       console.info('[KARETA][boot.release]',{release,pipeline:'single-pass-v2'});
       const recoveryKey = `kareta_asset_recovery:${release}`;
@@ -117,7 +147,9 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
           }
           if ('caches' in window) {
             const keys = await caches.keys();
-            await Promise.all(keys.filter(k => k.startsWith('kareta-')).map(k => caches.delete(k)));
+            // Preserve the last known-good shell. A transient DNS/TLS failure during
+            // retry must not strand the user on the synthetic offline document.
+            await Promise.all(keys.filter(k => String(k).startsWith('kareta-static-')).map(k => caches.delete(k)));
           }
         } catch (_) {}
       };
@@ -234,12 +266,13 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
     window.KARETA_NEXT_ASSET_VERSION = <?= json_encode($assetVersion, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
     window.KARETA_FRONTEND_MODE = 'next';
     window.KARETA_ASSET_MANIFEST_URL = '/asset_manifest.php?v=' + encodeURIComponent(window.KARETA_NEXT_ASSET_VERSION);
+    window.KARETA_GEO_MAP_CONFIG = Object.freeze(<?= json_encode($geoMapPublicConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>);
   </script>
 </head>
 <body>
   <div id="k-app-preloader" class="k-app-preloader" role="status" aria-live="polite" aria-label="Загрузка приложения">
     <div class="k-app-preloader__panel">
-      <img class="k-app-preloader__logo" src="<?= asset_ver('assets/logo/main/kareta_logo_full.png') ?>" alt="KARETA.KZ" onerror="this.onerror=null;this.src='<?= asset_ver('assets/onboarding/kareta_logo_icon.png') ?>'">
+      <img class="k-app-preloader__logo" src="<?= asset_ver('assets/onboarding/kareta_logo_full.png') ?>" alt="KARETA.KZ" onerror="this.onerror=null;this.src='<?= asset_ver('assets/onboarding/kareta_logo_icon.png') ?>'">
       <div class="k-app-preloader__copy">
         <p class="k-app-preloader__slogan">Всё для автомобиля в одном месте</p>
       </div>
@@ -261,7 +294,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5 8.5 12l7 7"></path><path d="M9 12h11"></path></svg>
       </button>
       <a class="k-brand" href="#/home" data-route-link="home" aria-label="KARETA.KZ главная">
-        <img class="k-brand-logo k-brand-logo--full" src="<?= asset_ver('assets/logo/main/kareta_logo_full.png') ?>" alt="KARETA.KZ">
+        <img class="k-brand-logo k-brand-logo--full" src="<?= asset_ver('assets/onboarding/kareta_logo_full.png') ?>" alt="KARETA.KZ">
         <img class="k-brand-logo k-brand-logo--icon" src="<?= asset_ver('assets/onboarding/kareta_logo_icon.png') ?>" alt="" aria-hidden="true">
       </a>
 
@@ -371,7 +404,9 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
         try{
           if('caches' in window){
             const keys=await caches.keys();
-            await Promise.all(keys.filter(key=>String(key).startsWith('kareta-')).map(key=>caches.delete(key)));
+            // Static assets are release-scoped and safe to purge. Preserve shell HTML
+            // until the replacement Service Worker has successfully precached '/'.
+            await Promise.all(keys.filter(key=>String(key).startsWith('kareta-static-')).map(key=>caches.delete(key)));
           }
         }catch(_error){}
         try{
@@ -532,6 +567,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
       })();
     })();
   </script>
-  <script src="/js/mobile_native_bridge.js?v=1"></script>
+  <script src="/js/mobile_native_bridge.js?v=<?= rawurlencode($assetVersion) ?>"></script>
+  <script src="/js/next/obd_remote_jobs.js?v=<?= rawurlencode($assetVersion) ?>"></script>
 </body>
 </html>
