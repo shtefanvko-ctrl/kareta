@@ -15,6 +15,8 @@ function kareta_asset_registry(): array
             'css/next/master_shell_canonical_84_143.css',
             // One owner for desktop route-root width/gutters across all roles.
             'css/next/page_geometry_canonical_84_146.css',
+            // Canonical shell/menu tokens and visual recovery layer.
+            'css/next/canonical_ui_84_157.css',
         ],
         'scripts' => [
             'js/next/runtime_logger.js',
