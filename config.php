@@ -144,6 +144,26 @@ if (!defined('KARETA_CONFIG_LOADED')) {
         'default_zoom' => (int) kareta_config_value('KARETA_GEO_DEFAULT_ZOOM', 'geo_default_zoom', 13),
     ]);
 
+    // R188.5.5.6.84.156: Plesk/PHP-FPM friendly realtime transport.
+    // Polling is the safe default because a long-lived PHP SSE request occupies
+    // one PHP-FPM worker for the lifetime of the stream. Dedicated deployments
+    // may explicitly opt into SSE through realtime_transport='sse'.
+    $kareta_realtime_transport = strtolower(trim((string) kareta_config_value(
+        'KARETA_REALTIME_TRANSPORT',
+        'realtime_transport',
+        'poll'
+    )));
+    if (!in_array($kareta_realtime_transport, ['poll','sse'], true)) {
+        $kareta_realtime_transport = 'poll';
+    }
+    define('KARETA_REALTIME', [
+        'transport' => $kareta_realtime_transport,
+        'poll_interval_ms' => max(10000, min(60000, (int) kareta_config_value('KARETA_REALTIME_POLL_INTERVAL_MS', 'realtime_poll_interval_ms', 15000))),
+        'request_timeout_ms' => max(5000, min(20000, (int) kareta_config_value('KARETA_REALTIME_REQUEST_TIMEOUT_MS', 'realtime_request_timeout_ms', 8000))),
+        'failure_base_ms' => max(5000, min(30000, (int) kareta_config_value('KARETA_REALTIME_FAILURE_BASE_MS', 'realtime_failure_base_ms', 10000))),
+        'failure_max_ms' => max(30000, min(120000, (int) kareta_config_value('KARETA_REALTIME_FAILURE_MAX_MS', 'realtime_failure_max_ms', 60000))),
+    ]);
+
     $kareta_db_host = kareta_config_value('KARETA_DB_HOST', 'db_host', null);
     if ($kareta_db_host === null || $kareta_db_host === '') {
         $kareta_db_host = kareta_env_first(['DB_HOST', 'MYSQL_HOST'], '127.0.0.1');
