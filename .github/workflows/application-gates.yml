@@ -117,6 +117,13 @@ jobs:
           php tools/test_exchange_request_geo_privacy.php
           node tools/test_exchange_request_geo_privacy.js
 
+      - name: Marketplace visual categories and exchange
+        run: |
+          node tools/test_parts_visual_exchange_current.js
+          php -l api/used_market.php
+          php -l tools/test_used_market_publication.php
+          php tools/test_used_market_publication.php
+
       - name: PWA fallback contract
         run: node tools/test_r1885568428_manifest_fallback.js
 

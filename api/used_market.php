@@ -159,11 +159,26 @@ function kareta_used_market_detail(PDO $pdo,array $q): void {
     $item['donorVehicle']=$donor;$item['sellerStats']=$sellerStats;$item['realInstallations']=$installations;$item['reviews']=[];$item['reviewPolicy']='verified_transaction_required';
     kareta_json(['ok'=>true,'data'=>$item]);
 }
+function kareta_used_market_publication_error(array $x): ?array {
+    $title=trim((string)($x['title']??''));$price=(float)($x['price']??0);
+    if($title==='')return ['error'=>'title_required','message'=>'Укажите название детали'];
+    if(mb_strlen($title)>180)return ['error'=>'title_too_long'];
+    if(!is_finite($price)||$price<0)return ['error'=>'invalid_price'];
+    if(trim((string)($x['description']??''))==='')return ['error'=>'description_required','message'=>'Добавьте описание детали'];
+    if(trim((string)($x['city']??''))==='')return ['error'=>'city_required','message'=>'Укажите город'];
+    if(!kareta_used_market_images($x['images']??[]))return ['error'=>'photo_required','message'=>'Добавьте хотя бы одну фотографию'];
+    if(!kareta_used_market_delivery($x['deliveryModes']??[]))return ['error'=>'delivery_required','message'=>'Выберите хотя бы один способ получения'];
+    $type=kareta_used_market_type((string)($x['listingType']??'used'));
+    if(empty($x['priceNegotiable'])&&$type!=='exchange'&&$price<=0)return ['error'=>'price_required','message'=>'Укажите цену или выберите «по договорённости»'];
+    if($type==='exchange'&&trim((string)($x['exchangeNote']??''))==='')return ['error'=>'exchange_note_required','message'=>'Укажите условия обмена'];
+    if(in_array((string)($x['condition']??''),['fair','repair'],true)&&trim((string)($x['defects']??''))==='')return ['error'=>'defects_required','message'=>'Опишите известные дефекты'];
+    return null;
+}
 function kareta_used_market_save(PDO $pdo,array $body): void {
     kareta_used_market_ensure($pdo);$u=kareta_used_market_actor($pdo);$uid=(int)$u['id'];$phone=trim((string)($u['phone']??''));$x=is_array($body['listing']??null)?$body['listing']:$body;
     $id=trim((string)($x['id']??''));$title=trim((string)($x['title']??''));$price=(float)($x['price']??0);$priceNegotiable=(bool)($x['priceNegotiable']??$x['price_negotiable']??false);$desc=trim((string)($x['description']??''));$listingType=kareta_used_market_type((string)($x['listingType']??$x['listing_type']??'used'));
     $publish=(string)($x['publicationAction']??$x['status']??'active')!=='draft';$draftStep=max(1,min(8,(int)($x['draftStep']??$x['draft_step']??1)));
-    if(mb_strlen($title)>180)kareta_json(['ok'=>false,'error'=>'title_too_long'],422); if($price<0)kareta_json(['ok'=>false,'error'=>'invalid_price'],422);
+    if(mb_strlen($title)>180)kareta_json(['ok'=>false,'error'=>'title_too_long'],422); if(!is_finite($price)||$price<0)kareta_json(['ok'=>false,'error'=>'invalid_price'],422);
     $exchangeNote=trim((string)($x['exchangeNote']??$x['exchange_note']??''));$defects=mb_substr(trim((string)($x['defects']??$x['defects_text']??'')),0,2000,'UTF-8');
     $condition=trim((string)($x['condition']??'good')); if(!in_array($condition,['new','excellent','good','fair','repair','restored'],true))$condition='good';
     if($listingType==='new')$condition='new'; if($listingType==='restored')$condition='restored';
@@ -177,14 +192,8 @@ function kareta_used_market_save(PDO $pdo,array $body): void {
     }
     $donorJson=json_encode($donor,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
     if($publish){
-        if($title==='')kareta_json(['ok'=>false,'error'=>'title_required','message'=>'Укажите название детали'],422);
-        if($desc==='')kareta_json(['ok'=>false,'error'=>'description_required','message'=>'Добавьте описание детали'],422);
-        if(trim((string)($x['city']??''))==='')kareta_json(['ok'=>false,'error'=>'city_required','message'=>'Укажите город'],422);
-        if(!$images)kareta_json(['ok'=>false,'error'=>'photo_required','message'=>'Добавьте хотя бы одну фотографию'],422);
-        if(!$delivery)kareta_json(['ok'=>false,'error'=>'delivery_required','message'=>'Выберите хотя бы один способ получения'],422);
-        if(!$priceNegotiable && $listingType!=='exchange' && $price<=0)kareta_json(['ok'=>false,'error'=>'price_required','message'=>'Укажите цену или выберите «по договорённости»'],422);
-        if($listingType==='exchange'&&$exchangeNote==='')kareta_json(['ok'=>false,'error'=>'exchange_note_required','message'=>'Укажите условия обмена'],422);
-        if(in_array($condition,['fair','repair'],true)&&$defects==='')kareta_json(['ok'=>false,'error'=>'defects_required','message'=>'Опишите известные дефекты'],422);
+        $error=kareta_used_market_publication_error(['title'=>$title,'description'=>$desc,'city'=>$x['city']??'','images'=>$images,'deliveryModes'=>$delivery,'price'=>$price,'priceNegotiable'=>$priceNegotiable,'listingType'=>$listingType,'exchangeNote'=>$exchangeNote,'condition'=>$condition,'defects'=>$defects]);
+        if($error!==null)kareta_json(['ok'=>false]+$error,422);
     }
     if($id==='')$id='used_'.substr(hash('sha256',$uid.'|'.microtime(true).'|'.random_int(1,PHP_INT_MAX)),0,22);
     $exists=$pdo->prepare('SELECT seller_user_id FROM used_market_listings WHERE id=?');$exists->execute([$id]);$owner=$exists->fetchColumn(); if($owner!==false && (int)$owner!==$uid)kareta_json(['ok'=>false,'error'=>'forbidden'],403);
@@ -199,6 +208,18 @@ function kareta_used_market_view(PDO $pdo,array $body): void { kareta_used_marke
 function kareta_used_market_status(PDO $pdo,array $body): void {
     kareta_used_market_ensure($pdo); $u=kareta_used_market_actor($pdo); $id=trim((string)($body['id']??'')); $status=trim((string)($body['status']??''));
     if(!in_array($status,['active','draft','sold','archived'],true)) kareta_json(['ok'=>false,'error'=>'invalid_status'],422);
-    $st=$pdo->prepare("UPDATE used_market_listings SET status=?,published_at=IF(?='active',COALESCE(published_at,NOW()),published_at),updated_at=NOW() WHERE id=? AND seller_user_id=?");$st->execute([$status,$status,$id,(int)$u['id']]);
-    if(!$st->rowCount()) kareta_json(['ok'=>false,'error'=>'not_found'],404); kareta_json(['ok'=>true,'status'=>$status]);
+    $pdo->beginTransaction();
+    try {
+        $st=$pdo->prepare("SELECT * FROM used_market_listings WHERE id=? AND seller_user_id=? AND status<>'deleted' FOR UPDATE");$st->execute([$id,(int)$u['id']]);$row=$st->fetch(PDO::FETCH_ASSOC);
+        if(!$row){$pdo->rollBack();kareta_json(['ok'=>false,'error'=>'not_found'],404);}
+        if($status==='active'){
+            $error=kareta_used_market_publication_error(kareta_used_market_row($row,(int)$u['id']));
+            if($error!==null){$pdo->rollBack();kareta_json(['ok'=>false]+$error,422);}
+        }
+        if((string)$row['status']!==$status){
+            $st=$pdo->prepare("UPDATE used_market_listings SET status=?,published_at=IF(?='active',COALESCE(published_at,NOW()),published_at),updated_at=NOW() WHERE id=? AND seller_user_id=?");$st->execute([$status,$status,$id,(int)$u['id']]);
+        }
+        $pdo->commit();
+    } catch(Throwable $error){if($pdo->inTransaction())$pdo->rollBack();throw $error;}
+    kareta_json(['ok'=>true,'status'=>$status]);
 }

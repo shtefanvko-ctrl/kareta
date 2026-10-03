@@ -51,6 +51,8 @@ Status vocabulary follows `MB_MONITORING.md`: desired, implemented, verified, de
 Use `DONE` only when the requested Definition of Done is met with required evidence. Otherwise use the most accurate state (for example IMPLEMENTED / NOT VERIFIED) and provide the next executable step.
 
 ## Regression rule
+For every defect, record its trigger, call/data chain, violated contract, observable consequence and reproducer before claiming a root cause. Separate executed reproductions from source-only findings and hypotheses. Fix the smallest responsible boundary, then rerun the reproducer and a neighboring unaffected scenario. A missing product state machine is an implementation gap, not proof of a runtime exception.
+
 If verification discovers a regression, stop expanding scope. Fix or revert the smallest responsible delta, rerun the failed check, then rerun the relevant regression checks.
 
 ## Reporting format
