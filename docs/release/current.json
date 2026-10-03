@@ -1,17 +1,17 @@
 {
   "schema": "kareta.release.current.v1",
-  "release": "188.5.5.6.84.156",
-  "sourceBranch": "fix/plesk-runtime-pressure-20261004",
+  "release": "188.5.5.6.84.157",
+  "sourceBranch": "fix/canonical-ui-recovery-84-157-20261004",
   "targetBranch": "main",
   "branchState": {
-    "status": "plesk_runtime_pressure_candidate",
+    "status": "canonical_ui_recovery_candidate",
     "behindBy": 0,
     "mainAncestor": true,
     "reconciliationMergeCommit": "a7df986cee0d1e05895bbb93290dbc03111b9dac",
     "mainHeadAtReconciliation": "d2873bbde16ec985ad14e8ff892df5ccbd7cf3b4",
     "candidate84_151": "6685ad9e02531dfa653aacd1f1eaf1c7c5a4cecc",
     "mergeBase": "5d333d5e67857d91a44a653e725fb2924eef2004",
-    "note": "84.156 addresses live Plesk host pressure observed after 84.154: PHP-FPM-safe polling is the default realtime transport, old SSE clients are server-rejected into polling, DB read bursts are paced more conservatively, and runtime logging backs off during 429/5xx/network degradation."
+    "note": "84.157 closes confirmed live UI regressions after the 84.154 visual audit: canonical full-logo registry ownership, deterministic burger SVG icons, guest/avatar fallback, location icon visibility guard, restrained 5/10/18 shell design tokens, and resilient lazy CSS loading with applied-sheet detection plus one retry."
   },
   "database": {
     "canonicalVersion": 137,
@@ -43,7 +43,7 @@
   "verification": {
     "ciWorkflow": ".github/workflows/verify.yml",
     "stagingWorkflow": ".github/workflows/staging-verify.yml",
-    "stagingStatus": "NOT_VERIFIED_AFTER_84_156"
+    "stagingStatus": "NOT_VERIFIED_AFTER_84_157"
   },
   "ui": {
     "notFound": "first_class_spa_route",
@@ -55,7 +55,19 @@
     "masterMobileFab": "horizontal 2x44 rail above dock; hidden under overlays",
     "routeLoadError": "sanitized fail-soft surface; raw details stay in runtime log",
     "mastersFilterRail": "narrow-WebView full-bleed scroll-safe",
-    "notFoundLazyLoader": "route_asset_loader recognizes notFound and loads KaretaNotFoundPages before render"
+    "notFoundLazyLoader": "route_asset_loader recognizes notFound and loads KaretaNotFoundPages before render",
+    "canonicalStatus": "candidate",
+    "canonicalLogo": "assets/logo/main/kareta_logo_full.png",
+    "canonicalUiLayer": "css/next/canonical_ui_84_157.css",
+    "radiusTokensPx": [
+      5,
+      10,
+      18
+    ],
+    "burgerIcons": "KaretaUIIcons required; never-empty SVG fallback",
+    "burgerAvatar": "initials/photo fallback",
+    "locationIcon": "inline SVG + visibility guard",
+    "lazyCssRecovery": "link.sheet verification + one controlled retry"
   },
   "authorization": {
     "legacyDirectRoleGates": 108,
