@@ -14,6 +14,7 @@
   const timeAgo=value=>{const ts=new Date(value||0).getTime();if(!ts)return '';const sec=Math.max(1,Math.floor((Date.now()-ts)/1000));if(sec<60)return 'только что';if(sec<3600)return `${Math.floor(sec/60)} мин назад`;if(sec<86400)return `${Math.floor(sec/3600)} ч назад`;if(sec<604800)return `${Math.floor(sec/86400)} дн назад`;return new Date(ts).toLocaleDateString('ru-RU');};
   const role=()=>{const kind=window.KaretaNavigationCore?.contextKind?.()||'personal';if(kind==='master')return'MASTER';if(kind==='organization_service')return'STO';if(kind==='seller'||kind==='organization_store')return'SELLER';return'CLIENT';};
   const isMasterRole=()=>role()==='MASTER';
+  const hasProtectedSession=()=>window.KaretaIdentity?.snapshot?.()?.authenticated===true||String(document.documentElement?.dataset?.identityMode||'')==='legacy-fallback';
   const routeHash=()=>String(location.hash||'#/community').split('?')[0].replace(/\/+$/,'')||'#/community';
   const routeQuery=()=>{try{return new URLSearchParams(String(location.hash||'').split('?')[1]||'');}catch(_e){return new URLSearchParams();}};
   const authorRoute=post=>{const a=post?.author;if(!a?.id)return'';if(a.contextType==='MASTER')return `#/masters/profile/master/${encodeURIComponent(a.id)}`;if(a.contextType==='STO')return `#/masters/profile/sto/${encodeURIComponent(a.id)}`;if(a.contextType==='SELLER')return `#/parts/store/${encodeURIComponent(a.id)}`;if(a.contextType==='COMMUNITY')return `#/community/group/${encodeURIComponent(a.id)}`;return'';};
@@ -24,7 +25,7 @@
   function parseRoute(){
     const hash=routeHash();let m;
     if(hash==='#/community'||hash==='#/community/feed')return {name:'feed',mode:'recommended'};
-    if(hash==='#/community/subscriptions')return {name:'feed',mode:'subscriptions'};
+    if(hash==='#/community/subscriptions')return {name:'feed',mode:hasProtectedSession()?'subscriptions':'recommended'};
     if(hash==='#/community/nearby')return {name:'feed',mode:'nearby'};
     if(hash==='#/community/help')return {name:'help'};
     if(hash==='#/community/search')return {name:'search'};
@@ -44,7 +45,7 @@
   }
 
   function feedTabs(mode){
-    const tabs=[['recommended','Для вас','#/community'],['subscriptions','Подписки','#/community/subscriptions'],['nearby','Рядом','#/community/nearby']];
+    const tabs=[['recommended','Для вас','#/community'],...(hasProtectedSession()?[['subscriptions','Подписки','#/community/subscriptions']]:[]),['nearby','Рядом','#/community/nearby']];
     return `<nav class="k-community-feed-tabs k-community-reference-tabs" role="tablist" aria-label="Лента сообщества">${tabs.map(([value,label,href])=>`<a role="tab" aria-selected="${mode===value?'true':'false'}" class="k-community-feed-tab ${mode===value?'is-active':''}" data-community-feed-mode="${value}" href="${href}">${label}</a>`).join('')}<button type="button" data-community-filter-open aria-label="Фильтры">${icon('settings')||'⚙'}</button></nav>`;
   }
 
