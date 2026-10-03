@@ -715,7 +715,11 @@ function kareta_route_asset_plan(): array
         ],
         'assistantDomain' => [
             'lazy' => true, 'routeKeys' => ['assistant'], 'routes' => ['#/assistant'],
-            'styles' => [], 'scripts' => ['js/next/pages/assistant.js'],
+            'styles' => ['css/next/electrician_assistant.css'],
+            'scripts' => [
+                'js/next/pages/assistant.js',
+                'js/next/electrician/electrician_assistant_runtime.js',
+            ],
             'globals' => ['KaretaAssistantPages'],
         ],
         'diagnosticsDomain' => [
