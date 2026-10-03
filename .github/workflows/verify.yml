@@ -28,7 +28,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: pdo_sqlite
+          extensions: mbstring, pdo_sqlite
           coverage: none
 
       - uses: actions/setup-node@v4
@@ -89,7 +89,9 @@ jobs:
           php tools/test_migration_collision_bridge_84_149.php
 
       - name: Dispatch service constraints
-        run: php tools/test_dispatch_service_constraints.php
+        run: |
+          php tools/test_dispatch_service_constraints.php
+          php tools/test_dispatch_location_constraints.php
 
       - name: Legacy authorization no-growth
         run: node tools/audit_legacy_role_authorization_current.js

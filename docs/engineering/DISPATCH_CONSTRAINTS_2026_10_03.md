@@ -45,3 +45,27 @@ Existing top-60 rating candidate cap and all-backlog load/ETA need separate revi
 Manual assignment and alternative master/bay pairs use different admission rules; consolidate deliberately after reviewing their contracts.
 Protect confirmed appointments during auto reassignment and revalidate candidates under transaction locks before accepting writes.
 The full ZIP is a source snapshot of this branch, not a verified hosting release.
+
+## Second increment — city and work-mode admission
+
+Source findings: orders_create persists field_service but its INSERT does not persist the request city; client forms generate a `Город:` line in notes. saveGeo uses shop/mobile/hybrid while master onboarding persists shop/mobile/both. Dispatch originally preferred a mobile origin for both but did not recognize hybrid consistently.
+
+Executed reproduction: run the new location regression with the 8cbd9d1 production_dispatch.php implementation and updated fixtures. Service checks PASS, then the complete-service / wrong-city rejection assertion FAILS. This is an executed SQLite reproduction, not an observed production incident.
+
+Implemented:
+- Same normalized request/master city is required for automatic recommendation. Structured city and the existing generated city line are supported; absent or conflicting values fail closed. No city inference from addresses, GPS or the current viewer context.
+- A stationary request requires shop/hybrid/both. A mobile request requires mobile/hybrid/both.
+- Mobile admission requires an explicit positive finite service radius and valid master/request coordinates within it. The ranking preference radius is not evidence of a permitted service zone.
+- Full precision straight-line distance is used for admission; UI retains its rounded distance. This is not a road route or travel-time promise.
+- Mobile orders prefer active mobile_origin points for hybrid/both; stationary origin prefers service. Non-numeric coordinates do not become zero through casting.
+- locationEligibilityReason is additive; the existing eligibilityReason identifies location rejection when services are complete. Ranking and automatic reassignment inherit the same score boundary.
+- Existing requests with no reliable city are excluded from automatic recommendation, but browsing/manual assignment remain available. Confirmed appointments are not cancelled by this change.
+
+Verification: 22 service + 30 location checks PASS using SQLite fixtures; PHP syntax for three touched PHP files PASS; dispatch JS regression, geo privacy PHP regression and diff whitespace PASS. Regression added to verify with explicit mbstring/pdo_sqlite. Exact-head CI, live MySQL, concurrent reservation, browser and deployment NOT RUN.
+
+Limitations / next three increments:
+1. Canonical city IDs and persisted request city: case/space/dash normalization is implemented; multilingual aliases such as Өскемен versus Усть-Каменогорск are not inferred. Cross-city mobile coverage remains excluded by city scope even within a nominal radius. Requests tied to a destination STO need an explicit destination-city contract rather than guessed profile location.
+2. Authoritative interval/resource validation and protection of confirmed plans. Manual assignment/alternative-pair exceptions still need deliberate consolidation. Existing top-60 cap and backlog ETA remain unchanged.
+3. Transactional reservation and repeat/concurrency handling with MySQL evidence. No migration execution or live DB changes in this increment.
+
+Rollback: revert the second increment to return to the first service-coverage boundary. No data transformation.
