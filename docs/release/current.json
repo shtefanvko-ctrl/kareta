@@ -1,17 +1,17 @@
 {
   "schema": "kareta.release.current.v1",
-  "release": "188.5.5.6.84.157",
-  "sourceBranch": "fix/canonical-ui-recovery-84-157-20261004",
+  "release": "188.5.5.6.84.158",
+  "sourceBranch": "fix/auth-ui-boundaries-84-158-20261004",
   "targetBranch": "main",
   "branchState": {
-    "status": "canonical_ui_recovery_candidate",
+    "status": "auth_ui_boundary_recovery_candidate",
     "behindBy": 0,
     "mainAncestor": true,
     "reconciliationMergeCommit": "a7df986cee0d1e05895bbb93290dbc03111b9dac",
     "mainHeadAtReconciliation": "d2873bbde16ec985ad14e8ff892df5ccbd7cf3b4",
     "candidate84_151": "6685ad9e02531dfa653aacd1f1eaf1c7c5a4cecc",
     "mergeBase": "5d333d5e67857d91a44a653e725fb2924eef2004",
-    "note": "84.157 closes confirmed live UI regressions after the 84.154 visual audit: canonical full-logo registry ownership, deterministic burger SVG icons, guest/avatar fallback, location icon visibility guard, restrained 5/10/18 shell design tokens, and resilient lazy CSS loading with applied-sheet detection plus one retry."
+    "note": "84.158 prevents anonymous/stale frontend state from calling protected following and notification APIs. Server-side authorization remains unchanged; navigation, direct-route fallback, Community subscriptions and Notifications polling are aligned with the real authenticated Identity boundary."
   },
   "database": {
     "canonicalVersion": 137,
@@ -43,7 +43,7 @@
   "verification": {
     "ciWorkflow": ".github/workflows/verify.yml",
     "stagingWorkflow": ".github/workflows/staging-verify.yml",
-    "stagingStatus": "NOT_VERIFIED_AFTER_84_157"
+    "stagingStatus": "NOT_VERIFIED_AFTER_84_158"
   },
   "ui": {
     "notFound": "first_class_spa_route",
@@ -73,7 +73,10 @@
     "legacyDirectRoleGates": 108,
     "dbPhpDirectRoleGates": 96,
     "filesWithDirectRoleGates": 8,
-    "budget": "docs/architecture/LEGACY_ROLE_BUDGET_CURRENT.json"
+    "budget": "docs/architecture/LEGACY_ROLE_BUDGET_CURRENT.json",
+    "uiBoundary": "protected routes require authoritative Identity/legacy session",
+    "anonymousFollowing": false,
+    "notificationsCapability": "notifications.read"
   },
   "cache": {
     "staticAssets": "service-worker cache-first inside release-scoped cache namespace",
