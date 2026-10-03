@@ -52,6 +52,7 @@ $response = [
     'dbAutoUpgrade'=>defined('KARETA_DB_AUTO_UPGRADE') ? KARETA_DB_AUTO_UPGRADE : false,
     'dbAutoMigrate'=>defined('KARETA_DB_AUTO_MIGRATE') ? KARETA_DB_AUTO_MIGRATE : false,
     'dbTargetVersion'=>defined('KARETA_DB_VERSION') ? KARETA_DB_VERSION : 0,
+    'realtimeTransport'=>defined('KARETA_REALTIME') && is_array(KARETA_REALTIME) ? (string)(KARETA_REALTIME['transport'] ?? 'poll') : 'poll',
     'assetVersion'=>defined('KARETA_ASSET_VERSION') ? KARETA_ASSET_VERSION : '',
     'durationMs'=>(int)round((microtime(true)-$started)*1000),
     'failureStage'=>$failureMeta['failureStage'],
