@@ -25,43 +25,17 @@ if ($appSecret==='' || $signature==='' || !hash_equals($expectedSignature,$signa
 $payload=json_decode($raw,true);if(!is_array($payload))kareta_json(['ok'=>true]);
 $pdo=kareta_pdo();if(!$pdo instanceof PDO)kareta_json(['ok'=>false,'error'=>'database_unavailable'],503);
 
-foreach (($payload['entry'] ?? []) as $entry) {
-    if (!is_array($entry)) continue;
-    foreach (($entry['changes'] ?? []) as $change) {
-        $value=is_array($change['value'] ?? null)?$change['value']:[];
-        $contacts=is_array($value['contacts'] ?? null)?$value['contacts']:[];
-        $names=[];foreach($contacts as $contact){if(!is_array($contact))continue;$wa=(string)($contact['wa_id']??'');if($wa!=='')$names[$wa]=(string)($contact['profile']['name']??'');}
-        foreach (($value['messages'] ?? []) as $message) {
-            if(!is_array($message))continue;
-            $eventId=trim((string)($message['id']??''));if($eventId==='')continue;
-            try {
-                $eventRaw=json_encode($message,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) ?: $raw;
-                if(!kareta_messaging_record_inbound($pdo,'whatsapp',$eventId,$eventRaw))continue;
-                $waId=preg_replace('/\D+/','',(string)($message['from']??''))?:'';
-                $text=trim((string)($message['text']['body']??''));
-                if($waId===''||$text===''){
-                    kareta_messaging_finish_inbound($pdo,'whatsapp',$eventId,'ignored',0,'','','unsupported_message');continue;
-                }
-                if(preg_match('~^KARETA\s+([A-Za-z0-9_-]{8,128})\s*$~ui',$text,$m)){
-                    $userId=kareta_messaging_consume_link_token($pdo,'whatsapp',$m[1]);
-                    if($userId<=0){kareta_messaging_whatsapp_send_raw($waId,'Ссылка подключения KARETA истекла. Создайте новую в настройках аккаунта.');kareta_messaging_finish_inbound($pdo,'whatsapp',$eventId,'rejected',0,'','','link_token_invalid');continue;}
-                    kareta_messaging_link($pdo,$userId,'whatsapp',$waId,$waId,$waId,(string)($names[$waId]??''));
-                    kareta_messaging_whatsapp_send_raw($waId,'WhatsApp подключён к KARETA.KZ. Ответы на сообщения KARETA будут сохранены в соответствующем чате.');
-                    kareta_messaging_finish_inbound($pdo,'whatsapp',$eventId,'linked',$userId);continue;
-                }
-                $userId=kareta_messaging_find_user_by_external($pdo,'whatsapp',$waId);
-                if($userId<=0){kareta_messaging_finish_inbound($pdo,'whatsapp',$eventId,'rejected',0,'','','channel_not_linked');continue;}
-                kareta_messaging_touch_inbound($pdo,$userId,'whatsapp');
-                $replyId=trim((string)($message['context']['id']??''));
-                $chatId=kareta_messaging_resolve_chat($pdo,$userId,'whatsapp',$replyId);
-                if($chatId===''){kareta_messaging_whatsapp_send_raw($waId,'Не удалось определить чат KARETA. Откройте нужный чат KARETA и ответьте на последнее сообщение.');kareta_messaging_finish_inbound($pdo,'whatsapp',$eventId,'unrouted',$userId,'','','chat_not_resolved');continue;}
-                $messageId=kareta_messaging_insert_external_message($pdo,$userId,'whatsapp',$eventId,$chatId,$text);
-                kareta_messaging_finish_inbound($pdo,'whatsapp',$eventId,'processed',$userId,$chatId,$messageId);
-            } catch(Throwable $e) {
-                try{kareta_messaging_finish_inbound($pdo,'whatsapp',$eventId,'failed',0,'','',$e instanceof DomainException?$e->getMessage():'processing_failed');}catch(Throwable $_){}
-                if(function_exists('kareta_log_error'))kareta_log_error('WHATSAPP_WEBHOOK',$e->getMessage());
-            }
-        }
+try {
+    $events=kareta_messaging_whatsapp_events($payload,(string)($cfg['phone_number_id']??''));
+    foreach ($events as $event) {
+        // Commit ownership even if storing the inbound message later fails.
+        kareta_messaging_whatsapp_observe($pdo,$event);
     }
+    foreach ($events as $event) {
+        kareta_messaging_whatsapp_process_message($pdo,$event);
+    }
+} catch(Throwable $e) {
+    if(function_exists('kareta_log_error'))kareta_log_error('WHATSAPP_WEBHOOK',$e->getMessage());
+    kareta_json(['ok'=>false,'error'=>'processing_unavailable'],503);
 }
 kareta_json(['ok'=>true]);

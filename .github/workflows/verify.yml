@@ -7,6 +7,7 @@ on:
       - main
       - import/kareta-current-84.142
       - release/reconcile-84.152
+      - fix/whatsapp-standby-ownership-20261001
 
 permissions:
   contents: read
@@ -16,6 +17,49 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  whatsapp-routing:
+    name: WhatsApp routing (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        php: ['8.1', '8.2']
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: kareta-test-only
+          MYSQL_DATABASE: kareta_test_whatsapp_ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo_mysql, mbstring
+          coverage: none
+      - name: Messaging PHP syntax
+        run: |
+          php -l api/messaging_core.php
+          php -l api/messaging_whatsapp_routing.php
+          php -l api/webhooks/whatsapp.php
+          php -l tools/messaging_schema_install.php
+          php -l tools/test_whatsapp_routing.php
+          php -l tools/test_whatsapp_routing_db.php
+          php -l tools/fixtures/whatsapp_send_mock.php
+      - name: WhatsApp routing and disposable MySQL regression
+        env:
+          KARETA_TEST_MYSQL_DSN: mysql:host=127.0.0.1;port=3306;dbname=kareta_test_whatsapp_ci;charset=utf8mb4
+          KARETA_TEST_MYSQL_USER: root
+          KARETA_TEST_MYSQL_PASS: kareta-test-only
+        run: php tools/test_whatsapp_routing_db.php
+
   verification-gate:
     name: verification-gate
     runs-on: ubuntu-latest
@@ -80,6 +124,11 @@ jobs:
 
       - name: Android Native API 6 contract
         run: node tools/test_android_native_api6_contract_84_148.js
+
+      - name: Existing Messaging and Telegram contracts
+        run: |
+          node tools/test_messaging_core_84_86.js
+          node tools/test_telegram_live_actions_84_87.js
 
       - name: Migration contract
         run: |

@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 'use strict';
-const fs=require('fs'),path=require('path'),root=path.resolve(__dirname,'..');
+const fs=require('fs'),path=require('path'),cp=require('child_process'),root=path.resolve(__dirname,'..');
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 const must=(condition,label)=>{if(!condition){console.error(`[84.86][FAIL] ${label}`);process.exitCode=1;}else console.log(`[84.86][OK] ${label}`);};
 const asset=read('inc/asset_version.php'),sw=read('sw.js'),config=read('config.php'),privateExample=read('config.private.example.php');
 const core=read('api/messaging_core.php'),api=read('api/messaging.php'),tg=read('api/webhooks/telegram.php'),wa=read('api/webhooks/whatsapp.php'),db=read('api/db.php'),worker=read('tools/messaging_worker.php'),schemaInstaller=read('tools/messaging_schema_install.php');
+const waRouting=read('api/messaging_whatsapp_routing.php');
 const chats=read('js/next/pages/chats.js'),settings=read('js/next/messaging_settings.js'),cabinet=read('js/next/pages/cabinet.js'),account=read('js/next/account_window.js'),registry=read('inc/asset_registry.php'),css=read('css/next/client_cabinet.css');
 const av=(asset.match(/KARETA_ASSET_VERSION\s*=\s*'188\.5\.5\.6\.84\.(\d+)'/)||[])[1];
 const sv=(sw.match(/const RELEASE = '188\.5\.5\.6\.84\.(\d+)'/)||[])[1];
@@ -17,13 +18,13 @@ for(const table of ['messaging_channel_links','messaging_link_tokens','messaging
 must(core.includes('function kareta_messaging_install_schema')&&core.includes('information_schema.TABLES')&&core.includes('messaging_schema_not_installed'),'messaging schema has explicit installer + runtime validation');
 must(schemaInstaller.includes('kareta_messaging_install_schema')&&schemaInstaller.includes('kareta_messaging_schema'),'CLI schema installer uses explicit install then runtime verification');
 must(core.includes("hash('sha256',$raw)")&&core.includes('token_hash'),'link tokens stored hashed');
-must(core.includes('kareta_messaging_enqueue_chat_message')&&core.includes("status='blocked_window'")&&core.includes('time()-86400'),'queued transport + WhatsApp service window guard');
+must(core.includes('kareta_messaging_enqueue_chat_message')&&core.includes("status='blocked_window'")&&core.includes('kareta_messaging_whatsapp_block_reason')&&waRouting.includes('$now - 86400'),'queued transport + centralized WhatsApp service window guard');
 must(core.includes('allowExternalReplies')&&core.includes('external_replies_disabled'),'external reply preference enforced');
 must(tg.includes('HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN')&&tg.includes('hash_equals($expected,$provided)'),'Telegram webhook secret verified');
 must(tg.includes('reply_to_message')&&tg.includes('kareta_messaging_resolve_chat'),'Telegram replies route to KARETA chat');
 must(wa.includes('HTTP_X_HUB_SIGNATURE_256')&&wa.includes("hash_hmac('sha256',$raw,$appSecret)")&&wa.includes('hash_equals($expectedSignature,$signature)'),'WhatsApp webhook HMAC verified');
 must(wa.includes("hub_verify_token")&&wa.includes("hub_challenge"),'WhatsApp webhook verification handshake');
-must(wa.includes("$message['context']['id']")&&wa.includes('kareta_messaging_resolve_chat'),'WhatsApp replies route to KARETA chat');
+must(wa.includes('kareta_messaging_whatsapp_process_message')&&waRouting.includes("$message['context']")&&waRouting.includes('kareta_messaging_resolve_chat'),'WhatsApp replies route to KARETA chat through the routing handler');
 must(api.includes("link.create")&&api.includes('preferences.save')&&api.includes('kareta_require_any_role'),'authenticated messaging settings API');
 const addStart=db.indexOf('function messages_add');const addEnd=db.indexOf('function kareta_fmt_master_schedule',addStart);const addBlock=db.slice(addStart,addEnd);
 must(addBlock.includes('kareta_messaging_enqueue_chat_message'),'KARETA messages enqueue external delivery');
@@ -32,7 +33,13 @@ must(worker.includes('kareta_messaging_worker_once')&&worker.includes('--watch')
 must(chats.includes("chatId=String(params.get('chatId')")&&chats.includes('target?.chatId')&&chats.includes('state.chats.some'),'external deep link opens only authorized visible chat');
 must(settings.includes('WhatsApp и Telegram')&&settings.includes('data-messaging-link')&&settings.includes('preferences.save'),'shared client/master channel settings UI');
 must(cabinet.includes('KaretaMessagingSettings?.mount')&&account.includes('KaretaMessagingSettings?.mount'),'messaging settings mounted for master and client');
-must(registry.includes("'js/next/messaging_settings.js','js/next/pages/cabinet.js'")&&registry.includes("'KaretaMessagingSettings','KaretaCabinetPages'"),'messaging UI is cabinet lazy asset');
+const registryProbe=cp.spawnSync('php',['-r',"require 'inc/asset_registry.php'; echo json_encode(['eager'=>kareta_asset_registry(),'plan'=>kareta_route_asset_plan()]);"],{cwd:root,encoding:'utf8'});
+let runtimeRegistry=null;
+try{if(registryProbe.status===0)runtimeRegistry=JSON.parse(registryProbe.stdout);}catch(_){}
+must(!!runtimeRegistry,'actual PHP asset registry can be read');
+const cabinetBundle=runtimeRegistry?.plan?.cabinet||{},cabinetScripts=cabinetBundle.scripts||[];
+const messagingIndex=cabinetScripts.indexOf('js/next/messaging_settings.js'),cabinetIndex=cabinetScripts.indexOf('js/next/pages/cabinet.js');
+must(cabinetBundle.lazy===true&&(cabinetBundle.routeKeys||[]).includes('cabinet')&&messagingIndex>=0&&cabinetIndex>messagingIndex&&(cabinetBundle.globals||[]).includes('KaretaMessagingSettings')&&(cabinetBundle.globals||[]).includes('KaretaCabinetPages')&&!(runtimeRegistry?.eager?.scripts||[]).includes('js/next/messaging_settings.js'),'messaging UI stays lazy and loads before the cabinet');
 must(css.includes('.k-messaging-settings')&&css.includes('.k-messaging-channel'),'messaging settings responsive styles');
 const protectedHub=read('js/next/smart_action_hub.js');
 must(!protectedHub.includes('KaretaMessagingSettings'),'protected smart action hub untouched by messaging');

@@ -11,6 +11,7 @@ try {
     kareta_messaging_install_schema($pdo);
     // Validate through the same runtime guard used by API/webhooks/worker.
     kareta_messaging_schema($pdo);
+    kareta_messaging_whatsapp_schema($pdo);
     fwrite(STDOUT, "KARETA Messaging schema installed and verified.\n");
     exit(0);
 } catch (Throwable $e) {
