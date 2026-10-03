@@ -7,7 +7,8 @@ const cp=require('child_process');
 
 const root=path.resolve(__dirname,'..');
 const output=process.argv[2]||path.join(root,'artifacts','android-logical-84.153.json');
-const validationSha=String(process.env.KARETA_SUBJECT_SHA||process.env.GITHUB_SHA||'').trim();\nconst candidateSha=String(process.env.KARETA_RELEASE_CANDIDATE_SHA||'').trim();
+const validationSha=String(process.env.KARETA_SUBJECT_SHA||process.env.GITHUB_SHA||'').trim();
+const candidateSha=String(process.env.KARETA_RELEASE_CANDIDATE_SHA||'').trim();
 
 const checks=[
   ['native-api6','node',['tools/test_android_native_api6_contract_84_148.js']],
@@ -42,7 +43,8 @@ for(const [id,bin,args] of checks){
 const report={
   schema:'kareta.android.logical-validation.v1',
   release:'188.5.5.6.84.153',
-  candidateSha:candidateSha||null,\n  validationSha:validationSha||null,
+  candidateSha:candidateSha||null,
+  validationSha:validationSha||null,
   generatedAt:new Date().toISOString(),
   scope:{
     evidenceType:'logical-ci',
