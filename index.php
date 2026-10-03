@@ -272,7 +272,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
 <body>
   <div id="k-app-preloader" class="k-app-preloader" role="status" aria-live="polite" aria-label="Загрузка приложения">
     <div class="k-app-preloader__panel">
-      <img class="k-app-preloader__logo" src="<?= asset_ver('assets/onboarding/kareta_logo_full.png') ?>" alt="KARETA.KZ" onerror="this.onerror=null;this.src='<?= asset_ver('assets/onboarding/kareta_logo_icon.png') ?>'">
+      <img class="k-app-preloader__logo" src="<?= asset_ver('assets/logo/main/kareta_logo_full.png') ?>" alt="KARETA.KZ" onerror="this.onerror=null;this.src='<?= asset_ver('assets/onboarding/kareta_logo_icon.png') ?>'">
       <div class="k-app-preloader__copy">
         <p class="k-app-preloader__slogan">Всё для автомобиля в одном месте</p>
       </div>
@@ -294,7 +294,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5 8.5 12l7 7"></path><path d="M9 12h11"></path></svg>
       </button>
       <a class="k-brand" href="#/home" data-route-link="home" aria-label="KARETA.KZ главная">
-        <img class="k-brand-logo k-brand-logo--full" src="<?= asset_ver('assets/onboarding/kareta_logo_full.png') ?>" alt="KARETA.KZ">
+        <img class="k-brand-logo k-brand-logo--full" src="<?= asset_ver('assets/logo/main/kareta_logo_full.png') ?>" alt="KARETA.KZ">
         <img class="k-brand-logo k-brand-logo--icon" src="<?= asset_ver('assets/onboarding/kareta_logo_icon.png') ?>" alt="" aria-hidden="true">
       </a>
 
