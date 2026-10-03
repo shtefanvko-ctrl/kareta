@@ -1,17 +1,17 @@
 {
   "schema": "kareta.release.current.v1",
-  "release": "188.5.5.6.84.155",
-  "sourceBranch": "fix/plesk-db-auto-upgrade-20261004",
+  "release": "188.5.5.6.84.156",
+  "sourceBranch": "fix/plesk-runtime-pressure-20261004",
   "targetBranch": "main",
   "branchState": {
-    "status": "plesk_db_auto_upgrade_candidate",
+    "status": "plesk_runtime_pressure_candidate",
     "behindBy": 0,
     "mainAncestor": true,
     "reconciliationMergeCommit": "a7df986cee0d1e05895bbb93290dbc03111b9dac",
     "mainHeadAtReconciliation": "d2873bbde16ec985ad14e8ff892df5ccbd7cf3b4",
     "candidate84_151": "6685ad9e02531dfa653aacd1f1eaf1c7c5a4cecc",
     "mergeBase": "5d333d5e67857d91a44a653e725fb2924eef2004",
-    "note": "84.155 adds safe automatic canonical DB upgrades for staging/Plesk. Missing migrations run under the existing advisory lock and schema contract; production remains blocked unless explicitly enabled during a runtime migration window."
+    "note": "84.156 addresses live Plesk host pressure observed after 84.154: PHP-FPM-safe polling is the default realtime transport, old SSE clients are server-rejected into polling, DB read bursts are paced more conservatively, and runtime logging backs off during 429/5xx/network degradation."
   },
   "database": {
     "canonicalVersion": 137,
@@ -43,7 +43,7 @@
   "verification": {
     "ciWorkflow": ".github/workflows/verify.yml",
     "stagingWorkflow": ".github/workflows/staging-verify.yml",
-    "stagingStatus": "NOT_VERIFIED_AFTER_84_155"
+    "stagingStatus": "NOT_VERIFIED_AFTER_84_156"
   },
   "ui": {
     "notFound": "first_class_spa_route",
@@ -85,5 +85,12 @@
       "migration-owned OBD schema"
     ],
     "obdSchemaVersion": 135
+  },
+  "runtimeResilience": {
+    "realtimeDefault": "poll",
+    "pollIntervalMs": 15000,
+    "dbReadMinGapMs": 650,
+    "loggerStressCooldown": true,
+    "sourceEvidence": "live m.kareta.kz 84.154 browser log"
   }
 }
