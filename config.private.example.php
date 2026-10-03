@@ -13,6 +13,10 @@ return [
     'db_pass' => 'database_password',
     'db_charset' => 'utf8mb4',
     'db_auto_create' => false,
+    // Production default: keep automatic schema upgrades disabled.
+    // To open an approved maintenance upgrade, set this true AND export
+    // KARETA_DB_RUNTIME_MIGRATION_WINDOW=1 for the maintenance window.
+    'db_auto_upgrade' => false,
     'db_auto_migrate' => false,
     'runtime_maintenance_interval' => 900,
     'api_max_body_bytes' => 20971520,

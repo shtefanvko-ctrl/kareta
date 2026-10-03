@@ -18,6 +18,9 @@ return [
     'db_pass' => 'replace-with-test-db-password',
     'db_charset' => 'utf8mb4',
     'db_auto_create' => false,
+    // Safe Plesk/staging schema upgrades: only missing canonical migrations run.
+    // Set false to require manual DB maintenance.
+    'db_auto_upgrade' => true,
     'db_auto_migrate' => false,
     'db_timeout' => 5,
 

@@ -46,10 +46,16 @@ Replace all placeholder DB/token values. Keep:
 ```php
 'environment' => 'staging',
 'db_auto_create' => false,
+'db_auto_upgrade' => true,
 'db_auto_migrate' => false,
 'demo_seed' => false,
 'messaging_auto_schema' => false,
 ```
+
+`db_auto_upgrade=true` enables the guarded staging/Plesk upgrade path. It does not
+re-run completed migrations: the runtime checks the canonical DB version/history first,
+takes the existing MySQL advisory schema lock, applies only missing manifest migrations,
+then re-runs the schema contract. Set it to `false` to require manual DB maintenance.
 
 Static OTP `0000` is allowed only in the dedicated server-test template. Do not copy that staging setting into production.
 
@@ -69,9 +75,19 @@ Create writable subdirectories as required by the runtime. If Plesk `open_basedi
 
 The package contains the canonical migration chain and manifest through DB version 137.
 
-Automatic production-style migration is intentionally disabled in the server-test template. Do not enable runtime migrations just to make a failing server boot.
+For staging/Plesk, safe automatic upgrades are enabled through `db_auto_upgrade=true`.
+On first request after a code update, KARETA compares the DB contract with
+`KARETA_DB_VERSION`. If the DB is behind, it serializes schema work with the existing
+MySQL advisory lock, applies only missing canonical migrations, validates the post-migration
+schema contract, and writes a non-secret result to `storage/logs/db_upgrade.log` (or the
+configured private storage root).
 
-Before accepting staging, the test database must satisfy the canonical migration/schema contract. If the database is behind, use the controlled database maintenance procedure and re-run the repository migration gates before continuing.
+If an automatic upgrade fails, startup remains blocked and runtime diagnostics expose the
+failure stage/migration instead of continuing on an incompatible schema.
+
+Production remains fail-closed. Automatic production upgrades require both an explicit
+`db_auto_upgrade=true` deployment setting and `KARETA_DB_RUNTIME_MIGRATION_WINDOW=1`
+for the maintenance window.
 
 ## 4. Upload
 
@@ -113,12 +129,12 @@ Verify from a network that can reach the staging host:
 ```bash
 python3 tools/verify_staging_current.py \
   --base-url https://s.kareta.kz \
-  --expected-release 188.5.5.6.84.152
+  --expected-release 188.5.5.6.84.155
 
 python3 tools/verify_runtime_provenance.py \
   --base-url https://s.kareta.kz \
   --expected-sha <exact-package-sha> \
-  --expected-asset-version 188.5.5.6.84.152
+  --expected-asset-version 188.5.5.6.84.155
 ```
 
 The following runtime surfaces must agree on the release before the server test is accepted:

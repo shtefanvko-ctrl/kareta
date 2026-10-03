@@ -29,6 +29,9 @@ const domainApi=read('api/domain.php');
 const ordersApi=read('js/next/orders/orders_api.js');
 const serverPackage=read('tools/build_server_package.py');
 const onboardingBundle=read('js/boot/runtime_onboarding_bundle.js');
+const bootstrap=read('api/bootstrap.php');
+const runtimeDiagnostics=read('api/runtime_diagnostics.php');
+const serverTestConfig=read('config.server-test.example.php');
 
 const assetRelease=(version.match(/KARETA_ASSET_VERSION\s*=\s*'([^']+)'/)||[])[1]||'';
 const swRelease=(sw.match(/const RELEASE = '([^']+)'/)||[])[1]||'';
@@ -84,5 +87,11 @@ expect(ordersApi.includes("clientSchedule.reschedule.list")&&ordersApi.includes(
 expect(serverPackage.includes('if workflow_run_id and not re.fullmatch(r"[0-9]{1,32}", workflow_run_id):'),'local provenance workflowRunId normalization missing');
 expect(indexPhp.includes("assets/logo/main/kareta_logo_full.png"),'index uses non-canonical full logo path');
 expect(onboardingBundle.includes('assets/logo/main/kareta_logo_full.png'),'onboarding bundle uses non-canonical full logo path');
+expect(config.includes("define('KARETA_DB_AUTO_UPGRADE'"),'DB auto-upgrade config contract missing');
+expect(config.includes("KARETA_DB_RUNTIME_MIGRATION_WINDOW"),'production migration window lock missing');
+expect(bootstrap.includes("db_upgrade.log"),'DB auto-upgrade audit log missing');
+expect(bootstrap.includes("Automatic DB upgrade version mismatch"),'post-upgrade target version guard missing');
+expect(runtimeDiagnostics.includes("'dbAutoUpgrade'"),'runtime diagnostics auto-upgrade state missing');
+expect(serverTestConfig.includes("'db_auto_upgrade' => true"),'server-test Plesk auto-upgrade default missing');
 
 console.log('CURRENT_RELEASE: PASS release='+assetRelease+' db='+configDb);
