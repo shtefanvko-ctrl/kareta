@@ -70,6 +70,17 @@ for path in [
 
 assert not builder.is_forbidden("api/bootstrap.php", policy)
 
+assert builder.normalize_workflow_run_id("") == ""
+assert builder.normalize_workflow_run_id("37107036519") == "37107036519"
+for invalid_run_id in ["manual", "run-37107036519", "3710 7036519", "1"*33]:
+    try:
+        builder.normalize_workflow_run_id(invalid_run_id)
+    except SystemExit:
+        pass
+    else:
+        raise AssertionError("invalid workflow run id accepted: " + invalid_run_id)
+
+
 server_test=(ROOT/"config.server-test.example.php").read_text(encoding="utf-8")
 for needle in [
     "'environment' => 'staging'",
