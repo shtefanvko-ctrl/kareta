@@ -4,6 +4,22 @@ const fs=require('fs');
 const vm=require('vm');
 const path=require('path');
 const source=fs.readFileSync(path.join(__dirname,'../js/next/geo_map.js'),'utf8');
+
+/* Missing distance is unknown, including city and owner points without GPS. */
+{
+  const scope={};
+  vm.runInNewContext(source.slice(source.indexOf('  const coordinate='),source.indexOf('  function ensureStyle'))+
+    source.slice(source.indexOf('  function distanceText'),source.indexOf('  function tileStatusText'))+
+    '\nthis.normalizePoint=normalizePoint;this.distanceText=distanceText;',scope);
+  for(const value of [undefined,null,'',' ',NaN,Infinity]){
+    const point=scope.normalizePoint({distanceKm:value},0);
+    assert.strictEqual(point.distanceKm,null,'missing distance became zero');
+    assert.strictEqual(scope.distanceText(point.distanceKm),'','unknown distance displayed as nearby');
+  }
+  assert.strictEqual(scope.distanceText(0.2),'200 м');
+  assert.strictEqual(scope.normalizePoint({distanceKm:'2.5'},0).distanceKm,2.5);
+}
+
 class Node {
   constructor(){this.style={};this.dataset={};this.events={};this.innerHTML='';this.textContent='';this.open=false;this.isConnected=true;this.clientWidth=320;this.clientHeight=320;this.nodes={};}
   addEventListener(name,fn){this.events[name]=fn;}
