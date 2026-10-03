@@ -12,7 +12,7 @@
     defaultZoom:Number(window.KARETA_GEO_MAP_CONFIG?.defaultZoom || 13)
   });
   const release=String(window.KARETA_NEXT_ASSET_VERSION||'next');
-  let dialog=null,state=null,drag=null;
+  let dialog=null,state=null,drag=null,tileRenderSeq=0;
 
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
@@ -84,6 +84,23 @@
     return km<1?Math.max(50,Math.round(km*1000/50)*50)+' м':km.toLocaleString('ru-RU',{minimumFractionDigits:km<10?1:0,maximumFractionDigits:km<10?1:0})+' км';
   }
 
+  function tileStatusText(){
+    const lang=String(document.documentElement?.lang||'ru').split('-')[0];
+    const text={
+      ru:['Подложка загружается…','Часть карты не загрузилась. Точки и адреса доступны.','Подложка недоступна. Точки и адреса доступны.'],
+      kk:['Карта жүктелуде…','Картаның бір бөлігі жүктелмеді. Нүктелер мен мекенжайлар қолжетімді.','Карта қолжетімсіз. Нүктелер мен мекенжайлар қолжетімді.'],
+      en:['Loading map…','Some map tiles failed. Points and addresses remain available.','Map tiles unavailable. Points and addresses remain available.']
+    }[lang]||['Loading map…','Some map tiles failed. Points and addresses remain available.','Map tiles unavailable. Points and addresses remain available.'];
+    if(!state)return '';
+    if(state.tileFailed)return text[state.tileLoaded?1:2];
+    return state.tileLoaded?'':text[0];
+  }
+  function updateTileStatus(){
+    if(!state||!dialog?.open)return;
+    const node=dialog.querySelector('[data-geo-map-status]');
+    if(node){node.textContent=tileStatusText();node.hidden=!node.textContent;}
+  }
+
   function ensureDialog(){
     if(dialog?.isConnected)return dialog;
     ensureStyle();
@@ -98,7 +115,7 @@
         <div class="k-geo-map-attribution" data-geo-map-attribution><a href="${esc(config.attributionUrl)}" target="_blank" rel="noopener noreferrer">${esc(config.attributionLabel)}</a></div>
       </div>
       <section class="k-geo-map-detail" data-geo-map-detail><b>Выберите точку на карте</b><span>Адрес и маршрут появятся здесь.</span></section>
-      <footer><span data-geo-map-count></span><button type="button" data-geo-map-close>Закрыть</button></footer>
+      <footer><span data-geo-map-count></span><span data-geo-map-status role="status" aria-live="polite"></span><button type="button" data-geo-map-close>Закрыть</button></footer>
     </div>`;
     document.body.appendChild(dialog);
     dialog.addEventListener('cancel',event=>{event.preventDefault();close();});
@@ -115,6 +132,15 @@
       const route=event.target.closest('[data-geo-map-route]');
       if(route&&state){const point=state.points.find(p=>p.id===route.dataset.geoMapRoute);if(point)await openRoute(point);}
     });
+    const tileLayer=dialog.querySelector('[data-geo-map-tiles]');
+    const tileResult=event=>{
+      if(!state||!dialog?.open||String(event.target?.dataset?.geoTileRender)!==String(tileRenderSeq))return;
+      if(event.type==='load')state.tileLoaded+=1;
+      else state.tileFailed+=1;
+      updateTileStatus();
+    };
+    tileLayer.addEventListener('load',tileResult,true);
+    tileLayer.addEventListener('error',tileResult,true);
     const viewport=dialog.querySelector('[data-geo-map-viewport]');
     viewport.addEventListener('pointerdown',event=>{
       if(!state||event.target.closest('button,a'))return;
@@ -159,12 +185,13 @@
     if(!state||!dialog?.open)return;
     const viewport=dialog.querySelector('[data-geo-map-viewport]'),tiles=dialog.querySelector('[data-geo-map-tiles]'),markers=dialog.querySelector('[data-geo-map-markers]');
     tiles.style.transform='';markers.style.transform='';
+    tileRenderSeq+=1;state.tileLoaded=0;state.tileFailed=0;updateTileStatus();
     const width=Math.max(280,viewport.clientWidth||320),height=Math.max(260,viewport.clientHeight||320),zoom=state.zoom,center=world(state.center.lat,state.center.lng,zoom),n=Math.pow(2,zoom);
     const minX=Math.floor((center.x-width/2)/256)-1,maxX=Math.floor((center.x+width/2)/256)+1,minY=Math.max(0,Math.floor((center.y-height/2)/256)-1),maxY=Math.min(n-1,Math.floor((center.y+height/2)/256)+1);
     const tileHtml=[];
     for(let ty=minY;ty<=maxY;ty++)for(let tx=minX;tx<=maxX;tx++){
       const wrapped=((tx%n)+n)%n,left=tx*256-(center.x-width/2),top=ty*256-(center.y-height/2);
-      tileHtml.push(`<img src="${esc(tileUrl(zoom,wrapped,ty))}" alt="" draggable="false" loading="eager" referrerpolicy="strict-origin-when-cross-origin" style="left:${left}px;top:${top}px" width="256" height="256">`);
+      tileHtml.push(`<img src="${esc(tileUrl(zoom,wrapped,ty))}" alt="" data-geo-tile-render="${tileRenderSeq}" draggable="false" loading="eager" referrerpolicy="strict-origin-when-cross-origin" style="left:${left}px;top:${top}px" width="256" height="256">`);
     }
     tiles.innerHTML=tileHtml.join('');
     const visible=state.points.map((point,index)=>{const p=world(point.latitude,point.longitude,zoom),left=width/2+(p.x-center.x),top=height/2+(p.y-center.y);return {point,index,left,top};}).filter(item=>item.left>=-40&&item.left<=width+40&&item.top>=-40&&item.top<=height+40);
