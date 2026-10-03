@@ -26,7 +26,7 @@ jobs:
 
       - name: Run logical Android/WebView validation
         env:
-          KARETA_SUBJECT_SHA: ${{ github.sha }}
+          KARETA_SUBJECT_SHA: ${{ github.sha }}\n          KARETA_RELEASE_CANDIDATE_SHA: 4d969dbd9c779f4722a4afc4acf087f2eaba2948
         run: node tools/run_android_logical_validation_84_153.js artifacts/android-logical-84.153.json
 
       - name: Upload logical evidence
