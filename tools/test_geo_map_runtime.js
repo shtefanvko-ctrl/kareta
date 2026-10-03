@@ -72,6 +72,24 @@ for(const city of catalog.cities){
 }
 assert.strictEqual(catalog.resolveCityCenter('Өскемен').city,'Усть-Каменогорск');
 assert.strictEqual(catalog.resolveCityCenter('unknown town'),null);
+const mastersSource=fs.readFileSync(path.join(__dirname,'../js/next/pages/masters.js'),'utf8');
+const readerStart=mastersSource.indexOf('const readSavedLocation=');
+const readerEnd=mastersSource.indexOf('const saveLocation=',readerStart);
+assert(readerStart>=0&&readerEnd>readerStart);
+for(const saved of [null,{lat:null,lng:null},{lat:'',lng:' '},{lat:91,lng:82},{lat:49,lng:181}]){
+  const scope={localStorage:{getItem:()=>JSON.stringify(saved)},userCoords:null};
+  vm.runInNewContext(mastersSource.slice(readerStart,readerEnd)+'readSavedLocation();',scope);
+  assert.strictEqual(scope.userCoords,null,'invalid saved GPS became a location');
+}
+for(const saved of [{lat:0,lng:0},{lat:49.97,lng:82.61}]){
+  const scope={localStorage:{getItem:()=>JSON.stringify(saved)},userCoords:null};
+  vm.runInNewContext(mastersSource.slice(readerStart,readerEnd)+'readSavedLocation();',scope);
+  assert.strictEqual(scope.userCoords.lat,saved.lat);
+}
+map.open({points:[{latitude:null,longitude:null}],center:{latitude:43.252,longitude:76.911}});
+frames.shift()();
+assert.strictEqual(dlg.querySelector('[data-geo-map-count]').textContent,'0 точек');
+map.close();
 const core=fs.readFileSync(path.join(__dirname,'../js/next/pages/core.js'),'utf8');
 const cityStart=core.indexOf('const openCityMap=async()=>');
 const cityEnd=core.indexOf('const openNearbyMap',cityStart);
