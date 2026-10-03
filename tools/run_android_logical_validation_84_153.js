@@ -16,7 +16,7 @@ const checks=[
   ['cabinet-session-isolation','node',['tools/test_cabinet_session_isolation_84_151.js']],
   ['route-session-preservation','node',['tools/test_r1885585_route_session_preservation.js']],
   ['tab-resume-route-authority','node',['tools/test_r1885588_tab_resume_route_authority.js']],
-  ['master-route-revisit-cascade','node',['tools/test_master_route_sequence_visual.js']],
+  ['master-route-revisit-cascade','node',['tools/test_android_logical_warm_route_84_153.js']],
   ['lazy-route-runtime','node',['tools/test_route_lazy_runtime_84_68.js']],
   ['route-loading-state','node',['tools/test_route_loading_state_84_109.js']]
 ];
