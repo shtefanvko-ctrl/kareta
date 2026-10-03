@@ -26,7 +26,7 @@
     label:String(point?.label||point?.name||'Точка'),
     address:String(point?.address||''),
     city:String(point?.city||''),
-    distanceKm:Number.isFinite(Number(point?.distanceKm))?Number(point.distanceKm):null,
+    distanceKm:Number.isFinite(coordinate(point?.distanceKm))?coordinate(point.distanceKm):null,
     radiusKm:Number.isFinite(Number(point?.radiusKm))?Math.max(0,Number(point.radiusKm)):0,
     latitude:Number(point?.latitude??point?.lat),
     longitude:Number(point?.longitude??point?.lng),
@@ -79,7 +79,7 @@
     return config.tileUrl.replace('{z}',String(z)).replace('{x}',String(x)).replace('{y}',String(y));
   }
   function distanceText(value){
-    if(!Number.isFinite(Number(value)))return '';
+    if(!Number.isFinite(coordinate(value)))return '';
     const km=Number(value);
     return km<1?Math.max(50,Math.round(km*1000/50)*50)+' м':km.toLocaleString('ru-RU',{minimumFractionDigits:km<10?1:0,maximumFractionDigits:km<10?1:0})+' км';
   }
