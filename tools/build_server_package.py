@@ -48,6 +48,12 @@ def release_version() -> str:
         raise RuntimeError("KARETA_ASSET_VERSION not found")
     return m.group(1)
 
+def normalize_workflow_run_id(value: str) -> str:
+    run_id=str(value or "").strip()
+    if run_id and not re.fullmatch(r"[0-9]{1,32}",run_id):
+        raise SystemExit("workflow run id must be empty or 1-32 digits")
+    return run_id
+
 def scan_content(rel: str, data: bytes, policy: dict) -> None:
     for marker in policy.get("forbiddenContentMarkers", []):
         if marker.encode("utf-8") in data:
@@ -89,6 +95,7 @@ def main() -> int:
 
     policy=load_policy()
     release=release_version()
+    workflow_run_id=normalize_workflow_run_id(args.workflow_run_id)
     tracked=tracked_files()
     selected=[]
     excluded=[]
@@ -116,7 +123,7 @@ def main() -> int:
         "gitRef":args.git_ref,
         "assetVersion":release,
         "builtAt":built_at,
-        "workflowRunId":str(args.workflow_run_id or ""),
+        "workflowRunId":workflow_run_id,
     }
     deployment_bytes=(json.dumps(deployment,ensure_ascii=False,indent=2)+"\n").encode()
     readme_bytes=upload_readme(release,sha).encode()
@@ -140,7 +147,7 @@ def main() -> int:
         "sourceSha":sha,
         "gitRef":args.git_ref,
         "builtAt":built_at,
-        "workflowRunId":str(args.workflow_run_id or ""),
+        "workflowRunId":workflow_run_id,
         "purpose":"server-test",
         "fileCount":len(checksums),
         "checksums":dict(sorted(checksums.items())),
