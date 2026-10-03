@@ -939,18 +939,52 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
       try{existing.remove();}catch(_error){}existing=null;
     }
     if(existing){state.loadedStyles.add(normalized);return Promise.resolve(true);}
-    return new Promise((resolve,reject)=>{
+
+    const baseUrl=assetUrl(payload,'styles',normalized);
+    const attempt=attemptNo=>new Promise((resolve,reject)=>{
       const link=document.createElement('link');
-      link.rel='stylesheet';link.href=assetUrl(payload,'styles',normalized);
-      link.dataset.karetaRouteBundle=bundleName;link.dataset.karetaRelease=release;link.dataset.karetaRouteAsset='1';link.dataset.karetaRouteState='loading';
-      const fail=message=>{link.dataset.karetaRouteState='failed';try{link.remove();}catch(_error){}reject(new Error(message));};
-      const timer=window.setTimeout(()=>fail(`route_style_timeout:${normalized}`),12000);
-      link.addEventListener('load',()=>{window.clearTimeout(timer);link.dataset.karetaRouteState='loaded';state.loadedStyles.add(normalized);state.assetLoads+=1;resolve(true);},{once:true});
-      link.addEventListener('error',()=>{window.clearTimeout(timer);fail(`route_style_load_failed:${normalized}`);},{once:true});
+      let settled=false;
+      link.rel='stylesheet';
+      link.href=attemptNo===0?baseUrl:`${baseUrl}${baseUrl.includes('?')?'&':'?'}kareta_retry=1`;
+      link.dataset.karetaRouteBundle=bundleName;
+      link.dataset.karetaRelease=release;
+      link.dataset.karetaRouteAsset='1';
+      link.dataset.karetaRouteState='loading';
+      link.dataset.karetaRouteAttempt=String(attemptNo+1);
+
+      const cleanup=()=>window.clearTimeout(timer);
+      const complete=()=>{
+        if(settled)return;
+        settled=true;cleanup();
+        link.dataset.karetaRouteState='loaded';
+        state.loadedStyles.add(normalized);
+        state.assetLoads+=1;
+        resolve(true);
+      };
+      const fail=message=>{
+        if(settled)return;
+        settled=true;cleanup();
+        link.dataset.karetaRouteState='failed';
+        try{link.remove();}catch(_error){}
+        if(attemptNo<1){
+          window.setTimeout(()=>attempt(attemptNo+1).then(resolve,reject),250);
+          return;
+        }
+        reject(new Error(message));
+      };
+      const timer=window.setTimeout(()=>{
+        // Same-origin CSS exposes CSSStyleSheet once applied. A delayed/missed
+        // load event must not turn an already-applied stylesheet into a route failure.
+        try{if(link.sheet){complete();return;}}catch(_error){}
+        fail(`route_style_timeout:${normalized}`);
+      },12000);
+      link.addEventListener('load',complete,{once:true});
+      link.addEventListener('error',()=>fail(`route_style_load_failed:${normalized}`),{once:true});
       document.head.appendChild(link);
     });
-  }
 
+    return attempt(0);
+  }
   function loadScript(payload,path,bundleName){
     const normalized=normalizePath(path);
     if(state.loadedScripts.has(normalized))return Promise.resolve(true);
