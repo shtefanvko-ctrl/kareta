@@ -94,6 +94,9 @@ jobs:
       - name: Browser support contract
         run: node tools/test_browser_support_matrix_84_109.js
 
+      - name: Welcome city geo contract
+        run: node tools/test_welcome_city_geo_contract.js
+
       - name: Asset URL hygiene
         run: php tools/test_asset_url_hygiene.php
 
