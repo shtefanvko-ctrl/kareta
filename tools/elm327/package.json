@@ -10,6 +10,7 @@
   },
   "scripts": {
     "import:obdex": "node import_obdex.mjs",
-    "verify:obdex": "node import_obdex.mjs --verify-only"
+    "verify:obdex": "node import_obdex.mjs --verify-only",
+    "fetch:nhtsa": "node fetch_nhtsa_vehicle.mjs"
   }
 }
