@@ -76,6 +76,11 @@ jobs:
       - name: Browser support contract
         run: node tools/test_browser_support_matrix_84_109.js
 
+      - name: Design canon contract
+        run: |
+          node tools/test_design_contract_v1.js
+          node tools/build_master_runtime_css.js --check
+
       - name: Asset URL hygiene
         run: php tools/test_asset_url_hygiene.php
 
