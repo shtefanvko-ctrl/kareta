@@ -1,0 +1,191 @@
+{
+  "overlay": "KARETA 188.5.5.6.84.171 design canon",
+  "required_base": "188.5.5.6.84.170",
+  "target": "188.5.5.6.84.171",
+  "policy": "DO_NOT_MERGE_TO_MAIN_DIRECTLY; apply only to exact 84.170 recovered base",
+  "changed_file_count": 26,
+  "files": [
+    {
+      "path": "CHANGELOG_84.171_CANDIDATE.md",
+      "status": "added",
+      "base_sha256": null,
+      "target_sha256": "18275fd598667923094748da32ccac1de50199d8bb6d5e704872c3d6ed6c7f0e",
+      "size": 2386
+    },
+    {
+      "path": "VERIFICATION_84.171.json",
+      "status": "added",
+      "base_sha256": null,
+      "target_sha256": "8f57a271595c53a1336b08b274114a424fe690ba257a2fe4681d4378064e2e12",
+      "size": 3582
+    },
+    {
+      "path": "_SERVER_PACKAGE_MANIFEST.json",
+      "status": "modified",
+      "base_sha256": "3d2b1427e829bfe464400259f147a6a918c6719ee0fc36d963107b01732c1c0d",
+      "target_sha256": "920b1db6f78bf88f1f017addec70e84d6872eaa63241c782114793f30b05f6f0",
+      "size": 172659
+    },
+    {
+      "path": "_SERVER_UPLOAD_README.md",
+      "status": "modified",
+      "base_sha256": "096c41dd226c2a966de3f118c6343b61162924a595ba857976831c6369b18752",
+      "target_sha256": "76348af0c20b1be0e13d470b04302e9478838db0d48f948b33db6ca69e154351",
+      "size": 6405
+    },
+    {
+      "path": "css/next/client_viewport_layers.css",
+      "status": "modified",
+      "base_sha256": "cd63ef4c24b1b32132c83b08845339115ac767440375574ae70abc447d8e5460",
+      "target_sha256": "0286d14c31ce2d5919eb7fa68cedd6d35475f5579d34e930e0b29d69fccfca53",
+      "size": 9538
+    },
+    {
+      "path": "css/next/design_contract.css",
+      "status": "added",
+      "base_sha256": null,
+      "target_sha256": "cbc45e0a209eb9046e68294827cc4adc4834506e37c6044ccc08e5e4f3173f4f",
+      "size": 2451
+    },
+    {
+      "path": "css/next/master_shell_canonical_84_143.css",
+      "status": "modified",
+      "base_sha256": "84c2f7c7d5934fd5172cfb5a3f805e608e6ab4c74b4801c2d079de307acae7c2",
+      "target_sha256": "190b63c91365a574328ba42e604232c5cdf448645bab309167bac6d6eb9cd595",
+      "size": 17469
+    },
+    {
+      "path": "css/next/master_surfaces.css",
+      "status": "modified",
+      "base_sha256": "14f477bd40ed3d60e169708166a7b8e6da8fbad7304904378fa44659baec1c9f",
+      "target_sha256": "76d2697c8c6b3a7b5595f8ff6696eb4a2a65dc4693a9feaa3c2508001e752166",
+      "size": 13082
+    },
+    {
+      "path": "css/next/master_ui_exchange_schedule_flattening.css",
+      "status": "modified",
+      "base_sha256": "52f37088452adce5146be3428afcade491be0df5a03df311e20e7c97d5379d78",
+      "target_sha256": "33b711da85ea58ccb494fad9a969f0e9fbb33f47f55a4c1c1d0c0e0fe8769863",
+      "size": 26585
+    },
+    {
+      "path": "css/next/shell_84_109_restore.css",
+      "status": "modified",
+      "base_sha256": "bbcb0be9d22454459ff5b08bb4fce19ea2f5b23bc46b5291656d77a8f7906ff5",
+      "target_sha256": "0983aab233020854b2c474598dc30f3082272065aa412e54344a98eb899d3825",
+      "size": 22142
+    },
+    {
+      "path": "css/next/shell_header_restoration.css",
+      "status": "modified",
+      "base_sha256": "9df19c19aa276ba6ab319a778460181f6c69a7c97e1282cb6bd20b0f61c1bb17",
+      "target_sha256": "09ad363f02e83363649c3d2b8deb7ee73b4705ceba015ab9ca9b596fc7db47e9",
+      "size": 5306
+    },
+    {
+      "path": "css/next/window_engine.css",
+      "status": "modified",
+      "base_sha256": "8ac1a1af5a1d1100eae6c7b98866ec6083d7cd770e4ef4df2bb4969366e968d4",
+      "target_sha256": "70755d25c1484e67e9ec2cfbeeaea2330643246a29d93adabfb0d8148caef395",
+      "size": 4601
+    },
+    {
+      "path": "css/routes/master_runtime.css",
+      "status": "modified",
+      "base_sha256": "4c18eb196caefc85970ecb1399ae4db0a2bd7e459da04f04c98eab8b8fa0645f",
+      "target_sha256": "3decc68069f9801f366702f138a25f9bb603c5ffd869c3ae1cb20de0a28c5006",
+      "size": 70362
+    },
+    {
+      "path": "docs/deployment/PLESK_INSTALL_84.171.md",
+      "status": "added",
+      "base_sha256": null,
+      "target_sha256": "44015ec6ec7ede427d99f3de6270c76cd20cde8afa1810785e2fce26b1201b57",
+      "size": 2608
+    },
+    {
+      "path": "docs/design/CANON_84_171.md",
+      "status": "added",
+      "base_sha256": null,
+      "target_sha256": "cad31c2d8e330c493678b59d871c81a147f07ac088e4e6ad1c8c3899ee25121f",
+      "size": 1178
+    },
+    {
+      "path": "docs/design/LEGACY_CSS_AUDIT_84.171.json",
+      "status": "added",
+      "base_sha256": null,
+      "target_sha256": "61edf45899a4171d11de0eb6a19b8acdd08b6980942ca2cb62a4fa0e614f41e4",
+      "size": 1582
+    },
+    {
+      "path": "docs/release/current.json",
+      "status": "modified",
+      "base_sha256": "6b388553a0b3fc2b05aad6e503a00c147fb3031a48b98e8d6a2a81fc440fcf93",
+      "target_sha256": "50060fa0702eb5a98aeb3ce34412b09f4c2d80f413b2d4995c8c1b2885e77cbb",
+      "size": 6642
+    },
+    {
+      "path": "docs/verification/84.171/package-diff.json",
+      "status": "added",
+      "base_sha256": null,
+      "target_sha256": "930f134d9a3e2e5f4cb99a67b32a402e8a6b37114babc17de00fe6fe34d84412",
+      "size": 1233
+    },
+    {
+      "path": "inc/asset_registry.php",
+      "status": "modified",
+      "base_sha256": "2c0fa60b1b71910711af510b2ecc61f20e3f6258bc9caa20e469a0572a79a0f3",
+      "target_sha256": "8a45a0ad9e69b8c14c517e5e5e1f75939e9864db1e4f94a0f75bce40c5509c8a",
+      "size": 40656
+    },
+    {
+      "path": "inc/asset_version.php",
+      "status": "modified",
+      "base_sha256": "75c83f6f0bf3d8c49e3e6a3c2819face57b19344c4a64b8569cd2de5de8b2afc",
+      "target_sha256": "260cd333ed5d30fd14a94f61f1ef8f81f281bcaae16a393d08e4b89b9d56a844",
+      "size": 3869
+    },
+    {
+      "path": "storage/deployment_manifest.json",
+      "status": "modified",
+      "base_sha256": "1f276c9baacb31ac49ddaf71de33e24e4726f960d86acd402df855968a977824",
+      "target_sha256": "c218f0b1d2fba1e7cd5194048630a29b54e380ddb6daff27f13d798c8c6bcae6",
+      "size": 240
+    },
+    {
+      "path": "sw.js",
+      "status": "modified",
+      "base_sha256": "89839e4ca895cfd86257abe6dcd2abe596c3e9c9a98ed9d78d220f2972c278d6",
+      "target_sha256": "663fd2aa3ceb078fab349247b5a21bbccd69a57f65ca59436940bf30a6089bc8",
+      "size": 11207
+    },
+    {
+      "path": "tools/audit_design_debt_84_171.cjs",
+      "status": "added",
+      "base_sha256": null,
+      "target_sha256": "03664ae35af558f90940367457c4b8eaf30d6147f17081954678e06e969a6071",
+      "size": 1453
+    },
+    {
+      "path": "tools/build_master_runtime_css.js",
+      "status": "added",
+      "base_sha256": null,
+      "target_sha256": "d838669b8385ba1bd40d5a812e1a81c74dca3bd0c0cb67e31fa00c8bfd387fb7",
+      "size": 1229
+    },
+    {
+      "path": "tools/test_design_canon_84_171.cjs",
+      "status": "added",
+      "base_sha256": null,
+      "target_sha256": "1d095847e193bce709dbadee69d34343df8bc0fc33c70094315eb686558ab707",
+      "size": 2957
+    },
+    {
+      "path": "tools/verify_runtime.php",
+      "status": "modified",
+      "base_sha256": "068a69312fa382424472c85a9c69665c8a647c93a96bea408195fd218988940a",
+      "target_sha256": "1e969bbe620fbf522038adf57bd0263cb86ae271fb7676775ec14500fbd49d74",
+      "size": 7045
+    }
+  ]
+}
