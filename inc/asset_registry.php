@@ -445,8 +445,8 @@ function kareta_route_asset_plan(): array
             'routeKeys' => ['serviceManagement'],
             'routes' => ['#/services/manage'],
             'styles' => ['css/next/master_requests_workplace_services.css'],
-            'scripts' => ['js/next/pages/service_management.js'],
-            'globals' => ['KaretaServiceManagementPages'],
+            'scripts' => ['js/next/services/master_setup_picker.js','js/next/pages/service_management.js'],
+            'globals' => ['KaretaMasterSetupPicker','KaretaServiceManagementPages'],
         ],
         'profile' => [
             'lazy' => true,
