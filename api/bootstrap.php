@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/config.php';
+require_once dirname(__DIR__) . '/inc/request_logger.php';
 
 
 /* PHP 7.4 compatibility for production hosts. */
@@ -46,7 +47,7 @@ if (!defined('KARETA_REQUEST_ID')) {
     define('KARETA_REQUEST_ID', substr(hash('sha256', microtime(true) . '|' . mt_rand() . '|' . ($_SERVER['REQUEST_URI'] ?? 'cli')), 0, 16));
 }
 header('X-Kareta-Request-Id: ' . KARETA_REQUEST_ID);
-$karetaTraceId = substr(trim((string)($_SERVER['HTTP_X_KARETA_TRACE_ID'] ?? '')), 0, 160);
+$karetaTraceId = defined('KARETA_TRACE_ID') ? KARETA_TRACE_ID : substr(trim((string)($_SERVER['HTTP_X_KARETA_TRACE_ID'] ?? '')), 0, 160);
 if ($karetaTraceId !== '') header('X-Kareta-Trace-Id: ' . $karetaTraceId);
 
 /* ── Session ────────────────────────────────────────────────────────── */
@@ -74,7 +75,7 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: SAMEORIGIN');
 header('Referrer-Policy: strict-origin-when-cross-origin');
-header('Access-Control-Allow-Headers: Content-Type, X-Idempotency-Key, X-Request-Id');
+header('Access-Control-Allow-Headers: Content-Type, X-Idempotency-Key, X-Request-Id, X-Kareta-Trace-Id, X-Kareta-Client-Version');
 
 $karetaMethod = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 if (!in_array($karetaMethod, ['GET','POST','PUT','PATCH','DELETE','OPTIONS'], true)) {
@@ -250,7 +251,7 @@ function kareta_api_envelope(array $payload, int $status): array
     if ($requestId !== '') $payload['requestId'] = $requestId;
     $payload['meta'] = array_merge(
         is_array($payload['meta'] ?? null) ? $payload['meta'] : [],
-        ['httpStatus' => $status, 'requestId' => defined('KARETA_REQUEST_ID') ? KARETA_REQUEST_ID : '', 'traceId' => substr(trim((string)($_SERVER['HTTP_X_KARETA_TRACE_ID'] ?? '')), 0, 160)]
+        ['httpStatus' => $status, 'requestId' => defined('KARETA_REQUEST_ID') ? KARETA_REQUEST_ID : '', 'traceId' => defined('KARETA_TRACE_ID') ? KARETA_TRACE_ID : substr(trim((string)($_SERVER['HTTP_X_KARETA_TRACE_ID'] ?? '')), 0, 160)]
     );
     return $payload;
 }
