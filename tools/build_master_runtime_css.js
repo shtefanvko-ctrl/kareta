@@ -10,6 +10,7 @@ const sources=[
   'css/next/master_service_pricing_native.css',
   'css/next/master_exchange_acceptance_flow.css',
   'css/next/master_ui_exchange_schedule_flattening.css',
+  'css/next/master_client_r84_postlude.css',
 ];
 function build(){
   const chunks=['/* KARETA.KZ R188.5.5.6.84.102 — GENERATED master route bundle. DO NOT EDIT. Run: node tools/build_master_runtime_css.js */\n'];
