@@ -1,0 +1,81 @@
+name: Landing gates
+
+on:
+  pull_request:
+    paths:
+      - 'landing/**'
+      - '.github/workflows/landing-gates.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'landing/**'
+      - '.github/workflows/landing-gates.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: landing-gates-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  landing-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax
+        run: |
+          node --check landing/app.js
+          node --check landing/config.js
+      - name: Landing contract
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, re
+          from pathlib import Path
+
+          root = Path("landing")
+          html = (root / "index.html").read_text(encoding="utf-8")
+          css = (root / "styles.css").read_text(encoding="utf-8")
+          data = json.loads((root / "i18n.json").read_text(encoding="utf-8"))
+
+          langs = ("ru", "kk", "en")
+          assert all(lang in data for lang in langs), "RU/KK/EN dictionaries are required"
+
+          keys = set(re.findall(r'data-i18n="([^"]+)"', html))
+          for lang in langs:
+              missing = sorted(k for k in keys if k not in data[lang])
+              assert not missing, f"{lang}: missing i18n keys: {missing}"
+
+          refs = set()
+          for value in re.findall(r'(?:src|href)="([^"]+)"', html):
+              if value.startswith(("./", "../")) and not value.startswith("../"):
+                  refs.add(value.split("#", 1)[0].split("?", 1)[0])
+          for value in re.findall(r'url\(["\']?([^)"\']+)', css):
+              if value.startswith("./"):
+                  refs.add(value.split("#", 1)[0].split("?", 1)[0])
+
+          missing_assets = sorted(ref for ref in refs if not (root / ref[2:]).exists())
+          assert not missing_assets, f"Missing local assets: {missing_assets}"
+
+          pngs = list(root.rglob("*.png"))
+          jpgs = list(root.rglob("*.jpg")) + list(root.rglob("*.jpeg"))
+          assert pngs and jpgs, "Expected landing image assets are missing"
+          for path in pngs:
+              assert path.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n", f"Invalid PNG: {path}"
+          for path in jpgs:
+              assert path.read_bytes()[:2] == b"\xff\xd8", f"Invalid JPEG: {path}"
+
+          config = (root / "config.js").read_text(encoding="utf-8")
+          assert 'webUrl:"../"' in config, "Web application URL contract changed"
+          assert 'androidUrl:""' in config and 'iosUrl:""' in config, "Store URLs must remain explicit until official URLs are configured"
+
+          print("LANDING_CONTRACT: PASS")
+          print(f"i18n keys: {len(keys)}")
+          print(f"local refs: {len(refs)}")
+          print(f"png: {len(pngs)}, jpg/jpeg: {len(jpgs)}")
+          PY
