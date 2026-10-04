@@ -97,9 +97,21 @@
     return `<dialog class="k-master-r81-window k-master-r81-day-window" data-r81-day-window><div class="k-master-r81-window__shell"><header><div><small>РАБОЧИЙ ДЕНЬ</small><h2 data-r81-day-title>Управление днём</h2><p>Исключение даты, продление смены и перерывы находятся в одном окне.</p></div><button type="button" data-r81-day-close aria-label="Закрыть">${icon('close')}</button></header><div class="k-master-r81-window__body">${panels}</div><footer><button class="k-btn k-btn--secondary" type="button" data-r81-day-close>Закрыть</button></footer></div></dialog>`;
   }
 
+  function scheduleCanonShell(){
+    return `<section class="k-master-canon-search-shell k-master-schedule-canon-shell" aria-label="Поиск и управление графиком">
+      <div class="k-master-canon-titlebar"><h1>Мой график</h1><span class="k-master-canon-status">7 дней</span></div>
+      <label class="k-master-canon-search"><span class="k-master-canon-search__icon">${icon('search')}</span><input type="search" data-schedule-search placeholder="Найти заказ, автомобиль или клиента…" autocomplete="off"></label>
+      <nav class="k-master-canon-filters" aria-label="Действия графика">
+        <button type="button" class="is-active" data-schedule-canon-today>${icon('calendar')}<span>Сегодня</span></button>
+        <button type="button" data-r81-schedule-open="shifts">${icon('clock')}<span>Смены</span></button>
+        <button type="button" data-r81-schedule-open="settings">${icon('settings')}<span>Параметры</span></button>
+        <button type="button" class="k-master-canon-filter-icon" data-r81-schedule-open="recovery" aria-label="Recovery">${icon('refresh')}</button>
+      </nav>
+    </section>`;
+  }
   function renderData(d){
     const days=Array.isArray(d.days)?d.days:[],embedded=document.querySelector('.k-master-workplace-page #k-master-schedule');
-    return `${embedded?'':`<header class="k-master-r81-schedule-toolbar k-master-page-header" data-r71-contract="${MASTER_UI_R71_CONTRACT}" data-r81-contract="${MASTER_WORKSPACE_R81_CONTRACT}"><div class="k-master-page-header__copy"><small>ГРАФИК МАСТЕРА</small><h1>Мой график</h1><p>Основная поверхность показывает только загрузку и реальные записи.</p></div><nav class="k-master-page-header__actions"><button class="k-btn k-btn--secondary" type="button" data-r81-schedule-open="shifts">Смены</button><button class="k-btn k-btn--secondary" type="button" data-r81-schedule-open="settings">Параметры</button><button class="k-btn k-btn--secondary" type="button" data-r81-schedule-open="recovery">Recovery</button></nav></header>`}${summary(d)}${dayTimeline(d)}${weeklyForecast(d)}<section class="k-schedule-grid">${days.map(day=>dayCard(day)).join('')}</section>${scheduleWorkspaceDialog(d)}${dayWorkspaceDialog(d)}${rescheduleDialog()}${blockDialog()}`;
+    return `${embedded?'':scheduleCanonShell()}${summary(d)}${dayTimeline(d)}${weeklyForecast(d)}<section class="k-schedule-grid">${days.map(day=>dayCard(day)).join('')}</section>${scheduleWorkspaceDialog(d)}${dayWorkspaceDialog(d)}${rescheduleDialog()}${blockDialog()}`;
   }
 
   function renderFreeSlots(payload){const result=payload?.result||{},slots=Array.isArray(result.slots)?result.slots:[],duration=result.duration||{};return {info:`<article class="k-master-r67-duration"><small>Расчёт длительности</small><strong>${durationLabel(duration.serviceMinutes||0)} + ${durationLabel(duration.bufferMin||0)} резерв</strong><span>${duration.source==='my_services'?'По времени в «Моих услугах»':duration.source==='mixed'?'«Мои услуги» + стандартная оценка':'По стандартному времени/оценке заказа'}</span></article>`,html:slots.length?slots.map((s,i)=>`<button type="button" class="k-master-r67-free-slot ${s.capacityWarning?'has-warning':''}" data-schedule-free-slot="${esc(toInputDateTime(s.start))}" data-slot-duration="${Number(s.workMinutes||duration.serviceMinutes||120)}"><b>${esc(dateTimeLabel(s.start))}</b><span>до ${esc(time(s.end))}</span><small>загрузка после записи ${Number(s.projectedLoadPct||0).toFixed(0)}%${s.capacityWarning?' · высокая':''}</small>${i===0?'<em>Ближайшее</em>':''}</button>`).join(''):'<div class="k-master-r67-no-slots"><b>Свободных окон не найдено</b><span>Проверьте смены, перерывы и следующие даты.</span></div>'};}
@@ -108,6 +120,17 @@
     const root=document.querySelector('#k-master-schedule');if(!root)return;
     const rescheduleDialogNode=root.querySelector('[data-schedule-reschedule-dialog]'),blockDialogNode=root.querySelector('[data-block-dialog]'),scheduleWindowNode=root.querySelector('[data-r81-schedule-window]'),dayWindowNode=root.querySelector('[data-r81-day-window]');
     const closeReschedule=()=>{try{rescheduleDialogNode?.close?.();}catch(_e){}};const closeBlock=()=>{try{blockDialogNode?.close?.();}catch(_e){}};
+    const scheduleSearch=root.querySelector('[data-schedule-search]');
+    const applyScheduleSearch=()=>{
+      const query=String(scheduleSearch?.value||'').trim().toLocaleLowerCase('ru');
+      root.querySelectorAll('.k-schedule-day').forEach(day=>{
+        const slots=[...day.querySelectorAll('.k-schedule-slot')];
+        let matched=0;
+        slots.forEach(slot=>{const visible=!query||String(slot.textContent||'').toLocaleLowerCase('ru').includes(query);slot.classList.toggle('is-search-hidden',!visible);if(visible)matched+=1;});
+        day.classList.toggle('is-search-hidden',!!query&&matched===0);
+      });
+    };
+    scheduleSearch?.addEventListener('input',applyScheduleSearch,{signal:ctx.lifecycle?.signal});
     root.addEventListener('submit',async e=>{
       const dayForm=e.target.closest('[data-schedule-day]'),prefs=e.target.closest('[data-schedule-preferences]'),weekly=e.target.closest('[data-weekly-shift-form]');if(!dayForm&&!prefs&&!weekly)return;e.preventDefault();const button=(dayForm||prefs||weekly).querySelector('button[type="submit"]');if(button)button.disabled=true;
       try{
@@ -119,6 +142,7 @@
     },{signal:ctx.lifecycle?.signal});
     root.addEventListener('click',async e=>{
       if(e.target.closest('[data-schedule-reschedule-close]')){closeReschedule();return;}if(e.target.closest('[data-block-close]')){closeBlock();return;}
+      if(e.target.closest('[data-schedule-canon-today]')){const today=root.querySelector('.k-schedule-day.is-today');today?.scrollIntoView?.({behavior:'smooth',block:'start'});return;}
       const scheduleOpen=e.target.closest('[data-r81-schedule-open]');if(scheduleOpen&&scheduleWindowNode){const tab=scheduleOpen.dataset.r81ScheduleOpen||'shifts';scheduleWindowNode.querySelectorAll('[data-r81-schedule-tab]').forEach(x=>x.classList.toggle('is-active',x.dataset.r81ScheduleTab===tab));scheduleWindowNode.querySelectorAll('[data-r81-schedule-panel]').forEach(x=>x.hidden=x.dataset.r81SchedulePanel!==tab);scheduleWindowNode.showModal?.();return;}
       if(e.target.closest('[data-r81-schedule-close]')){scheduleWindowNode?.close?.();return;}
       const scheduleTab=e.target.closest('[data-r81-schedule-tab]');if(scheduleTab&&scheduleWindowNode){const tab=scheduleTab.dataset.r81ScheduleTab;scheduleWindowNode.querySelectorAll('[data-r81-schedule-tab]').forEach(x=>x.classList.toggle('is-active',x===scheduleTab));scheduleWindowNode.querySelectorAll('[data-r81-schedule-panel]').forEach(x=>x.hidden=x.dataset.r81SchedulePanel!==tab);return;}

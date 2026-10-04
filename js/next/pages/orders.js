@@ -305,11 +305,16 @@
     const role=currentRole();
     if(role==='client') return renderClientOrders(context);
     const copy=roleCopy(role);
-    const body = `<section class="k-orders-toolbar k-orders-toolbar--${ui.escHtml(role)} ${role==='sto'?'k-sto-r75-orders-toolbar':''}"><div><strong>${ui.escHtml(copy.toolbar)}</strong><span>${ui.escHtml(copy.toolbarText)}</span></div><div class="k-orders-toolbar__actions"><a class="k-btn k-btn-secondary k-orders-workflow-link" href="#/workflow">${uiIcon('work')}<span>Производство</span></a><a class="k-btn k-btn-primary" href="#/orders/new">${ui.escHtml(copy.create)}</a></div></section>
-      <section class="k-orders-toolbar-v2" aria-label="Поиск заказов">
-        <label class="k-masters-search"><span class="k-masters-search__icon" aria-hidden="true">${icon('search')}</span><input type="search" data-order-search placeholder="${ui.escHtml(copy.search)}" autocomplete="off"></label>
-        <div class="k-masters-filter-wrap"><button type="button" class="k-masters-filter-button" data-order-filter-toggle aria-expanded="false"><span aria-hidden="true">≡</span><span data-order-filter-label>Все</span></button><div class="k-masters-filter-panel" data-order-filter-panel hidden><button type="button" class="is-active" data-order-filter="all">Все заказы</button><button type="button" data-order-filter="active">Активные</button><button type="button" data-order-filter="completed">Завершённые</button><button type="button" data-order-filter="cancelled">Отменённые</button></div></div>
-        <button type="button" class="k-btn k-btn-primary k-masters-search-button" data-orders-submit>Поиск</button>
+    const body = `<section class="k-master-canon-search-shell k-orders-canon-shell" aria-label="Заказы">
+        <div class="k-master-canon-titlebar"><h1>${ui.escHtml(copy.title)}</h1><div class="k-master-canon-kind"><a href="#/workflow">${uiIcon('work')}<span>Производство</span></a><a class="is-active" href="#/orders/new">＋ <span>${ui.escHtml(copy.create)}</span></a></div></div>
+        <label class="k-master-canon-search"><span class="k-master-canon-search__icon" aria-hidden="true">${icon('search')}</span><input type="search" data-order-search placeholder="${ui.escHtml(copy.search)}" autocomplete="off"></label>
+        <nav class="k-master-canon-filters" aria-label="Фильтры заказов">
+          <button type="button" class="is-active" data-order-filter="all"><span>Все</span></button>
+          <button type="button" data-order-filter="active"><span>Активные</span></button>
+          <button type="button" data-order-filter="completed"><span>Завершённые</span></button>
+          <button type="button" class="k-master-canon-filter-icon" data-order-filter-toggle aria-expanded="false" aria-label="Дополнительные фильтры">${icon('filter')||'≡'}<span class="k-visually-hidden" data-order-filter-label>Все</span></button>
+        </nav>
+        <div class="k-master-canon-filter-panel" data-order-filter-panel hidden><button type="button" class="is-active" data-order-filter="all">Все заказы</button><button type="button" data-order-filter="active">Активные</button><button type="button" data-order-filter="completed">Завершённые</button><button type="button" data-order-filter="cancelled">Отменённые</button></div>
       </section>
       <div class="k-orders-search-result" data-orders-search-result aria-live="polite"></div>
       <div id="k-orders-content" data-orders-role="${ui.escHtml(role)}" data-orders-phase="idle">${renderState(ordersState.getSnapshot(),role)}</div>`;
@@ -538,7 +543,7 @@
       const toggle=event.target.closest('[data-order-filter-toggle]');
       if(toggle){const open=filterPanel&&filterPanel.hidden;if(filterPanel)filterPanel.hidden=!open;toggle.setAttribute('aria-expanded',open?'true':'false');return;}
       const button=event.target.closest('[data-order-filter]');
-      if(button){filterMode=button.dataset.orderFilter||'all';if(filterPanel)filterPanel.querySelectorAll('[data-order-filter]').forEach(x=>x.classList.toggle('is-active',x===button));if(filterLabel)filterLabel.textContent=button.textContent.trim().replace(' заявки','');closeFilter();applyFilters();return;}
+      if(button){filterMode=button.dataset.orderFilter||'all';document.querySelectorAll('[data-order-filter]').forEach(x=>x.classList.toggle('is-active',x.dataset.orderFilter===filterMode));if(filterLabel)filterLabel.textContent=button.textContent.trim().replace(' заявки','');closeFilter();applyFilters();return;}
       const submit=event.target.closest('[data-orders-submit]');
       if(submit){applyFilters();return;}
       if(filterPanel&&!filterPanel.hidden&&!event.target.closest('[data-order-filter-panel]'))closeFilter();

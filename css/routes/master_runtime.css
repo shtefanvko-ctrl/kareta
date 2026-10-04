@@ -1447,3 +1447,114 @@ html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71>*{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
 }
+
+
+/* 2026-10-04 — Master canonical search shell for schedule/orders. */
+html[data-user-role="master"]{
+  --k-master-canon-orange:#ff4b0a;
+  --k-master-canon-line:#dfe1e5;
+}
+.k-master-canon-search-shell{
+  width:100%;min-width:0;box-sizing:border-box;
+  padding:18px 16px 14px;margin:0 0 16px;
+  border:1px solid #eceef1;border-radius:18px;background:#fff;
+}
+.k-master-canon-titlebar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0;margin:0 0 12px}
+.k-master-canon-titlebar h1{min-width:0;margin:0;color:#17191d;font-size:30px;line-height:36px;font-weight:900;letter-spacing:-.04em}
+.k-master-canon-status{min-height:34px;display:inline-flex;align-items:center;justify-content:center;padding:0 11px;border-radius:10px;background:#f1f2f4;color:#656b75;font-size:12px;font-weight:800}
+.k-master-canon-kind{display:flex;gap:5px;padding:4px;border-radius:13px;background:#f1f2f4}
+.k-master-canon-kind a{min-height:34px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 11px;border-radius:10px;color:#656b75;text-decoration:none;font-size:12px;font-weight:750;white-space:nowrap}
+.k-master-canon-kind a.is-active{background:#fff;color:var(--k-master-canon-orange);box-shadow:0 2px 9px rgba(15,23,42,.08)}
+.k-master-canon-kind .k-ui-icon,.k-master-canon-kind svg{width:16px;height:16px;fill:none;stroke:currentColor}
+.k-master-canon-search{height:48px;display:flex;align-items:center;gap:10px;padding:0 13px;border:1px solid var(--k-master-canon-line);border-radius:11px;background:#fff;box-sizing:border-box}
+.k-master-canon-search__icon{width:20px;height:20px;display:grid;place-items:center;flex:0 0 20px;color:#767a82}
+.k-master-canon-search__icon .k-ui-icon,.k-master-canon-search__icon svg{width:20px;height:20px;display:block;fill:none;stroke:currentColor;stroke-width:1.9}
+.k-master-canon-search input{width:100%;min-width:0;height:100%;padding:0;border:0;outline:0;background:transparent;color:#17191d;font:500 14.5px/20px inherit}
+.k-master-canon-search input::placeholder{color:#89919b}
+.k-master-canon-filters{display:grid;grid-template-columns:auto auto minmax(0,1fr) 44px;gap:9px;align-items:stretch;margin-top:13px}
+.k-master-canon-filters>button{min-width:0;min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 14px;border:0;border-radius:10px;background:#eceeef;color:#31353a;font:750 13px/1 inherit;white-space:nowrap;cursor:pointer}
+.k-master-canon-filters>button:nth-child(1){background:#edf5ff;color:#245f9e}
+.k-master-canon-filters>button:nth-child(2){background:#fff6df;color:#9a6500}
+.k-master-canon-filters>button:nth-child(3){background:#edf9f1;color:#19733f}
+.k-master-canon-filters>button.is-active{background:#111827;color:#fff;box-shadow:0 5px 15px rgba(15,23,42,.12)}
+.k-master-canon-filters .k-ui-icon,.k-master-canon-filters svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9}
+.k-master-canon-filter-icon{width:44px!important;padding:0!important;background:#f1f2f4!important;color:#333942!important}
+.k-master-canon-filter-panel{display:flex;gap:8px;overflow-x:auto;margin-top:10px;padding-bottom:2px;scrollbar-width:none}
+.k-master-canon-filter-panel[hidden]{display:none!important}
+.k-master-canon-filter-panel::-webkit-scrollbar{display:none}
+.k-master-canon-filter-panel button{min-height:38px;padding:0 12px;border:1px solid var(--k-master-canon-line);border-radius:10px;background:#fff;color:#31353a;font:750 12px/1 inherit;white-space:nowrap}
+.k-master-canon-filter-panel button.is-active{border-color:#111827;background:#111827;color:#fff}
+.k-schedule-slot.is-search-hidden,.k-schedule-day.is-search-hidden{display:none!important}
+.k-orders-canon-shell + .k-orders-search-result{margin:-6px 0 10px}
+.k-orders-canon-shell .k-master-canon-kind a:last-child{color:var(--k-master-canon-orange)}
+
+@media(max-width:699px){
+  .k-master-canon-search-shell{padding:14px 0 12px;margin:0 0 12px;border:0;border-radius:0}
+  .k-master-canon-titlebar{gap:8px;margin-bottom:12px}
+  .k-master-canon-titlebar h1{font-size:27px;line-height:32px}
+  .k-master-canon-kind{min-width:0;flex-shrink:1}
+  .k-master-canon-kind a{min-height:33px;padding:0 8px;font-size:10.5px}
+  .k-master-canon-kind a span{display:inline}
+  .k-master-canon-search{height:64px;padding:0 17px;border:0;border-radius:19px;box-shadow:0 11px 30px rgba(15,23,42,.11)}
+  .k-master-canon-search__icon{width:28px;height:28px;flex-basis:28px;color:#111}
+  .k-master-canon-search__icon .k-ui-icon,.k-master-canon-search__icon svg{width:28px;height:28px}
+  .k-master-canon-search input{font-size:17px}
+  .k-master-canon-filters{display:flex;grid-template-columns:none;gap:8px;margin-top:14px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;overscroll-behavior-inline:contain}
+  .k-master-canon-filters::-webkit-scrollbar{display:none}
+  .k-master-canon-filters>button{flex:0 0 auto;min-height:46px;padding:0 16px;border-radius:15px}
+  .k-master-canon-filter-icon{width:46px!important}
+  .k-master-canon-filter-panel{margin-top:8px}
+}
+@media(max-width:370px){
+  .k-master-canon-titlebar h1{font-size:24px;line-height:29px}
+  .k-master-canon-filters>button{padding-inline:12px;font-size:12px}
+}
+@media(min-width:600px) and (max-width:899px){
+  .k-master-canon-search-shell{padding:18px 18px 14px}
+  .k-master-canon-search{height:56px;border-radius:16px}
+  .k-master-canon-filters{grid-template-columns:repeat(3,minmax(0,1fr)) 44px}
+}
+
+
+/* 2026-10-04 — Messages canonical search shell, aligned with Masters reference. */
+.k-chat-layout-r78{
+  --k-chat-canon-orange:#ff4b0a;
+  --k-chat-canon-line:#dfe1e5;
+}
+.k-chat-layout-r78 .k-chat-sidebar-head{padding:16px 16px 12px!important;gap:12px!important;background:#fff!important}
+.k-chat-layout-r78 .k-chat-sidebar-head>div{min-width:0}
+.k-chat-layout-r78 .k-chat-sidebar-head>div>span{display:none!important}
+.k-chat-layout-r78 .k-chat-sidebar-head strong{margin:0!important;color:#17191d!important;font-size:27px!important;line-height:32px!important;font-weight:900!important;letter-spacing:-.04em!important}
+.k-chat-layout-r78 .k-chat-sidebar-head small[data-chat-unread-summary]{margin-top:3px!important;color:#8a9099!important;font-size:10px!important}
+.k-chat-layout-r78 .k-chat-new{width:42px!important;height:42px!important;border-radius:13px!important;background:#f1f2f4!important;color:#ff4b0a!important;box-shadow:none!important}
+.k-chat-layout-r78 .k-chat-list-search{position:relative!important;padding:0 16px 0!important;border:0!important;background:#fff!important}
+.k-chat-layout-r78 .k-chat-list-search input{width:100%!important;height:48px!important;padding:0 13px 0 43px!important;border:1px solid var(--k-chat-canon-line)!important;border-radius:11px!important;background:#fff!important;color:#17191d!important;font:500 14.5px/20px inherit!important;outline:0!important;box-shadow:none!important}
+.k-chat-layout-r78 .k-chat-list-search input::placeholder{color:#89919b!important}
+.k-chat-layout-r78 .k-chat-search-icon{left:29px!important;top:14px!important;width:20px!important;height:20px!important;display:grid!important;place-items:center!important;color:#767a82!important}
+.k-chat-layout-r78 .k-chat-search-icon svg{width:20px!important;height:20px!important}
+.k-chat-layout-r78 .k-chat-filters{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;padding:12px 16px 12px!important;margin:0!important;overflow:visible!important;background:#fff!important}
+.k-chat-layout-r78 .k-chat-filters button{min-width:0!important;min-height:40px!important;padding:0 8px!important;border:0!important;border-radius:10px!important;background:#eceeef!important;color:#31353a!important;font-size:11px!important;font-weight:750!important;white-space:nowrap!important}
+.k-chat-layout-r78 .k-chat-filters button:nth-child(1){background:#edf5ff!important;color:#245f9e!important}
+.k-chat-layout-r78 .k-chat-filters button:nth-child(2){background:#fff6df!important;color:#9a6500!important}
+.k-chat-layout-r78 .k-chat-filters button:nth-child(3){background:#edf9f1!important;color:#19733f!important}
+.k-chat-layout-r78 .k-chat-filters button:nth-child(4){background:#f1f2f4!important;color:#333942!important}
+.k-chat-layout-r78 .k-chat-filters button.is-active{background:#111827!important;color:#fff!important;box-shadow:0 5px 15px rgba(15,23,42,.12)!important}
+
+@media(max-width:760px){
+  .k-chat-layout-r78 .k-chat-sidebar-head{padding:14px 16px 12px!important}
+  .k-chat-layout-r78 .k-chat-sidebar-head strong{font-size:27px!important;line-height:32px!important}
+  .k-chat-layout-r78 .k-chat-list-search{padding:0 16px!important}
+  .k-chat-layout-r78 .k-chat-list-search input{height:64px!important;padding-left:52px!important;border:0!important;border-radius:19px!important;font-size:17px!important;box-shadow:0 11px 30px rgba(15,23,42,.11)!important}
+  .k-chat-layout-r78 .k-chat-search-icon{left:31px!important;top:18px!important;width:28px!important;height:28px!important;color:#111!important}
+  .k-chat-layout-r78 .k-chat-search-icon svg{width:28px!important;height:28px!important}
+  .k-chat-layout-r78 .k-chat-filters{display:flex!important;grid-template-columns:none!important;gap:8px!important;padding:14px 16px 12px!important;overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:none!important;overscroll-behavior-inline:contain!important}
+  .k-chat-layout-r78 .k-chat-filters::-webkit-scrollbar{display:none!important}
+  .k-chat-layout-r78 .k-chat-filters button{flex:0 0 auto!important;min-height:46px!important;padding:0 16px!important;border-radius:15px!important;font-size:13px!important}
+}
+@media(max-width:370px){
+  .k-chat-layout-r78 .k-chat-sidebar-head,.k-chat-layout-r78 .k-chat-list-search{padding-left:11px!important;padding-right:11px!important}
+  .k-chat-layout-r78 .k-chat-filters{padding-left:11px!important;padding-right:11px!important}
+  .k-chat-layout-r78 .k-chat-sidebar-head strong{font-size:24px!important;line-height:29px!important}
+  .k-chat-layout-r78 .k-chat-search-icon{left:26px!important}
+  .k-chat-layout-r78 .k-chat-filters button{padding-inline:12px!important;font-size:12px!important}
+}
