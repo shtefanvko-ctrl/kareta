@@ -102,6 +102,36 @@
       "license": "NO_LICENSE_FILE_CONFIRMED_2026-10-05",
       "use": "reference for real vehicle OBD measurement patterns and observed DTC combinations only; do not import/copy dataset until licensing is clarified",
       "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "python_obd",
+      "name": "python-OBD",
+      "type": "diagnostic_library",
+      "authority": "COMMUNITY_MATURE",
+      "url": "https://github.com/brendan-w/python-OBD",
+      "license": "GPL-2.0-or-later",
+      "use": "reference implementation for ELM327 session handling, protocol mapping, PID commands and parsers; do not copy GPL code into KARETA without license review",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "elm327_obdii",
+      "name": "elm327_obdii",
+      "type": "diagnostic_library",
+      "authority": "COMMUNITY_ACTIVE",
+      "url": "https://github.com/tronikos/elm327_obdii",
+      "license": "Apache-2.0 code; fetched OBDb/WiCAN profiles retain their own licenses",
+      "use": "reference for BLE ELM327 state machine, voltage-gated polling, CAN context and vehicle-profile fetching",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "obdb_vehicle_profiles",
+      "name": "OBDb community vehicle profiles",
+      "type": "vehicle_specific_dataset",
+      "authority": "COMMUNITY",
+      "url": "https://github.com/obdb",
+      "license": "reported CC-BY-SA-4.0 for profile data; verify each repository before use",
+      "use": "manufacturer/model-specific signal research; reference only until per-repo licensing/provenance is verified",
+      "status": "REFERENCE_ONLY"
     }
   ]
 }

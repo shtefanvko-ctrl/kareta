@@ -10,7 +10,9 @@
     "expert_review": "NOT_RUN",
     "runtime_integration": "NOT_RUN",
     "android": "UNCHANGED",
-    "production_db": "UNCHANGED"
+    "production_db": "UNCHANGED",
+    "referential_validation": "PASS",
+    "drive_mirror": "CREATED"
   },
   "counts": {
     "dtc_seed": 22,
@@ -20,12 +22,28 @@
     "symptoms": 12,
     "causes": 18,
     "checks": 14,
-    "repair_actions": 10
+    "repair_actions": 10,
+    "sources": 13
   },
   "decisions": [
     "OBDex CC0 selected as preferred generic DTC/PID bulk-import source.",
     "ODbL sources kept reference-only pending licensing decision.",
     "NHTSA selected for complaints/recalls/manufacturer-communications evidence, not as proof of successful repair.",
     "No DTC maps directly to mandatory part replacement."
-  ]
+  ],
+  "latest_sha": "aa815add1536042d1ebb769419681abecbd2b7d6",
+  "validation": {
+    "performed_on": "2026-10-05",
+    "result": "PASS",
+    "checks": [
+      "unique IDs",
+      "DTC format",
+      "RU/EN presence",
+      "DTC→symptom/cause/check/repair/source references",
+      "check→equipment references",
+      "profession links",
+      "service links"
+    ],
+    "errors": 0
+  }
 }
