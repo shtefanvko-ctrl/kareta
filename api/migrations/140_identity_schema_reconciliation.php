@@ -16,7 +16,7 @@ return [
 
         // Production has had parallel full-build branches where the same migration
         // number could carry a different checksum. Applied historical versions must
-        // never be blindly rerun by the normal runner. Migration 131 is the explicit
+        // never be blindly rerun by the normal runner. Migration 140 is the explicit
         // reconciliation point: execute only the current idempotent schema builders
         // needed by the active Identity contract under a new, unambiguous version.
         foreach ($repairVersions as $version) {
