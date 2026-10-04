@@ -3,48 +3,40 @@
   "recorded_on": "2026-10-05",
   "branch": "feat/elm327-repair-knowledge-20261005",
   "base_sha": "307a8f703588ced539149494fe5c2c52a6d3037e",
+  "validated_sha": "aa815add1536042d1ebb769419681abecbd2b7d6",
+  "documentation_sha": "179cc455e773814358834ede6dfbd7299c0dea98",
   "state": {
     "research": "IN_PROGRESS",
     "structured_seed": "IMPLEMENTED",
+    "referential_validation": "PASS",
+    "bulk_import_manifest": "IMPLEMENTED",
+    "bulk_importer": "IMPLEMENTED_NOT_RUN",
     "bulk_import": "NOT_RUN",
     "expert_review": "NOT_RUN",
     "runtime_integration": "NOT_RUN",
+    "drive_mirror": "CREATED",
     "android": "UNCHANGED",
-    "production_db": "UNCHANGED",
-    "referential_validation": "PASS",
-    "drive_mirror": "CREATED"
+    "production_db": "UNCHANGED"
   },
   "counts": {
-    "dtc_seed": 22,
-    "pid_seed": 13,
+    "canonical_dtc_seed": 22,
+    "canonical_pid_seed": 13,
+    "upstream_generic_dtc_locked": 9533,
+    "upstream_pid_locked": 132,
     "commands": 15,
     "protocols": 5,
     "symptoms": 12,
     "causes": 18,
     "checks": 14,
-    "repair_actions": 10,
-    "sources": 13
+    "repair_actions": 10
   },
-  "decisions": [
-    "OBDex CC0 selected as preferred generic DTC/PID bulk-import source.",
-    "ODbL sources kept reference-only pending licensing decision.",
-    "NHTSA selected for complaints/recalls/manufacturer-communications evidence, not as proof of successful repair.",
-    "No DTC maps directly to mandatory part replacement."
-  ],
   "validation": {
-    "performed_on": "2026-10-05",
     "result": "PASS",
-    "checks": [
-      "unique IDs",
-      "DTC format",
-      "RU/EN presence",
-      "DTC→symptom/cause/check/repair/source references",
-      "check→equipment references",
-      "profession links",
-      "service links"
-    ],
     "errors": 0
   },
-  "validated_sha": "aa815add1536042d1ebb769419681abecbd2b7d6",
-  "documentation_sha": "656eb30febf17bff40a2091eebe704bfc5d05007"
+  "next": [
+    "Run pinned OBDex verify/import in an environment with network or local OBDex checkout.",
+    "Process RU translation queue in bounded batches and promote only validated bilingual records.",
+    "Add NHTSA vehicle evidence ingestion for recalls/complaints, then bulk manufacturer communications."
+  ]
 }
