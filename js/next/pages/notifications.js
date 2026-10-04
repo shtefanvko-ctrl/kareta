@@ -5,6 +5,7 @@
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const fmt=value=>{const d=new Date(String(value||''));return Number.isNaN(d.getTime())?'':d.toLocaleString('ru-RU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});};
   const icon=kind=>({garage:'🚗',order:'✓',chat:'💬',system:'●',offer:'₸',default:'○'})[kind]||'○';
+  const uiIcon=name=>window.KaretaUIIcons?.svg?.(name)||'';
   function kindOf(n){
     const raw=String(n.eventType||n.event_type||n.type||'').toLowerCase();
     const title=String(n.title||'').toLowerCase();
@@ -17,16 +18,16 @@
   }
   function renderNotifications(){
     return `<section class="k-page k-notifications-page k-notifications-ref-v2" data-notifications-page>
-      <header class="k-notifications-ref-head">
-        <div class="k-notifications-ref-copy"><small>ЦЕНТР СОБЫТИЙ</small><h1>Уведомления</h1><p>Заявки, сообщения, напоминания и предложения — в одной ленте.</p></div>
-        <div class="k-notifications-ref-head-actions"><button type="button" data-notifications-read-all>Прочитать все</button><button type="button" data-notifications-refresh aria-label="Обновить уведомления">↻</button></div>
-      </header>
-      <nav class="k-notifications-ref-tabs" role="tablist" aria-label="Фильтр уведомлений">
-        <button type="button" class="is-active" role="tab" aria-selected="true" data-notifications-tab="all">Все <span data-notification-count-all>0</span></button>
-        <button type="button" role="tab" aria-selected="false" data-notifications-tab="unread">Новые <span data-notification-count-unread>0</span></button>
-        <button type="button" role="tab" aria-selected="false" data-notifications-tab="order">Заявки</button>
-        <button type="button" role="tab" aria-selected="false" data-notifications-tab="chat">Сообщения</button>
-      </nav>
+      <section class="k-notifications-canon-shell" aria-label="Уведомления">
+        <div class="k-notifications-canon-titlebar"><h1>Уведомления</h1><div class="k-notifications-canon-actions"><button type="button" data-notifications-read-all>Прочитать все</button><button type="button" data-notifications-refresh aria-label="Обновить уведомления">${uiIcon('refresh')||'↻'}</button></div></div>
+        <label class="k-notifications-canon-search"><span>${uiIcon('search')}</span><input type="search" data-notifications-search placeholder="Найти уведомление…" autocomplete="off"></label>
+        <nav class="k-notifications-ref-tabs k-notifications-canon-filters" role="tablist" aria-label="Фильтр уведомлений">
+          <button type="button" class="is-active" role="tab" aria-selected="true" data-notifications-tab="all">Все <span data-notification-count-all>0</span></button>
+          <button type="button" role="tab" aria-selected="false" data-notifications-tab="unread">Новые <span data-notification-count-unread>0</span></button>
+          <button type="button" role="tab" aria-selected="false" data-notifications-tab="order">Заявки</button>
+          <button type="button" role="tab" aria-selected="false" data-notifications-tab="chat">Сообщения</button>
+        </nav>
+      </section>
       <div class="k-notifications-ref-status" data-notifications-status aria-live="polite"></div>
       <section class="k-notifications-list k-notifications-ref-list" data-notifications-list><div class="k-notifications-ref-skeleton">${'<i></i>'.repeat(4)}</div></section>
     </section>`;
@@ -55,7 +56,7 @@
   }
   async function mountNotifications(context={}){
     const root=document.querySelector('[data-notifications-page]'),list=root?.querySelector('[data-notifications-list]');if(!root||!list)return;
-    let disposed=false,pollTimer=0,requestSeq=0,rows=[],tab='all';
+    let disposed=false,pollTimer=0,requestSeq=0,rows=[],tab='all',query='';
     const publish=items=>window.dispatchEvent(new CustomEvent('kareta:notification-unread',{detail:{count:items.filter(n=>!(n.isRead??Number(n.is_read||0)===1)).length}}));
     const updateCounts=()=>{
       const unread=rows.filter(n=>!(n.isRead??Number(n.is_read||0)===1)).length;
@@ -63,8 +64,14 @@
       const status=root.querySelector('[data-notifications-status]');if(status)status.textContent=unread?`${unread} непрочитанных`:'Всё прочитано';
     };
     const paint=()=>{
-      const filtered=rows.filter(n=>tab==='all'||(tab==='unread'&&!(n.isRead??Number(n.is_read||0)===1))||kindOf(n)===tab);
-      list.innerHTML=filtered.map(card).join('')||`<div class="k-notifications-ref-empty"><span>✓</span><h2>${tab==='unread'?'Новых уведомлений нет':'Здесь пока пусто'}</h2><p>${tab==='unread'?'Вы прочитали все события.':'Новые события появятся здесь автоматически.'}</p></div>`;
+      const needle=query.trim().toLocaleLowerCase('ru');
+      const filtered=rows.filter(n=>{
+        const tabMatch=tab==='all'||(tab==='unread'&&!(n.isRead??Number(n.is_read||0)===1))||kindOf(n)===tab;
+        if(!tabMatch)return false;
+        if(!needle)return true;
+        return `${n.title||''} ${n.body||''} ${n.eventType||n.event_type||n.type||''}`.toLocaleLowerCase('ru').includes(needle);
+      });
+      list.innerHTML=filtered.map(card).join('')||`<div class="k-notifications-ref-empty"><span>✓</span><h2>${needle?'Ничего не найдено':tab==='unread'?'Новых уведомлений нет':'Здесь пока пусто'}</h2><p>${needle?'Измените запрос поиска.':tab==='unread'?'Вы прочитали все события.':'Новые события появятся здесь автоматически.'}</p></div>`;
       updateCounts();
     };
     const load=async(quiet=false)=>{
@@ -81,7 +88,9 @@
       if(e.target.closest('[data-notifications-read-all]')){await api.request('api/domain.php?action=notification.readAll',{method:'POST',headers:{'Content-Type':'application/json','X-Idempotency-Key':'notifications-read-all-'+Date.now()},body:JSON.stringify({})});rows=rows.map(n=>n.virtual?n:{...n,isRead:true,is_read:1});publish(rows);paint();window.KaretaToast?.success?.('Все уведомления прочитаны');return;}
       const one=e.target.closest('[data-notification-read]');if(one){const id=one.dataset.notificationRead;await api.request('api/domain.php?action=notification.read',{method:'POST',headers:{'Content-Type':'application/json','X-Idempotency-Key':'notification-read-'+id},body:JSON.stringify({id})});const row=rows.find(n=>String(n.id)===String(id));if(row){row.isRead=true;row.is_read=1;}publish(rows);paint();}
     };
-    root.addEventListener('click',click);pollTimer=window.setInterval(()=>{if(!document.hidden)load(true);},30000);context.lifecycle?.addCleanup?.(()=>{disposed=true;requestSeq++;root.removeEventListener('click',click);window.clearInterval(pollTimer);});load(false);
+    const search=root.querySelector('[data-notifications-search]');
+    const onSearch=()=>{query=String(search?.value||'');paint();};
+    root.addEventListener('click',click);search?.addEventListener('input',onSearch);pollTimer=window.setInterval(()=>{if(!document.hidden)load(true);},30000);context.lifecycle?.addCleanup?.(()=>{disposed=true;requestSeq++;root.removeEventListener('click',click);search?.removeEventListener('input',onSearch);window.clearInterval(pollTimer);});load(false);
   }
   window.KaretaNotificationsPages=Object.freeze({renderNotifications,mountNotifications});
 })();
