@@ -1,7 +1,18 @@
 name: DB canon hash inventory
 on:
   push:
-    branches: [reconcile-db-canon-geo-20261005]
+    branches: [main]
+    paths:
+      - 'api/migrations/**'
+      - 'config.php'
+      - 'tools/test_migration_contract.php'
+      - '.github/workflows/db-canon-hash-inventory.yml'
+  pull_request:
+    paths:
+      - 'api/migrations/**'
+      - 'config.php'
+      - 'tools/test_migration_contract.php'
+      - '.github/workflows/db-canon-hash-inventory.yml'
 permissions:
   contents: read
 jobs:
