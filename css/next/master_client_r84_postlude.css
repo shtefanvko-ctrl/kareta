@@ -276,12 +276,12 @@ html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar{
   border-radius:16px!important;
   background:#fff!important;
 }
-@media(max-width:1100px){
+@media(max-width:1199px){
   html[data-user-role="master"] [data-page="service-management"] .k-master-service-grid-r84{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
 }
-@media(max-width:699px){
+@media(max-width:767px){
   html[data-user-role="master"] [data-page="service-management"]{
     width:100%!important;
     max-width:none!important;
