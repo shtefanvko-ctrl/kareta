@@ -1,10 +1,12 @@
 <?php
 declare(strict_types=1);
 require_once dirname(__DIR__) . '/config.php';
+require_once dirname(__DIR__) . '/inc/request_logger.php';
 /* R88: diagnostics must be registered before any dependency is loaded. */
-$karetaDbRequestId = 'db_' . date('YmdHis') . '_' . bin2hex(random_bytes(4));
+$karetaDbRequestId = KARETA_REQUEST_ID;
 $karetaDbStartedAt = microtime(true);
 $karetaDbActionHint = (string)($_GET['action'] ?? '');
+kareta_request_log_context(['action'=>$karetaDbActionHint]);
 
 function kareta_db_diag_write(array $entry): void {
     $dir = KARETA_LOG_ROOT;
@@ -207,6 +209,8 @@ if ($method === 'GET') {
 /* POST ────────────────────────────────────────────────────────────── */
 $body   = kareta_read_json();
 $action = (string)($body['action'] ?? '');
+$karetaDbActionHint = $action;
+kareta_request_log_context(['action'=>$action]);
 
 switch ($action) {
     case 'dataIntegrity.repair': kareta_require_any_role(['admin','owner']); if (!$pdo) _no_db(); kareta_data_integrity_repair($pdo); break;
