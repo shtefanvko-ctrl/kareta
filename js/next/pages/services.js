@@ -224,11 +224,15 @@
   function toolbar(){
     const searchIcon=window.KaretaUIIcons?.svg?.('search')||'⌕';
     const submitIcon=window.KaretaUIIcons?.svg?.('chevronRight')||'›';
-    return `<div class="k-community-reference-composer k-services-reference-composer" role="search" aria-label="Поиск услуг">
-      <span class="k-community-reference-composer__avatar k-services-reference-composer__icon" aria-hidden="true">${searchIcon}</span>
-      <input type="search" data-services-toolbar-search value="${ui.escHtml(view.search)}" placeholder="Найти услугу" autocomplete="off" aria-label="Найти услугу">
-      <button type="button" class="k-community-reference-composer__media k-services-reference-composer__submit" data-services-submit aria-label="Выполнить поиск">${submitIcon}</button>
-    </div>`;
+    return `<section class="k-services-canon-shell" aria-label="Услуги">
+      <div class="k-services-canon-titlebar"><h1>Услуги</h1><a class="k-services-canon-create" href="#/orders/new">＋ Заявка</a></div>
+      <div class="k-services-canon-search" role="search" aria-label="Поиск услуг">
+        <span class="k-services-canon-search__icon" aria-hidden="true">${searchIcon}</span>
+        <input type="search" data-services-toolbar-search value="${ui.escHtml(view.search)}" placeholder="Найти услугу, работу или категорию…" autocomplete="off" aria-label="Найти услугу">
+        <button type="button" class="k-services-canon-search__submit" data-services-submit aria-label="Выполнить поиск">${submitIcon}</button>
+      </div>
+      <div class="k-services-canon-filters" data-services-tabs>${referenceTabs()}</div>
+    </section>`;
   }
 
   function renderServices(context){
@@ -237,7 +241,7 @@
     const root=isServicesRoot();
     const title='Услуги';
     const subtitle='';
-    return ui.pageShell(context,title,subtitle,`<div class="k-services-reference-layout" data-kflow-screen="services"><div class="k-services-reference-shell" data-services-shell>${toolbar()}<div data-services-tabs>${referenceTabs()}</div><section class="k-services-root-categories" data-services-root-categories ${root?'':'hidden'}>${root?rootCategoriesBlock(catalogState.getSnapshot()):''}</section><section class="k-services-catalog-outlet" data-services-navigator>${renderNavigator(catalogState.getSnapshot())}</section></div></div>`,{page:'services',eyebrow:'',chromeHeader:false});
+    return ui.pageShell(context,title,subtitle,`<div class="k-services-reference-layout" data-kflow-screen="services"><div class="k-services-reference-shell" data-services-shell>${toolbar()}<section class="k-services-root-categories" data-services-root-categories ${root?'':'hidden'}>${root?rootCategoriesBlock(catalogState.getSnapshot()):''}</section><section class="k-services-catalog-outlet" data-services-navigator>${renderNavigator(catalogState.getSnapshot())}</section></div></div>`,{page:'services',eyebrow:'',chromeHeader:false});
   }
 
   function setupDeals(scope){
