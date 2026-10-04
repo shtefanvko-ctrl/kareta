@@ -101,3 +101,13 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{fon
   .footer-row{grid-template-columns:1fr}.footer nav{flex-wrap:wrap}.footer small{grid-column:auto}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.role-card{min-height:270px;padding:28px;border:1px solid #e1e4e8;border-radius:24px;background:#fff;display:flex;flex-direction:column}
+.role-card--accent{background:#171a20;color:#fff;border-color:#171a20}
+.role-no{width:44px;height:44px;border-radius:13px;background:var(--orange-soft);color:var(--orange);display:grid;place-items:center;font-size:11px;font-weight:900}
+.role-card--accent .role-no{background:rgba(255,101,0,.16)}
+.role-card h3{margin:auto 0 12px;font-size:25px;letter-spacing:-.035em}
+.role-card p{margin:0;color:#747c87;font-size:14px;line-height:1.6}
+.role-card--accent p{color:#aeb5bf}
+@media(max-width:1040px){.role-grid{grid-template-columns:1fr}.role-card{min-height:220px}}
+@media(max-width:700px){.role-card{min-height:205px;padding:22px;border-radius:20px}}
