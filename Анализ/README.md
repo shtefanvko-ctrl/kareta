@@ -20,7 +20,7 @@
 | --- | --- | --- |
 | M0 — оборудование | IMPLEMENTED в main | профиль + picker, matching не выводится из наличия |
 | M1 — профессии | IMPLEMENTED в main | self-reported, RU/KK/EN, service auto-enable=false, matching disabled |
-| M2 — service advisories | IMPLEMENTED в PR #90, не merged | read-only 109 relations, expert review NOT_RUN, hard filtering/ranking/matching disabled |
+| M2 — service advisories | MERGED в main, PR #90 | read-only 109 relations, expert review NOT_RUN, hard filtering/ranking/matching disabled |
 | M3 — explainable matching | NOT IMPLEMENTED | отдельный будущий контракт |
 | M4 — UI matching filters/reasons | NOT IMPLEMENTED как M3 consumer | не подменять существующую Биржу |
 | M5 — demand analytics | NOT IMPLEMENTED | 52 query examples = hypotheses, observed demand отсутствует |
@@ -74,3 +74,10 @@ PASS:
 1. Добавить executable gate `Анализ ↔ runtime`, чтобы research drift не проходил молча.
 2. Повторно запустить exact-head Application gates PR #90 после каждой правки и не расширять scope до M3 при FAIL.
 3. После convergence M2 отдельно проектировать M3 shadow/explain-only matching с feature-off.
+
+
+## Интеграция M2
+
+PR #90 merged в main: `ffeb23e635af794388b2e5c1b4a358e8a6cf3d2d`.
+
+Production matching по M2 по-прежнему выключен. MERGED не означает DEPLOYED и не закрывает real MySQL/API или ручной browser/device acceptance.
