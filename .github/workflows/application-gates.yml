@@ -64,6 +64,9 @@ jobs:
       - name: Authorization guard
         run: node tools/test_r1885568427_master_workplace_auth_guard.js
 
+      - name: Reconciled assistant and auth boundaries
+        run: node tools/test_shared_runtime_reconciliation_20261004.js
+
       - name: Identity API recovery contract
         run: node tools/test_r1885607_identity_api_client_garage_recovery.js
 
