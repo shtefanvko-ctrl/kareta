@@ -20,9 +20,10 @@ const routeSources=[
   'css/next/master_surfaces.css'
 ];
 
-const match=registry.match(/'_baseStyles'\s*=>\s*\[([\s\S]*?)\n\s*\],\n\s*'_lazyStyleLayers'/);
-const baseBlock=match?match[1]:'';
-if(!baseBlock) fail('cannot parse _baseStyles');
+const baseStart=registry.indexOf("'_baseStyles' => [");
+const lazyStart=registry.indexOf("'_lazyStyleLayers' => [",baseStart);
+if(baseStart<0||lazyStart<=baseStart) fail('cannot parse _baseStyles');
+const baseBlock=registry.slice(baseStart,lazyStart);
 
 for(const src of routeSources){
   if(baseBlock.includes("'"+src+"'")) fail(src+' is still eager and duplicated by master_runtime.css');
