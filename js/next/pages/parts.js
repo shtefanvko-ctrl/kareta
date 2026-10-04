@@ -33,6 +33,12 @@
   const surfaceKind=()=>String(location.hash||'').split('?')[0]==='#/parts/used'?'used':'new';
   const isUsedSurface=()=>surfaceKind()==='used';
   const isMasterContext=()=>String(window.KaretaNavigationCore?.interfaceRole?.()||window.KaretaRoleAccess?.currentRole?.()||'').toLowerCase()==='master';
+  const appCity=()=>{
+    try{
+      const flow=window.KaretaOnboardingProfileDraft?.read?.()||window.KaretaOnboardingState?.read?.()||{};
+      return String(flow.city||'').trim();
+    }catch(_e){return '';}
+  };
 
   const typeMeta=Object.freeze({
     all:{label:'Все',title:'Все предложения',hint:'Новые, БУ, восстановленные и обмен'},
@@ -313,7 +319,7 @@
     try{const res=await api.request('api/db.php?action=clientCabinet.get',{cacheTtlMs:15000,cacheKey:'client.cabinet.parts',signal:contextRef?.lifecycle?.signal});vehicles=Array.isArray(res.payload?.data?.vehicles)?res.payload.data.vehicles:[];}catch(_e){vehicles=[];}finally{vehiclesLoaded=true;renderVehicles();if(selectedVehicleId&&!vehicles.some(v=>String(v.id)===String(selectedVehicleId)))selectedVehicleId='';renderSnapshot(store.getSnapshot());}
   }
   function applyFilters(){renderFilter(store.getSnapshot());updateCounters(store.getSnapshot());renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');}
-  function resetFilters(){state={search:'',type:'all',category:'',city:'',sort:'newest',storeId:''};marketMode='catalog';storeMode='nearby';const search=document.querySelector('[data-parts-search]');if(search)search.value='';renderSnapshot(store.getSnapshot());}
+  function resetFilters(){state={search:'',type:'all',category:'',city:appCity(),sort:'newest',storeId:''};marketMode='catalog';storeMode='nearby';const search=document.querySelector('[data-parts-search]');if(search)search.value='';renderSnapshot(store.getSnapshot());}
   function openDialog(name){document.querySelector(`[data-${name}-dialog]`)?.showModal?.();}
   function closeDialog(name){document.querySelector(`[data-${name}-dialog]`)?.close?.();}
   function blankListingWizard(item=null){
@@ -400,7 +406,7 @@
   }
 
   function mountParts(context){
-    unsubscribe?.();contextRef=context;usedRows=[];mineRows=[];listingWizard=null;listingSaving=false;usedLoading=false;usedError='';vehicles=[];vehiclesLoaded=false;selectedVehicleId='';vehicleDialogMode='catalog';marketMode='catalog';mineStatus='all';pendingMineFocusId='';storeMode='nearby';storeTrust.clear();storeTrustPending.clear();state={search:'',type:'all',category:'',city:'',sort:'newest',storeId:''};const hashCtx=readHashContext();
+    unsubscribe?.();contextRef=context;usedRows=[];mineRows=[];listingWizard=null;listingSaving=false;usedLoading=false;usedError='';vehicles=[];vehiclesLoaded=false;selectedVehicleId='';vehicleDialogMode='catalog';marketMode='catalog';mineStatus='all';pendingMineFocusId='';storeMode='nearby';storeTrust.clear();storeTrustPending.clear();state={search:'',type:'all',category:'',city:appCity(),sort:'newest',storeId:''};const hashCtx=readHashContext();
     unsubscribe=store.subscribe(renderSnapshot);bind(context);store.load({search:'',category:'all',limit:100},{signal:context.lifecycle?.signal});if(isUsedSurface())loadUsed();else{usedRows=[];usedLoading=false;usedError='';}loadVehicles();
     if(hashCtx.mine==='1'){pendingMineFocusId=hashCtx.focus||'';loadMine().then(()=>{if(contextRef!==context)return;marketMode='mine';renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');});}
     return()=>{unsubscribe?.();unsubscribe=null;contextRef=null;store.cancel();};
