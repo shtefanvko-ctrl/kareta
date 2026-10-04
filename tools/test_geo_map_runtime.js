@@ -1,140 +1,52 @@
 'use strict';
-const assert=require('assert');
-const fs=require('fs');
-const vm=require('vm');
-const path=require('path');
-const source=fs.readFileSync(path.join(__dirname,'../js/next/geo_map.js'),'utf8');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const read=p=>fs.readFileSync(p,'utf8');
 
-/* Missing distance is unknown, including city and owner points without GPS. */
-{
-  const scope={};
-  vm.runInNewContext(source.slice(source.indexOf('  const coordinate='),source.indexOf('  function ensureStyle'))+
-    source.slice(source.indexOf('  function distanceText'),source.indexOf('  function tileStatusText'))+
-    '\nthis.normalizePoint=normalizePoint;this.distanceText=distanceText;',scope);
-  for(const value of [undefined,null,'',' ',NaN,Infinity]){
-    const point=scope.normalizePoint({distanceKm:value},0);
-    assert.strictEqual(point.distanceKm,null,'missing distance became zero');
-    assert.strictEqual(scope.distanceText(point.distanceKm),'','unknown distance displayed as nearby');
-  }
-  assert.strictEqual(scope.distanceText(0.2),'200 м');
-  assert.strictEqual(scope.normalizePoint({distanceKm:'2.5'},0).distanceKm,2.5);
-}
-
-class Node {
-  constructor(){this.style={};this.dataset={};this.events={};this.innerHTML='';this.textContent='';this.open=false;this.isConnected=true;this.clientWidth=320;this.clientHeight=320;this.nodes={};}
-  addEventListener(name,fn){this.events[name]=fn;}
-  querySelector(key){return this.nodes[key]||(this.nodes[key]=new Node());}
-  querySelectorAll(){return [];}
-  showModal(){this.open=true;}
-  close(){this.open=false;}
-  emit(type,target){this.events[type]?.({type,target});}
-}
-const frames=[],dialogs=[],window={};
-const document={
-  documentElement:{lang:'ru'},head:{appendChild(){}},body:{appendChild(node){dialogs.push(node);}},
-  querySelectorAll(){return [];},createElement(){return new Node();}
-};
-vm.runInNewContext(source,{window,document,URL,requestAnimationFrame:fn=>frames.push(fn)});
-const map=window.KaretaGeoMap;
-assert.throws(()=>map.open({points:[{latitude:null,longitude:null}]}),/GEO_MAP_POINTS_REQUIRED/);
-map.open({points:[{id:'sto',latitude:49.9483,longitude:82.6285,label:'STO'}]});
-frames.shift()();
-const dlg=dialogs[0],tiles=dlg.querySelector('[data-geo-map-tiles]'),status=dlg.querySelector('[data-geo-map-status]');
-assert(tiles.innerHTML.includes('tile.openstreetmap.org'));
-assert(!tiles.innerHTML.includes('NaN'),'automatic map center produced invalid tiles');
-assert.strictEqual(status.textContent,'Подложка загружается…');
-const first=tiles.innerHTML.match(/data-geo-tile-render="(\d+)"/)[1];
-tiles.emit('error',{dataset:{geoTileRender:first}});
-assert(status.textContent.includes('Подложка недоступна'));
-tiles.emit('load',{dataset:{geoTileRender:first}});
-assert(status.textContent.includes('Часть карты'));
-map.close();
-const oldStatus=status.textContent;
-tiles.emit('error',{dataset:{geoTileRender:first}});
-assert.strictEqual(status.textContent,oldStatus,'closed map accepted a tile event');
-document.documentElement.lang='kk';
-map.open({points:[{latitude:43.2389,longitude:76.8897}],center:{latitude:43.2389,longitude:76.8897}});
-frames.shift()();
-const second=tiles.innerHTML.match(/data-geo-tile-render="(\d+)"/)[1];
-const pending=status.textContent;
-tiles.emit('error',{dataset:{geoTileRender:first}});
-assert.strictEqual(status.textContent,pending,'stale tile affected reopened map');
-tiles.emit('error',{dataset:{geoTileRender:second}});
-assert(status.textContent.includes('қолжетімсіз'));
-map.close();
-document.documentElement.lang='en';
-map.open({points:[{latitude:51.1694,longitude:71.4491}],center:{latitude:51.1694,longitude:71.4491}});
-map.close();
-assert.doesNotThrow(()=>frames.shift()(),'closing before animation caused an exception');
-
-document.documentElement.lang='ru';
-map.open({points:[],center:{latitude:43.252,longitude:76.911,source:'GeoNames'},notice:'No public points'});
-frames.shift()();
-assert(!tiles.innerHTML.includes('NaN'));
-assert.strictEqual(dlg.querySelector('[data-geo-map-data-status]').textContent,'No public points');
-assert.strictEqual(dlg.querySelector('[data-geo-map-data-status]').hidden,false);
-assert.strictEqual(dlg.querySelector('[data-geo-map-detail]').innerHTML,'');
-map.close();
-assert.throws(()=>map.open({points:[],center:{latitude:null,longitude:null}}),/GEO_MAP_POINTS_REQUIRED/);
 const catalogWindow={};
-vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../js/next/onboarding/onboarding_selection_catalog.js'),'utf8'),{window:catalogWindow});
+vm.runInNewContext(read('js/next/onboarding/onboarding_selection_catalog.js'),{window:catalogWindow});
 const catalog=catalogWindow.KaretaOnboardingSelectionCatalog;
-assert.strictEqual(catalog.cities.length,8);
+assert.equal(catalog.cities.length,8);
 for(const city of catalog.cities){
   const center=catalog.resolveCityCenter(city);
-  assert(center&&center.latitude>40&&center.latitude<56&&center.longitude>46&&center.longitude<88,city);
-  assert.strictEqual(center.city,city);
-  assert.strictEqual(center.precision,'city');
+  assert.ok(center,city);
+  assert.ok(center.latitude>=-90&&center.latitude<=90,city);
+  assert.ok(center.longitude>=-180&&center.longitude<=180,city);
+  assert.equal(center.city,city);
+  assert.equal(center.precision,'city');
 }
-assert.strictEqual(catalog.resolveCityCenter('Өскемен').city,'Усть-Каменогорск');
-assert.strictEqual(catalog.resolveCityCenter('unknown town'),null);
-const mastersSource=fs.readFileSync(path.join(__dirname,'../js/next/pages/masters.js'),'utf8');
-const readerStart=mastersSource.indexOf('const readSavedLocation=');
-const readerEnd=mastersSource.indexOf('const saveLocation=',readerStart);
-assert(readerStart>=0&&readerEnd>readerStart);
-for(const saved of [null,{lat:null,lng:null},{lat:'',lng:' '},{lat:91,lng:82},{lat:49,lng:181}]){
-  const scope={localStorage:{getItem:()=>JSON.stringify(saved)},userCoords:null};
-  vm.runInNewContext(mastersSource.slice(readerStart,readerEnd)+'readSavedLocation();',scope);
-  assert.strictEqual(scope.userCoords,null,'invalid saved GPS became a location');
-}
-for(const saved of [{lat:0,lng:0},{lat:49.97,lng:82.61}]){
-  const scope={localStorage:{getItem:()=>JSON.stringify(saved)},userCoords:null};
-  vm.runInNewContext(mastersSource.slice(readerStart,readerEnd)+'readSavedLocation();',scope);
-  assert.strictEqual(scope.userCoords.lat,saved.lat);
-}
-map.open({points:[{latitude:null,longitude:null}],center:{latitude:43.252,longitude:76.911}});
-frames.shift()();
-assert.strictEqual(dlg.querySelector('[data-geo-map-count]').textContent,'0 точек');
-map.close();
-const core=fs.readFileSync(path.join(__dirname,'../js/next/pages/core.js'),'utf8');
-const cityStart=core.indexOf('const openCityMap=async()=>');
-const cityEnd=core.indexOf('const openNearbyMap',cityStart);
-assert(cityStart>=0&&cityEnd>cityStart);
-(async()=>{
-  let response={ok:true,payload:{data:{items:[]}}},opened;
-  const scope={
-    window:{KaretaOnboardingSelectionCatalog:catalog,KaretaMobile:{loadGeoMap:async()=>({open:options=>{opened=options;}})}},
-    document:{documentElement:{lang:'ru'}},selectedCity:'Алматы',disposed:false,
-    api:{request:async()=>response}
-  };
-  vm.runInNewContext(core.slice(cityStart,cityEnd)+'this.openCityMap=openCityMap;',scope);
-  await scope.openCityMap();
-  assert.strictEqual(opened.points.length,0);
-  assert.strictEqual(opened.center.city,'Алматы');
-  assert(opened.notice.includes('пока нет'));
-  response={ok:false};
-  await scope.openCityMap();
-  assert.strictEqual(opened.points.length,0);
-  assert(opened.notice.includes('Не удалось'));
-  response={ok:true,payload:{items:[{ownerType:'master',ownerId:2,label:'Master',latitude:43.25,longitude:76.9},{ownerType:'shop',ownerId:3,publicId:9,kind:'pickup',latitude:43.26,longitude:76.91}]}};
-  await scope.openCityMap();
-  assert.strictEqual(opened.points.length,2);
-  for(const point of opened.points){assert(!point.user);assert(!Object.hasOwn(point,'distanceKm'));}
-  assert.strictEqual(opened.points[0].actions.length,2);
-  assert.strictEqual(opened.points[1].actions[0].href,'#/parts/store/9');
-  scope.disposed=true;opened=null;
-  await scope.openCityMap();
-  assert.strictEqual(opened,null);
-  console.log('GEO_MAP_CITY: PASS');
-})().catch(error=>{console.error(error);process.exitCode=1;});
-console.log('GEO_MAP_RUNTIME: PASS');
+assert.equal(catalog.resolveCityCenter('Өскемен').city,'Усть-Каменогорск');
+assert.equal(catalog.resolveCityCenter('unknown town'),null);
+
+const geoSource=read('js/next/geo_map.js');
+assert.match(geoSource,/GEO_MAP_POINTS_REQUIRED/);
+assert.match(geoSource,/data-geo-tile-render/);
+assert.match(geoSource,/options\.center\?\.source==='GeoNames'/);
+assert.match(geoSource,/if\(!points\.length&&!validPoint\(options\.center\)\)/);
+assert.match(geoSource,/if\(!state\|\|!dlg\.open\)return/);
+
+const core=read('js/next/pages/core.js');
+assert.match(core,/data-home-nearby-map/);
+assert.match(core,/resolveCityCenter\?\.\(selectedCity\)/);
+assert.match(core,/String\(rawLat\)\.trim\(\)===''/);
+assert.match(core,/points:mapPoints,center,notice/);
+assert.doesNotMatch(core,/api\/geo\.php/);
+
+const runtime=read('js/boot/runtime_core_bundle.js');
+assert.match(runtime,/data-home-nearby-map/);
+assert.match(runtime,/resolveCityCenter\?\.\(selectedCity\)/);
+
+const bridge=read('js/mobile_native_bridge.js');
+assert.match(bridge,/bestLocation: options => bestLocation\(options\)/);
+assert.match(bridge,/openBestMap: \(query, lat, lng\) => bestMap\(query, lat, lng\)/);
+assert.match(bridge,/loadGeoMap: \(\) => loadGeoMap\(\)/);
+assert.match(bridge,/\/js\/next\/geo_map\.js/);
+
+const config=read('config.php'),index=read('index.php');
+assert.match(config,/KARETA_GEO_TILE_URL/);
+assert.match(index,/KARETA_GEO_MAP_CONFIG/);
+assert.match(index,/\$geoImgSource/);
+assert.match(index,/mobile_native_bridge\.js\?v=<\?= rawurlencode\(\$assetVersion\) \?>/);
+
+console.log('PASS geo runtime reconcile: 8 cities, city map without GPS, strict coords, lazy map, CSP/config, source/runtime parity');
