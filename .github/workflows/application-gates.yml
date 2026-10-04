@@ -58,6 +58,9 @@ jobs:
           find js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
           node --check tools/test_api_contract_current.js
 
+      - name: Boot bundle freshness
+        run: node tools/build_boot_js_bundles.js --check
+
       - name: Migration manifest integrity
         run: php tools/test_release_migration_manifest.php
 
