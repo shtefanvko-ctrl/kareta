@@ -114,7 +114,7 @@ html[data-user-role="master"]{
   .k-master-canon-titlebar h1{font-size:27px;line-height:32px}
   .k-master-canon-kind{min-width:0;flex-shrink:1}
   .k-master-canon-kind a{min-height:33px;padding:0 8px;font-size:10.5px}
-  .k-master-canon-kind a span{display:none}
+  .k-master-canon-kind a span{display:inline}
   .k-master-canon-search{height:64px;padding:0 17px;border:0;border-radius:19px;box-shadow:0 11px 30px rgba(15,23,42,.11)}
   .k-master-canon-search__icon{width:28px;height:28px;flex-basis:28px;color:#111}
   .k-master-canon-search__icon .k-ui-icon,.k-master-canon-search__icon svg{width:28px;height:28px}
