@@ -44,8 +44,17 @@
   }
 
   function feedTabs(mode){
-    const tabs=[['recommended','Для вас','#/community'],['subscriptions','Подписки','#/community/subscriptions'],['nearby','Рядом','#/community/nearby']];
-    return `<nav class="k-community-feed-tabs k-community-reference-tabs" role="tablist" aria-label="Лента сообщества">${tabs.map(([value,label,href])=>`<a role="tab" aria-selected="${mode===value?'true':'false'}" class="k-community-feed-tab ${mode===value?'is-active':''}" data-community-feed-mode="${value}" href="${href}">${label}</a>`).join('')}<button type="button" data-community-filter-open aria-label="Фильтры">${icon('settings')||'⚙'}</button></nav>`;
+    const tabs=[['recommended','Для вас','#/community','star'],['subscriptions','Подписки','#/community/subscriptions','heart'],['nearby','Рядом','#/community/nearby','location']];
+    return `<nav class="k-community-canon-filters k-community-feed-tabs k-community-reference-tabs" role="tablist" aria-label="Фильтры сообщества">${tabs.map(([value,label,href,glyph])=>`<a role="tab" aria-selected="${mode===value?'true':'false'}" class="k-community-canon-filter is-${value} ${mode===value?'is-active':''}" data-community-feed-mode="${value}" href="${href}"><span class="k-community-canon-filter-glyph">${icon(glyph)}</span><span>${label}</span></a>`).join('')}<button type="button" class="k-community-canon-filter-icon" data-community-filter-open aria-label="Дополнительные фильтры"><span class="k-community-canon-filter-glyph">${icon('filter')||icon('settings')||'⚙'}</span></button></nav>`;
+  }
+
+  function communityCanonHeader(view='feed',mode='recommended'){
+    const questions=view==='help';
+    return `<section class="k-community-canon-shell" data-community-canon-shell>
+      <div class="k-community-canon-titlebar"><h1>Сообщество</h1><div class="k-community-canon-kind" role="group" aria-label="Раздел сообщества"><a class="${questions?'':'is-active'}" href="#/community">Сообщество</a><a class="${questions?'is-active':''}" href="#/community/help">Вопросы</a></div></div>
+      <form class="k-community-canon-search" data-community-shell-search role="search"><span class="k-community-canon-search-icon">${icon('search')}</span><input type="search" data-community-shell-search-input placeholder="Найти публикацию, вопрос или сообщество…" autocomplete="off" aria-label="Поиск в сообществе"></form>
+      ${questions?`<nav class="k-community-canon-filters k-community-repair-filters" aria-label="Фильтр вопросов"><button type="button" class="is-active is-all" data-community-repair-filter="all"><span>Все</span></button><button type="button" class="is-unanswered" data-community-repair-filter="unanswered"><span>Без ответа</span></button><button type="button" class="is-discussed" data-community-repair-filter="discussed"><span>Обсуждаемые</span></button><button type="button" class="k-community-canon-filter-icon" data-community-filter-open aria-label="Дополнительные фильтры"><span class="k-community-canon-filter-glyph">${icon('filter')||icon('settings')||'⚙'}</span></button></nav>`:feedTabs(mode)}
+    </section>`;
   }
 
   function storyItem(story){
@@ -105,7 +114,7 @@
     return `<section class="k-community-subpage k-community-search k-community-desktop-pane"><header><small>ПОИСК</small><h2>Найти в сообществе</h2><p>Мастера, публикации, вопросы и сообщества.</p></header><label class="k-community-search-field"><span>${icon('search')}</span><input type="search" value="${esc(q)}" data-community-unified-search placeholder="Поиск в сообществе" autofocus><button type="button" data-community-search-clear>${icon('close')}</button></label><nav class="k-community-search-tabs"><button class="is-active">Все</button><button>Люди</button><button>Сообщества</button><button>Публикации</button><button>Вопросы</button></nav><div data-community-search-results><div class="k-community-post-skeleton-list"><article></article><article></article></div></div></section>`;
   }
   function helpMain(){
-    return `<section class="k-community-subpage k-community-desktop-pane k-community-help-pane"><header class="k-community-repair-head"><div><small>ПОМОЩЬ С РЕМОНТОМ</small><h2>Вопросы и обсуждения</h2><p>Реальные вопросы владельцев и мастеров: симптомы, диагностика, ремонт и опыт участников.</p></div><a class="k-community-ask-button" href="#/community/question/create?mode=help">${icon('plus')||'＋'}<span>Задать вопрос</span></a></header><nav class="k-community-repair-filters" aria-label="Фильтр вопросов"><button type="button" class="is-active" data-community-repair-filter="all">Все</button><button type="button" data-community-repair-filter="unanswered">Без ответа</button><button type="button" data-community-repair-filter="discussed">Обсуждаемые</button></nav><div class="k-community-repair-feed" data-community-repair-feed><div class="k-community-post-skeleton-list"><article></article><article></article><article></article></div></div></section>`;
+    return `${communityCanonHeader('help')}<section class="k-community-subpage k-community-desktop-pane k-community-help-pane"><header class="k-community-repair-head"><div><small>ПОМОЩЬ С РЕМОНТОМ</small><h2>Вопросы и обсуждения</h2><p>Реальные вопросы владельцев и мастеров: симптомы, диагностика, ремонт и опыт участников.</p></div><a class="k-community-ask-button" href="#/community/question/create?mode=help">${icon('plus')||'＋'}<span>Задать вопрос</span></a></header><div class="k-community-repair-feed" data-community-repair-feed><div class="k-community-post-skeleton-list"><article></article><article></article><article></article></div></div></section>`;
   }
   function helpPage(){
     return `<main class="k-community-help-mobile">${helpMain()}</main>`;
@@ -123,7 +132,7 @@
     </article>`;
   }
   function feedMain(mode='recommended'){
-    return `${feedTabs(mode)}<div data-community-stories>${storiesHtml([])}</div>${composer()}<section class="k-community-feed" data-community-feed><div class="k-community-post-skeleton-list">${Array.from({length:3},()=>'<article></article>').join('')}</div></section><div class="k-community-feed-sentinel" data-community-feed-sentinel aria-hidden="true"></div>`;
+    return `${communityCanonHeader('feed',mode)}<div data-community-stories>${storiesHtml([])}</div>${composer()}<section class="k-community-feed" data-community-feed><div class="k-community-post-skeleton-list">${Array.from({length:3},()=>'<article></article>').join('')}</div></section><div class="k-community-feed-sentinel" data-community-feed-sentinel aria-hidden="true"></div>`;
   }
   function desktopMain(view='feed',mode='recommended'){
     if(view==='groups')return groupsMain();
@@ -285,11 +294,6 @@
 
   function mountCommunity(ctx={}){
     const page=document.querySelector('[data-community-page]');if(!page)return()=>{};
-    const communityLayout=page.querySelector('.k-flow-community-layout.k-community-layout-v2');
-    const communityTabs=page.querySelector('.k-community-feed-tabs.k-community-reference-tabs');
-    if(communityLayout&&communityTabs&&communityTabs.parentElement!==communityLayout){
-      communityLayout.insertBefore(communityTabs,communityLayout.firstElementChild);
-    }
     disposed=false;visibleCount=window.matchMedia?.('(max-width: 767px)')?.matches?6:12;const route=parseRoute();const routeKey=routeHash();const groupWasMissing=route.name==='group'&&!api.getGroup?.(route.id);const onVisibility=()=>{if(document.hidden)setCommunityVideoSuspended(true);else setCommunityVideoSuspended(false);};document.addEventListener('visibilitychange',onVisibility);
     const onClick=async e=>{
       if(!e.target.closest('[data-community-more],.k-community-more-menu'))closeCommunityMoreMenu(page);
@@ -317,6 +321,7 @@
     };
     const onInput=e=>{if(e.target.matches('[data-community-unified-search]')){clearTimeout(onInput.t);onInput.t=setTimeout(paintSearch,120);}};
     const onSubmit=async e=>{
+      const shellSearch=e.target.closest('[data-community-shell-search]');if(shellSearch){e.preventDefault();const input=shellSearch.querySelector('[data-community-shell-search-input]'),q=text(input?.value);location.hash=q?`#/community/search?q=${encodeURIComponent(q)}`:'#/community/search';return;}
       const repairReply=e.target.closest('[data-community-repair-reply]');if(repairReply){e.preventDefault();const post=postById(repairReply.dataset.communityRepairReply),input=repairReply.querySelector('input'),value=text(input?.value);if(!post||!value)return;const button=repairReply.querySelector('button');if(button)button.disabled=true;try{const r=await api.addComment(post,value);if(!r?.ok)throw new Error(r?.error||r?.payload?.message||'comment_failed');post.stats=post.stats||{};post.stats.comments=Number(post.stats.comments||0)+1;if(input)input.value='';paintRepairQuestions();}catch(_e){window.KaretaToast?.error?.('Не удалось отправить ответ');}finally{if(button?.isConnected)button.disabled=false;}return;}
       const create=e.target.closest('[data-community-create]');if(create){e.preventDefault();const fd=new FormData(create),kind=create.dataset.communityCreate,payload={type:kind,groupId:text(routeQuery().get('group')),title:text(fd.get('title')),text:text(fd.get('text')),comments:fd.get('comments')!==null,contextType:role(),authorName:'Вы',city:api.currentCity?.()||''};if(payload.text.length<3)return;const r=kind==='QUESTION'?await api.createQuestion(payload):await api.createPost(payload);if(r?.ok){window.KaretaToast?.success(kind==='QUESTION'?'Вопрос опубликован':kind==='NEWS'?'Новость опубликована':'Публикация создана');location.hash=kind==='QUESTION'?(payload.groupId?`#/community/group/${encodeURIComponent(payload.groupId)}`:'#/community/help'):'#/community';}else{const msg=kind==='QUESTION'?'Не удалось опубликовать вопрос':kind==='NEWS'?'Не удалось опубликовать новость':'Публикация недоступна для текущего профиля';window.KaretaToast?.error?.(r?.error||r?.payload?.message||msg);}return;}
       const inlineForm=e.target.closest('[data-community-inline-comment-form]');if(inlineForm){e.preventDefault();const post=postById(inlineForm.dataset.communityPostId);const input=inlineForm.querySelector('input'),value=text(input?.value);if(!post||!value)return;input.disabled=true;const button=inlineForm.querySelector('button');if(button)button.disabled=true;const r=await api.addComment(post,value);input.disabled=false;if(button)button.disabled=false;if(r?.ok){post.stats=post.stats||{};post.stats.comments=Number(post.stats.comments||0)+1;input.value='';await paintPost(post.id);}else window.KaretaToast?.error('Не удалось отправить комментарий');return;}
