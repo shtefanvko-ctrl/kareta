@@ -1,68 +1,97 @@
 {
-  "schema_version": 1,
-  "recorded_on": "2026-10-01",
+  "schema_version": 2,
+  "recorded_on": "2026-10-05",
   "repository": "shtefanvko-ctrl/kareta",
-  "source_base_sha": "c20beb7fd2814e06b108451aa3e15bf414448123",
-  "candidate_branch": "feat/master-equipment-icons-20261001",
-  "candidate_sha": "124f452e99e0d8d8c04cfb19d0af28bf4423d657",
-  "candidate_asset_version": "188.5.5.6.84.156",
+  "baseline_main_sha": "c43a1c21e1414bc2fc12c69b4b350613d64f0480",
+  "baseline_asset_version": "188.5.5.6.84.177",
+  "active_integration": {
+    "pr": 90,
+    "branch": "feat/analysis-m2-service-advisories-20261005",
+    "m2_exact_evidence_sha": "ae2ceb7a091ac16cfc8df7e71a9f80f4ab0897a0",
+    "alignment_gate_commit": "b500b73255d9e0dfb0d583821ecc24023b25903a",
+    "verified_code_checkpoint": "25d81703649df2799794cd77602472db89e20e3e",
+    "application_gate_run": 37238482404,
+    "php_syntax_run": 37238482379,
+    "geo_run": 37238482459,
+    "home_scanner_run": 37238482538,
+    "last_main_recheck": "c43a1c21e1414bc2fc12c69b4b350613d64f0480",
+    "main_delta_overlap": "NONE_WITH_M2"
+  },
   "state": {
-    "desired": "MASTER_SETUP_AND_MATCHING_PLAN",
-    "implemented": "MASTER_SETUP_CANDIDATE",
-    "verified": "SOURCE_AND_MOCK_ONLY",
+    "desired": "M0_M1_M2_SAFE_FOUNDATION_THEN_M3_SHADOW_MATCHING",
+    "m0_equipment": "IMPLEMENTED_MAIN",
+    "m1_professions": "IMPLEMENTED_MAIN_MATCHING_DISABLED",
+    "m2_advisories": "IMPLEMENTED_PR90_CI_VERIFIED_NOT_MERGED",
+    "m3_matching": "NOT_IMPLEMENTED",
+    "m5_observed_demand": "NOT_IMPLEMENTED",
     "deployed": "NOT_CONFIRMED"
   },
-  "checks": [
+  "research": {
+    "equipment": 82,
+    "equipment_groups": 18,
+    "professions": 21,
+    "service_links": 109,
+    "query_hypotheses": 52,
+    "clarifications": 6,
+    "expert_review": "NOT_RUN",
+    "real_search_demand_measurement": "NOT_RUN"
+  },
+  "evidence": [
     {
-      "name": "node --check master_setup_picker.js",
+      "name": "Application gates",
+      "sha": "25d81703649df2799794cd77602472db89e20e3e",
       "status": "PASS",
-      "target": "LOCAL"
+      "target": "GITHUB_ACTIONS",
+      "run_id": 37238482404
     },
     {
-      "name": "tools/test_master_setup_picker.js",
+      "name": "Master setup M0-M2 contracts",
+      "sha": "25d81703649df2799794cd77602472db89e20e3e",
       "status": "PASS",
-      "target": "LOCAL_MOCK",
-      "scenarios": 13
+      "target": "GITHUB_ACTIONS",
+      "run_id": 37238482404
     },
     {
-      "name": "tools/test_master_setup_integration.js",
+      "name": "Analysis research runtime alignment",
+      "sha": "25d81703649df2799794cd77602472db89e20e3e",
       "status": "PASS",
-      "target": "LOCAL_SOURCE_VM",
-      "service_rows": 109
+      "target": "GITHUB_ACTIONS",
+      "run_id": 37238482404
     },
     {
-      "name": "Git readback 124f452 master_setup_picker.js",
+      "name": "PHP syntax",
+      "sha": "25d81703649df2799794cd77602472db89e20e3e",
       "status": "PASS",
-      "target": "GITHUB"
+      "target": "GITHUB_ACTIONS",
+      "run_id": 37238482379
     },
     {
-      "name": "PHP syntax and PHP unit",
-      "status": "NOT_RUN",
-      "local_blocker": "PHP binary missing"
+      "name": "Geo runtime reconcile",
+      "sha": "25d81703649df2799794cd77602472db89e20e3e",
+      "status": "PASS",
+      "target": "GITHUB_ACTIONS",
+      "run_id": 37238482459
     },
     {
-      "name": "MySQL/API integration",
-      "status": "NOT_RUN"
-    },
-    {
-      "name": "browser/device smoke",
-      "status": "NOT_RUN",
-      "local_blocker": "Chromium executable missing",
-      "manual_owner": "USER"
-    },
-    {
-      "name": "required release gates G0-G5 and provenance",
-      "status": "NOT_CONFIRMED"
+      "name": "Home scanner navigation",
+      "sha": "25d81703649df2799794cd77602472db89e20e3e",
+      "status": "PASS",
+      "target": "GITHUB_ACTIONS",
+      "run_id": 37238482538
     }
   ],
-  "limits": {
-    "draft_storage": "sessionStorage",
-    "draft_survives_page_reload": true,
-    "draft_survives_browser_close": "NOT_GUARANTEED",
+  "safety": {
+    "profession_self_reported": true,
+    "profession_service_auto_enable": false,
     "equipment_implies_verified_skill": false,
-    "matching_integration_implemented": false,
+    "service_advisory_hard_filtering": false,
+    "service_advisory_ranking_impact": "disabled",
+    "service_advisory_matching_usage": "disabled",
     "query_counts_observed": false
   },
-  "next": "Runtime catalog metadata; PHP/DB verification; coordinate works route lane; matching M1"
+  "next": [
+    "sync PR90 merge-ref with current main if it moves",
+    "merge M2 only while required gates stay green",
+    "design M3 shadow/explain-only matching with feature-off"
+  ]
 }
-

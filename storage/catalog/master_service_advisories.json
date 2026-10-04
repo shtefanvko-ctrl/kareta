@@ -1,0 +1,2838 @@
+{
+  "schema_version": 1,
+  "data_version": "master_service_advisories_runtime_candidate_v1",
+  "created_on": "2026-10-05",
+  "status": "RUNTIME_ADVISORY_NOT_EXPERT_VERIFIED",
+  "source_repository": "shtefanvko-ctrl/kareta",
+  "source_research": "Анализ/data/service_links.json",
+  "source_research_blob": "f0defdc2dc8017ecb55048289d439d0a044b28e6",
+  "service_source": "storage/catalog/services.json",
+  "service_source_blob": "e3688e785be691fc81ad4030ad6fda34ec822f58",
+  "equipment_source": "storage/catalog/master_equipment.json",
+  "equipment_source_blob": "2846e1746153db6e930d7e9417be9ed1f816b132",
+  "profession_source": "storage/catalog/master_professions.json",
+  "profession_source_blob": "37b3497e68814333596b6b8782f373c94ab533f1",
+  "expert_review": "NOT_RUN",
+  "relations_are_proposals": true,
+  "hard_filtering": false,
+  "ranking_impact": "disabled",
+  "matching_usage": "disabled",
+  "advisory_usage": "read_only",
+  "items": [
+    {
+      "serviceId": "engine_oil",
+      "professionIds": [
+        "mechanic"
+      ],
+      "suggestedEquipmentIds": [
+        "oil_drainer",
+        "oil_extractor",
+        "socket_set"
+      ],
+      "categoryRef": "maintenance",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "oil_filter",
+      "professionIds": [
+        "mechanic"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set"
+      ],
+      "categoryRef": "maintenance",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "air_filter",
+      "professionIds": [
+        "mechanic"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set"
+      ],
+      "categoryRef": "maintenance",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "ac_filter",
+      "professionIds": [
+        "mechanic"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set"
+      ],
+      "categoryRef": "maintenance",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "service_interval",
+      "professionIds": [
+        "mechanic"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "torque_wrench"
+      ],
+      "categoryRef": "maintenance",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "pretrip_service",
+      "professionIds": [
+        "mechanic"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "torque_wrench"
+      ],
+      "categoryRef": "maintenance",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "winter_service",
+      "professionIds": [
+        "mechanic"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "torque_wrench"
+      ],
+      "categoryRef": "maintenance",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "summer_service",
+      "professionIds": [
+        "mechanic"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "torque_wrench"
+      ],
+      "categoryRef": "maintenance",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "computer_diag",
+      "professionIds": [
+        "diagnostician"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner"
+      ],
+      "categoryRef": "diagnostics",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "engine_diag",
+      "professionIds": [
+        "diagnostician"
+      ],
+      "suggestedEquipmentIds": [
+        "compression_tester",
+        "borescope",
+        "obd_scanner"
+      ],
+      "categoryRef": "diagnostics",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "chassis_diag",
+      "professionIds": [
+        "diagnostician"
+      ],
+      "suggestedEquipmentIds": [
+        "automotive_lift",
+        "inspection_pit"
+      ],
+      "categoryRef": "diagnostics",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "electric_diag",
+      "professionIds": [
+        "diagnostician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "oscilloscope",
+        "circuit_probe"
+      ],
+      "categoryRef": "diagnostics",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "prebuy_diag",
+      "professionIds": [
+        "diagnostician"
+      ],
+      "suggestedEquipmentIds": [
+        "paint_thickness_gauge",
+        "obd_scanner"
+      ],
+      "categoryRef": "diagnostics",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "full_diag",
+      "professionIds": [
+        "diagnostician"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner",
+        "multimeter",
+        "automotive_lift"
+      ],
+      "categoryRef": "diagnostics",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "leak_diag",
+      "professionIds": [
+        "diagnostician"
+      ],
+      "suggestedEquipmentIds": [
+        "smoke_tester",
+        "cooling_pressure_tester"
+      ],
+      "categoryRef": "diagnostics",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "noise_diag",
+      "professionIds": [
+        "diagnostician"
+      ],
+      "suggestedEquipmentIds": [
+        "automotive_lift",
+        "inspection_pit"
+      ],
+      "categoryRef": "diagnostics",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "srs_diag",
+      "professionIds": [
+        "diagnostician"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner"
+      ],
+      "categoryRef": "diagnostics",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "can_diag",
+      "professionIds": [
+        "diagnostician"
+      ],
+      "suggestedEquipmentIds": [
+        "can_interface",
+        "oscilloscope"
+      ],
+      "categoryRef": "diagnostics",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "body_wash",
+      "professionIds": [
+        "washer"
+      ],
+      "suggestedEquipmentIds": [
+        "pressure_washer"
+      ],
+      "categoryRef": "wash",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "complex_wash",
+      "professionIds": [
+        "washer"
+      ],
+      "suggestedEquipmentIds": [
+        "pressure_washer"
+      ],
+      "categoryRef": "wash",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "engine_wash",
+      "professionIds": [
+        "washer"
+      ],
+      "suggestedEquipmentIds": [
+        "pressure_washer"
+      ],
+      "categoryRef": "wash",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "undercarriage_wash",
+      "professionIds": [
+        "washer"
+      ],
+      "suggestedEquipmentIds": [
+        "pressure_washer"
+      ],
+      "categoryRef": "wash",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "premium_wash",
+      "professionIds": [
+        "washer"
+      ],
+      "suggestedEquipmentIds": [
+        "pressure_washer"
+      ],
+      "categoryRef": "wash",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "body_polish",
+      "professionIds": [
+        "detailer"
+      ],
+      "suggestedEquipmentIds": [
+        "polisher"
+      ],
+      "categoryRef": "detailing",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "ceramic_coating",
+      "professionIds": [
+        "detailer"
+      ],
+      "suggestedEquipmentIds": [
+        "polisher"
+      ],
+      "categoryRef": "detailing",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "interior_detail",
+      "professionIds": [
+        "detailer"
+      ],
+      "suggestedEquipmentIds": [
+        "extractor_vacuum",
+        "steam_cleaner"
+      ],
+      "categoryRef": "detailing",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "leather_restore",
+      "professionIds": [
+        "detailer"
+      ],
+      "suggestedEquipmentIds": [
+        "polisher",
+        "extractor_vacuum"
+      ],
+      "categoryRef": "detailing",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "film_protection",
+      "professionIds": [
+        "detailer"
+      ],
+      "suggestedEquipmentIds": [
+        "heat_gun"
+      ],
+      "categoryRef": "detailing",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "detailing_complex",
+      "professionIds": [
+        "detailer"
+      ],
+      "suggestedEquipmentIds": [
+        "polisher",
+        "extractor_vacuum"
+      ],
+      "categoryRef": "detailing",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "engine_repair",
+      "professionIds": [
+        "engine_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "engine_stand",
+        "engine_hoist",
+        "torque_wrench",
+        "socket_set"
+      ],
+      "categoryRef": "engine",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "timing_replace",
+      "professionIds": [
+        "engine_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "timing_lock_set",
+        "torque_wrench"
+      ],
+      "categoryRef": "engine",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "engine_mount_replace",
+      "professionIds": [
+        "engine_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "torque_wrench"
+      ],
+      "categoryRef": "engine",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "belt_replace",
+      "professionIds": [
+        "engine_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "torque_wrench"
+      ],
+      "categoryRef": "engine",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "roller_replace",
+      "professionIds": [
+        "engine_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "torque_wrench"
+      ],
+      "categoryRef": "engine",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "engine_seal_replace",
+      "professionIds": [
+        "engine_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "torque_wrench"
+      ],
+      "categoryRef": "engine",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "spark_replace",
+      "professionIds": [
+        "engine_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "torque_wrench"
+      ],
+      "categoryRef": "engine",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "injector_clean",
+      "professionIds": [
+        "fuel_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "injector_test_bench",
+        "ultrasonic_cleaner"
+      ],
+      "categoryRef": "fuel",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "fuel_pump_replace",
+      "professionIds": [
+        "fuel_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "fuel_pressure_gauge"
+      ],
+      "categoryRef": "fuel",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "fuel_diag",
+      "professionIds": [
+        "fuel_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "fuel_pressure_gauge",
+        "obd_scanner"
+      ],
+      "categoryRef": "fuel",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "fuel_filter",
+      "professionIds": [
+        "fuel_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "fuel_pressure_gauge"
+      ],
+      "categoryRef": "fuel",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "water_pump_replace",
+      "professionIds": [
+        "mechanic"
+      ],
+      "suggestedEquipmentIds": [
+        "cooling_pressure_tester",
+        "socket_set"
+      ],
+      "categoryRef": "cooling_heating",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "radiator_replace",
+      "professionIds": [
+        "mechanic"
+      ],
+      "suggestedEquipmentIds": [
+        "cooling_pressure_tester",
+        "socket_set"
+      ],
+      "categoryRef": "cooling_heating",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "thermostat_replace",
+      "professionIds": [
+        "mechanic"
+      ],
+      "suggestedEquipmentIds": [
+        "cooling_pressure_tester",
+        "socket_set"
+      ],
+      "categoryRef": "cooling_heating",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "coolant_replace",
+      "professionIds": [
+        "mechanic"
+      ],
+      "suggestedEquipmentIds": [
+        "cooling_pressure_tester",
+        "socket_set"
+      ],
+      "categoryRef": "cooling_heating",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "heater_radiator",
+      "professionIds": [
+        "mechanic"
+      ],
+      "suggestedEquipmentIds": [
+        "cooling_pressure_tester",
+        "socket_set"
+      ],
+      "categoryRef": "cooling_heating",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "ac_refill",
+      "professionIds": [
+        "climate_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "ac_service_station"
+      ],
+      "categoryRef": "climate",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "ac_leak",
+      "professionIds": [
+        "climate_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "refrigerant_leak_detector"
+      ],
+      "categoryRef": "climate",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "ac_compressor",
+      "professionIds": [
+        "climate_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "ac_service_station",
+        "refrigerant_leak_detector"
+      ],
+      "categoryRef": "climate",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "ac_radiator",
+      "professionIds": [
+        "climate_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "ac_service_station",
+        "refrigerant_leak_detector"
+      ],
+      "categoryRef": "climate",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "ac_evaporator",
+      "professionIds": [
+        "climate_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "ac_service_station",
+        "refrigerant_leak_detector"
+      ],
+      "categoryRef": "climate",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "ac_service_full",
+      "professionIds": [
+        "climate_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "ac_service_station",
+        "refrigerant_leak_detector"
+      ],
+      "categoryRef": "climate",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "exhaust_repair",
+      "professionIds": [
+        "exhaust_specialist",
+        "automotive_welder"
+      ],
+      "suggestedEquipmentIds": [
+        "mig_mag_welder",
+        "angle_grinder"
+      ],
+      "categoryRef": "exhaust",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "catalyst_service",
+      "professionIds": [
+        "exhaust_specialist",
+        "automotive_welder"
+      ],
+      "suggestedEquipmentIds": [
+        "mig_mag_welder",
+        "angle_grinder"
+      ],
+      "categoryRef": "exhaust",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "muffler_replace",
+      "professionIds": [
+        "exhaust_specialist",
+        "automotive_welder"
+      ],
+      "suggestedEquipmentIds": [
+        "mig_mag_welder",
+        "angle_grinder"
+      ],
+      "categoryRef": "exhaust",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "clutch_replace",
+      "professionIds": [
+        "transmission_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "transmission_jack",
+        "socket_set"
+      ],
+      "categoryRef": "transmission",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "gearbox_service",
+      "professionIds": [
+        "transmission_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "transmission_jack",
+        "socket_set"
+      ],
+      "categoryRef": "transmission",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "atf_replace",
+      "professionIds": [
+        "transmission_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "transmission_jack",
+        "socket_set"
+      ],
+      "categoryRef": "transmission",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "manual_gear_oil",
+      "professionIds": [
+        "transmission_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "transmission_jack",
+        "socket_set"
+      ],
+      "categoryRef": "transmission",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "transfer_oil",
+      "professionIds": [
+        "transmission_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "transmission_jack",
+        "socket_set"
+      ],
+      "categoryRef": "transmission",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "shock_replace",
+      "professionIds": [
+        "suspension_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "automotive_lift",
+        "bearing_pullers"
+      ],
+      "categoryRef": "suspension_steering",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "spring_replace",
+      "professionIds": [
+        "suspension_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "spring_compressor"
+      ],
+      "categoryRef": "suspension_steering",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "ball_joint",
+      "professionIds": [
+        "suspension_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "automotive_lift",
+        "bearing_pullers"
+      ],
+      "categoryRef": "suspension_steering",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "control_arm",
+      "professionIds": [
+        "suspension_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "automotive_lift",
+        "bearing_pullers"
+      ],
+      "categoryRef": "suspension_steering",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "silentblock",
+      "professionIds": [
+        "suspension_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "hydraulic_press",
+        "bearing_pullers"
+      ],
+      "categoryRef": "suspension_steering",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "stabilizer_link",
+      "professionIds": [
+        "suspension_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "automotive_lift",
+        "bearing_pullers"
+      ],
+      "categoryRef": "suspension_steering",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "wheel_bearing",
+      "professionIds": [
+        "suspension_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "hydraulic_press",
+        "bearing_pullers"
+      ],
+      "categoryRef": "suspension_steering",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "steering_rack",
+      "professionIds": [
+        "suspension_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "automotive_lift",
+        "bearing_pullers"
+      ],
+      "categoryRef": "suspension_steering",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "starter_repair",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "circuit_probe"
+      ],
+      "categoryRef": "electrical",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "generator_repair",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "circuit_probe"
+      ],
+      "categoryRef": "electrical",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "wiring_repair",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "circuit_probe"
+      ],
+      "categoryRef": "electrical",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "leak_current",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "dc_current_clamp",
+        "multimeter"
+      ],
+      "categoryRef": "electrical",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "sensor_replace",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "circuit_probe"
+      ],
+      "categoryRef": "electrical",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "ecu_check",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner",
+        "oscilloscope",
+        "bench_power_supply"
+      ],
+      "categoryRef": "electrical",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "central_lock",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "circuit_probe"
+      ],
+      "categoryRef": "electrical",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "light_repair",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter"
+      ],
+      "categoryRef": "lighting",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "headlight_adjust",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "headlight_aim_tester"
+      ],
+      "categoryRef": "lighting",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "led_install",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter"
+      ],
+      "categoryRef": "lighting",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "headlight_polish",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "polisher"
+      ],
+      "categoryRef": "lighting",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "alarm_install",
+      "professionIds": [
+        "accessories_installer",
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "crimp_tool"
+      ],
+      "categoryRef": "multimedia_security",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "remote_start",
+      "professionIds": [
+        "accessories_installer",
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "crimp_tool"
+      ],
+      "categoryRef": "multimedia_security",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "parking_sensor",
+      "professionIds": [
+        "accessories_installer",
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "crimp_tool"
+      ],
+      "categoryRef": "multimedia_security",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "camera_install",
+      "professionIds": [
+        "accessories_installer",
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "crimp_tool"
+      ],
+      "categoryRef": "multimedia_security",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "media_install",
+      "professionIds": [
+        "accessories_installer",
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "crimp_tool"
+      ],
+      "categoryRef": "multimedia_security",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "speaker_install",
+      "professionIds": [
+        "accessories_installer",
+        "auto_electrician"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "crimp_tool"
+      ],
+      "categoryRef": "multimedia_security",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "front_pads",
+      "professionIds": [
+        "brake_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "brake_bleeder"
+      ],
+      "categoryRef": "brakes",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "rear_pads",
+      "professionIds": [
+        "brake_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "brake_bleeder"
+      ],
+      "categoryRef": "brakes",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "brake_discs",
+      "professionIds": [
+        "brake_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "brake_bleeder"
+      ],
+      "categoryRef": "brakes",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "caliper_repair",
+      "professionIds": [
+        "brake_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "brake_bleeder"
+      ],
+      "categoryRef": "brakes",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "brake_fluid_service",
+      "professionIds": [
+        "brake_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "brake_bleeder",
+        "brake_fluid_tester"
+      ],
+      "categoryRef": "brakes",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "abs_sensor",
+      "professionIds": [
+        "brake_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "brake_bleeder"
+      ],
+      "categoryRef": "brakes",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "full_brake_service",
+      "professionIds": [
+        "brake_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set",
+        "brake_bleeder"
+      ],
+      "categoryRef": "brakes",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "tire_change",
+      "professionIds": [
+        "tire_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "tire_changer"
+      ],
+      "categoryRef": "tires",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "wheel_balance",
+      "professionIds": [
+        "tire_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "wheel_balancer"
+      ],
+      "categoryRef": "tires",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "puncture_repair",
+      "professionIds": [
+        "tire_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "tire_repair_kit"
+      ],
+      "categoryRef": "tires",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "tire_season",
+      "professionIds": [
+        "tire_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "tire_changer",
+        "wheel_balancer"
+      ],
+      "categoryRef": "tires",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "tire_storage",
+      "professionIds": [
+        "tire_specialist"
+      ],
+      "suggestedEquipmentIds": [],
+      "categoryRef": "tires",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "tpms_service",
+      "professionIds": [
+        "tire_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "tpms_tool"
+      ],
+      "categoryRef": "tires",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "rim_repair",
+      "professionIds": [
+        "tire_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "rim_straightener"
+      ],
+      "categoryRef": "tires",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "tire_runflat",
+      "professionIds": [
+        "tire_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "tire_changer"
+      ],
+      "categoryRef": "tires",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "alignment",
+      "professionIds": [
+        "alignment_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "alignment_rack"
+      ],
+      "categoryRef": "alignment",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "wheel_geometry_check",
+      "professionIds": [
+        "alignment_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "alignment_rack"
+      ],
+      "categoryRef": "alignment",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "body_diag",
+      "professionIds": [
+        "body_specialist",
+        "automotive_welder"
+      ],
+      "suggestedEquipmentIds": [
+        "paint_thickness_gauge",
+        "body_measuring_system"
+      ],
+      "categoryRef": "body_welding",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "minor_repair",
+      "professionIds": [
+        "body_specialist",
+        "automotive_welder"
+      ],
+      "suggestedEquipmentIds": [
+        "mig_mag_welder",
+        "body_frame_bench"
+      ],
+      "categoryRef": "body_welding",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "threshold_welding",
+      "professionIds": [
+        "body_specialist",
+        "automotive_welder"
+      ],
+      "suggestedEquipmentIds": [
+        "mig_mag_welder",
+        "spot_welder",
+        "angle_grinder"
+      ],
+      "categoryRef": "body_welding",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "rim_paint",
+      "professionIds": [
+        "painter"
+      ],
+      "suggestedEquipmentIds": [
+        "spray_gun",
+        "paint_booth"
+      ],
+      "categoryRef": "paint",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "scratch_remove",
+      "professionIds": [
+        "painter"
+      ],
+      "suggestedEquipmentIds": [
+        "polisher"
+      ],
+      "categoryRef": "paint",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "paint_chip",
+      "professionIds": [
+        "painter"
+      ],
+      "suggestedEquipmentIds": [
+        "spray_gun"
+      ],
+      "categoryRef": "paint",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "glass_polish",
+      "professionIds": [
+        "glass_specialist"
+      ],
+      "suggestedEquipmentIds": [
+        "polisher"
+      ],
+      "categoryRef": "glass",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    },
+    {
+      "serviceId": "rain_repellent",
+      "professionIds": [
+        "glass_specialist"
+      ],
+      "suggestedEquipmentIds": [],
+      "categoryRef": "glass",
+      "compatibilityDimensions": [
+        "vehicle_type",
+        "vehicle_make_model",
+        "work_mode",
+        "location",
+        "equipment_capabilities",
+        "availability"
+      ],
+      "masterServiceConfirmationRequired": true,
+      "sourceRelationStatus": "DRAFT_FOR_EXPERT_REVIEW",
+      "sourceEquipmentRule": "recommendation_not_hard_requirement",
+      "expertReview": "NOT_RUN",
+      "equipmentRule": "advisory_only",
+      "hardRequirement": false,
+      "matchingUsage": "disabled"
+    }
+  ]
+}
