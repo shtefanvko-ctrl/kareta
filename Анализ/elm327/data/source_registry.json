@@ -92,6 +92,16 @@
       "license": "MIT",
       "use": "small cross-check sample only",
       "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "real_vehicle_obd_dataset",
+      "name": "AbouAbdallah-Lounis/OBD-Dataset",
+      "type": "real_vehicle_obd_samples",
+      "authority": "ACADEMIC_COMMUNITY",
+      "url": "https://github.com/AbouAbdallah-Lounis/OBD-Dataset",
+      "license": "NO_LICENSE_FILE_CONFIRMED_2026-10-05",
+      "use": "reference for real vehicle OBD measurement patterns and observed DTC combinations only; do not import/copy dataset until licensing is clarified",
+      "status": "REFERENCE_ONLY"
     }
   ]
 }

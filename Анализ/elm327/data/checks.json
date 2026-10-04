@@ -30,7 +30,7 @@
         "en": "Check intake tract for unmetered-air leaks"
       },
       "equipment_ids": [
-        "smoke_machine"
+        "smoke_tester"
       ],
       "risk": "MEDIUM"
     },
@@ -122,7 +122,7 @@
         "en": "Inspect fuel cap, hoses and EVAP integrity with an appropriate leak test"
       },
       "equipment_ids": [
-        "smoke_machine"
+        "smoke_tester"
       ],
       "risk": "HIGH"
     },

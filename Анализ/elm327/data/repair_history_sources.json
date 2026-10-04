@@ -33,6 +33,17 @@
       }
     },
     {
+      "id": "real_vehicle_obd_dataset",
+      "kind": "real_vehicle_obd_measurements",
+      "url": "https://github.com/AbouAbdallah-Lounis/OBD-Dataset",
+      "strength": "OBSERVED_OBD_SAMPLES",
+      "limitations": {
+        "ru": "Есть реальные измерения и DTC на нескольких автомобилях, но нет подтверждённой истории успешного ремонта; лицензия репозитория не подтверждена.",
+        "en": "Contains real measurements and DTCs from several vehicles, but not verified successful-repair history; repository licensing is not confirmed."
+      },
+      "status": "REFERENCE_ONLY"
+    },
+    {
       "id": "kareta_service_outcomes_future",
       "kind": "first_party_repair_history",
       "url": null,
