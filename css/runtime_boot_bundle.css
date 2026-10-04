@@ -12768,6 +12768,44 @@ html.k-request-window-open #k-mobile-nav{visibility:hidden!important;pointer-eve
 #onb2-step-welcome .onb2-welcome-copy p{
   margin:13px 0 0!important;max-width:240px!important;color:var(--kflow-ref-muted)!important;font-size:17px!important;line-height:25px!important;font-weight:400!important;text-align:left!important;
 }
+#onb2-step-welcome .onb2-welcome-city{
+  width:100%!important;max-width:340px!important;margin:24px 0 0!important;display:grid!important;gap:9px!important;position:relative!important;z-index:3!important;
+}
+#onb2-step-welcome .onb2-welcome-city-head{
+  display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:12px!important;min-width:0!important;
+}
+#onb2-step-welcome .onb2-welcome-city-question{
+  color:#111!important;font-size:16px!important;line-height:21px!important;font-weight:650!important;white-space:nowrap!important;
+}
+#onb2-step-welcome .onb2-welcome-city-status{
+  min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-align:right!important;color:var(--kflow-ref-muted)!important;font-size:11px!important;line-height:16px!important;font-weight:500!important;
+}
+#onb2-step-welcome .onb2-welcome-city-status[data-state="success"],
+#onb2-step-welcome .onb2-welcome-city-status[data-state="manual"]{color:#2b6f3e!important}
+#onb2-step-welcome .onb2-welcome-city-status[data-state="error"]{color:#8a4a19!important}
+#onb2-step-welcome .onb2-welcome-city-select-wrap{
+  position:relative!important;display:flex!important;align-items:center!important;width:100%!important;height:54px!important;border:1px solid var(--kflow-ref-border)!important;border-radius:12px!important;background:rgba(255,255,255,.94)!important;box-shadow:0 6px 18px rgba(0,0,0,.05)!important;overflow:hidden!important;
+}
+#onb2-step-welcome .onb2-welcome-city-select-wrap>svg:first-child{
+  position:absolute!important;left:14px!important;top:50%!important;transform:translateY(-50%)!important;width:21px!important;height:21px!important;fill:none!important;stroke:var(--kflow-ref-orange)!important;stroke-width:1.8!important;pointer-events:none!important;
+}
+#onb2-step-welcome .onb2-welcome-city-select{
+  appearance:none!important;-webkit-appearance:none!important;width:100%!important;height:100%!important;margin:0!important;padding:0 44px 0 44px!important;border:0!important;outline:0!important;background:transparent!important;color:#111!important;font-size:16px!important;line-height:22px!important;font-weight:600!important;cursor:pointer!important;
+}
+#onb2-step-welcome .onb2-welcome-city-chevron{
+  position:absolute!important;right:14px!important;top:50%!important;transform:translateY(-50%)!important;width:20px!important;height:20px!important;fill:none!important;stroke:#555!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;pointer-events:none!important;
+}
+#onb2-step-welcome .onb2-welcome-city-select-wrap:focus-within{
+  border-color:var(--kflow-ref-orange)!important;box-shadow:0 0 0 3px rgba(255,59,10,.08)!important;
+}
+#onb2-step-welcome .onb2-welcome-find-me{
+  width:max-content!important;min-width:132px!important;height:40px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;padding:0 13px!important;border:1px solid rgba(255,59,10,.36)!important;border-radius:10px!important;background:rgba(255,255,255,.90)!important;color:var(--kflow-ref-orange)!important;font-size:14px!important;line-height:18px!important;font-weight:650!important;box-shadow:none!important;
+}
+#onb2-step-welcome .onb2-welcome-find-me svg{
+  width:18px!important;height:18px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;
+}
+#onb2-step-welcome .onb2-welcome-find-me:disabled{opacity:.62!important;cursor:wait!important}
+#onb2-step-welcome .onb2-welcome-find-me:focus-visible{outline:0!important;box-shadow:0 0 0 3px rgba(255,59,10,.10)!important}
 #onb2-step-welcome .onb2-flow-actions{
   width:var(--kflow-ref-content)!important;max-width:calc(100% - 48px)!important;margin:auto auto max(30px,env(safe-area-inset-bottom))!important;padding:0!important;position:relative!important;z-index:2!important;
 }
@@ -12982,6 +13020,7 @@ html.k-request-window-open #k-mobile-nav{visibility:hidden!important;pointer-eve
   #onb2-step-profile .k-flow-onboarding-window,
   #onb2-step-code .k-flow-onboarding-window{overflow-y:auto!important;min-height:700px!important}
   #onb2-step-welcome .onb2-welcome-copy{margin-top:30px!important}
+  #onb2-step-welcome .onb2-welcome-city{margin-top:16px!important;gap:7px!important}
   #onb2-step-role .k-flow-copy,#onb2-step-profile .k-flow-copy,#onb2-step-code .k-flow-copy{margin-top:28px!important}
   #onb2-step-role .k-flow-body{margin-top:30px!important}
   #onb2-step-code .k-flow-body{margin-top:44px!important}
@@ -12992,6 +13031,162 @@ html.k-request-window-open #k-mobile-nav{visibility:hidden!important;pointer-eve
   #onb2-overlay .k-flow-onboarding-window,#onb2-overlay .onb2-welcome-card{animation-duration:1ms!important;transition:none!important}
 }
 
+
+/* R188.5.5.6.84.119 — balanced desktop onboarding.
+   Mobile geometry stays unchanged; desktop behaves as an application window, not a full-width landing page. */
+.onb2-desktop-benefits,.k-flow-desktop-context{display:none!important}
+@media (min-width:900px){
+  #onb2-step-welcome,#onb2-step-role,#onb2-step-profile,#onb2-step-code{
+    padding:24px 32px!important;
+    align-items:center!important;
+    background:#f6f7f9!important;
+  }
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{
+    width:min(calc(100vw - 64px),1040px)!important;
+  }
+  #onb2-step-profile .onb2-modal.onb2-modal--registration.k-flow-onboarding-window,
+  #onb2-step-code .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{
+    width:min(calc(100vw - 64px),900px)!important;
+  }
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    min-height:min(680px,calc(100dvh - 48px))!important;
+    height:min(780px,calc(100dvh - 48px))!important;
+    max-height:calc(100dvh - 48px)!important;
+    margin:auto!important;
+    border:1px solid #e7e9ed!important;
+    border-radius:24px!important;
+    box-shadow:0 20px 60px rgba(15,23,42,.10)!important;
+    overflow:auto!important;
+  }
+  #onb2-step-role .k-flow-onboarding-window{
+    grid-template-columns:minmax(280px,.86fr) minmax(360px,1.14fr)!important;
+    column-gap:32px!important;
+    padding-inline:36px!important;
+  }
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    grid-template-columns:minmax(260px,.82fr) minmax(350px,1.18fr)!important;
+    column-gap:32px!important;
+    padding-inline:36px!important;
+  }
+  #onb2-step-role .k-flow-body{max-width:520px!important;justify-self:end!important}
+  #onb2-step-profile .k-flow-body,#onb2-step-code .k-flow-body{max-width:440px!important;justify-self:end!important}
+  #onb2-step-role .k-flow-role-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    width:100%!important;
+    max-width:460px!important;
+    gap:16px!important;
+  }
+  #onb2-step-role .k-flow-role-card{width:100%!important;min-width:0!important;height:242px!important;min-height:242px!important}
+
+  #onb2-step-welcome .onb2-welcome-card{
+    grid-template-columns:minmax(340px,400px) minmax(0,1fr)!important;
+    column-gap:40px!important;
+    padding-inline:36px!important;
+  }
+  #onb2-step-welcome .onb2-welcome-copy{max-width:420px!important;padding-top:46px!important}
+  #onb2-step-welcome .onb2-welcome-copy h1{max-width:400px!important}
+  #onb2-step-welcome .onb2-welcome-copy p{max-width:340px!important}
+  #onb2-step-welcome .onb2-flow-actions{max-width:360px!important;padding-bottom:46px!important}
+
+  .onb2-desktop-benefits,.k-flow-desktop-context{display:grid!important}
+  .onb2-desktop-benefits{gap:10px;margin-top:28px}
+  .onb2-desktop-benefits>div,.k-flow-desktop-context>div{
+    display:grid;gap:3px;padding:11px 13px;border:1px solid #e5e7eb;border-radius:12px;
+    background:rgba(255,255,255,.88);backdrop-filter:blur(8px)
+  }
+  .onb2-desktop-benefits b,.k-flow-desktop-context b{font-size:13px;line-height:18px;color:#111}
+  .onb2-desktop-benefits span,.k-flow-desktop-context span{font-size:12px;line-height:17px;color:#666}
+  .k-flow-desktop-context{gap:10px;margin-top:28px;max-width:360px}
+}
+@media (min-width:1200px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{width:1080px!important}
+  #onb2-step-profile .onb2-modal.onb2-modal--registration.k-flow-onboarding-window,
+  #onb2-step-code .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{width:940px!important}
+}
+@media (min-width:1600px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{width:1120px!important}
+  #onb2-step-profile .onb2-modal.onb2-modal--registration.k-flow-onboarding-window,
+  #onb2-step-code .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{width:980px!important}
+}
+
+/* R188.5.5.6.84.177 — canonical compact desktop entry flow. */
+@media(min-width:900px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    min-height:0!important;
+    height:auto!important;
+    max-height:calc(100dvh - 48px)!important;
+    overflow:auto!important;
+    align-content:start!important;
+  }
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    grid-template-rows:auto auto auto!important;
+    padding-bottom:34px!important;
+  }
+  #onb2-step-role .k-flow-header,
+  #onb2-step-profile .k-flow-header,
+  #onb2-step-code .k-flow-header{
+    min-height:62px!important;
+    padding-top:18px!important;
+  }
+  #onb2-step-welcome .k-flow-steps,
+  #onb2-step-role .k-flow-steps,
+  #onb2-step-profile .k-flow-steps,
+  #onb2-step-code .k-flow-steps{
+    width:300px!important;
+    margin:10px auto 0!important;
+  }
+  #onb2-step-role .k-flow-copy,
+  #onb2-step-profile .k-flow-copy,
+  #onb2-step-code .k-flow-copy,
+  #onb2-step-role .k-flow-body,
+  #onb2-step-profile .k-flow-body,
+  #onb2-step-code .k-flow-body{
+    align-self:start!important;
+    margin-top:44px!important;
+  }
+  #onb2-step-role .k-flow-role-grid{
+    max-width:430px!important;
+    gap:14px!important;
+  }
+  #onb2-step-role .k-flow-role-card{
+    height:210px!important;
+    min-height:210px!important;
+    padding:16px 14px!important;
+  }
+  #onb2-step-role .k-flow-role-icon{
+    width:72px!important;
+    height:72px!important;
+    flex-basis:72px!important;
+    margin-bottom:12px!important;
+  }
+  #onb2-step-role .k-flow-role-card-direction-wide{
+    width:46px!important;
+    height:46px!important;
+  }
+  #onb2-step-profile .k-flow-field input{
+    height:50px!important;
+    min-height:50px!important;
+  }
+  #onb2-step-profile .k-flow-primary,
+  #onb2-step-code .k-flow-primary{
+    height:52px!important;
+    min-height:52px!important;
+  }
+  #onb2-step-code .k-flow-actions{margin-top:18px!important}
+  #onb2-step-code .k-flow-code-meta{margin-top:12px!important}
+}
 
 /* ===== SOURCE: css/next/error_403_background.css ===== */
 [data-kareta-403]{
