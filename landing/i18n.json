@@ -67,7 +67,11 @@
     "roleMasterTitle": "Мастеру",
     "roleMasterText": "Получать подходящие заказы, вести график, общаться с клиентом и фиксировать результат работы.",
     "roleStoTitle": "СТО и сервису",
-    "roleStoText": "Управлять точками, услугами, загрузкой постов, командой и клиентскими заявками."
+    "roleStoText": "Управлять точками, услугами, загрузкой постов, командой и клиентскими заявками.",
+    "strip1": "Найти мастера",
+    "strip2": "Создать заявку",
+    "strip3": "Найти запчасти",
+    "strip4": "Вести гараж"
   },
   "kk": {
     "_meta": {
@@ -137,7 +141,11 @@
     "roleMasterTitle": "Шеберге",
     "roleMasterText": "Сәйкес тапсырыстарды алу, кестені жүргізу, клиентпен байланысу және жұмыс нәтижесін тіркеу.",
     "roleStoTitle": "СТО және сервиске",
-    "roleStoText": "Нүктелерді, қызметтерді, посттардың жүктемесін, команданы және клиент өтінімдерін басқару."
+    "roleStoText": "Нүктелерді, қызметтерді, посттардың жүктемесін, команданы және клиент өтінімдерін басқару.",
+    "strip1": "Шебер табу",
+    "strip2": "Өтінім жасау",
+    "strip3": "Бөлшек табу",
+    "strip4": "Гаражды жүргізу"
   },
   "en": {
     "_meta": {
@@ -207,6 +215,10 @@
     "roleMasterTitle": "Mechanics",
     "roleMasterText": "Receive relevant jobs, manage the schedule, communicate with clients and record completed work.",
     "roleStoTitle": "Service centers",
-    "roleStoText": "Manage locations, services, bay capacity, team workload and customer requests."
+    "roleStoText": "Manage locations, services, bay capacity, team workload and customer requests.",
+    "strip1": "Find a mechanic",
+    "strip2": "Create a request",
+    "strip3": "Find parts",
+    "strip4": "Manage your garage"
   }
 }
