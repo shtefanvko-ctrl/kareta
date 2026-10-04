@@ -63,7 +63,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     about:Object.freeze({ path:'#/about', label:'О платформе', icon:'ⓘ', description:'Возможности KARETA.KZ для каждой роли' }),
     rules:Object.freeze({ path:'#/rules', label:'Правила', icon:'✓', description:'Правила работы и ответственность участников' }),
     help:Object.freeze({ path:'#/help', label:'Помощь', icon:'?', description:'Ответы по услугам, товарам и заказам' }),
-    assistant:Object.freeze({ path:'#/assistant', label:'AI-консультант', icon:'✦', description:'Предварительная помощь по неисправности', nav:false }),
+    assistant:Object.freeze({ path:'#/assistant', label:'Помощник электрика', icon:'⚡', description:'Пошаговая диагностика электрических цепей, DTC и ELM327', nav:false }),
     diagnostics:Object.freeze({ path:'#/diagnostics', label:'Диагностика', icon:'⌁', description:'ELM327, OBD-II и офлайн-диагностика' }),
     privacy:Object.freeze({ path:'#/privacy', label:'Конфиденциальность', icon:'🔐', description:'Использование и защита данных' }),
     contacts:Object.freeze({ path:'#/contacts', label:'Контакты', icon:'☎', description:'Связь и поддержка платформы' }),
@@ -596,6 +596,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     { key:'masterWorks', section:'work', any:['profile.manage','profile.manage_own','profile.master'], contextTypes:['profile'], contextProfiles:['master'] },
     { key:'masterReviews', section:'work', any:['profile.manage','profile.manage_own','profile.master'], contextTypes:['profile'], contextProfiles:['master'] },
     { key:'masterExchange', section:'work', menu:63.1, mobilePriority:20, contextTypes:['profile'], contextProfiles:['master'] },
+    { key:'assistant', section:'work', menu:63.2, contextProfiles:['master'], allowOrganization:true },
     { key:'stoDashboard', section:'work', desktop:64, menu:64, mobilePriority:10, any:['organization.read','work_orders.manage'], contextTypes:['organization'] },
     { key:'seller', section:'commerce', desktop:65, menu:65, mobilePriority:10, any:['warehouse.stock.manage','market.products.manage'], contextProfiles:['seller'], allowOrganization:true },
     { key:'sellerProducts', section:'commerce', desktop:65.1, menu:65.1, mobilePriority:20, any:['warehouse.stock.manage','market.products.manage'], contextProfiles:['seller'], allowOrganization:true },
@@ -613,7 +614,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     { key:'adminMonitoring', section:'system', desktop:85, menu:85, any:['*'] },
     { key:'adminManagement', section:'system', desktop:86, menu:86, any:['*'] },
     { key:'chats', section:'communication', desktop:90, menu:90, mobilePriority:80, any:['chats.use'] },
-    { key:'notifications', section:'communication', menu:91, contextTypes:['personal','profile','organization'] },
+    { key:'notifications', section:'communication', menu:91, any:['notifications.manage'], contextTypes:['personal','profile','organization'] },
     { key:'cabinet', section:'account', desktop:100, menu:100, mobilePriority:90, any:['profile.read'], masterAny:['profile.edit_own','profile.master'], personalDefault:true },
     { key:'cabinetGarage', section:'account', any:['vehicles.read'], contextTypes:['personal'] },
     { key:'cabinetData', section:'account', any:['profile.read'], contextTypes:['personal'] },
@@ -621,7 +622,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     { key:'cabinetDocuments', section:'account', any:['vehicles.read'], contextTypes:['personal'] },
     { key:'cabinetPromos', section:'account', any:['profile.read'], contextTypes:['personal'] },
     { key:'cabinetSettings', section:'account', menu:101, contextTypes:['personal','profile','organization'] },
-    { key:'following', section:'social', menu:110, public:true },
+    { key:'following', section:'social', menu:110 },
     { key:'realWorks', section:'social', menu:111, public:true },
     { key:'about', section:'info', menu:200, public:true },
     { key:'rules', section:'info', menu:201, public:true },
@@ -749,6 +750,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
   });
 
   const CLIENT_ONLY_ROUTES = new Set(['cabinetGarage','cabinetData','cabinetHistory','cabinetDocuments','cabinetPromos']);
+  const SESSION_ONLY_ROUTES = new Set(['notifications','following']);
   let forcedLegacyRole = '';
   const identitySnapshot = () => window.KaretaIdentity?.snapshot?.() || { authenticated:false, mode:'anonymous' };
   const identityActive = () => {
@@ -784,10 +786,15 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
   }
   function policy(role=currentRole()){ return LEGACY[normalizeRole(role)]; }
   function dynamic(){ return window.KaretaDynamicNavigation; }
+  function hasProtectedSession(){
+    if(identityActive())return true;
+    return String(document.documentElement?.dataset?.identityMode||'')==='legacy-fallback';
+  }
   function canAccess(routeKey, role=currentRole()){
     const key=String(routeKey||'');
     const normalizedRole=normalizeRole(role);
     if (!registry.has(key)) return false;
+    if (SESSION_ONLY_ROUTES.has(key) && !hasProtectedSession()) return false;
     if (identityActive()) {
       if(key==='diagnostics') return ['client','master','sto','admin','owner'].includes(normalizedRole);
       return dynamic()?.canAccess?.(key) === true;
