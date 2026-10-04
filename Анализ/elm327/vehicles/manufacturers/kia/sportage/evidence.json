@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "make": "Kia",
+  "model": "Sportage",
+  "market_scope": "REFERENCE_RECORDS_NOT_KZ_APPLICABILITY",
+  "items": [
+    {
+      "id": "kia_sportage_nq5pe_kr_20260720_atcu_mtc",
+      "make": "Kia",
+      "model": "Sportage",
+      "model_year": null,
+      "market": "KR",
+      "generation": "NQ5 PE",
+      "platform": "NQ5 PE",
+      "engine": null,
+      "ecu": "ATCU/MTC",
+      "vin_pattern": null,
+      "applicability": "EXACT_PLATFORM",
+      "source_id": "kia_kr_sportage_nq5pe_atcu_mtc_20260720",
+      "evidence_type": "SERVICE_CAMPAIGN",
+      "status": "REFERENCE_ONLY",
+      "published_on": "2026-07-20",
+      "title": {
+        "ru": "Бесплатная кампания Kia Sportage NQ5 PE по контроллерам ATCU/MTC",
+        "en": "Kia Sportage NQ5 PE ATCU/MTC free-repair campaign"
+      },
+      "summary": {
+        "ru": "Официальная корейская кампания относится к Sportage NQ5 PE и контроллерам ATCU/MTC. Инструкция отдельно предупреждает, что устройство в диагностическом разъёме может мешать внутренней связи во время беспроводного обновления; перед OTA его требуется отключить.",
+        "en": "The official Korean campaign applies to Sportage NQ5 PE ATCU/MTC. Its instructions explicitly warn that a device connected to the diagnostic connector can interfere with internal communication during OTA updating and must be disconnected before the update."
+      },
+      "source_ref": "Kia Korea customer notice, 2026-07-20",
+      "kz_applicability": "UNPROVEN",
+      "diagnostic_implication": {
+        "ru": "Для KARETA это доказательство правила совместимости: ELM327 не должен оставаться подключённым во время OEM OTA, если инструкция производителя требует освободить диагностический разъём.",
+        "en": "For KARETA this supports an interoperability rule: do not leave ELM327 connected during OEM OTA when manufacturer instructions require the diagnostic connector to be clear."
+      }
+    },
+    {
+      "id": "kia_sportage_2026_us_26v046_cluster",
+      "make": "Kia",
+      "model": "Sportage",
+      "model_year": 2026,
+      "market": "US",
+      "generation": null,
+      "platform": null,
+      "engine": "spark ignition",
+      "ecu": "instrument_cluster",
+      "vin_pattern": null,
+      "applicability": "MODEL_YEAR_MARKET",
+      "source_id": "nhtsa_kia_26v046",
+      "evidence_type": "RECALL",
+      "status": "REFERENCE_ONLY",
+      "published_on": "2026-01-26",
+      "title": {
+        "ru": "Отзыв Kia Sportage 2026 в США: временное отключение дисплея приборной панели",
+        "en": "US 2026 Kia Sportage recall: temporary blank instrument cluster"
+      },
+      "summary": {
+        "ru": "В отзыве 26V046 указаны определённые Kia Sportage 2026 модельного года для рынка США. Причина — избыточный шум в цепи управления питанием комбинации приборов, из-за которого может сработать защита от перегрева и экран временно погаснет. Remedy — обновлённое ПО у дилера или OTA.",
+        "en": "Recall 26V046 covers certain US-market 2026 Kia Sportage vehicles. Excessive signal noise in the instrument cluster power-management circuit can trigger overheat protection and temporarily blank the display. The remedy is updated software at a dealer or via OTA."
+      },
+      "source_ref": "NHTSA 26V046 / Kia SC361",
+      "production_window": {
+        "from": "2025-07-24",
+        "to": "2025-11-17"
+      },
+      "kz_applicability": "UNPROVEN"
+    }
+  ]
+}

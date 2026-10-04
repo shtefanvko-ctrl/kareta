@@ -242,6 +242,46 @@
       "license": "OEM website; reference only",
       "use": "model identity and global naming cross-check",
       "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "kia_kr_sportage_nq5pe_atcu_mtc_20260720",
+      "name": "Kia Korea Sportage NQ5 PE ATCU/MTC free-repair customer notice",
+      "type": "oem_service_campaign",
+      "authority": "OEM",
+      "url": "https://update.kia.com/KR/KO/updateNoticeView/OnL7pV",
+      "license": "OEM publication; reference only",
+      "use": "KR-market Sportage NQ5 PE ATCU/MTC free-repair campaign; includes diagnostic connector/OTA preparation instructions",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "nhtsa_kia_26v046",
+      "name": "NHTSA recall 26V046 / Kia SC361",
+      "type": "government_recall_document",
+      "authority": "PRIMARY",
+      "url": "https://static.nhtsa.gov/odi/rcl/2026/RCLRPT-26V046-2043.pdf",
+      "license": "US government public record",
+      "use": "US-market 2026 Kia Sportage/Sportage Hybrid/PHEV instrument-cluster recall and OTA remedy evidence",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "hyundai_txxm_t6g_20260326",
+      "name": "Hyundai TXXM/T6G engine warranty extension and inspect/replace dealer notification",
+      "type": "oem_tsb_campaign_document",
+      "authority": "OEM_VIA_NHTSA",
+      "url": "https://static.nhtsa.gov/odi/tsbs/2026/MC-11030330-0001.pdf",
+      "license": "copyrighted OEM service information mirrored in NHTSA; summarize/reference only",
+      "use": "US-market Hyundai DTC P1326 inspection/repair campaign applicability and workflow",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "nhtsa_hyundai_26v047",
+      "name": "NHTSA recall 26V047 / Hyundai 293",
+      "type": "government_recall_document",
+      "authority": "PRIMARY",
+      "url": "https://static.nhtsa.gov/odi/rcl/2026/RCLRPT-26V047-2209.pdf",
+      "license": "US government public record",
+      "use": "US-market 2026 Hyundai Tucson and related instrument-cluster PMIC recall evidence",
+      "status": "REFERENCE_ONLY"
     }
   ]
 }

@@ -36,5 +36,31 @@ for(const row of items('profession_links.json')) for(const id of row.profession_
 const svc=read(path.join(root,'Анализ','data','service_links.json'));
 const svcIds=new Set((svc.items||svc.links||svc).map?.(x=>x.service_id).filter(Boolean)||[]);
 for(const row of items('service_links.json')) for(const id of row.service_ids||[]) if(!svcIds.has(id)) errors.push('service link missing '+id);
+const manufacturerRoot=path.join(root,'Анализ','elm327','vehicles','manufacturers');
+const allowedApplicability=new Set(['EXACT_VIN','EXACT_PLATFORM','MODEL_YEAR_MARKET','NAME_ONLY','UNKNOWN']);
+let manufacturerEvidence=0;
+function walkJson(dir){
+  if(!fs.existsSync(dir)) return [];
+  const out=[];
+  for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
+    const p=path.join(dir,entry.name);
+    if(entry.isDirectory()) out.push(...walkJson(p));
+    else if(entry.name.endsWith('.json')) out.push(p);
+  }
+  return out;
+}
+for(const file of walkJson(manufacturerRoot)){
+  const payload=read(file);
+  for(const rec of payload.items||[]){
+    manufacturerEvidence++;
+    if(!rec.id) errors.push(file+': manufacturer evidence missing id');
+    if(!rec.make||!rec.model||!rec.market) errors.push((rec.id||file)+': make/model/market required');
+    if(!allowedApplicability.has(rec.applicability)) errors.push((rec.id||file)+': invalid applicability');
+    if(!sourceIds.has(rec.source_id)) errors.push((rec.id||file)+': missing source '+rec.source_id);
+    if(rec.title) bilingual(rec.title,(rec.id||file)+' title');
+    if(rec.summary) bilingual(rec.summary,(rec.id||file)+' summary');
+    if((rec.applicability==='NAME_ONLY'||rec.applicability==='UNKNOWN') && rec.status==='VERIFIED') errors.push(rec.id+': weak applicability cannot be VERIFIED');
+  }
+}
 if(errors.length){console.error(errors.join('\n')); process.exit(1);}
-console.log(JSON.stringify({ok:true,dtc:dtcs.length,symptoms:symptoms.length,causes:causes.length,checks:checks.length,repairs:repairs.length,sources:src.length},null,2));
+console.log(JSON.stringify({ok:true,dtc:dtcs.length,symptoms:symptoms.length,causes:causes.length,checks:checks.length,repairs:repairs.length,sources:src.length,manufacturerEvidence},null,2));

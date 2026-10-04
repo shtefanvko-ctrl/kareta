@@ -21,7 +21,9 @@
     "manufacturer_priority": "IMPLEMENTED",
     "manufacturer_model_priority": "IMPLEMENTED",
     "manufacturer_source_map_tier_a": "IMPLEMENTED",
-    "market_identity_contract": "IMPLEMENTED"
+    "market_identity_contract": "IMPLEMENTED",
+    "manufacturer_evidence_seed": "IMPLEMENTED",
+    "oem_ota_elm327_safety_rule": "STRUCTURED_NOT_RUNTIME"
   },
   "counts": {
     "canonical_dtc_seed": 45,
@@ -34,7 +36,8 @@
     "causes": 27,
     "checks": 22,
     "repair_actions": 18,
-    "sources": 24
+    "sources": 28,
+    "manufacturer_evidence_records": 4
   },
   "validation": {
     "result": "PASS",
@@ -50,11 +53,10 @@
     }
   },
   "next": [
-    "Create manufacturer evidence records only after exact market/platform applicability is resolved.",
-    "Start Tier A with Hyundai Tucson and Kia Sportage where official US/KR evidence can be cross-checked, while keeping Kazakhstan applicability explicit.",
-    "For Chevrolet Cobalt, resolve Kazakhstan platform/VIN identity before using GM/NHTSA model-name matches.",
-    "Find model-specific official Changan/Chery technical campaign sources; keep gaps explicit.",
-    "Continue bounded RU promotion from the verified OBDex staging queue."
+    "Resolve Kazakhstan VIN/platform identity for current Tucson, Sportage and Cobalt before promoting any US/KR manufacturer evidence to KZ applicability.",
+    "Add a manufacturer-evidence validator to CI and reject NAME_ONLY/UNKNOWN records from diagnostic guidance.",
+    "Add exact official campaign evidence for Changan CS55 Plus/CS35 Max and Chery Tiggo 2/Tiggo 7 when a model-specific source is found.",
+    "Continue bounded RU promotion from OBDex staging."
   ],
   "bulk_import_evidence": {
     "verified_commit": "c1246c771401f84885e1a63b7d4c71880d439d7e",
