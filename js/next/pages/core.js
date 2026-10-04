@@ -7,7 +7,8 @@
     { title:'Запчасти', route:'#/parts', icon:'parts' },
     { title:'Запись', route:'#/orders/new', icon:'calendar' },
     { title:'Чаты', route:'#/chats', icon:'chats' },
-    { title:'Мастера', route:'#/masters', icon:'master' }
+    { title:'Мастера', route:'#/masters', icon:'master' },
+    { title:'Сканировать', route:'#/scan', icon:'camera' }
   ]);
 
 
