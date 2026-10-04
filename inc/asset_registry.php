@@ -250,6 +250,8 @@ function kareta_route_asset_plan(): array
             'css/next/client_surface_modernization_phase2.css',
             'css/next/client_surface_modernization_phase3.css',
             'css/next/client_work_order_v2.css',
+            'css/next/design_contract.css',
+            'css/next/master_responsive_shell.css',
         ],
         '_lazyStyleLayers' => [
             'css/next/request_5_steps.css',
