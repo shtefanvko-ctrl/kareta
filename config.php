@@ -189,7 +189,7 @@ if (!defined('KARETA_CONFIG_LOADED')) {
      * KARETA_DB_VERSION — актуальная версия migration runner.
      * Версию увеличивать при добавлении новой migration file.
      */
-    define('KARETA_DB_VERSION', 129);
+    define('KARETA_DB_VERSION', 144);
 
     $kareta_environment = strtolower(trim((string) kareta_config_value('KARETA_ENVIRONMENT', 'environment', 'production')));
     if (!in_array($kareta_environment, ['production','staging','development','test'], true)) {
