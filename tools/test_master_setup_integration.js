@@ -7,7 +7,8 @@ const window={KaretaPageUI:{escHtml:value=>String(value??'').replace(/[&<>"']/g,
 const context={window,console,Intl};vm.runInNewContext(read('js/next/ui_icons.js'),context);vm.runInNewContext(read('js/next/pages/service_management.js'),context);
 const html=window.KaretaServiceManagementPages.renderServiceManagement({});
 assert.ok(html.includes('data-master-setup-services')&&html.includes('data-master-setup-equipment'));
-assert.ok(html.indexOf('k-master-setup-launch')<html.indexOf('<details class="k-master-service-editor">'));
+assert.ok(html.includes('k-services-canon-shell')&&html.includes('k-master-canon-search')&&html.includes('k-master-canon-filters'));
+assert.ok(html.indexOf('k-services-canon-shell')<html.indexOf('<details class="k-master-service-editor"'));
 assert.ok(!html.includes('<details class="k-master-service-editor" open'),'long price list is open by default');
 assert.equal((html.match(/data-master-service-row=/g)||[]).length,catalog.length,'canonical service rows changed');
 assert.equal((html.match(/class="k-service-themed-icon"/g)||[]).length,catalog.length,'service artwork not unified');
