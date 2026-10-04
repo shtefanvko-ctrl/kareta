@@ -78,7 +78,9 @@ jobs:
           php tools/test_master_equipment_profile.php
 
       - name: Master navigation contract
-        run: node tools/test_r1885582_master_mobile_nav.js
+        run: |
+          node tools/test_r1885582_master_mobile_nav.js
+          node tools/test_master_surface_consistency.js
 
       - name: Identity API recovery contract
         run: node tools/test_r1885607_identity_api_client_garage_recovery.js
