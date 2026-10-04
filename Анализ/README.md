@@ -1,63 +1,76 @@
-# Анализ KARETA — точка продолжения 01.10.2026
+# Анализ KARETA — текущая точка продолжения 05.10.2026
 
-Основной приоритет — веб-версия. Текущий результат: база исследований, тематические иконки, конструктор услуг/оборудования в feature-коде, план подбора, реестр ошибок и источники рынка. Это не подтверждение выпуска сайта.
+Папка `Анализ/` — research/evidence слой. Она не является вторым runtime source of truth.
 
-## Где лежит работа
+## Рабочий порядок
 
-| Материал | Назначение |
-| --- | --- |
-| [ПОДБОР_ЗАЯВОК_ПЛАН.md](ПОДБОР_ЗАЯВОК_ПЛАН.md) | Этапы M0–M6, задачи/зависимости, правила совпадения, объяснения, аналитика, приёмка |
-| [РЕЕСТР_ОШИБОК.md](РЕЕСТР_ОШИБОК.md) | Подтверждённые расхождения, кандидаты на очистку, действия и проверки закрытия |
-| [ДОПОЛНИТЕЛЬНОЕ_ЗАДАНИЕ_ПРОМПТ.md](ДОПОЛНИТЕЛЬНОЕ_ЗАДАНИЕ_ПРОМПТ.md) | Полное продолжение задачи для агента; будущие блоки и ограничения |
-| [РЫНОК_И_ОБОРУДОВАНИЕ.md](РЫНОК_И_ОБОРУДОВАНИЕ.md) | Первичные источники площадок/продавцов, предложения и пробелы исследования |
-| [data](data) | Замороженные исследования: оборудование, профессии, связи, гипотезы запросов, предложения |
-| [evidence/current_stage.json](evidence/current_stage.json) | Source SHA и фактические результаты проверок |
-| [evidence/works_module_probe.json](evidence/works_module_probe.json) | Изолированное подтверждение зависимости renderer #/works от модуля |
+Основной исполняемый процесс: [ПРОМПТ_ТРИ_ПРОХОДА_2026-10-05.md](ПРОМПТ_ТРИ_ПРОХОДА_2026-10-05.md)
 
-Код: [feat/master-equipment-icons-20261001](https://github.com/shtefanvko-ctrl/kareta/tree/feat/master-equipment-icons-20261001), SHA [124f452e99e0d8d8c04cfb19d0af28bf4423d657](https://github.com/shtefanvko-ctrl/kareta/commit/124f452e99e0d8d8c04cfb19d0af28bf4423d657).
+Порядок обязателен:
+1. дополнить исследование;
+2. повторно сверить с current main, runtime и активными PR;
+3. внедрить минимальный доказуемый инкремент в существующую change lane.
 
-Действующий канон: [KARETA_UI_LOCK_RULES.md на release base](https://github.com/shtefanvko-ctrl/kareta/blob/c20beb7fd2814e06b108451aa3e15bf414448123/docs/KARETA_UI_LOCK_RULES.md). Дополнение: [KARETA_MASTER_SETUP_DESIGN_CANON.md на candidate](https://github.com/shtefanvko-ctrl/kareta/blob/124f452e99e0d8d8c04cfb19d0af28bf4423d657/docs/KARETA_MASTER_SETUP_DESIGN_CANON.md).
+Актуальная сверка: [AUDIT_2026-10-05.md](AUDIT_2026-10-05.md).  
+Предыдущий аудит 04.10 сохранён как историческая контрольная точка.
 
-## Уже сохранено
+## Текущий статус
 
-| Этап | Source checkpoint | Что подтверждено | Что осталось |
-| --- | --- | --- | --- |
-| Требования | 47d12b762d5e79a9fc6d03080e8b37fc7d79e6f0 | Зафиксированы решения пользователя | Исполнять и проверять по этапам |
-| База | 82c5eec5d461590376be5d6fa9e3e875cbb83195 | 82 оборудования / 18 групп / 21 профессия / 109 service links / 52 гипотезы / 6 уточнений; ID/связи PASS | Экспертная пригодность и реальный спрос не проверены |
-| Иконки | a0d1b949610d633eb2992db8e71b8914ad655b15 | 39 новых SVG + MIT; прежние 73 SVG и 67 route bindings сохранены | Реальный визуальный прогон |
-| Карточки услуг | 3e56c1eaab9b3d66329889b287c06b90a89f87d7 | Три template sites используют общий SVG mapper; scoped CSS | UI на устройстве |
-| Конструктор | 9b9f98a07e4f20551d956aa49d4542a92eca56ea | Категории/карточки/док, кнопки доступа, поэтапное сохранение, цены отдельно | PHP/DB/browser |
-| Конфликт сохранения | 124f452e99e0d8d8c04cfb19d0af28bf4423d657 | Основная сохранённая версия; черновик только явно; 13 mock сценариев PASS | Подтвердить на реальном API и устройствах |
-| План/ошибки/рынок | Этот documentation checkpoint | Документы и источники в этой папке | Реализация M1–M6 и закрытие непроверенного |
+| Этап | Состояние | Runtime |
+| --- | --- | --- |
+| M0 — оборудование | IMPLEMENTED в main | профиль + picker, matching не выводится из наличия |
+| M1 — профессии | IMPLEMENTED в main | self-reported, RU/KK/EN, service auto-enable=false, matching disabled |
+| M2 — service advisories | IMPLEMENTED в PR #90, не merged | read-only 109 relations, expert review NOT_RUN, hard filtering/ranking/matching disabled |
+| M3 — explainable matching | NOT IMPLEMENTED | отдельный будущий контракт |
+| M4 — UI matching filters/reasons | NOT IMPLEMENTED как M3 consumer | не подменять существующую Биржу |
+| M5 — demand analytics | NOT IMPLEMENTED | 52 query examples = hypotheses, observed demand отсутствует |
+| M6 — controlled rollout | NOT IMPLEMENTED | нужен feature-off + comparison + exact release evidence |
 
-## Решения, которые сохраняем
+Current main после повторной сверки: `c43a1c21e1414bc2fc12c69b4b350613d64f0480`, asset `188.5.5.6.84.177`.
 
-- Категории как выбор жанров; затем конкретные услуги. Оборудование как набор инструментов в игре, с нижним доком.
-- Основной выбор кнопками; Есть / В СТО / Арендую / Нужно купить. Последнее не считается наличием.
-- Подтверждённые сервером данные — основа. При конфликте черновик не перезаписывает их автоматически. «Оставить сохранённое» без новой записи; применение черновика отдельным действием.
-- Черновик sessionStorage переживает обновление вкладки, но его сохранность после закрытия браузера не гарантирована. Сохранённый профиль доступен через сервер.
-- Один смысл новых карточек — один ID иконки; существующие шапку, меню, логотип сохраняем.
-- 5 шагов заявки клиента / 4 мастера в прочитанном release request.js. Локальные круги конструктора не увеличивают основной счётчик.
-- Оборудование не подтверждает навык. Черновые связи не включать как обязательные требования подбора.
-- Данные услуг не копировать. service_catalog/service_offers — существующий runtime источник; исторический services.json — вход импорта.
-- Для новой runtime equipment taxonomy source — storage/catalog/master_equipment.json в feature. Анализ/data/equipment.json — замороженный research snapshot; не редактировать оба как независимые справочники.
-- 52 запроса — гипотезы, observed_count=null; реальные метрики ещё не собирались.
-- Полнота магазинов, товарные фото и складское подтверждение не достигнуты. Источник и дату хранить для каждой цены.
-- Проверку устройств пользователь взял на себя. Android этим заданием не изменялся.
+## Материалы
 
-## Проверки и пределы
+- [ПОДБОР_ЗАЯВОК_ПЛАН.md](ПОДБОР_ЗАЯВОК_ПЛАН.md) — M0–M6.
+- [РЕЕСТР_ОШИБОК.md](РЕЕСТР_ОШИБОК.md) — исторический реестр + актуализация 05.10.
+- [ДОПОЛНИТЕЛЬНОЕ_ЗАДАНИЕ_ПРОМПТ.md](ДОПОЛНИТЕЛЬНОЕ_ЗАДАНИЕ_ПРОМПТ.md) — исходное постановочное задание.
+- [ПРОМПТ_ТРИ_ПРОХОДА_2026-10-05.md](ПРОМПТ_ТРИ_ПРОХОДА_2026-10-05.md) — текущий исполняемый промпт.
+- [РЫНОК_И_ОБОРУДОВАНИЕ.md](РЫНОК_И_ОБОРУДОВАНИЕ.md) — рынок и источники.
+- [data](data) — замороженные research snapshots.
+- [evidence](evidence) — evidence snapshots; их SHA не считать автоматически текущим candidate.
+- [M2_RUNTIME_ADVISORY_2026-10-05.md](M2_RUNTIME_ADVISORY_2026-10-05.md) — M2 lane evidence.
 
-PASS: ID/ссылки research data; icon contract; синтаксис JS; 13 сценариев на mock API; интеграция renderer с 109 услугами; Git readback сохранённого source.
+## Research invariants
 
-NOT_RUN: PHP execution, MySQL/API integration, настоящий браузер, телефон/планшет. Required release gates и exact-SHA deployment не подтверждены. Candidate version .156 согласована в inc/asset_version.php и sw.js, но это source version, не доказательство production.
+- `Анализ/data/equipment.json`: 82 equipment / 18 groups.
+- `Анализ/data/professions.json`: 21 professions.
+- `Анализ/data/service_links.json`: 109 service relations.
+- `Анализ/data/query_dictionary.json`: 52 query hypotheses / 6 clarifications.
+- Все эти snapshots остаются `DRAFT_NOT_RUNTIME_IMPORT`.
+- Structural PASS не равен expert validation.
+- Профессия и оборудование не равны квалификации.
+- Research relation не является hard requirement.
+- `observed_count=null` нельзя превращать в статистику спроса.
 
-## Следующие исполняемые шаги
+## Verification status PR #90
 
-1. Исправить статус метаданных runtime equipment catalog (E10), не превращая предметные гипотезы в проверенные требования.
-2. G0/PHP unit и реальная API/DB проверка текущего UI-кандидата; сохранить результаты на точном SHA.
-3. Согласовать #/works с существующей lane; проверить роли, прямой вход и повторные переходы.
-4. M1: экспертные связи и выбор профессий, затем M2–M3. Новый подбор сейчас не запущен.
-5. Расширить предложения оборудования за пределы сварки и собрать реальные события спроса.
+Проверенный кодовый checkpoint: `25d81703649df2799794cd77602472db89e20e3e`.
 
-Main в исходной инвентаризации был .127 (c2618e0), release base — .152 (c20beb7). Не переносить старый main целиком на release; материалы Анализ отделены от source-кандидата. Перед интеграцией обновить головы PR и следовать ai/CHANGE_LANES.md.
+PASS:
+- Application gates run `37238482404`;
+- Master setup M0–M2 contracts;
+- Analysis research runtime alignment;
+- Design canon contract;
+- Current API / route / browser-support contracts;
+- Asset URL hygiene;
+- Provenance contract + exact-candidate artifact;
+- PHP syntax run `37238482379`;
+- Geo runtime reconcile run `37238482459`;
+- Home scanner navigation run `37238482538`.
 
+Это source/CI verification. Реальная MySQL/API с пользовательскими профилями, browser/device smoke и фактический deployment остаются отдельными evidence уровнями.
+
+## Следующие три шага
+
+1. Добавить executable gate `Анализ ↔ runtime`, чтобы research drift не проходил молча.
+2. Повторно запустить exact-head Application gates PR #90 после каждой правки и не расширять scope до M3 при FAIL.
+3. После convergence M2 отдельно проектировать M3 shadow/explain-only matching с feature-off.

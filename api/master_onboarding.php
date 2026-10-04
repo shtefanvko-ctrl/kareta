@@ -226,6 +226,11 @@ if(in_array($action,['professions','professions.save'],true)){
     kmob_profession_handle($pdo,$profileId,(int)$current['id'],$method,$action,$body);
 }
 
+if($action==='serviceAdvisories'){
+    require_once __DIR__.'/master_service_advisories.php';
+    kmob_service_advisory_handle($method,$action);
+}
+
 if($method==='GET'&&$action==='avatar'){
     $uid=(int)($master['user_id']??0);if($uid<=0){http_response_code(404);exit;}
     $q=$pdo->prepare("SELECT avatar_url FROM users WHERE id=? LIMIT 1");$q->execute([$uid]);$value=(string)($q->fetchColumn()?:'');
