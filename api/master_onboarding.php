@@ -221,6 +221,10 @@ if(in_array($action,['equipment','equipment.save'],true)){
     require_once __DIR__.'/master_equipment_profile.php';
     kmob_equipment_handle($pdo,$profileId,(int)$current['id'],$method,$action,$body);
 }
+if(in_array($action,['professions','professions.save'],true)){
+    require_once __DIR__.'/master_profession_profile.php';
+    kmob_profession_handle($pdo,$profileId,(int)$current['id'],$method,$action,$body);
+}
 
 if($method==='GET'&&$action==='avatar'){
     $uid=(int)($master['user_id']??0);if($uid<=0){http_response_code(404);exit;}

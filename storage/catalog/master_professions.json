@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "data_version": "master_professions_runtime_candidate_v1",
+  "created_on": "2026-10-04",
+  "status": "RUNTIME_CANDIDATE_NOT_VERIFIED",
+  "source_repository": "shtefanvko-ctrl/kareta",
+  "source_research": "Анализ/data/professions.json",
+  "self_reported": true,
+  "skill_verification": "not_implied",
+  "matching_usage": "disabled",
+  "service_auto_enable": false,
+  "items": [
+    {
+      "id": "mechanic",
+      "label_ru": "Автомеханик",
+      "label_kk": "Автомеханик",
+      "label_en": "Auto mechanic",
+      "icon_id": "tabler:tools",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "diagnostician",
+      "label_ru": "Диагност",
+      "label_kk": "Диагност",
+      "label_en": "Diagnostician",
+      "icon_id": "tabler:device-desktop",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "auto_electrician",
+      "label_ru": "Автоэлектрик",
+      "label_kk": "Автоэлектрик",
+      "label_en": "Auto electrician",
+      "icon_id": "tabler:bolt",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "engine_specialist",
+      "label_ru": "Моторист",
+      "label_kk": "Қозғалтқыш шебері",
+      "label_en": "Engine specialist",
+      "icon_id": "tabler:engine",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "fuel_specialist",
+      "label_ru": "Топливщик",
+      "label_kk": "Отын жүйесі шебері",
+      "label_en": "Fuel systems specialist",
+      "icon_id": "tabler:gas-station",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "diesel_specialist",
+      "label_ru": "Дизелист",
+      "label_kk": "Дизель шебері",
+      "label_en": "Diesel specialist",
+      "icon_id": "tabler:gas-station",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "climate_specialist",
+      "label_ru": "Климат",
+      "label_kk": "Климат жүйесі",
+      "label_en": "Climate control specialist",
+      "icon_id": "tabler:snowflake",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "exhaust_specialist",
+      "label_ru": "Выхлоп",
+      "label_kk": "Шығару жүйесі",
+      "label_en": "Exhaust specialist",
+      "icon_id": "tabler:wind",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "transmission_specialist",
+      "label_ru": "Коробки",
+      "label_kk": "Беріліс қорабы",
+      "label_en": "Transmission specialist",
+      "icon_id": "tabler:settings",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "suspension_specialist",
+      "label_ru": "Ходовая",
+      "label_kk": "Жүріс бөлігі",
+      "label_en": "Suspension specialist",
+      "icon_id": "tabler:car",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "brake_specialist",
+      "label_ru": "Тормоза",
+      "label_kk": "Тежегіштер",
+      "label_en": "Brake specialist",
+      "icon_id": "tabler:disc",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "tire_specialist",
+      "label_ru": "Шиномонтаж",
+      "label_kk": "Шина монтажы",
+      "label_en": "Tire specialist",
+      "icon_id": "tabler:disc",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "alignment_specialist",
+      "label_ru": "Развал",
+      "label_kk": "Дөңгелек бұрыштары",
+      "label_en": "Wheel alignment specialist",
+      "icon_id": "tabler:steering-wheel",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "body_specialist",
+      "label_ru": "Кузовщик",
+      "label_kk": "Кузов шебері",
+      "label_en": "Body repair specialist",
+      "icon_id": "tabler:hammer",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "automotive_welder",
+      "label_ru": "Сварщик авто",
+      "label_kk": "Автодәнекерлеуші",
+      "label_en": "Automotive welder",
+      "icon_id": "tabler:flame",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "painter",
+      "label_ru": "Маляр",
+      "label_kk": "Автобояушы",
+      "label_en": "Automotive painter",
+      "icon_id": "tabler:paint",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "glass_specialist",
+      "label_ru": "Автостёкла",
+      "label_kk": "Автоәйнек",
+      "label_en": "Automotive glass specialist",
+      "icon_id": "tabler:wiper",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "detailer",
+      "label_ru": "Детейлер",
+      "label_kk": "Детейлинг шебері",
+      "label_en": "Detailer",
+      "icon_id": "tabler:brush",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "washer",
+      "label_ru": "Автомойка",
+      "label_kk": "Автожуу шебері",
+      "label_en": "Car wash specialist",
+      "icon_id": "tabler:bucket",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "accessories_installer",
+      "label_ru": "Установщик",
+      "label_kk": "Жабдық орнатушы",
+      "label_en": "Accessories installer",
+      "icon_id": "tabler:plug-connected",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    },
+    {
+      "id": "ev_specialist",
+      "label_ru": "Электромобили",
+      "label_kk": "Электромобиль шебері",
+      "label_en": "EV specialist",
+      "icon_id": "tabler:shield-check",
+      "declaration": "self_reported",
+      "evidence_status": "RUNTIME_CANDIDATE_NOT_VERIFIED"
+    }
+  ]
+}
