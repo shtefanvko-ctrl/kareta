@@ -18,7 +18,10 @@
   let marketMode='catalog'; // catalog | mine | favorites | compatible
   let mineStatus='all';
   let pendingMineFocusId='';
-  let state={search:'',type:'all',category:'',city:'',sort:'newest'};
+  let state={search:'',type:'all',category:'',city:'',sort:'newest',storeId:''};
+  let storeMode='nearby';
+  const storeTrust=new Map();
+  const storeTrustPending=new Set();
   let pendingDeleteId='';
   let mineRows=[];
   let listingWizard=null;
@@ -30,6 +33,12 @@
   const surfaceKind=()=>String(location.hash||'').split('?')[0]==='#/parts/used'?'used':'new';
   const isUsedSurface=()=>surfaceKind()==='used';
   const isMasterContext=()=>String(window.KaretaNavigationCore?.interfaceRole?.()||window.KaretaRoleAccess?.currentRole?.()||'').toLowerCase()==='master';
+  const appCity=()=>{
+    try{
+      const flow=window.KaretaOnboardingProfileDraft?.read?.()||window.KaretaOnboardingState?.read?.()||{};
+      return String(flow.city||'').trim();
+    }catch(_e){return '';}
+  };
 
   const typeMeta=Object.freeze({
     all:{label:'Все',title:'Все предложения',hint:'Новые, БУ, восстановленные и обмен'},
@@ -115,7 +124,38 @@
     if(source==='store')return productType(row)===state.type||(state.type==='exchange'&&Number(row.exchange_available||0)===1);
     return listingType(row)===state.type;
   }
-  function storeRows(snapshot){return sortRows((snapshot.products||[]).filter(x=>textMatch(x,state.search,'store')&&categoryMatch(x)&&cityMatch(x,'store')&&typeMatch(x,'store')));}
+  function storeRows(snapshot){return sortRows((snapshot.products||[]).filter(x=>textMatch(x,state.search,'store')&&categoryMatch(x)&&cityMatch(x,'store')&&typeMatch(x,'store')&&(!state.storeId||String(x.seller_user_id||'')===String(state.storeId))));}
+  function storeDirectory(snapshot){
+    const map=new Map();
+    (snapshot.products||[]).forEach(product=>{
+      const id=String(product.seller_user_id??'').trim();if(!id)return;
+      const current=map.get(id)||{id,name:String(product.store_name||'Магазин'),city:String(product.city||''),address:String(product.warehouse_address||''),products:0,rating:0,reviews:0};
+      current.products+=1;
+      if(!current.city)current.city=String(product.city||'');
+      if(!current.address)current.address=String(product.warehouse_address||'');
+      const trust=storeTrust.get(id);if(trust){current.rating=Number(trust.rating||0);current.reviews=Number(trust.reviews||0);}
+      map.set(id,current);
+    });
+    const rows=[...map.values()];
+    if(storeMode==='rating')rows.sort((a,b)=>Number(b.rating||0)-Number(a.rating||0)||Number(b.products||0)-Number(a.products||0)||a.name.localeCompare(b.name,'ru'));
+    else if(storeMode==='nearby'&&state.city){const city=state.city.toLowerCase();rows.sort((a,b)=>Number(String(b.city||'').toLowerCase().includes(city))-Number(String(a.city||'').toLowerCase().includes(city))||Number(b.products||0)-Number(a.products||0));}
+    else rows.sort((a,b)=>Number(b.products||0)-Number(a.products||0)||a.name.localeCompare(b.name,'ru'));
+    return rows;
+  }
+  function storeStrip(snapshot){
+    if(isUsedSurface())return '';
+    const rows=storeDirectory(snapshot);
+    if(!rows.length)return '<section class="k-parts-store-stories"><header><div><h2>Магазины</h2><p>Магазины появятся после загрузки каталога.</p></div></header><div class="k-parts-store-stories__empty">Пока нет магазинов с активными товарами.</div></section>';
+    return `<section class="k-parts-store-stories"><header><div><h2>Магазины</h2><p>Выберите магазин или продолжайте по категориям.</p></div>${state.storeId?'<button type="button" data-parts-store-clear>Все магазины</button>':''}</header><div class="k-parts-store-strip" data-parts-store-strip>${rows.map(row=>{const initials=String(row.name||'М').split(/\\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'М';const rating=Number(row.rating||0);return `<button type="button" class="k-parts-store-story ${String(state.storeId)===String(row.id)?'is-active':''}" data-parts-store="${esc(row.id)}" aria-label="Магазин ${esc(row.name)}"><span class="k-parts-store-avatar"><b>${esc(initials)}</b>${rating>0?`<i>${rating.toFixed(1)}</i>`:''}</span><strong>${esc(row.name)}</strong><small>${esc(row.city||`${row.products} товаров`)}</small></button>`;}).join('')}</div></section>`;
+  }
+  async function hydrateStoreTrust(snapshot){
+    if(isUsedSurface())return;
+    const ids=storeDirectory(snapshot).map(x=>x.id).filter(id=>!storeTrust.has(id)&&!storeTrustPending.has(id)).slice(0,12);
+    if(!ids.length)return;
+    ids.forEach(id=>storeTrustPending.add(id));
+    await Promise.all(ids.map(async id=>{try{const res=await api.getStoreDetail(id,{signal:contextRef?.lifecycle?.signal});const trust=res?.ok?res.payload?.data?.trust:null;storeTrust.set(id,{rating:Number(trust?.reviewAverage||0),reviews:Number(trust?.reviewCount||0)});}catch(_e){storeTrust.set(id,{rating:0,reviews:0});}finally{storeTrustPending.delete(id);}}));
+    const host=document.querySelector('[data-parts-stores]');if(host)host.innerHTML=storeStrip(store.getSnapshot());
+  }
   function privateRows(){return sortRows(usedRows.filter(x=>textMatch(x,state.search,'used')&&categoryMatch(x)&&cityMatch(x,'used')&&typeMatch(x,'used')));}
   function marketItems(snapshot){
     const storeItems=storeRows(snapshot).filter(item=>productType(item)==='new').map(item=>({source:'store',item}));
@@ -220,9 +260,9 @@
     return `<section class="k-page${isMasterContext()?' k-master-page k-master-surface-page':''} k-shop-page k-parts-native-page k-parts-ref-page" data-page="${used?'parts-used':'parts-new'}" data-parts-surface="${used?'used':'new'}" data-kflow-screen="parts">
       <header class="k-parts-ref-head${isMasterContext()?' k-master-page-header':''}"><div><h1>Запчасти</h1><p>${used?'БУ, восстановленные детали и обмен':'Новые запчасти и товары магазинов'}</p></div>${used?`<button class="k-parts-ref-head-action" type="button" data-used-add aria-label="Продать деталь">${icon('plus')}</button>`:`<button class="k-parts-ref-head-action" type="button" data-shop-cart-open aria-label="Корзина">${icon('cart')}<i data-shop-cart-count>0</i></button>`}</header>
       ${hashCtx.orderId?`<section class="k-parts-repair-context"><span>РЕМОНТ</span><div><b>Подбор для заказа ${esc(hashCtx.orderId)}</b><small>Найденную позицию можно затем зарезервировать в заказ-наряде.</small></div><a href="#/orders/item/${encodeURIComponent(hashCtx.orderId)}">К ремонту</a></section>`:''}
-      <section class="k-parts-ref-search"><label><span>${icon('search')}</span><input type="search" data-parts-search value="${esc(state.search)}" placeholder="Поиск запчастей по модели, номеру…" autocomplete="off"></label><button type="button" data-parts-filter-open aria-label="Фильтры">${icon('filter')}<i data-parts-filter-count>0</i></button></section>
-      <nav class="k-parts-ref-tabs" aria-label="Разделы запчастей">${used?`<a href="#/parts">Все</a><a href="#/parts">Новые</a>`:`<button type="button" class="is-active" data-parts-ref-type="all">Все</button><button type="button" data-parts-ref-type="new">Новые</button>`}<a href="#/parts/used" class="${used?'is-active':''}">Б/у</a>${used?`<a href="#/parts">Магазины</a>`:`<button type="button" data-parts-ref-type="stores">Магазины</button>`}</nav>
-      <section class="k-parts-ref-vehicle"><button type="button" data-parts-vehicle-open><span>${icon('car')}</span><span><b>${selectedVehicle()?esc(vehicleLabel(selectedVehicle())):'Подобрать по автомобилю'}</b><small>${selectedVehicle()?'Проверять совместимость':'Выберите авто из гаража'}</small></span><i>${icon('chevronRight')}</i></button></section>
+      <section class="k-parts-ref-search k-parts-master-search"><label><span>${icon('search')}</span><input type="search" data-parts-search value="${esc(state.search)}" placeholder="Найти запчасть, OEM или магазин…" autocomplete="off"></label></section>
+      <div class="k-parts-master-filters" aria-label="Фильтры магазинов"><button type="button" class="${storeMode==='nearby'?'is-active ':''}is-nearby" data-parts-mode="nearby"><span>${icon('location')}</span><b>Рядом</b></button><button type="button" class="${storeMode==='rating'?'is-active ':''}is-rating" data-parts-mode="rating"><span>${icon('star')}</span><b>Рейтинг</b></button><button type="button" class="is-open" disabled aria-disabled="true" title="График магазинов пока не передаётся каталогом"><span>${icon('calendar')}</span><b>Открыто</b></button><button type="button" class="k-parts-master-filter-icon" data-parts-filter-open aria-label="Дополнительные фильтры">${icon('filter')}<i data-parts-filter-count>0</i></button></div>
+      <div data-parts-stores></div>
       ${used?`<section class="k-parts-ref-used-actions"><button type="button" data-used-add>${icon('plus')}<span><b>Продать деталь</b><small>Создать объявление</small></span></button><button type="button" data-market-mode="favorites">${icon('heart')}<span><b>Избранное</b><small>Сохранённые</small></span></button><button type="button" data-market-mode="mine"><span>${icon('user')}</span><span><b>Мои объявления</b><small>Управление</small></span></button></section>`:''}
       <div data-parts-categories></div>
       <main class="k-parts-ref-main" data-shop-navigator aria-live="polite"></main><aside class="k-flow-parts-cart k-parts-ref-legacy-contract" hidden aria-hidden="true"></aside>
@@ -243,7 +283,7 @@
     const root=document.querySelector('[data-parts-filter-body]');if(!root)return;
     const categories=uniqueCategories(snapshot);
     const typeBlock=isUsedSurface()?`<section><span>Тип предложения</span><div class="k-parts-choice-grid">${['all','used','restored','exchange'].map(t=>`<button type="button" class="${state.type===t?'is-active':''}" data-filter-type="${t}"><b>${typeMeta[t].label}</b></button>`).join('')}</div></section>`:'';
-    root.innerHTML=`${typeBlock}<section><span>Категория</span><div class="k-parts-filter-categories"><button type="button" class="${!state.category?'is-active':''}" data-filter-category="">Все</button>${categories.map(c=>`<button type="button" class="${state.category===c.key?'is-active':''}" data-filter-category="${esc(c.key)}">${esc(c.name)}</button>`).join('')}</div></section><label><span>Город</span><input type="text" data-filter-city value="${esc(state.city)}" placeholder="Например, Усть-Каменогорск"></label><section><span>Сортировка</span><div class="k-parts-choice-grid">${[['newest','Сначала новые'],['price_asc','Сначала дешевле'],['price_desc','Сначала дороже'],['popular','Популярные']].map(([v,l])=>`<button type="button" class="${state.sort===v?'is-active':''}" data-filter-sort="${v}"><b>${l}</b></button>`).join('')}</div></section>`;
+    root.innerHTML=`<section class="k-parts-filter-vehicle"><span>Автомобиль</span><button type="button" data-parts-vehicle-open><span>${icon('car')}</span><span><b>${selectedVehicle()?esc(vehicleLabel(selectedVehicle())):'Подобрать по автомобилю'}</b><small>${selectedVehicle()?'Проверять совместимость':'Выберите авто из гаража'}</small></span><i>${icon('chevronRight')}</i></button></section>${typeBlock}<section><span>Категория</span><div class="k-parts-filter-categories"><button type="button" class="${!state.category?'is-active':''}" data-filter-category="">Все</button>${categories.map(c=>`<button type="button" class="${state.category===c.key?'is-active':''}" data-filter-category="${esc(c.key)}">${esc(c.name)}</button>`).join('')}</div></section><label><span>Город</span><input type="text" data-filter-city value="${esc(state.city)}" placeholder="Например, Усть-Каменогорск"></label><section><span>Сортировка</span><div class="k-parts-choice-grid">${[['newest','Сначала новые'],['price_asc','Сначала дешевле'],['price_desc','Сначала дороже'],['popular','Популярные']].map(([v,l])=>`<button type="button" class="${state.sort===v?'is-active':''}" data-filter-sort="${v}"><b>${l}</b></button>`).join('')}</div></section>`;
   }
   function renderVehicles(){
     const root=document.querySelector('[data-parts-vehicle-list]');if(!root)return;
@@ -252,14 +292,15 @@
   }
   function renderCategoryChoice(snapshot){const root=document.querySelector('[data-parts-category-choice]');if(root)root.innerHTML=uniqueCategories(snapshot).map(c=>`<button type="button" data-listing-category="${esc(c.key)}"><span>${icon(c.icon)}</span><b>${esc(c.name)}</b></button>`).join('');}
   function updateCounters(snapshot){
-    const count=[state.search,state.type!=='all'?state.type:'',state.category,state.city,state.sort!=='newest'?state.sort:''].filter(Boolean).length;const el=document.querySelector('[data-parts-filter-count]');if(el)el.textContent=String(count);
+    const count=[state.search,state.type!=='all'?state.type:'',state.category,state.city,state.sort!=='newest'?state.sort:'',state.storeId].filter(Boolean).length;const el=document.querySelector('[data-parts-filter-count]');if(el)el.textContent=String(count);
     document.querySelectorAll('[data-shop-cart-count]').forEach(cartCount=>{cartCount.textContent=String((snapshot.cart||[]).reduce((s,x)=>s+Number(x.qty||0),0));});
   }
   function renderSnapshot(snapshot){
     const nav=document.querySelector('[data-shop-navigator]');if(!nav)return;
+    const stores=document.querySelector('[data-parts-stores]');if(stores)stores.innerHTML=storeStrip(snapshot);
     const cats=document.querySelector('[data-parts-categories]');if(cats)cats.innerHTML=categoryGrid(snapshot);
     nav.innerHTML=catalogContent(snapshot);
-    renderFilter(snapshot);renderVehicles();renderCategoryChoice(snapshot);updateCounters(snapshot);if(document.querySelector('[data-parts-market-list-dialog]')?.open)renderMarketWindow(snapshot);
+    renderFilter(snapshot);renderVehicles();renderCategoryChoice(snapshot);updateCounters(snapshot);hydrateStoreTrust(snapshot);if(document.querySelector('[data-parts-market-list-dialog]')?.open)renderMarketWindow(snapshot);
     const cartItems=document.querySelector('[data-shop-cart-items]'),cartTotal=document.querySelector('[data-shop-cart-total]');
     if(cartItems)cartItems.innerHTML=(snapshot.cart||[]).length?(snapshot.cart||[]).map(item=>`<article class="k-shop-cart-item"><div><b>${esc(item.name)}</b><small>${esc(item.storeName||'')}</small></div><div class="k-shop-cart-qty"><button type="button" data-shop-qty="${esc(item.id)}" data-delta="-1">−</button><span>${Number(item.qty||0)}</span><button type="button" data-shop-qty="${esc(item.id)}" data-delta="1">+</button></div><strong>${money(Number(item.price||0)*Number(item.qty||0))}</strong></article>`).join(''):'<div class="k-parts-native-empty">Корзина пуста.</div>';
     if(cartTotal)cartTotal.textContent=money((snapshot.cart||[]).reduce((s,x)=>s+Number(x.price||0)*Number(x.qty||0),0));
@@ -278,7 +319,7 @@
     try{const res=await api.request('api/db.php?action=clientCabinet.get',{cacheTtlMs:15000,cacheKey:'client.cabinet.parts',signal:contextRef?.lifecycle?.signal});vehicles=Array.isArray(res.payload?.data?.vehicles)?res.payload.data.vehicles:[];}catch(_e){vehicles=[];}finally{vehiclesLoaded=true;renderVehicles();if(selectedVehicleId&&!vehicles.some(v=>String(v.id)===String(selectedVehicleId)))selectedVehicleId='';renderSnapshot(store.getSnapshot());}
   }
   function applyFilters(){renderFilter(store.getSnapshot());updateCounters(store.getSnapshot());renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');}
-  function resetFilters(){state={search:'',type:'all',category:'',city:'',sort:'newest'};marketMode='catalog';const search=document.querySelector('[data-parts-search]');if(search)search.value='';renderFilter(store.getSnapshot());updateCounters(store.getSnapshot());}
+  function resetFilters(){state={search:'',type:'all',category:'',city:appCity(),sort:'newest',storeId:''};marketMode='catalog';storeMode='nearby';const search=document.querySelector('[data-parts-search]');if(search)search.value='';renderSnapshot(store.getSnapshot());}
   function openDialog(name){document.querySelector(`[data-${name}-dialog]`)?.showModal?.();}
   function closeDialog(name){document.querySelector(`[data-${name}-dialog]`)?.close?.();}
   function blankListingWizard(item=null){
@@ -313,6 +354,9 @@
       const close=event.target.closest('[data-dialog-close]');if(close){const map={filter:'parts-filter',vehicle:'parts-vehicle',listing:'used-form',category:'parts-category',market:'parts-market-list',delete:'delete',cart:'shop-cart'};closeDialog(map[close.dataset.dialogClose]||close.dataset.dialogClose);return;}
       if(event.target.closest('[data-shop-cart-open]')){openDialog('shop-cart');return;}
       if(event.target.closest('[data-parts-filter-open]')){renderFilter(store.getSnapshot());openDialog('parts-filter');return;}
+      const partsMode=event.target.closest('[data-parts-mode]');if(partsMode){storeMode=partsMode.dataset.partsMode==='rating'?'rating':'nearby';page.querySelectorAll('[data-parts-mode]').forEach(btn=>btn.classList.toggle('is-active',btn===partsMode));const host=page.querySelector('[data-parts-stores]');if(host)host.innerHTML=storeStrip(store.getSnapshot());return;}
+      const storeButton=event.target.closest('[data-parts-store]');if(storeButton){state={...state,storeId:String(storeButton.dataset.partsStore||'')};renderSnapshot(store.getSnapshot());return;}
+      if(event.target.closest('[data-parts-store-clear]')){state={...state,storeId:''};renderSnapshot(store.getSnapshot());return;}
       if(event.target.closest('[data-parts-vehicle-open]')){vehicleDialogMode='catalog';renderVehicles();openDialog('parts-vehicle');return;}
       const marketWindow=event.target.closest('[data-market-window]');if(marketWindow){state={search:'',type:marketWindow.dataset.marketWindow||'all',category:'',city:'',sort:'newest'};marketMode='catalog';renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');return;}
       if(event.target.closest('[data-compatible-window]')){state={search:'',type:'all',category:'',city:'',sort:'newest'};marketMode='compatible';renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');return;}
@@ -362,7 +406,7 @@
   }
 
   function mountParts(context){
-    unsubscribe?.();contextRef=context;usedRows=[];mineRows=[];listingWizard=null;listingSaving=false;usedLoading=false;usedError='';vehicles=[];vehiclesLoaded=false;selectedVehicleId='';vehicleDialogMode='catalog';marketMode='catalog';mineStatus='all';pendingMineFocusId='';state={search:'',type:'all',category:'',city:'',sort:'newest'};const hashCtx=readHashContext();
+    unsubscribe?.();contextRef=context;usedRows=[];mineRows=[];listingWizard=null;listingSaving=false;usedLoading=false;usedError='';vehicles=[];vehiclesLoaded=false;selectedVehicleId='';vehicleDialogMode='catalog';marketMode='catalog';mineStatus='all';pendingMineFocusId='';storeMode='nearby';storeTrust.clear();storeTrustPending.clear();state={search:'',type:'all',category:'',city:appCity(),sort:'newest',storeId:''};const hashCtx=readHashContext();
     unsubscribe=store.subscribe(renderSnapshot);bind(context);store.load({search:'',category:'all',limit:100},{signal:context.lifecycle?.signal});if(isUsedSurface())loadUsed();else{usedRows=[];usedLoading=false;usedError='';}loadVehicles();
     if(hashCtx.mine==='1'){pendingMineFocusId=hashCtx.focus||'';loadMine().then(()=>{if(contextRef!==context)return;marketMode='mine';renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');});}
     return()=>{unsubscribe?.();unsubscribe=null;contextRef=null;store.cancel();};

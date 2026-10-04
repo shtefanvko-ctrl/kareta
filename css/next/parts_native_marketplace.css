@@ -608,3 +608,374 @@
     border-radius:16px!important;
   }
 }
+
+/* 2026-10-04 — PARTS / MASTERS CANON HEADER + STORE STORIES.
+   Preserve Masters directory geometry on Parts:
+   title -> search -> filters -> store stories -> categories -> products. */
+.k-parts-ref-page{
+  --k-parts-master-orange:#ff4b0a;
+  --k-parts-master-line:#dfe1e5;
+  --k-parts-master-muted:#6d7178;
+  min-width:0!important;
+  overflow-x:clip!important;
+}
+.k-parts-ref-page .k-parts-ref-head{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  margin:0 0 14px!important;
+}
+.k-parts-ref-page .k-parts-ref-head>div{min-width:0!important}
+.k-parts-ref-page .k-parts-ref-head h1{
+  margin:0!important;
+  font-size:30px!important;
+  line-height:35px!important;
+  font-weight:800!important;
+  letter-spacing:-.035em!important;
+}
+.k-parts-ref-page .k-parts-ref-head p{
+  margin:3px 0 0!important;
+  color:var(--k-parts-master-muted)!important;
+  font-size:12.5px!important;
+  line-height:18px!important;
+}
+.k-parts-ref-page .k-parts-ref-head-action{
+  width:44px!important;
+  height:44px!important;
+  min-width:44px!important;
+  min-height:44px!important;
+  border:1px solid var(--k-parts-master-line)!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.k-parts-ref-page .k-parts-master-search{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+}
+.k-parts-ref-page .k-parts-master-search>label{
+  height:48px!important;
+  min-height:48px!important;
+  width:100%!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:0 13px!important;
+  border:1px solid var(--k-parts-master-line)!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+  box-sizing:border-box!important;
+}
+.k-parts-ref-page .k-parts-master-search>label>span{
+  width:20px!important;
+  height:20px!important;
+  flex:0 0 20px!important;
+  color:#767a82!important;
+}
+.k-parts-ref-page .k-parts-master-search>label svg{
+  width:20px!important;
+  height:20px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.9!important;
+}
+.k-parts-ref-page .k-parts-master-search input{
+  width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  color:#111317!important;
+  font-size:14.5px!important;
+  font-weight:500!important;
+}
+.k-parts-ref-page .k-parts-master-search input::placeholder{color:#8b8e95!important}
+.k-parts-ref-page .k-parts-master-filters{
+  display:grid!important;
+  grid-template-columns:auto auto minmax(0,1fr) 44px!important;
+  align-items:stretch!important;
+  gap:9px!important;
+  width:100%!important;
+  margin:13px 0 0!important;
+  min-width:0!important;
+}
+.k-parts-ref-page .k-parts-master-filters>button{
+  min-width:0!important;
+  min-height:42px!important;
+  height:42px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  padding:0 14px!important;
+  border:1px solid var(--k-parts-master-line)!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:#232529!important;
+  font:650 13px/18px inherit!important;
+  white-space:nowrap!important;
+  box-sizing:border-box!important;
+}
+.k-parts-ref-page .k-parts-master-filters>button>span{
+  width:18px!important;
+  height:18px!important;
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 18px!important;
+}
+.k-parts-ref-page .k-parts-master-filters>button svg{
+  width:18px!important;
+  height:18px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.9!important;
+}
+.k-parts-ref-page .k-parts-master-filters>button.is-active{
+  border-color:var(--k-parts-master-orange)!important;
+  background:var(--k-parts-master-orange)!important;
+  color:#fff!important;
+}
+.k-parts-ref-page .k-parts-master-filters>button.is-open:disabled{
+  opacity:.48!important;
+  cursor:not-allowed!important;
+  background:#f7f7f8!important;
+  color:#71757c!important;
+}
+.k-parts-ref-page .k-parts-master-filter-icon{
+  width:44px!important;
+  padding:0!important;
+  position:relative!important;
+}
+.k-parts-ref-page .k-parts-master-filter-icon i{
+  position:absolute!important;
+  right:2px!important;
+  top:2px!important;
+  min-width:16px!important;
+  height:16px!important;
+  padding:0 4px!important;
+  display:none!important;
+  place-items:center!important;
+  border-radius:99px!important;
+  background:var(--k-parts-master-orange)!important;
+  color:#fff!important;
+  font-size:9px!important;
+  font-style:normal!important;
+  line-height:1!important;
+}
+.k-parts-ref-page .k-parts-master-filter-icon i:not(:empty){display:grid!important}
+.k-parts-store-stories{
+  display:grid!important;
+  gap:10px!important;
+  min-width:0!important;
+  margin:16px 0 18px!important;
+}
+.k-parts-store-stories>header{
+  display:flex!important;
+  align-items:end!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  margin:0!important;
+}
+.k-parts-store-stories>header>div{min-width:0!important}
+.k-parts-store-stories h2{
+  margin:0!important;
+  font-size:18px!important;
+  line-height:23px!important;
+  font-weight:800!important;
+  letter-spacing:-.02em!important;
+}
+.k-parts-store-stories p{
+  margin:3px 0 0!important;
+  color:#7b8089!important;
+  font-size:11px!important;
+  line-height:15px!important;
+}
+.k-parts-store-stories>header>button{
+  flex:0 0 auto!important;
+  min-height:36px!important;
+  padding:0 10px!important;
+  border:0!important;
+  background:transparent!important;
+  color:var(--k-parts-master-orange)!important;
+  font:700 12px/16px inherit!important;
+}
+.k-parts-store-strip{
+  display:flex!important;
+  gap:13px!important;
+  width:100%!important;
+  min-width:0!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  padding:2px 1px 7px!important;
+  scroll-snap-type:x proximity!important;
+  scrollbar-width:none!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+.k-parts-store-strip::-webkit-scrollbar{display:none!important}
+.k-parts-store-story{
+  flex:0 0 72px!important;
+  min-width:72px!important;
+  max-width:72px!important;
+  display:grid!important;
+  justify-items:center!important;
+  align-content:start!important;
+  gap:5px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#202226!important;
+  text-align:center!important;
+  scroll-snap-align:start!important;
+}
+.k-parts-store-avatar{
+  position:relative!important;
+  width:64px!important;
+  height:64px!important;
+  padding:3px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  background:#d9dce1!important;
+  box-sizing:border-box!important;
+}
+.k-parts-store-story.is-active .k-parts-store-avatar{
+  background:linear-gradient(145deg,#ff7b32,var(--k-parts-master-orange))!important;
+}
+.k-parts-store-avatar>b{
+  width:100%!important;
+  height:100%!important;
+  display:grid!important;
+  place-items:center!important;
+  border:2px solid #fff!important;
+  border-radius:50%!important;
+  background:#f0f1f3!important;
+  color:#30343a!important;
+  font-size:18px!important;
+  font-weight:800!important;
+  box-sizing:border-box!important;
+}
+.k-parts-store-avatar>i{
+  position:absolute!important;
+  right:-2px!important;
+  bottom:-1px!important;
+  min-width:22px!important;
+  height:20px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0 4px!important;
+  border:1px solid #ececec!important;
+  border-radius:99px!important;
+  background:#fff!important;
+  color:#25282d!important;
+  font-size:9px!important;
+  font-style:normal!important;
+  font-weight:800!important;
+}
+.k-parts-store-story>strong{
+  width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:10.5px!important;
+  line-height:14px!important;
+  font-weight:700!important;
+}
+.k-parts-store-story>small{
+  width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  color:#7b8089!important;
+  font-size:9px!important;
+  line-height:12px!important;
+}
+.k-parts-store-stories__empty{
+  min-height:72px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px dashed var(--k-parts-master-line)!important;
+  border-radius:12px!important;
+  background:#fafafa!important;
+  color:#747983!important;
+  font-size:12px!important;
+  text-align:center!important;
+}
+.k-parts-filter-vehicle{display:grid!important;gap:7px!important}
+.k-parts-filter-vehicle>span{font-weight:750!important}
+.k-parts-filter-vehicle>button{
+  width:100%!important;
+  min-height:62px!important;
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr) 18px!important;
+  gap:10px!important;
+  align-items:center!important;
+  padding:10px 12px!important;
+  border:1px solid #e7e9ec!important;
+  border-radius:14px!important;
+  background:#fafafb!important;
+  color:#202328!important;
+  text-align:left!important;
+}
+.k-parts-filter-vehicle>button>span:first-child{
+  width:38px!important;
+  height:38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:var(--k-parts-master-orange)!important;
+}
+.k-parts-filter-vehicle>button>span:nth-child(2){display:grid!important;gap:2px!important;min-width:0!important}
+.k-parts-filter-vehicle b{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.k-parts-filter-vehicle small{color:#7b8089!important;font-size:11px!important}
+.k-parts-filter-vehicle i{font-style:normal!important;color:#8a9098!important}
+
+@media(max-width:767px){
+  .k-parts-ref-page{
+    width:100%!important;
+    max-width:none!important;
+    padding-left:14px!important;
+    padding-right:14px!important;
+  }
+  .k-parts-ref-page .k-parts-ref-head h1{font-size:28px!important;line-height:34px!important}
+  .k-parts-ref-page .k-parts-master-filters{
+    grid-template-columns:auto auto minmax(0,1fr) 44px!important;
+    gap:8px!important;
+  }
+  .k-parts-ref-page .k-parts-master-filters>button{
+    min-height:41px!important;
+    height:41px!important;
+    padding:0 11px!important;
+    font-size:12.5px!important;
+  }
+  .k-parts-store-stories{margin-top:14px!important}
+  .k-parts-store-strip{margin-inline:0!important}
+}
+@media(max-width:390px){
+  .k-parts-ref-page{padding-left:10px!important;padding-right:10px!important}
+  .k-parts-ref-page .k-parts-master-filters{
+    grid-template-columns:auto auto minmax(0,1fr) 42px!important;
+    gap:7px!important;
+  }
+  .k-parts-ref-page .k-parts-master-filters>button{
+    padding-inline:8px!important;
+    font-size:12px!important;
+  }
+  .k-parts-ref-page .k-parts-master-filter-icon{width:42px!important}
+}
+@media(min-width:768px){
+  .k-parts-ref-page .k-parts-ref-head,
+  .k-parts-ref-page .k-parts-master-search,
+  .k-parts-ref-page .k-parts-master-filters,
+  .k-parts-ref-page>[data-parts-stores]{
+    width:min(100%,920px)!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+  .k-parts-ref-page .k-parts-ref-head h1{font-size:34px!important;line-height:40px!important}
+}
+
