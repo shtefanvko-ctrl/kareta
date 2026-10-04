@@ -61,3 +61,14 @@ Read-only API в master context:
 - запрет включения matching/ranking.
 
 Application gates запускают M0 + M1 + M2 проверки вместе.
+
+
+## Merge status
+
+MERGED в main через PR #90.
+
+- final PR head: `f2b336379a368a75d8bb840fd608430ac689a53b`;
+- merge commit: `ffeb23e635af794388b2e5c1b4a358e8a6cf3d2d`;
+- final PR Application gates: PASS;
+- matching/ranking/hard filtering: disabled;
+- deployment: NOT_CONFIRMED.
