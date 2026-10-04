@@ -29,8 +29,14 @@ foreach (['styles','scripts','images'] as $bucket) {
 }
 
 $sw = (string)file_get_contents($root . '/sw.js');
-if (preg_match("/const\s+RELEASE\s*=\s*'([^']+)'/", $sw, $m) !== 1 || strlen((string)($m[1] ?? '')) > 32) {
+$swRelease = '';
+if (preg_match("/const\\s+RELEASE\\s*=\\s*'([^']+)'/", $sw, $m) !== 1 || strlen((string)($m[1] ?? '')) > 32) {
     $errors[] = 'service worker RELEASE must be a short current token';
+} else {
+    $swRelease = (string)$m[1];
+    if (!hash_equals($token, $swRelease)) {
+        $errors[] = "service worker RELEASE mismatch: asset={$token}, sw={$swRelease}";
+    }
 }
 $realtime = (string)file_get_contents($root . '/js/next/core/realtime_client.js');
 if (strpos($realtime, "window.KARETA_NEXT_ASSET_VERSION") === false) {
