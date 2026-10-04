@@ -1,0 +1,52 @@
+name: ELM327 knowledge gate
+
+on:
+  pull_request:
+    paths:
+      - 'Анализ/elm327/**'
+      - 'tools/elm327/**'
+      - 'tools/validate_elm327_knowledge.mjs'
+      - '.github/workflows/elm327-knowledge.yml'
+  push:
+    paths:
+      - 'Анализ/elm327/**'
+      - 'tools/elm327/**'
+      - 'tools/validate_elm327_knowledge.mjs'
+      - '.github/workflows/elm327-knowledge.yml'
+
+jobs:
+  knowledge-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Syntax checks
+        run: |
+          node --check tools/validate_elm327_knowledge.mjs
+          node --check tools/elm327/import_obdex.mjs
+          node --check tools/elm327/fetch_nhtsa_vehicle.mjs
+
+      - name: Knowledge referential integrity
+        run: node tools/validate_elm327_knowledge.mjs
+
+      - name: Pinned OBDex manifest contract
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const p='Анализ/elm327/data/obdex_import_manifest.json';
+          const m=JSON.parse(fs.readFileSync(p,'utf8'));
+          const generic=(m.generic||[]).reduce((n,x)=>n+(x.records||0),0);
+          const pids=(m.pids||[]).reduce((n,x)=>n+(x.records||0),0);
+          if(generic!==9533) throw new Error('expected 9533 generic DTC, got '+generic);
+          if(pids!==132) throw new Error('expected 132 PID, got '+pids);
+          if(m.source?.commit!=='bc58b0eb7273226a1aabae98e956b70b8362bda1') throw new Error('unexpected OBDex source commit');
+          for(const x of [...(m.generic||[]),...(m.pids||[])]){
+            if(!/^[0-9a-f]{40}$/.test(x.blob_sha||'')) throw new Error('invalid blob sha for '+x.source_path);
+            if(!(x.bytes>0)&&x.bytes!==0) throw new Error('invalid byte size for '+x.source_path);
+          }
+          console.log(JSON.stringify({ok:true,generic,pids,upstream:m.source.commit},null,2));
+          NODE
