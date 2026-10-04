@@ -14,6 +14,7 @@ must(nav.includes("master: Object.freeze(['masterDashboard','masterExchange','se
 must(nav.includes("['personal','master','seller','admin','organization_store'].includes(kind) ? 6 : 5"),'master mobile limit 6');
 must(role.includes("mobile:['masterDashboard','masterExchange','serviceManagement','parts','cabinet','__more__']"),'legacy master order');
 must(shell.includes("masterExchange:'Биржа'")&&shell.includes("orders:'Заявки'")&&shell.includes("community:'Сообщество'"),'master labels');
+must(shell.includes("masterDashboard:'Рабочее место'")&&!shell.includes("masterDashboard'?'Главная'"),'master workplace label');
 must(shell.includes("['workOrder','requestNew','workflow'].includes(key))key='orders'"),'order child active grouping');
 must(routes.includes("path:'#/master/exchange'")&&routes.includes("path:'#/community'"),'new routes');
 must(feed.includes("['client','master'].includes(role())")&&feed.includes('renderExchange,mountExchange'),'community/exchange split');
