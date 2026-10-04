@@ -20,9 +20,11 @@ const routeSources=[
   'css/next/master_surfaces.css'
 ];
 
-const baseStart=registry.indexOf("'_baseStyles' => [");
+const baseMarkers=["'_baseStyles' => [","'_sourceLayers' => ["];
+const baseMarker=baseMarkers.find(marker=>registry.includes(marker))||'';
+const baseStart=baseMarker?registry.indexOf(baseMarker):-1;
 const lazyStart=registry.indexOf("'_lazyStyleLayers' => [",baseStart);
-if(baseStart<0||lazyStart<=baseStart) fail('cannot parse _baseStyles');
+if(baseStart<0||lazyStart<=baseStart) fail('cannot parse eager style ownership block');
 const baseBlock=registry.slice(baseStart,lazyStart);
 
 for(const src of routeSources){
