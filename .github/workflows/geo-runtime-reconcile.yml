@@ -1,0 +1,25 @@
+name: Geo runtime reconcile
+on:
+  pull_request:
+  push:
+    branches: [reconcile-geo-runtime-main-20261005]
+permissions:
+  contents: read
+jobs:
+  geo-runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+      - run: php -l config.php
+      - run: php -l index.php
+      - run: node --check js/mobile_native_bridge.js
+      - run: node --check js/next/geo_map.js
+      - run: node --check js/next/onboarding/onboarding_selection_catalog.js
+      - run: node --check js/next/pages/core.js
+      - run: node tools/test_geo_map_runtime.js

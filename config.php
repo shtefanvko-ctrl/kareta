@@ -120,6 +120,17 @@ if (!defined('KARETA_CONFIG_LOADED')) {
         'booking_phone' => (string) kareta_config_value('KARETA_BOOKING_PHONE', 'booking_phone', '+77072980649'),
     ]);
 
+    // Public map tiles are loaded only when the user opens an inline map.
+    // Provider is configurable so production can move to a commercial/self-hosted tile service.
+    define('KARETA_GEO_MAP', [
+        'tile_url' => (string) kareta_config_value('KARETA_GEO_TILE_URL', 'geo_tile_url', 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
+        'attribution_label' => (string) kareta_config_value('KARETA_GEO_ATTRIBUTION_LABEL', 'geo_attribution_label', '© OpenStreetMap contributors'),
+        'attribution_url' => (string) kareta_config_value('KARETA_GEO_ATTRIBUTION_URL', 'geo_attribution_url', 'https://www.openstreetmap.org/copyright'),
+        'min_zoom' => max(3, (int) kareta_config_value('KARETA_GEO_MIN_ZOOM', 'geo_min_zoom', 8)),
+        'max_zoom' => min(19, (int) kareta_config_value('KARETA_GEO_MAX_ZOOM', 'geo_max_zoom', 17)),
+        'default_zoom' => (int) kareta_config_value('KARETA_GEO_DEFAULT_ZOOM', 'geo_default_zoom', 13),
+    ]);
+
     $kareta_db_host = kareta_config_value('KARETA_DB_HOST', 'db_host', null);
     if ($kareta_db_host === null || $kareta_db_host === '') {
         $kareta_db_host = kareta_env_first(['DB_HOST', 'MYSQL_HOST'], '127.0.0.1');
