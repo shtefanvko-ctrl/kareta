@@ -31,7 +31,6 @@
     "NHTSA selected for complaints/recalls/manufacturer-communications evidence, not as proof of successful repair.",
     "No DTC maps directly to mandatory part replacement."
   ],
-  "latest_sha": "aa815add1536042d1ebb769419681abecbd2b7d6",
   "validation": {
     "performed_on": "2026-10-05",
     "result": "PASS",
@@ -45,5 +44,7 @@
       "service links"
     ],
     "errors": 0
-  }
+  },
+  "validated_sha": "aa815add1536042d1ebb769419681abecbd2b7d6",
+  "documentation_sha": "656eb30febf17bff40a2091eebe704bfc5d05007"
 }
