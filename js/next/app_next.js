@@ -34,6 +34,10 @@
   // Route pages are resolved from window only at render/mount time. Heavy modules
   // can therefore be absent during atomic boot and loaded by route_asset_loader.js.
   const PAGE_BINDINGS = Object.freeze({
+    masterQr:{global:'KaretaScannerPages',render:'render',mount:'mount'},
+    scanner:{global:'KaretaScannerPages',render:'render',mount:'mount'},
+    scannerQr:{global:'KaretaScannerPages',render:'render',mount:'mount'},
+    scannerDocument:{global:'KaretaScannerPages',render:'render',mount:'mount'},
     home:{global:'KaretaCorePages',render:'renderHome',mount:'mountHome'},
     platform:{global:'KaretaPlatformPages',render:'renderPlatform',mount:'mountPlatform'},
     corePlatform:{global:'KaretaCorePlatformPages',render:'renderCorePlatform',mount:'mountCorePlatform'},
