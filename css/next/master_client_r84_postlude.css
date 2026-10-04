@@ -384,3 +384,107 @@ html[data-user-role="master"] .k-master-empty-r84__actions .k-btn{
     justify-content:center!important;
   }
 }
+
+/* 2026-10-04 — EXCHANGE CARD DENSITY FIX.
+   Keep the Master's exchange list readable at every viewport:
+   phone = one card, tablet/desktop = two substantial cards, never a cramped 3-up form. */
+html[data-user-role="master"] #k-page-outlet .k-exchange-r71{
+  width:100%!important;
+  max-width:var(--k-master-content-max,1480px)!important;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r71-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71{
+  min-width:0!important;
+  max-width:100%!important;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-r71-facts,
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-r71-details{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px 0;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-r71-facts>div:nth-child(odd){
+  padding-left:0;
+  border-left:0;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-r71-facts>div:nth-child(even){
+  border-left:1px solid var(--k-master-line,#edf0f2);
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-quick-response--r71{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:end;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-r71-response-title,
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-quick-response--r71>.k-btn{
+  grid-column:1/-1!important;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-quick-response--r71 label{
+  min-width:0;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-quick-response--r71 label:nth-of-type(3){
+  grid-column:1/-1;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-quick-response--r71 input{
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 :is(
+  .k-exchange-card__headline,
+  .k-exchange-r71-subject>div,
+  .k-exchange-card__details--r71 summary>span
+){min-width:0}
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-r71-subject h2,
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-r71-subject p,
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-card__headline small{
+  overflow-wrap:anywhere;
+}
+@media(max-width:767px){
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71{
+    border:0!important;
+    border-radius:var(--k-radius-card)!important;
+    box-shadow:var(--k-shadow-card)!important;
+  }
+}
+@media(max-width:560px){
+  html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-quick-response--r71{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 .k-exchange-quick-response--r71 label:nth-of-type(3){
+    grid-column:auto;
+  }
+}
+@media(min-width:768px) and (max-width:1199px){
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:14px!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71 :is(
+    .k-exchange-card__head,
+    .k-exchange-r71-subject,
+    .k-exchange-quick-response--r71,
+    .k-exchange-r71-card-footer,
+    .k-exchange-r71-actions
+  ){
+    padding-left:13px;
+    padding-right:13px;
+  }
+}
+@media(min-width:1200px){
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:16px!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar{
+    position:sticky;
+    top:8px;
+    z-index:var(--k-z-sticky);
+    backdrop-filter:blur(14px);
+    background:rgba(255,255,255,.96)!important;
+  }
+}
+
