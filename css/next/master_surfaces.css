@@ -1,5 +1,5 @@
 /* R188.5.5.6.84.102 — unified Master Surface Contract */
-html[data-user-role="master"],html[data-navigation-context="master"]{--k-master-content-max:1420px;--k-master-page-x:clamp(14px,2.2vw,34px);--k-master-page-y:18px;--k-master-section-gap:16px;--k-master-control-radius:12px;--k-master-small-card-radius:16px;--k-master-card-radius:20px;--k-master-dialog-radius:24px;--k-master-line:#e5e7eb;--k-master-surface:#fff;--k-master-page-bg:#f5f6f8;--k-master-shadow:0 4px 16px rgba(15,23,42,.045)}
+html[data-user-role="master"],html[data-navigation-context="master"]{--k-master-page-y:18px;--k-master-section-gap:16px;--k-master-shadow:0 4px 16px rgba(15,23,42,.045)}
 html[data-user-role="master"] #k-page-outlet{background:var(--k-master-page-bg)}
 html[data-user-role="master"] .k-master-surface-page{width:min(100%,var(--k-master-content-max));max-width:var(--k-master-content-max);margin:0 auto;padding:var(--k-master-page-y) var(--k-master-page-x) calc(var(--k-mobile-nav-live-height,var(--k-mobile-nav-h,72px)) + 28px);box-sizing:border-box}
 .k-master-surface-icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -26,7 +26,7 @@ html[data-user-role="master"] .k-master-workplace{gap:18px}.k-master-workplace-a
 .k-master-workspace-panel[hidden]{display:none!important}
 @media (min-width:1100px){
   .k-master-desktop-workspace-nav{
-    display:flex;align-items:center;gap:6px;position:sticky;top:8px;z-index:14;
+    display:flex;align-items:center;gap:6px;position:sticky;top:8px;z-index:var(--k-z-sticky);
     width:max-content;max-width:100%;margin:0 0 16px;padding:6px;
     border:1px solid #e7e9ed;border-radius:16px;background:rgba(255,255,255,.94);
     box-shadow:0 8px 28px rgba(15,23,42,.06);backdrop-filter:blur(14px)
@@ -72,11 +72,11 @@ html[data-user-role="master"] .k-master-workplace{gap:18px}.k-master-workplace-a
    Presentation-only responsive shell: phone <=767, tablet 768–1199, desktop >=1200.
    Business logic, route ownership and data attributes are intentionally untouched. */
 html[data-user-role="master"],html[data-navigation-context="master"]{
-  --k-master-content-max:1480px;
-  --k-master-canon-gutter:clamp(16px,2vw,32px);
-  --k-master-canon-card-radius:18px;
-  --k-master-canon-control-radius:14px;
-  --k-master-canon-mobile-shadow:0 9px 28px rgba(15,23,42,.08);
+  --k-master-content-max:var(--k-layout-content-max);
+  --k-master-canon-gutter:var(--k-layout-page-gutter);
+  --k-master-canon-card-radius:var(--k-radius-card);
+  --k-master-canon-control-radius:var(--k-radius-control);
+  --k-master-canon-mobile-shadow:var(--k-shadow-card);
 }
 html[data-user-role="master"] #k-page-outlet{
   min-width:0;
