@@ -18,7 +18,10 @@
     "android": "UNCHANGED",
     "production_db": "UNCHANGED",
     "priority_bilingual_batch_2": "IMPLEMENTED",
-    "manufacturer_priority": "IMPLEMENTED"
+    "manufacturer_priority": "IMPLEMENTED",
+    "manufacturer_model_priority": "IMPLEMENTED",
+    "manufacturer_source_map_tier_a": "IMPLEMENTED",
+    "market_identity_contract": "IMPLEMENTED"
   },
   "counts": {
     "canonical_dtc_seed": 45,
@@ -31,7 +34,7 @@
     "causes": 27,
     "checks": 22,
     "repair_actions": 18,
-    "sources": 15
+    "sources": 24
   },
   "validation": {
     "result": "PASS",
@@ -47,9 +50,11 @@
     }
   },
   "next": [
-    "Continue RU translation/promotion in bounded priority batches from the verified 9,665-record staging queue.",
-    "Add manufacturer-specific OEM/TSB evidence beginning with Tier A Kazakhstan makes.",
-    "Keep runtime integration separate until bilingual content and expert review gates are ready."
+    "Create manufacturer evidence records only after exact market/platform applicability is resolved.",
+    "Start Tier A with Hyundai Tucson and Kia Sportage where official US/KR evidence can be cross-checked, while keeping Kazakhstan applicability explicit.",
+    "For Chevrolet Cobalt, resolve Kazakhstan platform/VIN identity before using GM/NHTSA model-name matches.",
+    "Find model-specific official Changan/Chery technical campaign sources; keep gaps explicit.",
+    "Continue bounded RU promotion from the verified OBDex staging queue."
   ],
   "bulk_import_evidence": {
     "verified_commit": "c1246c771401f84885e1a63b7d4c71880d439d7e",

@@ -152,6 +152,96 @@
       "license": "government publication; reference/citation",
       "use": "national fleet-size context; does not provide make ranking in the cited release",
       "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "kazakhstan_auto_union_models_2026_h1",
+      "name": "Қазақстанның Автокөлік Одағы — top models, H1 2026",
+      "type": "market_sales_statistics",
+      "authority": "INDUSTRY_ASSOCIATION",
+      "url": "https://kao.kz/ru/novosti/93/",
+      "license": "reference/citation only",
+      "use": "Kazakhstan model-level research priority; new-sales proxy only",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "hyundai_techinfo_us",
+      "name": "Hyundai Service Website / Hyundaitechinfo",
+      "type": "oem_service_information",
+      "authority": "OEM",
+      "url": "https://www.hyundaitechinfo.com/",
+      "license": "subscription/copyrighted OEM material; metadata/reference only",
+      "use": "shop manuals, electrical troubleshooting manuals and TSBs for Hyundai vehicles sold in the US; requires exact market applicability",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "kia_official_recalls",
+      "name": "Kia official recalls",
+      "type": "oem_recall_information",
+      "authority": "OEM",
+      "url": "https://owners.kia.com/content/owners/en/recalls.html",
+      "license": "OEM website; reference only",
+      "use": "VIN/model recall evidence where market applicability matches",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "kia_korea_repair_campaigns",
+      "name": "Kia Korea recalls and free repair campaigns",
+      "type": "oem_recall_campaign_information",
+      "authority": "OEM",
+      "url": "https://update.kia.com/KR/KO/recall",
+      "license": "OEM website; reference only",
+      "use": "Korean-market recall/free-repair campaign evidence; never assume Kazakhstan applicability",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "gm_service_information",
+      "name": "General Motors Service Information",
+      "type": "oem_service_information",
+      "authority": "OEM",
+      "url": "https://gsitlc.ext.gm.com/userguides/GMSi_User_Guide.pdf",
+      "license": "copyrighted OEM service information; metadata/reference only",
+      "use": "service manuals, DTC lists, diagnostic starting points and bulletins for applicable GM vehicles",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "gm_official_support",
+      "name": "General Motors official vehicle support",
+      "type": "oem_owner_support",
+      "authority": "OEM",
+      "url": "https://experience.gm.com/support/landing",
+      "license": "OEM website; reference only",
+      "use": "recalls, manuals, service support and market identity cross-check",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "changan_global_recall_process",
+      "name": "Changan global recall management documentation",
+      "type": "oem_quality_recall_information",
+      "authority": "OEM",
+      "url": "https://www.globalchangan.com/newsroom/changan-automobile-wins-honor-for-product-safety-and-recall-management-system-innovation-at-the-6th-china-quality-conference.html",
+      "license": "OEM publication; reference only",
+      "use": "confirms manufacturer recall-management process; not a vehicle-specific bulletin feed",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "chery_official_service",
+      "name": "Chery official after-sales service",
+      "type": "oem_service_information",
+      "authority": "OEM",
+      "url": "https://www.chery.cn/m/others/service/",
+      "license": "OEM website; reference only",
+      "use": "official after-sales/warranty/service channel; vehicle-specific repair data requires separate applicable source",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "chery_global_models",
+      "name": "Chery International model catalogue",
+      "type": "oem_vehicle_catalog",
+      "authority": "OEM",
+      "url": "https://www.cheryinternational.com/",
+      "license": "OEM website; reference only",
+      "use": "model identity and global naming cross-check",
+      "status": "REFERENCE_ONLY"
     }
   ]
 }

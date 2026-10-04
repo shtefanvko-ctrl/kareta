@@ -94,5 +94,86 @@
     "passenger_cars_thousand": 5105.4,
     "as_of": "2026-09-01"
   },
-  "next_rule": "For each make, collect OEM/official TSB or manufacturer communication applicability first; only then add manufacturer-specific DTC/repair guidance."
+  "next_rule": "For each make, collect OEM/official TSB or manufacturer communication applicability first; only then add manufacturer-specific DTC/repair guidance.",
+  "model_basis": {
+    "metric": "official_dealer_new_vehicle_sales_h1_2026",
+    "source_id": "kazakhstan_auto_union_models_2026_h1",
+    "published_on": "2026-07-15",
+    "limitation": {
+      "ru": "Рейтинг моделей основан на продажах новых автомобилей за I полугодие 2026 года и используется только для очередности исследования.",
+      "en": "The model ranking is based on new-vehicle sales in H1 2026 and is used only to prioritize research."
+    }
+  },
+  "model_ranking": [
+    {
+      "rank": 1,
+      "make": "Chevrolet",
+      "model": "Cobalt",
+      "units": 16370,
+      "tier": "A"
+    },
+    {
+      "rank": 2,
+      "make": "Hyundai",
+      "model": "Tucson",
+      "units": 8601,
+      "tier": "A"
+    },
+    {
+      "rank": 3,
+      "make": "Kia",
+      "model": "Sportage",
+      "units": 5200,
+      "tier": "A"
+    },
+    {
+      "rank": 4,
+      "make": "Changan",
+      "model": "CS55 Plus",
+      "units": 4017,
+      "tier": "A"
+    },
+    {
+      "rank": 5,
+      "make": "Hyundai",
+      "model": "Mufasa",
+      "units": 3119,
+      "tier": "A"
+    },
+    {
+      "rank": 6,
+      "make": "Haval",
+      "model": "Jolion",
+      "units": 2836,
+      "tier": "B"
+    },
+    {
+      "rank": 7,
+      "make": "Changan",
+      "model": "CS35 Max",
+      "units": 2706,
+      "tier": "A"
+    },
+    {
+      "rank": 8,
+      "make": "Chery",
+      "model": "Tiggo 2",
+      "units": 2585,
+      "tier": "A"
+    },
+    {
+      "rank": 9,
+      "make": "Haval",
+      "model": "M6",
+      "units": 2396,
+      "tier": "B"
+    },
+    {
+      "rank": 10,
+      "make": "Chery",
+      "model": "Tiggo 7",
+      "units": 2393,
+      "tier": "A"
+    }
+  ]
 }
