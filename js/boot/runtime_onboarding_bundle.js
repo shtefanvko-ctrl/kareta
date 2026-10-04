@@ -2005,7 +2005,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   function welcomeStepHtml(){
     return `<section id="onb2-step-welcome" class="onb2-step active" data-step="welcome">
       <div class="onb2-welcome-card onb2-flow-shell">
-        <div class="onb2-flow-brand"><img class="onb2-welcome-logo" src="assets/onboarding/kareta_logo_full.png" alt="KARETA.KZ Автосервис"></div>
+        <div class="onb2-flow-brand"><img class="onb2-welcome-logo" src="assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ Автосервис"></div>
         ${progressHtml('welcome')}
         <div class="onb2-welcome-copy">
           <h1>Добро пожаловать!</h1>
