@@ -108,7 +108,9 @@ jobs:
           fi
 
       - name: Current API happy and negative paths
-        run: node tools/test_api_contract_current.js
+        run: |
+          node tools/test_api_contract_current.js
+          node tools/test_transport_observability_phase1.js
 
       - name: OBD remote control plane contract
         run: node tools/test_obd_remote_control_plane.js
