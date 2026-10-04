@@ -2,8 +2,8 @@
   "schema_version": 2,
   "recorded_on": "2026-10-05",
   "repository": "shtefanvko-ctrl/kareta",
-  "baseline_main_sha": "582b8f94baba60c914cb82e598ad32a806a58117",
-  "baseline_asset_version": "188.5.5.6.84.176",
+  "baseline_main_sha": "c43a1c21e1414bc2fc12c69b4b350613d64f0480",
+  "baseline_asset_version": "188.5.5.6.84.177",
   "active_integration": {
     "pr": 90,
     "branch": "feat/analysis-m2-service-advisories-20261005",
@@ -13,7 +13,9 @@
     "application_gate_run": 37238482404,
     "php_syntax_run": 37238482379,
     "geo_run": 37238482459,
-    "home_scanner_run": 37238482538
+    "home_scanner_run": 37238482538,
+    "last_main_recheck": "c43a1c21e1414bc2fc12c69b4b350613d64f0480",
+    "main_delta_overlap": "NONE_WITH_M2"
   },
   "state": {
     "desired": "M0_M1_M2_SAFE_FOUNDATION_THEN_M3_SHADOW_MATCHING",
