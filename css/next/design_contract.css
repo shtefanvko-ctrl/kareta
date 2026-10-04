@@ -1,0 +1,51 @@
+/* KARETA Design Contract v1 — shared tokens and the canonical layer scale.
+   Role/page files own geometry; generated bundles never own source decisions. */
+:root{
+  --k-radius-xs:5px;
+  --k-radius-control:10px;
+  --k-radius-card:18px;
+  --k-radius-dialog:24px;
+
+  --k-space-1:4px;
+  --k-space-2:8px;
+  --k-space-3:12px;
+  --k-space-4:16px;
+  --k-space-5:20px;
+  --k-space-6:24px;
+  --k-space-8:32px;
+
+  --k-layout-content-max:1480px;
+  --k-layout-page-gutter:clamp(16px,2vw,32px);
+
+  --k-surface-page:#f5f6f8;
+  --k-surface-card:#fff;
+  --k-line:#e4e7ec;
+  --k-text:#111827;
+  --k-muted:#667085;
+  --k-shadow-card:0 9px 28px rgba(15,23,42,.08);
+
+  --k-z-base:0;
+  --k-z-sticky:20;
+  --k-z-shell:40;
+  --k-z-nav:50;
+  --k-z-fab:60;
+  --k-z-overlay:80;
+  --k-z-modal:100;
+  --k-z-toast:120;
+  --k-z-debug:200;
+}
+
+html[data-user-role="master"],
+html[data-navigation-context="master"]{
+  --k-master-content-max:var(--k-layout-content-max);
+  --k-master-page-x:var(--k-layout-page-gutter);
+  --k-master-control-radius:var(--k-radius-control);
+  --k-master-small-card-radius:var(--k-radius-card);
+  --k-master-card-radius:var(--k-radius-card);
+  --k-master-dialog-radius:var(--k-radius-dialog);
+  --k-master-line:var(--k-line);
+  --k-master-surface:var(--k-surface-card);
+  --k-master-page-bg:var(--k-surface-page);
+  --k-master-text:var(--k-text);
+  --k-master-muted:var(--k-muted);
+}
