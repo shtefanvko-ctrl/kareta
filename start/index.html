@@ -1,255 +1,385 @@
 <!doctype html>
-<html lang="ru" data-theme="dark">
+<html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0d0f12">
-  <meta name="description" content="KARETA.KZ — единая автомобильная платформа: сервис, мастера, СТО, запчасти, заявки и автомобильное сообщество.">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="KARETA.KZ — автомобильная платформа: мастера, СТО, заявки, запчасти, гараж и сообщество в одном месте.">
   <meta name="robots" content="index,follow">
+  <meta property="og:title" content="KARETA.KZ — всё для автомобиля в одном месте">
+  <meta property="og:description" content="Найдите мастера или СТО, создайте заявку, подберите запчасти и управляйте автомобилем в KARETA.KZ.">
+  <meta property="og:type" content="website">
   <title>KARETA.KZ — всё для автомобиля в одном месте</title>
   <link rel="icon" href="../assets/onboarding/kareta_logo_icon.png">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <div class="site-shell">
-    <header class="topbar">
+  <a class="skip-link" href="#main" data-i18n="skip">Перейти к содержимому</a>
+
+  <header class="site-header" data-header>
+    <div class="container header-row">
       <a class="brand" href="#top" aria-label="KARETA.KZ">
         <img src="../assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ">
       </a>
 
-      <nav class="topnav" aria-label="Основная навигация">
+      <nav class="desktop-nav" aria-label="Основная навигация">
         <a href="#about" data-i18n="navAbout">О проекте</a>
+        <a href="#how" data-i18n="navHow">Как работает</a>
         <a href="#features" data-i18n="navFeatures">Возможности</a>
         <a href="#download" data-i18n="navDownload">Скачать</a>
       </nav>
 
-      <div class="topbar-actions">
-        <div class="lang-switch" aria-label="Язык">
-          <button type="button" data-lang="ru" class="is-active">RU</button>
-          <button type="button" data-lang="kk">KK</button>
-          <button type="button" data-lang="en">EN</button>
+      <div class="header-actions">
+        <div class="language" aria-label="Язык">
+          <button type="button" data-lang="ru" class="is-active" aria-pressed="true">RU</button>
+          <button type="button" data-lang="kk" aria-pressed="false">KK</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
         </div>
-        <a class="button button--compact button--ghost" href="../" data-web-link data-i18n="openWeb">Веб-версия</a>
+        <a class="btn btn--dark btn--small" href="../" data-web-link>
+          <span data-i18n="openWeb">Открыть KARETA</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
+        </a>
+        <button class="menu-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" data-menu-toggle>
+          <span></span><span></span>
+        </button>
       </div>
-    </header>
+    </div>
 
-    <main id="top">
-      <section class="hero section">
+    <div class="mobile-menu" data-mobile-menu hidden>
+      <nav>
+        <a href="#about" data-i18n="navAbout">О проекте</a>
+        <a href="#how" data-i18n="navHow">Как работает</a>
+        <a href="#features" data-i18n="navFeatures">Возможности</a>
+        <a href="#download" data-i18n="navDownload">Скачать</a>
+        <a class="btn btn--dark" href="../" data-web-link data-i18n="openWeb">Открыть KARETA</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="container hero-grid">
         <div class="hero-copy">
           <div class="eyebrow">
-            <span class="eyebrow-dot"></span>
-            <span data-i18n="eyebrow">Автомобильная платформа нового поколения</span>
+            <span class="eyebrow-mark" aria-hidden="true"></span>
+            <span data-i18n="eyebrow">Автомобильная платформа Казахстана</span>
           </div>
 
           <h1>
-            <span data-i18n="heroTitle1">Всё для автомобиля</span>
-            <span class="accent" data-i18n="heroTitle2">в одном месте</span>
+            <span data-i18n="heroTitleA">Всё для автомобиля.</span>
+            <span class="hero-accent" data-i18n="heroTitleB">В одном приложении.</span>
           </h1>
 
           <p class="hero-lead" data-i18n="heroLead">
-            Найдите мастера или СТО, создайте заявку, подберите запчасти, общайтесь с автомобильным сообществом и управляйте своим авто из одного приложения.
+            Мастера, СТО, заявки, запчасти, гараж и автомобильное сообщество — в одной понятной системе.
           </p>
 
-          <div class="hero-actions" id="download">
-            <a class="store-button store-button--primary" href="#" data-download="android" aria-disabled="true">
-              <span class="store-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M7.5 7.2 5.6 4.1M16.5 7.2l1.9-3.1M6.4 8.2h11.2A1.4 1.4 0 0 1 19 9.6v7.8a1.4 1.4 0 0 1-1.4 1.4H6.4A1.4 1.4 0 0 1 5 17.4V9.6a1.4 1.4 0 0 1 1.4-1.4ZM8.1 5.6h7.8M8.2 11.3v.1M15.8 11.3v.1M8 18.8v2M16 18.8v2"/></svg>
-              </span>
-              <span>
-                <small data-i18n="downloadFor">Скачать для</small>
-                <strong>Android</strong>
-              </span>
-              <em data-status="android" data-i18n="soon">Скоро</em>
+          <div class="hero-actions">
+            <a class="btn btn--orange btn--large" href="../" data-web-link>
+              <span data-i18n="heroPrimary">Открыть веб-версию</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
             </a>
-
-            <a class="store-button" href="#" data-download="ios" aria-disabled="true">
-              <span class="store-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M15.7 4.1c-.8.1-1.8.6-2.3 1.2-.5.6-1 1.5-.8 2.4.9.1 1.8-.4 2.4-1 .6-.7 1-1.6.7-2.6ZM18.9 16.2c-.4.9-.9 1.8-1.6 2.8-.9 1.3-1.9 2.6-3.4 2.6-1.3 0-1.7-.8-3.2-.8s-2 .8-3.2.8c-1.4 0-2.5-1.4-3.4-2.7C1.6 15.4 1.3 11.3 3 8.7A4.8 4.8 0 0 1 7.1 6.3c1.3 0 2.5.9 3.2.9.7 0 2.1-1.1 3.6-.9.6 0 2.5.2 3.8 2.1-3.3 1.8-2.8 6.4 1.2 7.8Z"/></svg>
-              </span>
-              <span>
-                <small data-i18n="downloadFor">Скачать для</small>
-                <strong>iPhone / iOS</strong>
-              </span>
-              <em data-status="ios" data-i18n="soon">Скоро</em>
-            </a>
-
-            <a class="store-button" href="../" data-web-link>
-              <span class="store-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21c-2.3-2.4-3.5-5.4-3.5-9S9.7 5.4 12 3Z"/></svg>
-              </span>
-              <span>
-                <small data-i18n="openInBrowser">Открыть в браузере</small>
-                <strong data-i18n="webVersion">Веб-версия</strong>
-              </span>
-              <em class="is-ready" data-i18n="available">Доступно</em>
+            <a class="btn btn--light btn--large" href="#download">
+              <span data-i18n="heroSecondary">Скачать приложение</span>
             </a>
           </div>
 
-          <div class="hero-meta">
-            <span><i>✓</i><span data-i18n="meta1">Клиенты, мастера и СТО</span></span>
-            <span><i>✓</i><span data-i18n="meta2">Один аккаунт — разные роли</span></span>
-            <span><i>✓</i><span data-i18n="meta3">Работает на телефоне и ПК</span></span>
+          <div class="hero-proof">
+            <span><i aria-hidden="true">✓</i><b data-i18n="proof1">Клиент</b></span>
+            <span><i aria-hidden="true">✓</i><b data-i18n="proof2">Мастер</b></span>
+            <span><i aria-hidden="true">✓</i><b data-i18n="proof3">СТО</b></span>
+            <span><i aria-hidden="true">✓</i><b data-i18n="proof4">Запчасти</b></span>
           </div>
         </div>
 
-        <div class="hero-visual" aria-label="Интерфейс KARETA.KZ">
-          <div class="visual-glow"></div>
-          <div class="phone">
-            <div class="phone-top"></div>
-            <div class="phone-screen">
-              <div class="phone-brand">
-                <img src="../assets/onboarding/kareta_logo_icon.png" alt="">
-                <span>KARETA.KZ</span>
+        <div class="hero-stage" aria-label="KARETA.KZ">
+          <div class="city-card">
+            <img class="city-bg" src="../assets/onboarding/welcome_city_bg_orange.png" alt="" aria-hidden="true">
+            <div class="city-overlay"></div>
+            <div class="city-top">
+              <span class="live-badge"><i></i><span data-i18n="cityLive">Ваш город</span></span>
+              <span class="city-place" data-i18n="cityExample">Усть-Каменогорск</span>
+            </div>
+            <img class="hero-car" src="../assets/onboarding/welcome_car.png" alt="" aria-hidden="true">
+            <div class="hero-search-card">
+              <span class="search-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+              </span>
+              <div>
+                <small data-i18n="searchHint">Найти рядом</small>
+                <strong data-i18n="searchText">Мастера, СТО и услуги</strong>
               </div>
-              <p data-i18n="phoneHello">Ваш автомобиль. Ваш город. Ваш сервис.</p>
-              <img class="phone-car" src="../assets/onboarding/welcome_car.png" alt="" aria-hidden="true">
-              <div class="phone-search">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
-                <span data-i18n="phoneSearch">Что нужно автомобилю?</span>
-              </div>
-              <div class="phone-grid">
-                <div><span>🔧</span><small data-i18n="service">Сервис</small></div>
-                <div><span>👨‍🔧</span><small data-i18n="masters">Мастера</small></div>
-                <div><span>🧩</span><small data-i18n="parts">Запчасти</small></div>
-                <div><span>💬</span><small data-i18n="community">Сообщество</small></div>
-              </div>
-              <div class="phone-card">
-                <span class="phone-card-dot"></span>
-                <div><strong data-i18n="nearby">Рядом с вами</strong><small data-i18n="nearbyText">СТО и мастера вашего города</small></div>
-                <b>›</b>
-              </div>
+              <span class="search-arrow">→</span>
             </div>
           </div>
-          <div class="float-card float-card--one"><span>📍</span><strong data-i18n="geo">Поиск рядом</strong></div>
-          <div class="float-card float-card--two"><span>⚡</span><strong data-i18n="fastOrder">Быстрая заявка</strong></div>
-          <div class="float-card float-card--three"><span>⭐</span><strong data-i18n="reviews">Отзывы и рейтинг</strong></div>
-        </div>
-      </section>
 
-      <section class="platform-strip" aria-label="Платформа">
-        <span>KARETA.KZ</span>
-        <i></i>
-        <strong data-i18n="strip1">Сервис</strong>
-        <i></i>
-        <strong data-i18n="strip2">Мастера</strong>
-        <i></i>
-        <strong data-i18n="strip3">СТО</strong>
-        <i></i>
-        <strong data-i18n="strip4">Запчасти</strong>
-        <i></i>
-        <strong data-i18n="strip5">Сообщество</strong>
-      </section>
-
-      <section class="section section--about" id="about">
-        <div class="section-heading">
-          <span class="section-kicker" data-i18n="aboutKicker">О проекте</span>
-          <h2 data-i18n="aboutTitle">KARETA объединяет автомобильную экосистему в одной платформе</h2>
-          <p data-i18n="aboutLead">Вместо десятков чатов, звонков и отдельных сервисов — понятный путь от проблемы с автомобилем до готового результата.</p>
-        </div>
-
-        <div class="role-grid">
-          <article class="role-card">
-            <span class="role-icon">🚗</span>
-            <h3 data-i18n="roleClientTitle">Для автовладельца</h3>
-            <p data-i18n="roleClientText">Заявки на ремонт, поиск мастеров и СТО, запчасти, гараж, история обслуживания и общение.</p>
-            <a href="../" data-web-link><span data-i18n="tryWeb">Открыть платформу</span> <b>→</b></a>
-          </article>
-
-          <article class="role-card">
-            <span class="role-icon">🔧</span>
-            <h3 data-i18n="roleMasterTitle">Для мастера</h3>
-            <p data-i18n="roleMasterText">Биржа заказов, профиль специалиста, услуги, график, рабочие заявки и собственная аудитория.</p>
-            <a href="../" data-web-link><span data-i18n="tryWeb">Открыть платформу</span> <b>→</b></a>
-          </article>
-
-          <article class="role-card">
-            <span class="role-icon">🏢</span>
-            <h3 data-i18n="roleStoTitle">Для СТО и бизнеса</h3>
-            <p data-i18n="roleStoText">Команда, рабочие посты, расписание, заказы, точки на карте, каталог услуг и управление загрузкой.</p>
-            <a href="../" data-web-link><span data-i18n="tryWeb">Открыть платформу</span> <b>→</b></a>
-          </article>
-        </div>
-      </section>
-
-      <section class="section" id="features">
-        <div class="section-heading section-heading--row">
-          <div>
-            <span class="section-kicker" data-i18n="featuresKicker">Возможности</span>
-            <h2 data-i18n="featuresTitle">От поиска мастера до истории автомобиля</h2>
+          <div class="floating-card floating-card--rating">
+            <span class="floating-icon">★</span>
+            <div>
+              <small data-i18n="floatingRatingLabel">Выбирайте по</small>
+              <strong data-i18n="floatingRating">рейтингу и отзывам</strong>
+            </div>
           </div>
-          <p data-i18n="featuresLead">Функции KARETA связаны между собой: город, автомобиль, заявка, исполнитель, запчасти и результат остаются в одном контексте.</p>
+
+          <div class="floating-card floating-card--order">
+            <span class="floating-icon floating-icon--orange">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a2 2 0 0 1 2 2v14H5V6a2 2 0 0 1 2-2Z"/><path d="M8 9h8M8 13h5"/></svg>
+            </span>
+            <div>
+              <small data-i18n="floatingOrderLabel">Одна заявка</small>
+              <strong data-i18n="floatingOrder">несколько откликов</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container trust-row">
+        <div class="trust-label" data-i18n="trustLabel">Одна платформа для всей автомобильной задачи</div>
+        <div class="trust-items">
+          <span data-i18n="trust1">Диагностика</span>
+          <span data-i18n="trust2">Ремонт</span>
+          <span data-i18n="trust3">Запчасти</span>
+          <span data-i18n="trust4">История авто</span>
+          <span data-i18n="trust5">Сообщество</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--soft" id="about">
+      <div class="container">
+        <div class="section-head section-head--split">
+          <div>
+            <span class="kicker" data-i18n="aboutKicker">О проекте</span>
+            <h2 data-i18n="aboutTitle">KARETA связывает владельца автомобиля, мастера, СТО и продавца запчастей.</h2>
+          </div>
+          <p data-i18n="aboutLead">
+            Вместо отдельных чатов, звонков и записей — единый путь: автомобиль, город, заявка, исполнитель и результат остаются связанными.
+          </p>
+        </div>
+
+        <div class="audience-grid">
+          <article class="audience-card">
+            <div class="audience-top">
+              <span class="audience-icon">01</span>
+              <span class="audience-role" data-i18n="audienceClientTag">Автовладелец</span>
+            </div>
+            <h3 data-i18n="audienceClientTitle">Найти помощь без лишнего поиска</h3>
+            <p data-i18n="audienceClientText">Создавайте заявки, находите мастеров и СТО, храните автомобиль в гараже и возвращайтесь к истории обслуживания.</p>
+            <a href="../" data-web-link><span data-i18n="openPlatform">Открыть платформу</span><b>→</b></a>
+          </article>
+
+          <article class="audience-card audience-card--dark">
+            <div class="audience-top">
+              <span class="audience-icon">02</span>
+              <span class="audience-role" data-i18n="audienceMasterTag">Мастер</span>
+            </div>
+            <h3 data-i18n="audienceMasterTitle">Получать заказы и вести работу</h3>
+            <p data-i18n="audienceMasterText">Биржа заявок, услуги, профиль, график, заказы и сообщения собраны в одном рабочем контуре.</p>
+            <a href="../" data-web-link><span data-i18n="openPlatform">Открыть платформу</span><b>→</b></a>
+          </article>
+
+          <article class="audience-card">
+            <div class="audience-top">
+              <span class="audience-icon">03</span>
+              <span class="audience-role" data-i18n="audienceBusinessTag">СТО и бизнес</span>
+            </div>
+            <h3 data-i18n="audienceBusinessTitle">Управлять загрузкой и точками</h3>
+            <p data-i18n="audienceBusinessText">Адреса, рабочие посты, расписание, команда, каталог услуг и клиентские заявки — в едином пространстве.</p>
+            <a href="../" data-web-link><span data-i18n="openPlatform">Открыть платформу</span><b>→</b></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="container">
+        <div class="section-head section-head--center">
+          <span class="kicker" data-i18n="howKicker">Как работает</span>
+          <h2 data-i18n="howTitle">От проблемы с автомобилем до результата — по одной цепочке.</h2>
+          <p data-i18n="howLead">KARETA сохраняет контекст на каждом шаге, поэтому пользователю не приходится заново объяснять одну и ту же задачу.</p>
+        </div>
+
+        <div class="flow">
+          <article class="flow-step">
+            <span class="flow-number">01</span>
+            <div class="flow-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.3 6-11a6 6 0 1 0-12 0c0 5.7 6 11 6 11Z"/><circle cx="12" cy="10" r="2"/></svg>
+            </div>
+            <h3 data-i18n="flow1Title">Выберите город и автомобиль</h3>
+            <p data-i18n="flow1Text">Платформа работает в контексте вашего города и данных автомобиля.</p>
+          </article>
+          <span class="flow-line" aria-hidden="true"></span>
+          <article class="flow-step">
+            <span class="flow-number">02</span>
+            <div class="flow-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a2 2 0 0 1 2 2v14H5V6a2 2 0 0 1 2-2Z"/><path d="M8 9h8M8 13h5"/></svg>
+            </div>
+            <h3 data-i18n="flow2Title">Создайте заявку</h3>
+            <p data-i18n="flow2Text">Опишите задачу, добавьте фото и укажите нужные условия.</p>
+          </article>
+          <span class="flow-line" aria-hidden="true"></span>
+          <article class="flow-step">
+            <span class="flow-number">03</span>
+            <div class="flow-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18v-5a8 8 0 0 1 16 0v5"/><path d="M7 18h10M9 8h6"/></svg>
+            </div>
+            <h3 data-i18n="flow3Title">Выберите исполнителя</h3>
+            <p data-i18n="flow3Text">Сравните мастеров и СТО по профилю, условиям, рейтингу и отзывам.</p>
+          </article>
+          <span class="flow-line" aria-hidden="true"></span>
+          <article class="flow-step">
+            <span class="flow-number">04</span>
+            <div class="flow-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+            </div>
+            <h3 data-i18n="flow4Title">Получите результат</h3>
+            <p data-i18n="flow4Text">История работы остаётся привязанной к заявке и автомобилю.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--dark" id="features">
+      <div class="container">
+        <div class="section-head section-head--split section-head--inverse">
+          <div>
+            <span class="kicker kicker--inverse" data-i18n="featuresKicker">Возможности</span>
+            <h2 data-i18n="featuresTitle">Один интерфейс — разные автомобильные сценарии.</h2>
+          </div>
+          <p data-i18n="featuresLead">KARETA развивается как единая платформа, где сервисные сценарии не существуют отдельно друг от друга.</p>
         </div>
 
         <div class="feature-grid">
-          <article class="feature-card feature-card--wide">
-            <div class="feature-copy">
-              <span class="feature-number">01</span>
-              <h3 data-i18n="f1Title">Мастера и СТО рядом</h3>
-              <p data-i18n="f1Text">Поиск по городу, специализации, статусу и расстоянию. Смотрите профиль, услуги, цены и отзывы до обращения.</p>
+          <article class="feature feature--accent">
+            <span class="feature-chip" data-i18n="featureGeoChip">Гео</span>
+            <h3 data-i18n="featureGeoTitle">Мастера и СТО рядом</h3>
+            <p data-i18n="featureGeoText">Город, адреса, точки на карте и поиск ближайших исполнителей.</p>
+            <div class="feature-visual feature-map" aria-hidden="true">
+              <i class="map-road map-road--1"></i>
+              <i class="map-road map-road--2"></i>
+              <i class="map-road map-road--3"></i>
+              <b class="map-pin map-pin--1">K</b>
+              <b class="map-pin map-pin--2">K</b>
+              <b class="map-pin map-pin--3">K</b>
             </div>
-            <div class="mini-map" aria-hidden="true">
-              <span class="road road--a"></span><span class="road road--b"></span><span class="road road--c"></span>
-              <b class="pin pin--a">K</b><b class="pin pin--b">K</b><b class="pin pin--c">K</b>
-              <div class="map-label"><i></i><span data-i18n="cityLabel">Ваш город</span></div>
+          </article>
+
+          <article class="feature">
+            <span class="feature-chip" data-i18n="featureRequestChip">Заявки</span>
+            <h3 data-i18n="featureRequestTitle">Биржа и рабочий процесс</h3>
+            <p data-i18n="featureRequestText">Создание заявки, отклики, принятие в работу и последовательные статусы выполнения.</p>
+            <div class="request-preview" aria-hidden="true">
+              <div><span></span><strong></strong><small></small></div>
+              <div><span></span><strong></strong><small></small></div>
+              <div><span></span><strong></strong><small></small></div>
             </div>
           </article>
 
-          <article class="feature-card">
-            <span class="feature-number">02</span>
-            <div class="feature-symbol">📋</div>
-            <h3 data-i18n="f2Title">Заявка без лишних звонков</h3>
-            <p data-i18n="f2Text">Опишите задачу, приложите фото, выберите город и получите отклики подходящих исполнителей.</p>
+          <article class="feature">
+            <span class="feature-chip" data-i18n="featurePartsChip">Запчасти</span>
+            <h3 data-i18n="featurePartsTitle">Каталог и предложения</h3>
+            <p data-i18n="featurePartsText">Поиск нужной детали и предложения продавцов внутри автомобильного контекста.</p>
+            <div class="parts-preview" aria-hidden="true">
+              <span>⚙</span><span>🔋</span><span>🛞</span><span>🧰</span>
+            </div>
           </article>
 
-          <article class="feature-card">
-            <span class="feature-number">03</span>
-            <div class="feature-symbol">🧩</div>
-            <h3 data-i18n="f3Title">Запчасти и магазины</h3>
-            <p data-i18n="f3Text">Категории товаров, предложения продавцов и привязка к автомобильному сценарию внутри платформы.</p>
+          <article class="feature">
+            <span class="feature-chip" data-i18n="featureGarageChip">Гараж</span>
+            <h3 data-i18n="featureGarageTitle">Автомобиль и его история</h3>
+            <p data-i18n="featureGarageText">Данные авто, обращения и повторное использование информации в новых сценариях.</p>
+            <div class="garage-preview" aria-hidden="true">
+              <img src="../assets/onboarding/welcome_car.png" alt="">
+              <span class="garage-tag">VIN</span>
+              <span class="garage-tag">SERVICE</span>
+            </div>
           </article>
 
-          <article class="feature-card">
-            <span class="feature-number">04</span>
-            <div class="feature-symbol">🚘</div>
-            <h3 data-i18n="f4Title">Гараж автомобиля</h3>
-            <p data-i18n="f4Text">Храните данные автомобиля, историю обращений и используйте их повторно в новых заявках.</p>
-          </article>
-
-          <article class="feature-card">
-            <span class="feature-number">05</span>
-            <div class="feature-symbol">💬</div>
-            <h3 data-i18n="f5Title">Автосообщество</h3>
-            <p data-i18n="f5Text">Вопросы, опыт владельцев, публикации мастеров и профессиональное общение в одном пространстве.</p>
+          <article class="feature feature--wide">
+            <div>
+              <span class="feature-chip" data-i18n="featureCommunityChip">Сообщество</span>
+              <h3 data-i18n="featureCommunityTitle">Вопросы, опыт и профессиональные публикации</h3>
+              <p data-i18n="featureCommunityText">Автовладельцы задают вопросы, мастера делятся опытом, а профессиональные профили становятся частью общей экосистемы.</p>
+            </div>
+            <div class="community-preview" aria-hidden="true">
+              <div class="community-avatar">K</div>
+              <div class="community-lines"><strong></strong><span></span><span></span></div>
+              <div class="community-pill">♥</div>
+              <div class="community-pill">↗</div>
+            </div>
           </article>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="section download-panel">
+    <section class="section download" id="download">
+      <div class="container download-card">
         <div class="download-copy">
-          <span class="section-kicker" data-i18n="downloadKicker">KARETA с вами</span>
-          <h2 data-i18n="downloadTitle">Откройте веб-версию сейчас. Мобильные приложения — следующим этапом.</h2>
-          <p data-i18n="downloadLead">Лендинг уже подготовлен под прямые ссылки App Store и Android. После публикации сборок достаточно заполнить два URL в одном конфигурационном файле.</p>
-        </div>
-        <div class="download-panel-actions">
-          <a class="button button--primary" href="../" data-web-link data-i18n="openPlatform">Открыть KARETA.KZ</a>
-          <a class="button button--ghost" href="#download" data-i18n="downloadApps">Приложения</a>
-        </div>
-      </section>
-    </main>
+          <span class="kicker" data-i18n="downloadKicker">Скачать KARETA</span>
+          <h2 data-i18n="downloadTitle">Откройте KARETA в браузере или установите приложение.</h2>
+          <p data-i18n="downloadLead">Веб-версия доступна уже сейчас. Кнопки Android и iOS автоматически активируются после добавления официальных ссылок в конфигурацию лендинга.</p>
 
-    <footer>
+          <div class="download-actions">
+            <a class="store-link" href="#" data-download="android" aria-disabled="true">
+              <span class="store-logo">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 7.2 5.6 4.1M16.5 7.2l1.9-3.1M6.4 8.2h11.2A1.4 1.4 0 0 1 19 9.6v7.8a1.4 1.4 0 0 1-1.4 1.4H6.4A1.4 1.4 0 0 1 5 17.4V9.6a1.4 1.4 0 0 1 1.4-1.4ZM8.1 5.6h7.8M8.2 11.3v.1M15.8 11.3v.1M8 18.8v2M16 18.8v2"/></svg>
+              </span>
+              <span><small data-i18n="downloadFor">Скачать для</small><strong>Android</strong></span>
+              <em data-status="android" data-i18n="comingSoon">Скоро</em>
+            </a>
+
+            <a class="store-link" href="#" data-download="ios" aria-disabled="true">
+              <span class="store-logo store-logo--apple">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.7 4.1c-.8.1-1.8.6-2.3 1.2-.5.6-1 1.5-.8 2.4.9.1 1.8-.4 2.4-1 .6-.7 1-1.6.7-2.6ZM18.9 16.2c-.4.9-.9 1.8-1.6 2.8-.9 1.3-1.9 2.6-3.4 2.6-1.3 0-1.7-.8-3.2-.8s-2 .8-3.2.8c-1.4 0-2.5-1.4-3.4-2.7C1.6 15.4 1.3 11.3 3 8.7A4.8 4.8 0 0 1 7.1 6.3c1.3 0 2.5.9 3.2.9.7 0 2.1-1.1 3.6-.9.6 0 2.5.2 3.8 2.1-3.3 1.8-2.8 6.4 1.2 7.8Z"/></svg>
+              </span>
+              <span><small data-i18n="downloadFor">Скачать для</small><strong>iPhone / iOS</strong></span>
+              <em data-status="ios" data-i18n="comingSoon">Скоро</em>
+            </a>
+
+            <a class="store-link store-link--web" href="../" data-web-link>
+              <span class="store-logo">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21c-2.3-2.4-3.5-5.4-3.5-9S9.7 5.4 12 3Z"/></svg>
+              </span>
+              <span><small data-i18n="openInBrowser">Открыть в браузере</small><strong data-i18n="webVersion">Веб-версия</strong></span>
+              <em class="is-ready" data-i18n="available">Доступно</em>
+            </a>
+          </div>
+        </div>
+
+        <div class="download-visual" aria-hidden="true">
+          <div class="app-card app-card--back"></div>
+          <div class="app-card app-card--front">
+            <img src="../assets/onboarding/kareta_logo_icon.png" alt="">
+            <strong>KARETA.KZ</strong>
+            <span data-i18n="downloadVisualText">Ваш автомобиль — под контролем</span>
+            <div class="app-car-wrap">
+              <img src="../assets/onboarding/welcome_car.png" alt="">
+            </div>
+            <div class="app-button"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
       <div class="footer-brand">
         <img src="../assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ">
         <p data-i18n="footerText">Единая автомобильная платформа для Казахстана.</p>
       </div>
-      <div class="footer-links">
+      <nav class="footer-nav">
         <a href="#about" data-i18n="navAbout">О проекте</a>
+        <a href="#how" data-i18n="navHow">Как работает</a>
         <a href="#features" data-i18n="navFeatures">Возможности</a>
-        <a href="../" data-web-link data-i18n="openWeb">Веб-версия</a>
+        <a href="#download" data-i18n="navDownload">Скачать</a>
+      </nav>
+      <div class="footer-meta">
+        <span>© <span data-current-year></span> KARETA.KZ</span>
+        <a href="../" data-web-link data-i18n="openWeb">Открыть KARETA</a>
       </div>
-      <small>© <span data-current-year></span> KARETA.KZ</small>
-    </footer>
-  </div>
+    </div>
+  </footer>
 
   <script src="./config.js"></script>
   <script src="./app.js"></script>
