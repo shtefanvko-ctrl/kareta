@@ -103,6 +103,7 @@ jobs:
       - name: Design canon contract
         run: |
           node tools/test_design_canon_v1.js
+          node tools/test_master_css_ownership.js
           node tools/build_master_runtime_css.js --check
 
       - name: Asset URL hygiene
