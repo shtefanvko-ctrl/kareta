@@ -37,7 +37,7 @@ jobs:
       - name: Browser smoke 390 768 1440
         run: |
           mkdir -p landing-smoke
-          cat > /tmp/landing-smoke.js <<'NODE'
+          cat > landing-smoke.js <<'NODE'
           const { chromium } = require('playwright');
           const fs = require('fs');
 
@@ -147,7 +147,7 @@ jobs:
             process.exit(1);
           });
           NODE
-          node /tmp/landing-smoke.js
+          node landing-smoke.js
 
       - name: Package standalone landing
         if: always()
