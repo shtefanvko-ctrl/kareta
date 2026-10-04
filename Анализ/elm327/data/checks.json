@@ -163,6 +163,102 @@
         "can_interface"
       ],
       "risk": "PROFESSIONAL_ONLY"
+    },
+    {
+      "id": "fuel_regulator_circuit_check",
+      "title": {
+        "ru": "Проверить цепь регулятора объёма топлива и команду ЭБУ",
+        "en": "Check the fuel-volume-regulator circuit and ECU command"
+      },
+      "equipment_ids": [
+        "obd_scanner",
+        "multimeter",
+        "oscilloscope"
+      ],
+      "risk": "HIGH"
+    },
+    {
+      "id": "vvt_actuator_check",
+      "title": {
+        "ru": "Проверить команду VVT, электрическую цепь и реакцию фаз",
+        "en": "Check VVT command, electrical circuit and cam response"
+      },
+      "equipment_ids": [
+        "obd_scanner",
+        "multimeter",
+        "oscilloscope"
+      ],
+      "risk": "HIGH"
+    },
+    {
+      "id": "timing_correlation_check",
+      "title": {
+        "ru": "Проверить фактическую корреляцию коленвала и распредвала",
+        "en": "Verify actual crankshaft/camshaft correlation"
+      },
+      "equipment_ids": [
+        "obd_scanner",
+        "oscilloscope"
+      ],
+      "risk": "PROFESSIONAL_ONLY"
+    },
+    {
+      "id": "high_pressure_fuel_system_check",
+      "title": {
+        "ru": "Сопоставить заданное/фактическое давление и проверить топливную систему высокого давления",
+        "en": "Compare commanded/actual pressure and test the high-pressure fuel system"
+      },
+      "equipment_ids": [
+        "obd_scanner",
+        "fuel_pressure_gauge"
+      ],
+      "risk": "PROFESSIONAL_ONLY"
+    },
+    {
+      "id": "fuel_leak_check",
+      "title": {
+        "ru": "Проверить топливные магистрали, рампу и уплотнения на утечку",
+        "en": "Inspect fuel lines, rail and seals for leakage"
+      },
+      "equipment_ids": [],
+      "risk": "HIGH"
+    },
+    {
+      "id": "fuel_rail_sensor_check",
+      "title": {
+        "ru": "Проверить питание, массу, сигнал и правдоподобие датчика давления рампы",
+        "en": "Check rail-pressure sensor supply, ground, signal and plausibility"
+      },
+      "equipment_ids": [
+        "obd_scanner",
+        "multimeter"
+      ],
+      "risk": "HIGH"
+    },
+    {
+      "id": "injector_circuit_check",
+      "title": {
+        "ru": "Проверить электрическую цепь форсунки и управляющий сигнал",
+        "en": "Check injector electrical circuit and control signal"
+      },
+      "equipment_ids": [
+        "multimeter",
+        "oscilloscope",
+        "circuit_probe"
+      ],
+      "risk": "HIGH"
+    },
+    {
+      "id": "idle_air_path_check",
+      "title": {
+        "ru": "Проверить фактические обороты, дроссель и воздушный тракт холостого хода",
+        "en": "Check actual idle RPM, throttle and idle-air path"
+      },
+      "equipment_ids": [
+        "obd_scanner",
+        "smoke_tester"
+      ],
+      "risk": "MEDIUM"
     }
   ]
 }

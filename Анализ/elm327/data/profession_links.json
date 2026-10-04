@@ -24,7 +24,30 @@
         "dtc_p0455",
         "dtc_p0500",
         "dtc_p0505",
-        "dtc_p0562"
+        "dtc_p0562",
+        "dtc_p0001",
+        "dtc_p0010",
+        "dtc_p0011",
+        "dtc_p0016",
+        "dtc_p0087",
+        "dtc_p0088",
+        "dtc_p0093",
+        "dtc_p0190",
+        "dtc_p0191",
+        "dtc_p0201",
+        "dtc_p0202",
+        "dtc_p0203",
+        "dtc_p0204",
+        "dtc_p0303",
+        "dtc_p0304",
+        "dtc_p0305",
+        "dtc_p0306",
+        "dtc_p0351",
+        "dtc_p0352",
+        "dtc_p0353",
+        "dtc_p0354",
+        "dtc_p0506",
+        "dtc_p0507"
       ],
       "profession_ids": [
         "diagnostician"
@@ -43,7 +66,20 @@
         "dtc_p0340",
         "dtc_p0500",
         "dtc_p0562",
-        "dtc_u0100"
+        "dtc_u0100",
+        "dtc_p0001",
+        "dtc_p0010",
+        "dtc_p0016",
+        "dtc_p0190",
+        "dtc_p0191",
+        "dtc_p0201",
+        "dtc_p0202",
+        "dtc_p0203",
+        "dtc_p0204",
+        "dtc_p0351",
+        "dtc_p0352",
+        "dtc_p0353",
+        "dtc_p0354"
       ],
       "profession_ids": [
         "auto_electrician"
@@ -54,7 +90,17 @@
       "dtc_ids": [
         "dtc_p0171",
         "dtc_p0172",
-        "dtc_p0200"
+        "dtc_p0200",
+        "dtc_p0001",
+        "dtc_p0087",
+        "dtc_p0088",
+        "dtc_p0093",
+        "dtc_p0190",
+        "dtc_p0191",
+        "dtc_p0201",
+        "dtc_p0202",
+        "dtc_p0203",
+        "dtc_p0204"
       ],
       "profession_ids": [
         "fuel_specialist"
@@ -65,7 +111,16 @@
       "dtc_ids": [
         "dtc_p0300",
         "dtc_p0301",
-        "dtc_p0302"
+        "dtc_p0302",
+        "dtc_p0010",
+        "dtc_p0011",
+        "dtc_p0016",
+        "dtc_p0303",
+        "dtc_p0304",
+        "dtc_p0305",
+        "dtc_p0306",
+        "dtc_p0506",
+        "dtc_p0507"
       ],
       "profession_ids": [
         "engine_specialist"

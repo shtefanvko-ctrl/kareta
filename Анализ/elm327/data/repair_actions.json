@@ -80,6 +80,70 @@
         "en": "Repair the confirmed ECU power/ground/network fault"
       },
       "requires_confirmation": true
+    },
+    {
+      "id": "repair_fuel_regulator_circuit",
+      "title": {
+        "ru": "Устранить подтверждённую неисправность цепи/регулятора объёма топлива",
+        "en": "Repair the confirmed fuel-volume-regulator circuit/regulator fault"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "repair_vvt_system_after_test",
+      "title": {
+        "ru": "Ремонтировать систему VVT только после подтверждения электрической/гидравлической причины",
+        "en": "Repair the VVT system only after confirming the electrical/hydraulic cause"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "repair_timing_correlation_cause",
+      "title": {
+        "ru": "Устранить подтверждённую причину нарушения фаз/корреляции",
+        "en": "Repair the confirmed timing/correlation fault"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "repair_fuel_pressure_control",
+      "title": {
+        "ru": "Устранить подтверждённую неисправность регулирования давления топлива",
+        "en": "Repair the confirmed fuel-pressure-control fault"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "repair_fuel_system_leak",
+      "title": {
+        "ru": "Устранить подтверждённую утечку топливной системы",
+        "en": "Repair the confirmed fuel-system leak"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "repair_rail_pressure_sensor_circuit",
+      "title": {
+        "ru": "Восстановить подтверждённую неисправность датчика давления рампы/его цепи",
+        "en": "Repair the confirmed rail-pressure sensor/circuit fault"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "repair_injector_circuit",
+      "title": {
+        "ru": "Устранить подтверждённую электрическую неисправность цепи форсунки",
+        "en": "Repair the confirmed injector electrical-circuit fault"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "repair_idle_air_control",
+      "title": {
+        "ru": "Устранить подтверждённую причину нарушения холостого хода",
+        "en": "Repair the confirmed idle-control/air-path fault"
+      },
+      "requires_confirmation": true
     }
   ]
 }

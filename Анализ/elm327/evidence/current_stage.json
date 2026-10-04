@@ -16,19 +16,20 @@
     "runtime_integration": "NOT_RUN",
     "drive_mirror": "CREATED",
     "android": "UNCHANGED",
-    "production_db": "UNCHANGED"
+    "production_db": "UNCHANGED",
+    "priority_bilingual_batch_2": "IMPLEMENTED"
   },
   "counts": {
-    "canonical_dtc_seed": 22,
+    "canonical_dtc_seed": 45,
     "canonical_pid_seed": 13,
     "upstream_generic_dtc_locked": 9533,
     "upstream_pid_locked": 132,
     "commands": 15,
     "protocols": 5,
     "symptoms": 12,
-    "causes": 18,
-    "checks": 14,
-    "repair_actions": 10
+    "causes": 27,
+    "checks": 22,
+    "repair_actions": 18
   },
   "validation": {
     "result": "PASS",
@@ -36,7 +37,8 @@
   },
   "next": [
     "Run pinned OBDex verify/import in an environment with network or local OBDex checkout.",
-    "Process RU translation queue in bounded batches and promote only validated bilingual records.",
-    "Add NHTSA vehicle evidence ingestion for recalls/complaints, then bulk manufacturer communications."
+    "Continue RU promotion in bounded priority batches.",
+    "Run full referential validator after this bilingual batch.",
+    "Add NHTSA vehicle evidence ingestion output for selected make/model/year."
   ]
 }

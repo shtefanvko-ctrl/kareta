@@ -144,6 +144,78 @@
         "en": "CAN bus or gateway fault"
       },
       "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "fuel_volume_regulator_circuit_fault",
+      "title": {
+        "ru": "Неисправность цепи регулятора объёма топлива",
+        "en": "Fuel-volume-regulator circuit fault"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "vvt_actuator_circuit_fault",
+      "title": {
+        "ru": "Неисправность электрической цепи привода VVT",
+        "en": "VVT actuator electrical-circuit fault"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "vvt_control_or_oil_fault",
+      "title": {
+        "ru": "Неисправность управления VVT или масляного контура",
+        "en": "VVT control or oil-circuit fault"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "timing_correlation_fault",
+      "title": {
+        "ru": "Нарушение корреляции фаз коленвала и распредвала",
+        "en": "Crank/cam timing-correlation fault"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "fuel_pressure_high",
+      "title": {
+        "ru": "Чрезмерное давление топлива",
+        "en": "Fuel pressure too high"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "fuel_system_leak",
+      "title": {
+        "ru": "Утечка топливной системы",
+        "en": "Fuel-system leak"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "fuel_rail_pressure_sensor_fault",
+      "title": {
+        "ru": "Неисправность датчика давления рампы или его цепи",
+        "en": "Fuel-rail-pressure sensor or circuit fault"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "injector_circuit_fault",
+      "title": {
+        "ru": "Электрическая неисправность цепи форсунки",
+        "en": "Injector electrical-circuit fault"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "ignition_coil_circuit_fault",
+      "title": {
+        "ru": "Электрическая неисправность цепи катушки зажигания",
+        "en": "Ignition-coil electrical-circuit fault"
+      },
+      "evidence_status": "SUPPORTED"
     }
   ]
 }
