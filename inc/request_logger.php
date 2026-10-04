@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 if(!defined('KARETA_CONFIG_LOADED'))require_once dirname(__DIR__).'/config.php';
+if (!defined('KARETA_REQUEST_ID')) {
+    define('KARETA_REQUEST_ID', substr(hash('sha256', microtime(true) . '|' . mt_rand() . '|' . ($_SERVER['REQUEST_URI'] ?? 'cli')), 0, 16));
+}
 if (!defined('KARETA_TRACE_ID')) {
     $incoming = preg_replace('~[^a-zA-Z0-9_.:-]~', '', (string)($_SERVER['HTTP_X_KARETA_TRACE_ID'] ?? '')) ?: '';
     define('KARETA_TRACE_ID', $incoming !== '' ? substr($incoming,0,120) : ('srv_' . bin2hex(random_bytes(8))));
@@ -8,12 +11,14 @@ if (!defined('KARETA_TRACE_ID')) {
 $GLOBALS['kareta_request_log'] = [
     'started'=>microtime(true),
     'time'=>gmdate('c'),
+    'requestId'=>KARETA_REQUEST_ID,
     'traceId'=>KARETA_TRACE_ID,
     'method'=>(string)($_SERVER['REQUEST_METHOD'] ?? ''),
     'uri'=>substr((string)($_SERVER['REQUEST_URI'] ?? ''),0,1200),
     'ip'=>substr((string)($_SERVER['REMOTE_ADDR'] ?? ''),0,80),
     'action'=>'', 'phone'=>'',
 ];
+header('X-Kareta-Request-Id: ' . KARETA_REQUEST_ID);
 header('X-Kareta-Trace-Id: ' . KARETA_TRACE_ID);
 function kareta_request_log_context(array $context): void {
     foreach ($context as $key=>$value) $GLOBALS['kareta_request_log'][$key] = is_scalar($value) ? substr((string)$value,0,1000) : $value;
@@ -27,6 +32,7 @@ function kareta_request_log_write(array $extra=[]): void {
     unset($base['started']);
     $base['status'] = http_response_code();
     $base['memoryPeak'] = memory_get_peak_usage(true);
+    $base['slow'] = $base['durationMs'] > 300;
     $entry = $base + $extra;
     $dir = defined('KARETA_LOG_ROOT') ? KARETA_LOG_ROOT : dirname(__DIR__) . '/storage/logs';
     if (!is_dir($dir)) @mkdir($dir,0775,true);
