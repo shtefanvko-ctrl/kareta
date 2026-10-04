@@ -43,6 +43,14 @@ for(const bp of ['@media(max-width:767px)','@media(min-width:768px) and (max-wid
   if(!master.includes(bp)) fail('missing page responsive contract '+bp);
   if(!shell.includes(bp)) fail('missing shell responsive contract '+bp);
 }
+
+for(const legacy of [
+  '@media(max-width:699px)','@media(max-width:700px)',
+  '@media (min-width:1100px)','@media (max-width:1099px)',
+  '@media(min-width:1180px)','@media(min-width:600px) and (max-width:899px)'
+]){
+  if(master.includes(legacy)) fail('legacy layout breakpoint remains: '+legacy);
+}
 if(runtime.includes('SOURCE: css/next/design_contract.css')) fail('generated master runtime duplicates design contract');
 if(runtime.includes('SOURCE: css/next/master_responsive_shell.css')) fail('generated master runtime duplicates responsive shell');
 if(!runtime.includes('MASTER / CLIENT VISUAL CANON')) fail('generated master runtime misses canonical responsive geometry');
