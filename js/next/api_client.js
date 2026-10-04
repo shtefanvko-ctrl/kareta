@@ -44,7 +44,13 @@
   let dbReadLastStartedAt = 0;
   let dbReadBackoffUntil = 0;
 
-  const sleep = ms => new Promise(resolve => setTimeout(resolve, Math.max(0, ms)));
+  const sleep = (ms, signal) => new Promise((resolve, reject) => {
+    let timer;
+    const cancel=()=>{clearTimeout(timer);signal?.removeEventListener('abort',cancel);const error=new Error('Request cancelled');error.name='AbortError';reject(error);};
+    if(signal?.aborted){cancel();return;}
+    timer=setTimeout(()=>{signal?.removeEventListener('abort',cancel);resolve();},Math.max(0,ms));
+    signal?.addEventListener('abort',cancel,{once:true});
+  });
   function isDbRead(url, method){
     return method === 'GET' && /(?:^|\/)api\/db\.php(?:[?#]|$)/i.test(String(url || ''));
   }
@@ -56,14 +62,14 @@
     const run = async () => {
       const now = Date.now();
       const gapUntil = Math.max(dbReadBackoffUntil, dbReadLastStartedAt + DB_READ_MIN_GAP_MS);
-      if (gapUntil > now) await sleep(gapUntil - now);
+      if (gapUntil > now) await sleep(gapUntil - now, fetchOptions.signal);
       dbReadLastStartedAt = Date.now();
       let result = await execute(url, fetchOptions);
       if (result.status !== 429) return result;
 
       const retryMs = dbRetryDelayMs(result);
       dbReadBackoffUntil = Math.max(dbReadBackoffUntil, Date.now() + retryMs);
-      await sleep(retryMs);
+      await sleep(retryMs, fetchOptions.signal);
       dbReadLastStartedAt = Date.now();
       result = await execute(url, fetchOptions);
       if (result.status === 429) {
@@ -86,8 +92,8 @@
 
   async function parsePayload(response){
     const contentType = String(response.headers.get('content-type') || '').toLowerCase();
-    if (contentType.includes('application/json')) return response.json().catch(() => null);
-    const text = await response.text().catch(() => '');
+    if (contentType.includes('application/json')) return response.json().catch(error => { if (error?.name === 'AbortError') throw error; return null; });
+    const text = await response.text().catch(error => { if (error?.name === 'AbortError') throw error; return ''; });
     if (!text) return null;
     try { return JSON.parse(text); } catch (_error) { return { raw:text }; }
   }
@@ -126,10 +132,45 @@
     return Object.freeze({ ...result, ...extra });
   }
 
+  const DEFAULT_REQUEST_TIMEOUT_MS = 20000;
+
   async function execute(url, options){
-    const response = await fetch(url, options);
-    const rawPayload = await parsePayload(response);
+    const hasExplicitTimeout=Object.prototype.hasOwnProperty.call(options,'timeoutMs');
+    const {timeoutMs,...networkOptions}=options;
+    const controller = new AbortController();
+    const upstream = options.signal;
+    const startedAt=Date.now();
+    let timedOut=false;
+    const abort = () => controller.abort(upstream?.reason);
+    if(upstream?.aborted) abort(); else upstream?.addEventListener('abort',abort,{once:true});
+    const deadline=hasExplicitTimeout ? Math.max(0,Number(timeoutMs)||0) : DEFAULT_REQUEST_TIMEOUT_MS;
+    const timer=deadline ? setTimeout(()=>{timedOut=true;controller.abort();},deadline) : 0;
+    let response, rawPayload;
+    try{
+      response=await fetch(url,{...networkOptions,signal:controller.signal});
+      rawPayload=await parsePayload(response);
+    }catch(error){
+      const aborted=error?.name==='AbortError'||controller.signal.aborted;
+      const code=timedOut?'REQUEST_TIMEOUT':(aborted?'REQUEST_ABORTED':'NETWORK_ERROR');
+      const message=timedOut
+        ? 'Превышено время ожидания ответа сервера'
+        : (aborted ? 'Запрос отменён' : 'Ошибка сети. Проверьте подключение и повторите попытку');
+      return Object.freeze({
+        ok:false,status:0,code,message,data:null,errors:[],requestId:'',traceId:'',
+        payload:Object.freeze({ok:false,code,message,errors:[],data:null,meta:Object.freeze({httpStatus:0})}),
+        url:String(url),retryAfter:0,durationMs:Date.now()-startedAt,fromCache:false,
+        networkError:String(error?.message||error||code),
+      });
+    }finally{
+      clearTimeout(timer);
+      upstream?.removeEventListener('abort',abort);
+    }
     const payload = normalizePayload(rawPayload, response);
+    const retryAfterRaw=response.headers.get('retry-after')||'';
+    const retryAfterSeconds=Number(retryAfterRaw);
+    const retryAfter=Number.isFinite(retryAfterSeconds)
+      ? Math.max(0,retryAfterSeconds)
+      : Math.max(0,(Date.parse(retryAfterRaw)-Date.now())/1000)||0;
     return Object.freeze({
       ok:!!(response.ok && payload.ok),
       status:response.status,
@@ -138,9 +179,11 @@
       data:payload.data,
       errors:payload.errors,
       requestId:payload.requestId,
+      traceId:String(response.headers.get('x-kareta-trace-id')||payload.meta?.traceId||''),
       payload,
       url:String(response.url || url),
-      retryAfter:Number(response.headers.get('retry-after') || 0),
+      retryAfter,
+      durationMs:Date.now()-startedAt,
       fromCache:false,
     });
   }
