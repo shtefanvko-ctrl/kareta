@@ -94,6 +94,9 @@ jobs:
       - name: Browser support contract
         run: node tools/test_browser_support_matrix_84_109.js
 
+      - name: Route binding contract
+        run: node tools/test_route_binding_contract.js
+
       - name: Welcome city geo contract
         run: node tools/test_welcome_city_geo_contract.js
 
