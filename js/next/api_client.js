@@ -137,20 +137,22 @@
   async function execute(url, options){
     const hasExplicitTimeout=Object.prototype.hasOwnProperty.call(options,'timeoutMs');
     const {timeoutMs,...networkOptions}=options;
-    const controller = new AbortController();
+    const Controller=globalThis.AbortController;
+    const controller=typeof Controller==='function' ? new Controller() : null;
     const upstream = options.signal;
     const startedAt=Date.now();
     let timedOut=false;
-    const abort = () => controller.abort(upstream?.reason);
-    if(upstream?.aborted) abort(); else upstream?.addEventListener('abort',abort,{once:true});
+    const abort = () => controller?.abort(upstream?.reason);
+    if(upstream?.aborted) abort(); else upstream?.addEventListener?.('abort',abort,{once:true});
     const deadline=hasExplicitTimeout ? Math.max(0,Number(timeoutMs)||0) : DEFAULT_REQUEST_TIMEOUT_MS;
-    const timer=deadline ? setTimeout(()=>{timedOut=true;controller.abort();},deadline) : 0;
+    const timer=deadline && controller ? setTimeout(()=>{timedOut=true;controller.abort();},deadline) : 0;
     let response, rawPayload;
     try{
-      response=await fetch(url,{...networkOptions,signal:controller.signal});
+      const requestOptions=controller?{...networkOptions,signal:controller.signal}:networkOptions;
+      response=await fetch(url,requestOptions);
       rawPayload=await parsePayload(response);
     }catch(error){
-      const aborted=error?.name==='AbortError'||controller.signal.aborted;
+      const aborted=error?.name==='AbortError'||Boolean(controller?.signal?.aborted);
       const code=timedOut?'REQUEST_TIMEOUT':(aborted?'REQUEST_ABORTED':'NETWORK_ERROR');
       const message=timedOut
         ? 'Превышено время ожидания ответа сервера'
@@ -163,7 +165,7 @@
       });
     }finally{
       clearTimeout(timer);
-      upstream?.removeEventListener('abort',abort);
+      upstream?.removeEventListener?.('abort',abort);
     }
     const payload = normalizePayload(rawPayload, response);
     const retryAfterRaw=response.headers.get('retry-after')||'';
