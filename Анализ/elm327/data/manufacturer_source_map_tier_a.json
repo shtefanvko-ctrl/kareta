@@ -13,10 +13,13 @@
         "gm_service_information",
         "gm_official_support",
         "nhtsa_datasets",
-        "nhtsa_vpic"
+        "nhtsa_vpic",
+        "chevrolet_kz_cobalt_2026",
+        "chevrolet_kz_cobalt_owner_manual_uzauto",
+        "uzauto_allur_kz_partnership_20260713"
       ],
-      "critical_boundary": "Kazakhstan Cobalt must not be joined to US Cobalt/GM records by name alone. Require VIN/platform/market confirmation.",
-      "current_state": "SOURCE_MAP_READY_IDENTITY_REQUIRED"
+      "critical_boundary": "Kazakhstan Cobalt is supported as a current KZ UzAuto/Allur product line, but platform/ECU/VIN equivalence to US-market Cobalt remains unproven. Never join US TSBs by name alone.",
+      "current_state": "KZ_MODEL_LINEAGE_SUPPORTED_PLATFORM_VIN_REQUIRED_FOR_TSB"
     },
     {
       "make": "Hyundai",

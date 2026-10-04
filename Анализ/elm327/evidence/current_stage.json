@@ -23,7 +23,8 @@
     "manufacturer_source_map_tier_a": "IMPLEMENTED",
     "market_identity_contract": "IMPLEMENTED",
     "manufacturer_evidence_seed": "IMPLEMENTED",
-    "oem_ota_elm327_safety_rule": "STRUCTURED_NOT_RUNTIME"
+    "oem_ota_elm327_safety_rule": "STRUCTURED_NOT_RUNTIME",
+    "chevrolet_cobalt_kz_identity": "SUPPORTED_MODEL_LINEAGE"
   },
   "counts": {
     "canonical_dtc_seed": 45,
@@ -36,8 +37,8 @@
     "causes": 27,
     "checks": 22,
     "repair_actions": 18,
-    "sources": 28,
-    "manufacturer_evidence_records": 4
+    "sources": 31,
+    "manufacturer_evidence_records": 7
   },
   "validation": {
     "result": "PASS",
@@ -53,10 +54,10 @@
     }
   },
   "next": [
-    "Resolve Kazakhstan VIN/platform identity for current Tucson, Sportage and Cobalt before promoting any US/KR manufacturer evidence to KZ applicability.",
-    "Add a manufacturer-evidence validator to CI and reject NAME_ONLY/UNKNOWN records from diagnostic guidance.",
-    "Add exact official campaign evidence for Changan CS55 Plus/CS35 Max and Chery Tiggo 2/Tiggo 7 when a model-specific source is found.",
-    "Continue bounded RU promotion from OBDex staging."
+    "Resolve VIN/WMI/platform/ECU identity for Kazakhstan Cobalt before adding manufacturer-specific repair/TSB guidance.",
+    "Resolve Kazakhstan VIN/platform identity for current Tucson and Sportage before promoting US/KR evidence.",
+    "Find model-specific official Changan/Chery campaign/technical sources.",
+    "Continue bounded RU promotion from the verified OBDex staging queue."
   ],
   "bulk_import_evidence": {
     "verified_commit": "c1246c771401f84885e1a63b7d4c71880d439d7e",

@@ -282,6 +282,36 @@
       "license": "US government public record",
       "use": "US-market 2026 Hyundai Tucson and related instrument-cluster PMIC recall evidence",
       "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "chevrolet_kz_cobalt_2026",
+      "name": "Chevrolet Kazakhstan official Cobalt 2026 model page",
+      "type": "official_market_model_page",
+      "authority": "OEM_DISTRIBUTOR",
+      "url": "https://chevrolet-auto.kz/models/cobalt",
+      "license": "official distributor publication; reference only",
+      "use": "Kazakhstan-market Cobalt 2026 model identity, 1.5L/automatic/current trim context",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "chevrolet_kz_cobalt_owner_manual_uzauto",
+      "name": "Chevrolet Kazakhstan Cobalt owner manual — UzAuto Motors manufacturer statement",
+      "type": "official_owner_manual",
+      "authority": "OEM_DISTRIBUTOR",
+      "url": "https://cdn.chevrolet-auto.kz/cars/BbfXuc2Rkh8FA1Mf69dbopGoBM9UWbRGGiFdgXJA.pdf",
+      "license": "copyrighted owner manual; summarize/reference only",
+      "use": "confirms the Kazakhstan-hosted Cobalt manual is for vehicles manufactured by UzAuto Motors and warns equipment/specification can vary by delivery country",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "uzauto_allur_kz_partnership_20260713",
+      "name": "UzAuto Motors — Chevrolet in Kazakhstan / Allur partnership",
+      "type": "manufacturer_market_statement",
+      "authority": "OEM_MANUFACTURER",
+      "url": "https://uzautomotors.com/articles/chevrolet_200_000_mijoz_tanlovi",
+      "license": "manufacturer publication; reference only",
+      "use": "supports UzAuto Motors and Allur partnership for Chevrolet sales in Kazakhstan and identifies Cobalt as a core Kazakhstan model",
+      "status": "REFERENCE_ONLY"
     }
   ]
 }
