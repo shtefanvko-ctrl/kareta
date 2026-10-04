@@ -44,11 +44,11 @@
   let dbReadLastStartedAt = 0;
   let dbReadBackoffUntil = 0;
 
-  const sleep = (ms, signal) => new Promise((resolve, reject) => {
+  const sleep = (ms, signal) => new Promise(resolve => {
     let timer;
-    const cancel=()=>{clearTimeout(timer);signal?.removeEventListener('abort',cancel);const error=new Error('Request cancelled');error.name='AbortError';reject(error);};
-    if(signal?.aborted){cancel();return;}
-    timer=setTimeout(()=>{signal?.removeEventListener('abort',cancel);resolve();},Math.max(0,ms));
+    const cancel=()=>{clearTimeout(timer);signal?.removeEventListener('abort',cancel);resolve(false);};
+    if(signal?.aborted){resolve(false);return;}
+    timer=setTimeout(()=>{signal?.removeEventListener('abort',cancel);resolve(true);},Math.max(0,ms));
     signal?.addEventListener('abort',cancel,{once:true});
   });
   function isDbRead(url, method){
@@ -62,14 +62,14 @@
     const run = async () => {
       const now = Date.now();
       const gapUntil = Math.max(dbReadBackoffUntil, dbReadLastStartedAt + DB_READ_MIN_GAP_MS);
-      if (gapUntil > now) await sleep(gapUntil - now, fetchOptions.signal);
+      if (gapUntil > now && !(await sleep(gapUntil - now, fetchOptions.signal))) return execute(url, fetchOptions);
       dbReadLastStartedAt = Date.now();
       let result = await execute(url, fetchOptions);
       if (result.status !== 429) return result;
 
       const retryMs = dbRetryDelayMs(result);
       dbReadBackoffUntil = Math.max(dbReadBackoffUntil, Date.now() + retryMs);
-      await sleep(retryMs, fetchOptions.signal);
+      if (!(await sleep(retryMs, fetchOptions.signal))) return execute(url, fetchOptions);
       dbReadLastStartedAt = Date.now();
       result = await execute(url, fetchOptions);
       if (result.status === 429) {
