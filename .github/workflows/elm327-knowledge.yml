@@ -50,3 +50,24 @@ jobs:
           }
           console.log(JSON.stringify({ok:true,generic,pids,upstream:m.source.commit},null,2));
           NODE
+
+      - name: Install isolated importer dependency
+        run: npm install --prefix tools/elm327 --ignore-scripts --no-audit --no-fund
+
+      - name: Fetch pinned OBDex and build staging
+        run: npm --prefix tools/elm327 run import:obdex -- --out-dir "$RUNNER_TEMP/obdex-staging"
+
+      - name: Verify generated staging evidence
+        run: |
+          node - "$RUNNER_TEMP/obdex-staging" <<'NODE'
+          const fs=require('fs');
+          const path=require('path');
+          const dir=process.argv[2];
+          const evidence=JSON.parse(fs.readFileSync(path.join(dir,'import_evidence.json'),'utf8'));
+          const queue=JSON.parse(fs.readFileSync(path.join(dir,'translation_queue_ru.json'),'utf8'));
+          if(evidence.stats.total_generic!==9533) throw new Error('staging generic count mismatch');
+          if(evidence.stats.total_pids!==132) throw new Error('staging PID count mismatch');
+          if((queue.items||[]).length!==9665) throw new Error('translation queue count mismatch');
+          if(evidence.state!=='STAGING_ONLY_PENDING_RU') throw new Error('unexpected staging state');
+          console.log(JSON.stringify({ok:true,stats:evidence.stats,translation_queue:queue.items.length},null,2));
+          NODE
