@@ -8,6 +8,8 @@
 
 ### Логотипы
 - `assets/logo/main/kareta_logo_full.png` → `landing/assets/logo/kareta_logo_full.png`
+  - исходник в Git хранится как Base64-текст под расширением `.png`;
+  - в `/landing/` он декодирован в настоящий бинарный PNG без изменения изображения
 - `assets/onboarding/kareta_logo_icon.png` → `landing/assets/logo/kareta_logo_icon.png`
 
 ### Фирменные responsive-фоны
