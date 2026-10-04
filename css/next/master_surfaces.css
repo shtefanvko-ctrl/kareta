@@ -67,3 +67,267 @@ html[data-user-role="master"] .k-master-workplace{gap:18px}.k-master-workplace-a
 @media (max-width:1099px){
   .k-master-workspace-panel{display:none!important}
 }
+
+/* 2026-10-04 — MASTER / CLIENT VISUAL CANON.
+   Presentation-only responsive shell: phone <=767, tablet 768–1199, desktop >=1200.
+   Business logic, route ownership and data attributes are intentionally untouched. */
+html[data-user-role="master"],html[data-navigation-context="master"]{
+  --k-master-content-max:1480px;
+  --k-master-canon-gutter:clamp(16px,2vw,32px);
+  --k-master-canon-card-radius:18px;
+  --k-master-canon-control-radius:14px;
+  --k-master-canon-mobile-shadow:0 9px 28px rgba(15,23,42,.08);
+}
+html[data-user-role="master"] #k-page-outlet{
+  min-width:0;
+  overflow-x:clip;
+  background:var(--k-master-page-bg,#f5f6f8);
+}
+html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{
+  width:100%;
+  max-width:var(--k-master-content-max);
+  min-width:0;
+  margin-inline:auto;
+  padding:18px var(--k-master-canon-gutter) calc(var(--k-mobile-nav-live-height,var(--k-mobile-nav-h,72px)) + 28px + env(safe-area-inset-bottom,0px));
+  box-sizing:border-box;
+}
+html[data-user-role="master"] #k-page-outlet .k-master-surface-page>*{min-width:0}
+html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(img,video,canvas,svg){max-width:100%}
+
+html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+  .k-exchange-r71-toolbar,
+  .k-orders-toolbar-v2,
+  .k-service-offers-toolbar,
+  .k-master-native-page-tools
+){
+  border:1px solid var(--k-master-line,#e4e7ec);
+  border-radius:var(--k-master-canon-card-radius);
+  background:var(--k-master-surface,#fff);
+  box-shadow:none;
+}
+
+html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+  .k-exchange-search-field,
+  .k-masters-search
+){
+  min-width:0;
+  min-height:48px;
+  border:1px solid var(--k-master-line,#e4e7ec);
+  border-radius:var(--k-master-canon-control-radius);
+  background:#fff;
+  box-shadow:none;
+}
+html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+  .k-exchange-search-field input,
+  .k-masters-search input
+){min-width:0;width:100%}
+
+html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+  .k-exchange-r71-tabs,
+  .k-exchange-service-scope,
+  .k-work-ref-tabs
+){
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+  .k-exchange-r71-tabs,
+  .k-exchange-service-scope,
+  .k-work-ref-tabs
+)::-webkit-scrollbar{display:none}
+
+html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+  .k-exchange-r71-grid,
+  .k-orders-grid--master,
+  .k-service-offers-grid,
+  .k-work-feed-grid
+){
+  min-width:0;
+  align-items:start;
+}
+
+@media(max-width:767px){
+  html[data-user-role="master"],html[data-navigation-context="master"]{
+    --k-master-canon-gutter:16px;
+    --k-master-page-y:14px;
+    --k-master-section-gap:12px;
+    --k-master-card-radius:19px;
+    --k-master-small-card-radius:15px;
+  }
+  html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{
+    max-width:none;
+    padding:14px var(--k-master-canon-gutter) calc(92px + env(safe-area-inset-bottom,0px));
+    gap:12px;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+    .k-master-page-header,
+    .k-workspace-head,
+    .k-exchange-r71-head,
+    .k-master-r81-schedule-toolbar
+  ){
+    gap:10px;
+    padding:2px 0 12px;
+    margin:0;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+    .k-exchange-r71-toolbar,
+    .k-orders-toolbar-v2,
+    .k-service-offers-toolbar,
+    .k-master-native-page-tools
+  ){
+    padding:0;
+    border:0;
+    border-radius:0;
+    background:transparent;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:8px;
+    width:100%;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-search-field,
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-service-scope,
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-r71-tabs{
+    grid-column:1/-1;
+    width:100%;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-search-field{
+    min-height:58px;
+    padding-inline:15px;
+    border:0;
+    border-radius:18px;
+    background:#fff;
+    box-shadow:0 10px 28px rgba(15,23,42,.09);
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar :is(
+    .k-exchange-filter-button,
+    .k-exchange-kpi-button,
+    .k-exchange-refresh-button
+  ){
+    width:100%;
+    min-width:0;
+    min-height:44px;
+    border-radius:14px;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+    .k-exchange-r71-tabs,
+    .k-exchange-service-scope,
+    .k-work-ref-tabs,
+    .k-r84-choice-grid
+  ){
+    display:flex;
+    flex-wrap:nowrap;
+    gap:7px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    width:100%;
+    max-width:100%;
+    scroll-snap-type:x proximity;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+    .k-exchange-r71-tabs,
+    .k-exchange-service-scope,
+    .k-work-ref-tabs,
+    .k-r84-choice-grid
+  )>button{
+    flex:0 0 auto;
+    min-width:max-content;
+    scroll-snap-align:start;
+    white-space:nowrap;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+    .k-exchange-r71-grid,
+    .k-orders-grid--master,
+    .k-service-offers-grid,
+    .k-work-feed-grid
+  ){
+    display:grid;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:12px!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+    .k-exchange-r71-grid>*,
+    .k-orders-grid--master>*,
+    .k-service-offers-grid>*,
+    .k-work-feed-grid>*
+  ){
+    min-width:0;
+    max-width:100%;
+    border-radius:19px;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+    .k-exchange-card,
+    .k-order-card,
+    .k-service-offer-card,
+    .k-work-card
+  ){
+    border-color:transparent;
+    background:#fff;
+    box-shadow:var(--k-master-canon-mobile-shadow);
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-filters{
+    width:100%;
+    padding:14px;
+    border:0;
+    border-radius:18px;
+    background:#fff;
+    box-shadow:0 10px 28px rgba(15,23,42,.08);
+  }
+}
+@media(max-width:370px){
+  html[data-user-role="master"],html[data-navigation-context="master"]{--k-master-canon-gutter:11px}
+}
+@media(min-width:768px) and (max-width:1199px){
+  html[data-user-role="master"],html[data-navigation-context="master"]{
+    --k-master-canon-gutter:22px;
+    --k-master-section-gap:15px;
+  }
+  html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{
+    max-width:none;
+    padding-top:18px;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+    .k-exchange-r71-grid,
+    .k-orders-grid--master,
+    .k-service-offers-grid,
+    .k-work-feed-grid
+  ){
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:14px!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+    .k-exchange-r71-grid>*,
+    .k-orders-grid--master>*,
+    .k-service-offers-grid>*,
+    .k-work-feed-grid>*
+  ){min-width:0}
+}
+@media(min-width:1200px){
+  html[data-user-role="master"],html[data-navigation-context="master"]{
+    --k-master-canon-gutter:clamp(28px,2.4vw,38px);
+    --k-master-section-gap:18px;
+  }
+  html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{
+    padding-top:22px;
+    padding-bottom:34px;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-surface-page .k-exchange-r71-grid,
+  html[data-user-role="master"] #k-page-outlet .k-master-surface-page .k-work-feed-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:16px!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-surface-page .k-orders-grid--master{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:16px!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-surface-page .k-service-offers-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:16px!important;
+  }
+}
+
