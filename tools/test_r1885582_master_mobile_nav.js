@@ -9,7 +9,8 @@ const shell=read('js/next/shell_nav.js');
 const routes=read('js/next/route_registry.js');
 const feed=read('js/next/pages/work_feed.js');
 const app=read('js/next/app_next.js');
-const css=read('css/next/master_mobile_nav.css');
+const navSkin=read('css/next/master_mobile_nav.css');
+const shellCss=read('css/next/master_responsive_shell.css');
 must(nav.includes("master: Object.freeze(['masterDashboard','masterExchange','serviceManagement','parts','cabinet','__more__'])"),'master template order');
 must(nav.includes("['personal','master','seller','admin','organization_store'].includes(kind) ? 6 : 5"),'master mobile limit 6');
 must(role.includes("mobile:['masterDashboard','masterExchange','serviceManagement','parts','cabinet','__more__']"),'legacy master order');
@@ -19,5 +20,6 @@ must(shell.includes("['workOrder','requestNew','workflow'].includes(key))key='or
 must(routes.includes("path:'#/master/exchange'")&&routes.includes("path:'#/community'"),'new routes');
 must(feed.includes("['client','master'].includes(role())")&&feed.includes('renderExchange,mountExchange'),'community/exchange split');
 must(app.includes("masterExchange:{global:'KaretaWorkFeedPages',render:'renderExchange',mount:'mountExchange'}")&&app.includes("community:{global:'KaretaCommunityPages',render:'renderCommunity',mount:'mountCommunity'}"),'app route renderers');
-must(css.includes('--k-mobile-nav-count:6!important')&&css.includes('repeat(6,minmax(0,1fr))'),'historical 6-column css missing');
+must(shellCss.includes('--k-mobile-nav-count:6!important')&&shellCss.includes('repeat(6,minmax(0,1fr))'),'canonical 6-column shell geometry missing');
+must(navSkin.includes('#k-mobile-nav .k-nav-link')&&!navSkin.includes('.k-app-shell'),'mobile nav skin ownership');
 console.log('OK R188.5.5.6.22 master mobile nav');
