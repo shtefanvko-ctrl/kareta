@@ -6,6 +6,7 @@
   const fmt=value=>{const d=new Date(String(value||''));return Number.isNaN(d.getTime())?'':d.toLocaleString('ru-RU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});};
   const icon=kind=>({garage:'🚗',order:'✓',chat:'💬',system:'●',offer:'₸',default:'○'})[kind]||'○';
   const uiIcon=name=>window.KaretaUIIcons?.svg?.(name)||'';
+  const identityAuthenticated=()=>window.KaretaIdentity?.snapshot?.()?.authenticated===true;
   function kindOf(n){
     const raw=String(n.eventType||n.event_type||n.type||'').toLowerCase();
     const title=String(n.title||'').toLowerCase();
@@ -56,6 +57,15 @@
   }
   async function mountNotifications(context={}){
     const root=document.querySelector('[data-notifications-page]'),list=root?.querySelector('[data-notifications-list]');if(!root||!list)return;
+    if(!identityAuthenticated()){
+      const actions=root.querySelector('.k-notifications-canon-actions');if(actions)actions.hidden=true;
+      const tabs=root.querySelector('.k-notifications-ref-tabs');if(tabs)tabs.hidden=true;
+      const searchShell=root.querySelector('.k-notifications-canon-search');if(searchShell)searchShell.hidden=true;
+      const status=root.querySelector('[data-notifications-status]');if(status)status.textContent='Требуется вход';
+      list.innerHTML='<div class="k-notifications-ref-empty"><span>🔒</span><h2>Войдите, чтобы увидеть уведомления</h2><p>Центр событий доступен после входа в аккаунт.</p><a href="#/home">Перейти к входу</a></div>';
+      window.dispatchEvent(new CustomEvent('kareta:notification-unread',{detail:{count:0}}));
+      return;
+    }
     let disposed=false,pollTimer=0,requestSeq=0,rows=[],tab='all',query='';
     const publish=items=>window.dispatchEvent(new CustomEvent('kareta:notification-unread',{detail:{count:items.filter(n=>!(n.isRead??Number(n.is_read||0)===1)).length}}));
     const updateCounts=()=>{
@@ -80,7 +90,19 @@
         const [r,vehicleReminder]=await Promise.all([api.request('api/domain.php?action=notifications.list',{cacheTtlMs:0,force:true,dedupe:false}),firstVehicleReminder()]);
         if(disposed||seq!==requestSeq)return;
         const serverRows=Array.isArray(r.payload?.notifications)?r.payload.notifications:[];rows=vehicleReminder?[vehicleReminder,...serverRows]:serverRows;publish(rows);paint();
-      }catch(_e){if(disposed||seq!==requestSeq)return;list.innerHTML='<div class="k-notifications-ref-empty"><span>!</span><h2>Не удалось загрузить уведомления</h2><p>Проверьте соединение и повторите.</p><button type="button" data-notifications-refresh>Повторить</button></div>';}
+      }catch(error){
+        if(disposed||seq!==requestSeq)return;
+        if(Number(error?.status||0)===401){
+          disposed=true;window.clearInterval(pollTimer);
+          const actions=root.querySelector('.k-notifications-canon-actions');if(actions)actions.hidden=true;
+          const tabs=root.querySelector('.k-notifications-ref-tabs');if(tabs)tabs.hidden=true;
+          const searchShell=root.querySelector('.k-notifications-canon-search');if(searchShell)searchShell.hidden=true;
+          const status=root.querySelector('[data-notifications-status]');if(status)status.textContent='Сессия завершена';
+          list.innerHTML='<div class="k-notifications-ref-empty"><span>🔒</span><h2>Сессия завершена</h2><p>Войдите снова, чтобы загрузить уведомления.</p><a href="#/home">Перейти к входу</a></div>';
+          publish([]);return;
+        }
+        list.innerHTML='<div class="k-notifications-ref-empty"><span>!</span><h2>Не удалось загрузить уведомления</h2><p>Проверьте соединение и повторите.</p><button type="button" data-notifications-refresh>Повторить</button></div>';
+      }
     };
     const click=async e=>{
       const t=e.target.closest('[data-notifications-tab]');if(t){tab=t.dataset.notificationsTab||'all';root.querySelectorAll('[data-notifications-tab]').forEach(x=>{const active=x===t;x.classList.toggle('is-active',active);x.setAttribute('aria-selected',active?'true':'false');});paint();return;}
