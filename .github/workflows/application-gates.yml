@@ -79,6 +79,9 @@ jobs:
           php tools/test_master_profession_profile.php
           php tools/test_master_service_advisories.php
 
+      - name: Analysis research runtime alignment
+        run: node tools/test_analysis_runtime_alignment.js
+
       - name: Master navigation contract
         run: node tools/test_r1885582_master_mobile_nav.js
 
