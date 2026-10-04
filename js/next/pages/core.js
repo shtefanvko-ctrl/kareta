@@ -300,7 +300,7 @@
       ${homePromoCarousel()}
       <section class="k-home-ref-actions" aria-label="Быстрые действия">${HOME_REFERENCE_ACTIONS.map(item=>`<a class="k-home-ref-action" href="${item.route}"><span class="k-home-ref-action__icon">${homeActionIcon(item.icon)}</span><b>${item.title}</b></a>`).join('')}</section>
       <section class="k-home-ref-section" data-home-section="popular"><header class="k-home-ref-section__head"><h2>Популярные услуги</h2><a href="#/services">Все <span aria-hidden="true">${homeRefIcon('chevronRight')}</span></a></header><div class="k-home-ref-chips k-home-ref-service-grid">${HOME_REFERENCE_POPULAR.map(item=>`<a class="k-home-ref-chip k-home-ref-service-card" href="${item.route}"><span class="k-home-ref-service-card__media"><img src="${item.image}" alt="" loading="lazy" decoding="async"></span><span class="k-home-ref-service-card__copy"><span class="k-home-ref-service-card__title"><span class="k-ui-icon k-ui-icon--sm" data-icon="${item.icon}">${homeActionIcon(item.icon)}</span><b>${item.title}</b></span><small>${item.price}</small></span></a>`).join('')}</div></section>
-      <section class="k-home-ref-section" data-home-section="nearby"><header class="k-home-ref-section__head"><h2>Рядом с вами</h2><a href="#/masters?type=sto">Все <span aria-hidden="true">${homeRefIcon('chevronRight')}</span></a></header><div class="k-home-ref-nearby" data-home-nearby><div class="k-home-ref-place k-home-ref-place--loading" aria-hidden="true"></div><div class="k-home-ref-place k-home-ref-place--loading" aria-hidden="true"></div></div></section>
+      <section class="k-home-ref-section" data-home-section="nearby"><header class="k-home-ref-section__head"><h2>Рядом с вами</h2><div class="k-home-ref-section__tools"><button type="button" data-home-nearby-map>${homeRefIcon('location')}<span>Карта</span></button><a href="#/masters?type=sto">Все <span aria-hidden="true">${homeRefIcon('chevronRight')}</span></a></div></header><div class="k-home-ref-nearby" data-home-nearby><div class="k-home-ref-place k-home-ref-place--loading" aria-hidden="true"></div><div class="k-home-ref-place k-home-ref-place--loading" aria-hidden="true"></div></div></section>
       <section class="k-home-ref-section k-home-feed-section" data-home-feed-section="works"><header class="k-home-ref-section__head"><h2>Работы мастеров</h2><a href="#/works">Все <span aria-hidden="true">${homeRefIcon('chevronRight')}</span></a></header><div class="k-home-feed-rail" data-home-feed="works" aria-label="Последние работы мастеров">${homeFeedSkeleton()}</div></section>
       <section class="k-home-ref-section k-home-feed-section" data-home-feed-section="community"><header class="k-home-ref-section__head"><h2>Сообщество</h2><a href="#/community">Все <span aria-hidden="true">${homeRefIcon('chevronRight')}</span></a></header><div class="k-home-feed-rail" data-home-feed="community" aria-label="Последнее в сообществе">${homeFeedSkeleton()}</div></section>
       ${homeLocationDialog()}
@@ -315,6 +315,7 @@
     const greetingNode=document.querySelector('[data-home-greeting]');
     const cityNode=document.querySelector('[data-home-city]');
     const nearbyNode=document.querySelector('[data-home-nearby]');
+    const nearbyMapButton=document.querySelector('[data-home-nearby-map]');
     const locationButton=document.querySelector('[data-home-location-button]');
     const locationDialog=document.querySelector('[data-home-location-dialog]');
     const locationClose=document.querySelector('[data-home-location-close]');
@@ -335,8 +336,8 @@
     const safeText=value=>String(value||'').trim();
     const normalizeCity=value=>safeText(value).toLocaleLowerCase('ru-RU');
     const haversine=(lat1,lng1,lat2,lng2)=>{const r=6371,toRad=x=>Number(x)*Math.PI/180;const dLat=toRad(lat2-lat1),dLng=toRad(lng2-lng1);const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLng/2)**2;return 2*r*Math.asin(Math.sqrt(a));};
-    const rowCoords=row=>{const lat=Number(row.service_lat??row.lat??row.latitude),lng=Number(row.service_lng??row.lng??row.longitude);return Number.isFinite(lat)&&Number.isFinite(lng)&&Math.abs(lat)<=90&&Math.abs(lng)<=180?[lat,lng]:null;};
-    const readLocation=()=>{try{const v=JSON.parse(localStorage.getItem(storageKey)||'null');if(v&&typeof v==='object'){if(safeText(v.city))selectedCity=safeText(v.city);const lat=Number(v.lat),lng=Number(v.lng);if(Number.isFinite(lat)&&Number.isFinite(lng))userCoords={lat,lng};}}catch(_e){}};
+    const rowCoords=row=>{const rawLat=row.service_lat??row.lat??row.latitude,rawLng=row.service_lng??row.lng??row.longitude;if(rawLat==null||rawLng==null||String(rawLat).trim()===''||String(rawLng).trim()==='')return null;const lat=Number(rawLat),lng=Number(rawLng);return Number.isFinite(lat)&&Number.isFinite(lng)&&Math.abs(lat)<=90&&Math.abs(lng)<=180?[lat,lng]:null;};
+    const readLocation=()=>{try{const v=JSON.parse(localStorage.getItem(storageKey)||'null');if(v&&typeof v==='object'){if(safeText(v.city))selectedCity=safeText(v.city);const lat=Number(v.lat),lng=Number(v.lng);if(v.lat!=null&&v.lng!=null&&String(v.lat).trim()!==''&&String(v.lng).trim()!==''&&Number.isFinite(lat)&&Number.isFinite(lng)&&Math.abs(lat)<=90&&Math.abs(lng)<=180)userCoords={lat,lng};}}catch(_e){}};
     const saveLocation=()=>{try{localStorage.setItem(storageKey,JSON.stringify({city:selectedCity,lat:userCoords?.lat??null,lng:userCoords?.lng??null,updatedAt:Date.now()}));}catch(_e){}};
     readLocation();
     if(cityNode)cityNode.textContent=selectedCity;
@@ -349,11 +350,34 @@
 
     const allRows=()=>[...(Array.isArray(catalog.stos)?catalog.stos:[]),...(Array.isArray(catalog.masters)?catalog.masters:[])];
     const renderNearby=()=>{if(!nearbyNode)return;const cityKey=normalizeCity(selectedCity);const seen=new Set();const rows=allRows().filter(row=>{const key=`${row.type||'sto'}:${row.id||''}`;if(seen.has(key))return false;seen.add(key);return true;}).map(row=>{const copy={...row};const coords=rowCoords(row);copy.distanceKm=userCoords&&coords?haversine(userCoords.lat,userCoords.lng,coords[0],coords[1]):null;copy.sameCity=!cityKey||normalizeCity(row.city)===cityKey;return copy;}).sort((a,b)=>{const ad=Number(a.distanceKm),bd=Number(b.distanceKm),af=Number.isFinite(ad),bf=Number.isFinite(bd);if(af!==bf)return af?-1:1;if(af&&bf&&ad!==bd)return ad-bd;if(a.sameCity!==b.sameCity)return a.sameCity?-1:1;return Number(b.rating||0)-Number(a.rating||0);}).slice(0,2);nearbyNode.innerHTML=rows.length?rows.map(homeNearbyCard).join(''):'<div class="k-home-ref-nearby-empty">Пока нет доступных исполнителей рядом.</div>';};
-    const renderCities=()=>{if(!cityChoices)return;const cities=[selectedCity,...allRows().map(row=>safeText(row.city))].filter(Boolean).filter((city,index,arr)=>arr.findIndex(x=>normalizeCity(x)===normalizeCity(city))===index).sort((a,b)=>a.localeCompare(b,'ru'));cityChoices.innerHTML=cities.map(city=>`<button type="button" class="${normalizeCity(city)===normalizeCity(selectedCity)?'is-active':''}" data-home-city-value="${esc(city)}">${esc(city)}</button>`).join('')||'<span>Города появятся после загрузки каталога.</span>';};
+    const renderCities=()=>{if(!cityChoices)return;const cities=[...(window.KaretaOnboardingSelectionCatalog?.cities||[]),selectedCity,...allRows().map(row=>safeText(row.city))].filter(Boolean).filter((city,index,arr)=>arr.findIndex(x=>normalizeCity(x)===normalizeCity(city))===index).sort((a,b)=>a.localeCompare(b,'ru'));cityChoices.innerHTML=cities.map(city=>`<button type="button" class="${normalizeCity(city)===normalizeCity(selectedCity)?'is-active':''}" data-home-city-value="${esc(city)}">${esc(city)}</button>`).join('')||'<span>Города появятся после загрузки каталога.</span>';};
     const setLocationStatus=(message,type='info')=>{if(!locationStatus)return;locationStatus.hidden=!message;locationStatus.textContent=message||'';locationStatus.dataset.type=type;};
     const openLocation=()=>{renderCities();setLocationStatus('');if(locationDialog&&!locationDialog.open)locationDialog.showModal?.();};
     const closeLocation=()=>{if(locationDialog?.open)locationDialog.close?.();};
+    const openNearbyMap=async()=>{
+      if(!nearbyMapButton||disposed)return;
+      nearbyMapButton.disabled=true;
+      try{
+        const cityCenter=window.KaretaOnboardingSelectionCatalog?.resolveCityCenter?.(selectedCity)||null;
+        const center=userCoords?{latitude:userCoords.lat,longitude:userCoords.lng}:cityCenter;
+        if(!center)throw new Error('GEO_CITY_UNKNOWN');
+        const cityKey=normalizeCity(selectedCity);
+        let rows=allRows().map(row=>({row,coords:rowCoords(row)})).filter(item=>item.coords);
+        if(!userCoords)rows=rows.filter(item=>!cityKey||normalizeCity(item.row.city)===cityKey);
+        rows=rows.map(item=>({...item,distance:userCoords?haversine(userCoords.lat,userCoords.lng,item.coords[0],item.coords[1]):null}))
+          .sort((a,b)=>userCoords?(Number(a.distance??999999)-Number(b.distance??999999)):(Number(b.row.rating||0)-Number(a.row.rating||0))).slice(0,49);
+        const points=rows.map(item=>{const row=item.row,type=String(row.type||'sto'),id=String(row.id||''),profile=`#/masters/profile/${type==='sto'?'sto':'master'}/${encodeURIComponent(id)}`,book=type==='sto'?profile:`#/masters/book/master/${encodeURIComponent(id)}`;return {id:type+':'+id,label:safeText(row.name||row.org_name||row.sto_name)||(type==='sto'?'СТО':'Мастер'),address:safeText(row.address||row.service_address),city:safeText(row.city),distanceKm:item.distance,latitude:item.coords[0],longitude:item.coords[1],kind:type,route:true,actions:[{label:'Профиль',href:profile},{label:'Записаться',href:book,primary:true}]};});
+        const lang=String(document.documentElement.lang||'ru').split('-')[0],emptyText={ru:'Публичных точек в этом городе пока нет. Карта города доступна.',kk:'Бұл қалада жария нүктелер әлі жоқ. Қала картасы қолжетімді.',en:'No public points in this city yet. The city map remains available.'}[lang]||'No public points in this city yet. The city map remains available.';
+        const geoMap=await window.KaretaMobile?.loadGeoMap?.();
+        if(disposed)return;
+        if(!geoMap?.open)throw new Error('GEO_MAP_UNAVAILABLE');
+        const mapPoints=userCoords?[{id:'user',label:'Вы',latitude:userCoords.lat,longitude:userCoords.lng,user:true,kind:'you',route:false},...points]:points;
+        geoMap.open({title:userCoords?'Рядом с вами':selectedCity,points:mapPoints,center,notice:points.length?'':emptyText});
+      }catch(_error){window.KaretaToast?.error?.('Карта временно недоступна');}
+      finally{nearbyMapButton.disabled=false;}
+    };
     locationButton?.addEventListener('click',openLocation);
+    nearbyMapButton?.addEventListener('click',openNearbyMap);
     locationClose?.addEventListener('click',closeLocation);
     locationDialog?.addEventListener('cancel',event=>{event.preventDefault();closeLocation();});
     cityChoices?.addEventListener('click',event=>{const button=event.target.closest('[data-home-city-value]');if(!button)return;selectedCity=safeText(button.dataset.homeCityValue)||selectedCity;userCoords=null;if(cityNode)cityNode.textContent=selectedCity;saveLocation();renderCities();renderNearby();closeLocation();});
@@ -367,7 +391,7 @@
     (async()=>{if(!worksRail||!api?.getWorkPosts)return;try{const result=await api.getWorkPosts({limit:4},{signal:context.lifecycle?.signal});if(disposed)return;if(!result?.ok)throw new Error('work_feed_failed');const payload=result.payload?.data||result.payload||{};const rows=(Array.isArray(payload.items)?payload.items:Array.isArray(payload.posts)?payload.posts:Array.isArray(payload.works)?payload.works:[]).slice(0,4);worksRail.innerHTML=rows.length?rows.map(homeWorkCard).join(''):'<div class="k-home-feed-empty">Работы мастеров появятся после первых публикаций.</div>';}catch(_error){if(!disposed)renderFeedError(worksRail,'Не удалось загрузить последние работы.');}})();
     (async()=>{if(!communityRail||!api)return;try{const [newsResult,wallResult]=await Promise.allSettled([api.getNews?.({limit:4},{signal:context.lifecycle?.signal}),api.request?.('api/db.php?action=masterSocialWall.community&limit=4',{method:'GET',cacheTtlMs:12000,signal:context.lifecycle?.signal})]);if(disposed)return;const rows=[];if(newsResult.status==='fulfilled'&&newsResult.value?.ok){const payload=newsResult.value.payload?.data||newsResult.value.payload||{};(Array.isArray(payload.items)?payload.items:Array.isArray(payload.news)?payload.news:[]).forEach(item=>rows.push({...item,__source:'news'}));}if(wallResult.status==='fulfilled'&&wallResult.value?.ok){const payload=wallResult.value.payload?.data||wallResult.value.payload||{};(Array.isArray(payload.items)?payload.items:[]).forEach(item=>rows.push({...item,__source:'wall'}));}rows.sort((a,b)=>{const av=new Date(String(a.publishedAt||a.published_at||a.createdAt||a.created_at||0).replace(' ','T')).getTime()||0;const bv=new Date(String(b.publishedAt||b.published_at||b.createdAt||b.created_at||0).replace(' ','T')).getTime()||0;return bv-av;});const latest=rows.slice(0,4);communityRail.innerHTML=latest.length?latest.map(homeCommunityCard).join(''):'<div class="k-home-feed-empty">Новые публикации сообщества появятся здесь.</div>';}catch(_error){if(!disposed)renderFeedError(communityRail,'Не удалось загрузить публикации сообщества.');}})();
 
-    return()=>{disposed=true;promoCleanup?.();form.removeEventListener('submit',submit);feedCleanups.forEach(fn=>fn?.());locationButton?.removeEventListener('click',openLocation);locationClose?.removeEventListener('click',closeLocation);};
+    return()=>{disposed=true;promoCleanup?.();form.removeEventListener('submit',submit);feedCleanups.forEach(fn=>fn?.());locationButton?.removeEventListener('click',openLocation);nearbyMapButton?.removeEventListener('click',openNearbyMap);locationClose?.removeEventListener('click',closeLocation);};
   }
 
   window.KaretaCorePages = Object.freeze({ renderHome, mountHome });
