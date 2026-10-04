@@ -10,8 +10,8 @@
     "structured_seed": "IMPLEMENTED",
     "referential_validation": "PASS",
     "bulk_import_manifest": "IMPLEMENTED",
-    "bulk_importer": "IMPLEMENTED_NOT_RUN",
-    "bulk_import": "NOT_RUN",
+    "bulk_importer": "CI_EXECUTED_PASS",
+    "bulk_import": "STAGING_GENERATED_IN_CI_ONLY",
     "expert_review": "NOT_RUN",
     "runtime_integration": "NOT_RUN",
     "drive_mirror": "CREATED",
@@ -47,9 +47,18 @@
     }
   },
   "next": [
-    "Run pinned OBDex verify/import in an environment with network or local OBDex checkout.",
-    "Continue RU promotion in bounded priority batches.",
-    "Run full referential validator after this bilingual batch.",
-    "Add NHTSA vehicle evidence ingestion output for selected make/model/year."
-  ]
+    "Continue RU translation/promotion in bounded priority batches from the verified 9,665-record staging queue.",
+    "Add manufacturer-specific OEM/TSB evidence beginning with Tier A Kazakhstan makes.",
+    "Keep runtime integration separate until bilingual content and expert review gates are ready."
+  ],
+  "bulk_import_evidence": {
+    "verified_commit": "c1246c771401f84885e1a63b7d4c71880d439d7e",
+    "workflow_run_id": 37234382859,
+    "result": "PASS",
+    "generic_dtc": 9533,
+    "pids": 132,
+    "translation_queue": 9665,
+    "persisted_to_repo": false,
+    "note": "Generated staging was ephemeral in GitHub Actions. Canonical RU/EN data remains the reviewed subset."
+  }
 }
