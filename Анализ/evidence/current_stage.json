@@ -15,13 +15,20 @@
     "geo_run": 37238482459,
     "home_scanner_run": 37238482538,
     "last_main_recheck": "c43a1c21e1414bc2fc12c69b4b350613d64f0480",
-    "main_delta_overlap": "NONE_WITH_M2"
+    "main_delta_overlap": "NONE_WITH_M2",
+    "merged": true,
+    "merge_commit": "ffeb23e635af794388b2e5c1b4a358e8a6cf3d2d",
+    "final_pr_head": "f2b336379a368a75d8bb840fd608430ac689a53b",
+    "final_application_gate_run": 37238680741,
+    "final_php_syntax_run": 37238680717,
+    "final_geo_run": 37238680604,
+    "final_home_scanner_run": 37238680835
   },
   "state": {
     "desired": "M0_M1_M2_SAFE_FOUNDATION_THEN_M3_SHADOW_MATCHING",
     "m0_equipment": "IMPLEMENTED_MAIN",
     "m1_professions": "IMPLEMENTED_MAIN_MATCHING_DISABLED",
-    "m2_advisories": "IMPLEMENTED_PR90_CI_VERIFIED_NOT_MERGED",
+    "m2_advisories": "MERGED_MAIN_MATCHING_DISABLED",
     "m3_matching": "NOT_IMPLEMENTED",
     "m5_observed_demand": "NOT_IMPLEMENTED",
     "deployed": "NOT_CONFIRMED"
@@ -90,8 +97,8 @@
     "query_counts_observed": false
   },
   "next": [
-    "sync PR90 merge-ref with current main if it moves",
-    "merge M2 only while required gates stay green",
-    "design M3 shadow/explain-only matching with feature-off"
+    "verify post-merge push gates for ffeb23e",
+    "run real API/MySQL and browser/device acceptance when environment is available",
+    "design M3 shadow/explain-only matching as a separate change lane"
   ]
 }
