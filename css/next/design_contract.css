@@ -25,6 +25,7 @@
   --k-shadow-card:0 9px 28px rgba(15,23,42,.08);
 
   --k-z-base:0;
+  --k-z-local-raised:3;
   --k-z-sticky:20;
   --k-z-shell:40;
   --k-z-nav:50;
@@ -32,6 +33,7 @@
   --k-z-overlay:80;
   --k-z-modal:100;
   --k-z-toast:120;
+  --k-z-shell-brand:161;
   --k-z-debug:200;
 }
 
