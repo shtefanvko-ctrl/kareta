@@ -3,6 +3,7 @@ const fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const target='css/routes/master_runtime.css';
 const sources=[
+  'css/next/design_contract.css',
   'css/next/master_surfaces.css',
   'css/next/master_business_runtime.css',
   'css/next/master_order_lifecycle.css',
