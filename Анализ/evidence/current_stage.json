@@ -8,13 +8,18 @@
     "pr": 90,
     "branch": "feat/analysis-m2-service-advisories-20261005",
     "m2_exact_evidence_sha": "ae2ceb7a091ac16cfc8df7e71a9f80f4ab0897a0",
-    "alignment_gate_commit": "b500b73255d9e0dfb0d583821ecc24023b25903a"
+    "alignment_gate_commit": "b500b73255d9e0dfb0d583821ecc24023b25903a",
+    "verified_code_checkpoint": "25d81703649df2799794cd77602472db89e20e3e",
+    "application_gate_run": 37238482404,
+    "php_syntax_run": 37238482379,
+    "geo_run": 37238482459,
+    "home_scanner_run": 37238482538
   },
   "state": {
     "desired": "M0_M1_M2_SAFE_FOUNDATION_THEN_M3_SHADOW_MATCHING",
     "m0_equipment": "IMPLEMENTED_MAIN",
     "m1_professions": "IMPLEMENTED_MAIN_MATCHING_DISABLED",
-    "m2_advisories": "IMPLEMENTED_PR90_NOT_MERGED",
+    "m2_advisories": "IMPLEMENTED_PR90_CI_VERIFIED_NOT_MERGED",
     "m3_matching": "NOT_IMPLEMENTED",
     "m5_observed_demand": "NOT_IMPLEMENTED",
     "deployed": "NOT_CONFIRMED"
@@ -31,31 +36,46 @@
   },
   "evidence": [
     {
-      "name": "PR90 master setup M0-M2 contracts",
-      "sha": "ae2ceb7a091ac16cfc8df7e71a9f80f4ab0897a0",
+      "name": "Application gates",
+      "sha": "25d81703649df2799794cd77602472db89e20e3e",
       "status": "PASS",
       "target": "GITHUB_ACTIONS",
-      "run_id": 37237764072
+      "run_id": 37238482404
     },
     {
-      "name": "PR90 PHP syntax",
-      "sha": "ae2ceb7a091ac16cfc8df7e71a9f80f4ab0897a0",
+      "name": "Master setup M0-M2 contracts",
+      "sha": "25d81703649df2799794cd77602472db89e20e3e",
       "status": "PASS",
-      "target": "GITHUB_ACTIONS"
-    },
-    {
-      "name": "PR90 Application gates",
-      "sha": "ae2ceb7a091ac16cfc8df7e71a9f80f4ab0897a0",
-      "status": "FAIL",
       "target": "GITHUB_ACTIONS",
-      "run_id": 37237764072,
-      "failed_step": "Design canon contract"
+      "run_id": 37238482404
     },
     {
-      "name": "Analysis runtime alignment gate",
-      "sha": "b500b73255d9e0dfb0d583821ecc24023b25903a",
-      "status": "IMPLEMENTED_AWAITING_EXACT_HEAD_CI",
-      "target": "SOURCE"
+      "name": "Analysis research runtime alignment",
+      "sha": "25d81703649df2799794cd77602472db89e20e3e",
+      "status": "PASS",
+      "target": "GITHUB_ACTIONS",
+      "run_id": 37238482404
+    },
+    {
+      "name": "PHP syntax",
+      "sha": "25d81703649df2799794cd77602472db89e20e3e",
+      "status": "PASS",
+      "target": "GITHUB_ACTIONS",
+      "run_id": 37238482379
+    },
+    {
+      "name": "Geo runtime reconcile",
+      "sha": "25d81703649df2799794cd77602472db89e20e3e",
+      "status": "PASS",
+      "target": "GITHUB_ACTIONS",
+      "run_id": 37238482459
+    },
+    {
+      "name": "Home scanner navigation",
+      "sha": "25d81703649df2799794cd77602472db89e20e3e",
+      "status": "PASS",
+      "target": "GITHUB_ACTIONS",
+      "run_id": 37238482538
     }
   ],
   "safety": {
@@ -68,8 +88,8 @@
     "query_counts_observed": false
   },
   "next": [
-    "exact-head CI for alignment gate",
-    "merge/converge M2 only after required gate passes",
+    "sync PR90 merge-ref with current main if it moves",
+    "merge M2 only while required gates stay green",
     "design M3 shadow/explain-only matching with feature-off"
   ]
 }
