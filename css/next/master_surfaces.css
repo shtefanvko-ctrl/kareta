@@ -397,3 +397,140 @@ html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
     gap:16px!important;
   }
 }
+
+/* KARETA MASTER PAGE VIEWPORT STABILITY.
+   Canonical owner for route/page geometry. Shell geometry lives in master_responsive_shell.css. */
+html[data-user-role="master"] #k-page-outlet>.k-page,
+html[data-user-role="master"] #k-page-outlet>.k-master-page,
+html[data-user-role="master"] #k-page-outlet .k-master-surface-page,
+html[data-user-role="master"] #k-page-outlet .k-exchange-r71,
+html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar,
+html[data-user-role="master"] #k-page-outlet .k-exchange-r131-list{
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(
+  .k-master-page-header,
+  .k-exchange-r71-toolbar,
+  .k-exchange-card--r71,
+  .k-exchange-r131-filters
+){
+  transition-property:background-color,border-color,color,box-shadow,opacity!important;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-load-badge{
+  display:block!important;
+  min-width:0!important;
+  max-width:240px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums;
+}
+html[data-user-role="master"] #k-page-outlet .k-catalog-toolbar-result{
+  min-height:18px!important;
+  line-height:18px!important;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r71-tabs b{
+  display:inline-block;
+  min-width:1.5ch;
+  text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>*,
+html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71>*{min-width:0}
+
+@media(max-width:767px){
+  html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:14px var(--k-master-canon-gutter,16px) calc(92px + env(safe-area-inset-bottom,0px))!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    height:72px!important;
+    min-height:72px!important;
+    max-height:72px!important;
+    gap:8px!important;
+    overflow:hidden!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header__copy{
+    min-width:0!important;
+    overflow:hidden!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header__copy :is(h1,p,small){
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header__actions{
+    min-width:0!important;
+    max-width:46vw!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    flex-wrap:nowrap!important;
+    scrollbar-width:none!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-master-page-header__actions::-webkit-scrollbar{display:none!important}
+  html[data-user-role="master"] #k-page-outlet .k-exchange-load-badge{max-width:42vw!important}
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-search-field,
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-service-scope,
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar>.k-exchange-r71-tabs{
+    grid-column:1/-1!important;
+    width:100%!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r131-toolbar :is(
+    .k-exchange-filter-button,
+    .k-exchange-kpi-button,
+    .k-exchange-refresh-button
+  ){
+    width:100%!important;
+    min-width:0!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-tabs,
+  html[data-user-role="master"] #k-page-outlet .k-exchange-service-scope{
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    flex-wrap:nowrap!important;
+    scrollbar-width:none!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-tabs::-webkit-scrollbar,
+  html[data-user-role="master"] #k-page-outlet .k-exchange-service-scope::-webkit-scrollbar{display:none!important}
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+}
+
+@media(min-width:768px) and (max-width:1199px){
+  html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding-left:22px!important;
+    padding-right:22px!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+
+@media(min-width:1200px){
+  html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{
+    width:100%!important;
+    max-width:var(--k-master-content-max,1480px)!important;
+    margin-inline:auto!important;
+    padding-left:clamp(28px,2.4vw,38px)!important;
+    padding-right:clamp(28px,2.4vw,38px)!important;
+  }
+  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
