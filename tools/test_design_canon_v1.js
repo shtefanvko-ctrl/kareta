@@ -25,6 +25,7 @@ if(!master.includes('MASTER / CLIENT VISUAL CANON')) fail('master geometry owner
 if(postlude.includes('MASTER / CLIENT VISUAL CANON')) fail('r84 postlude still owns shell geometry');
 if(!master.includes('z-index:var(--k-z-sticky)')) fail('sticky workspace navigation is not on the canonical layer scale');
 if(/z-index\s*:\s*-?\d+/i.test(master)) fail('raw numeric z-index remains in master geometry owner');
+if(/z-index\s*:\s*-?\d+/i.test(postlude)) fail('raw numeric z-index remains in master r84 postlude');
 
 for(const bp of ['@media(max-width:767px)','@media(min-width:768px) and (max-width:1199px)','@media(min-width:1200px)']){
   if(!master.includes(bp)) fail('missing responsive contract '+bp);
