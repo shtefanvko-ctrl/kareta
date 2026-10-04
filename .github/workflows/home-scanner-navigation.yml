@@ -1,0 +1,31 @@
+name: Home scanner navigation
+on:
+  pull_request:
+  push:
+    branches: [reconcile-scanner-main-20261005]
+permissions:
+  contents: read
+jobs:
+  scanner-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+      - run: php -l inc/asset_registry.php
+      - run: node tools/test_home_scanner_navigation.js
+      - run: node tools/test_master_personal_qr.js
+      - run: node tools/test_route_lazy_runtime_84_68.js
+      - run: node tools/test_lazy_account_window_boot.js
+      - run: node tools/test_master_more_contract.js
+      - run: node tools/test_master_ui_cleanup_84_99.js
+      - run: |
+          node --check js/next/pages/scanner.js
+          node --check js/next/app_next.js
+          node --check js/next/route_registry.js
+          node --check js/next/role_access.js
+          node --check js/next/route_asset_loader.js
