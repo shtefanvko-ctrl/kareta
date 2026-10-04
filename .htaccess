@@ -22,6 +22,11 @@ AddDefaultCharset UTF-8
   # Protect dotfiles except well-known ACME folder.
   RewriteRule (^|/)\.(?!well-known/) - [F,L]
 
+  # Public-site entry: only kareta.kz/www.kareta.kz root goes to the isolated landing.
+  # Keep this as 302 until live acceptance; m.kareta.kz and all application hosts stay on the SPA.
+  RewriteCond %{HTTP_HOST} ^(?:www\\.)?kareta\\.kz$ [NC]
+  RewriteRule ^$ /landing/ [R=302,L]
+
   # R186.5 Identity Context Engine clean endpoints.
   RewriteRule ^api/context/(list|current|select)/?$ api/context.php?action=$1 [QSA,L]
   RewriteRule ^api/capabilities/(current|check)/?$ api/capabilities.php?action=$1 [QSA,L]
