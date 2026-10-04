@@ -84,7 +84,9 @@ jobs:
         run: node tools/test_r1885607_identity_api_client_garage_recovery.js
 
       - name: Current API happy and negative paths
-        run: node tools/test_api_contract_current.js
+        run: |
+          node tools/test_api_contract_current.js
+          node tools/test_transport_observability_phase1.js
 
       - name: PWA fallback contract
         run: node tools/test_r1885568428_manifest_fallback.js
