@@ -20,6 +20,7 @@
   });
 
   const CLIENT_ONLY_ROUTES = new Set(['cabinetGarage','cabinetData','cabinetHistory','cabinetDocuments','cabinetPromos']);
+  const SESSION_ONLY_ROUTES = new Set(['notifications','following']);
   let forcedLegacyRole = '';
   const identitySnapshot = () => window.KaretaIdentity?.snapshot?.() || { authenticated:false, mode:'anonymous' };
   const identityActive = () => {
@@ -55,10 +56,15 @@
   }
   function policy(role=currentRole()){ return LEGACY[normalizeRole(role)]; }
   function dynamic(){ return window.KaretaDynamicNavigation; }
+  function hasProtectedSession(){
+    if(identityActive())return true;
+    return String(document.documentElement?.dataset?.identityMode||'')==='legacy-fallback';
+  }
   function canAccess(routeKey, role=currentRole()){
     const key=String(routeKey||'');
     const normalizedRole=normalizeRole(role);
     if (!registry.has(key)) return false;
+    if (SESSION_ONLY_ROUTES.has(key) && !hasProtectedSession()) return false;
     if (identityActive()) {
       if(key==='diagnostics') return ['client','master','sto','admin','owner'].includes(normalizedRole);
       return dynamic()?.canAccess?.(key) === true;
