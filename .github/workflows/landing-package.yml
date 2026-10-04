@@ -1,0 +1,35 @@
+name: Landing package
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'landing/**'
+      - '.github/workflows/landing-package.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify landing
+        run: |
+          test -f landing/index.html
+          test -f landing/assets/logo/kareta_logo_full.png
+          test -f landing/assets/screens/home-desktop.jpg
+          test -f landing/assets/screens/home-mobile.jpg
+          node --check landing/app.js
+          node --check landing/config.js
+          python -m json.tool landing/i18n.json >/dev/null
+      - name: Package landing
+        run: zip -r KARETA_LANDING_REAL_ASSETS_ONLY.zip landing
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KARETA_LANDING_REAL_ASSETS_ONLY
+          path: KARETA_LANDING_REAL_ASSETS_ONLY.zip
+          if-no-files-found: error
+          retention-days: 7
