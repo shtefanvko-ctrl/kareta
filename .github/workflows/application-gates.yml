@@ -70,12 +70,14 @@ jobs:
       - name: Reconciled assistant and auth boundaries
         run: node tools/test_shared_runtime_reconciliation_20261004.js
 
-      - name: Master setup M0 contracts
+      - name: Master setup M0-M2 contracts
         run: |
           node tools/test_master_setup_picker.js
           node tools/test_master_setup_integration.js
           node tools/test_master_equipment_icon_contract.js
           php tools/test_master_equipment_profile.php
+          php tools/test_master_profession_profile.php
+          php tools/test_master_service_advisories.php
 
       - name: Master navigation contract
         run: node tools/test_r1885582_master_mobile_nav.js
