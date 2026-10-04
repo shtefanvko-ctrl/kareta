@@ -64,6 +64,8 @@
     const key=String(routeKey||'');
     const normalizedRole=normalizeRole(role);
     if (!registry.has(key)) return false;
+    if (key === 'masterQr') return normalizedRole === 'master';
+    if (['scanner','scannerQr','scannerDocument'].includes(key)) return ['client','master'].includes(normalizedRole);
     if (SESSION_ONLY_ROUTES.has(key) && !hasProtectedSession()) return false;
     if (identityActive()) {
       if(key==='diagnostics') return ['client','master','sto','admin','owner'].includes(normalizedRole);
