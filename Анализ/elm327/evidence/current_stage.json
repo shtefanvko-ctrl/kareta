@@ -3,7 +3,7 @@
   "recorded_on": "2026-10-05",
   "branch": "feat/elm327-repair-knowledge-20261005",
   "base_sha": "307a8f703588ced539149494fe5c2c52a6d3037e",
-  "validated_sha": "aa815add1536042d1ebb769419681abecbd2b7d6",
+  "validated_sha": "dc4e38b950d5c8da4086aa89cddd6e9fe2d12517",
   "documentation_sha": "179cc455e773814358834ede6dfbd7299c0dea98",
   "state": {
     "research": "IN_PROGRESS",
@@ -17,7 +17,8 @@
     "drive_mirror": "CREATED",
     "android": "UNCHANGED",
     "production_db": "UNCHANGED",
-    "priority_bilingual_batch_2": "IMPLEMENTED"
+    "priority_bilingual_batch_2": "IMPLEMENTED",
+    "manufacturer_priority": "IMPLEMENTED"
   },
   "counts": {
     "canonical_dtc_seed": 45,
@@ -29,11 +30,21 @@
     "symptoms": 12,
     "causes": 27,
     "checks": 22,
-    "repair_actions": 18
+    "repair_actions": 18,
+    "sources": 15
   },
   "validation": {
     "result": "PASS",
-    "errors": 0
+    "errors": 0,
+    "validated_sha": "dc4e38b950d5c8da4086aa89cddd6e9fe2d12517",
+    "counts": {
+      "dtc": 45,
+      "symptoms": 12,
+      "causes": 27,
+      "checks": 22,
+      "repairs": 18,
+      "sources": 15
+    }
   },
   "next": [
     "Run pinned OBDex verify/import in an environment with network or local OBDex checkout.",

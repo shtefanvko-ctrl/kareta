@@ -132,6 +132,26 @@
       "license": "reported CC-BY-SA-4.0 for profile data; verify each repository before use",
       "use": "manufacturer/model-specific signal research; reference only until per-repo licensing/provenance is verified",
       "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "kazakhstan_auto_union_sales_2026_07",
+      "name": "Қазақстанның Автокөлік Одағы — Jan-Jul 2026 new vehicle sales",
+      "type": "market_sales_statistics",
+      "authority": "INDUSTRY_ASSOCIATION",
+      "url": "https://kao.kz/ru/novosti/96/",
+      "license": "reference/citation only",
+      "use": "manufacturer-specific research prioritization; new-sales proxy only",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "kazakhstan_bns_vehicle_stock_2026_09",
+      "name": "Bureau of National Statistics Kazakhstan — vehicle stock as of 2026-09-01",
+      "type": "government_statistics",
+      "authority": "PRIMARY",
+      "url": "https://stat.gov.kz/ru/news/166-6-tys-edinits-avtotransportnykh-sredstv-postavleno-na-uchet-v-avguste/",
+      "license": "government publication; reference/citation",
+      "use": "national fleet-size context; does not provide make ranking in the cited release",
+      "status": "REFERENCE_ONLY"
     }
   ]
 }

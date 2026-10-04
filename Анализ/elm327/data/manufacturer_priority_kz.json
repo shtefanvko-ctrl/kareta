@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-05",
+  "purpose": "Prioritize manufacturer-specific OBD/TSB research for Kazakhstan without claiming whole-fleet prevalence.",
+  "basis": {
+    "metric": "official_dealer_new_vehicle_sales_jan_jul_2026",
+    "source_id": "kazakhstan_auto_union_sales_2026_07",
+    "published_on": "2026-08-17",
+    "total_market_units": 127260,
+    "limitation": {
+      "ru": "Это продажи новых автомобилей за январь–июль 2026 года, а не распределение всего зарегистрированного автопарка Казахстана.",
+      "en": "These are new-vehicle sales for Jan-Jul 2026, not the make distribution of Kazakhstan's entire registered fleet."
+    }
+  },
+  "ranking": [
+    {
+      "rank": 1,
+      "make": "Hyundai",
+      "units": 20959
+    },
+    {
+      "rank": 2,
+      "make": "Chevrolet",
+      "units": 20441
+    },
+    {
+      "rank": 3,
+      "make": "Kia",
+      "units": 14824
+    },
+    {
+      "rank": 4,
+      "make": "Changan",
+      "units": 11927
+    },
+    {
+      "rank": 5,
+      "make": "Chery",
+      "units": 9686
+    },
+    {
+      "rank": 6,
+      "make": "Haval",
+      "units": 7590
+    },
+    {
+      "rank": 7,
+      "make": "Jetour",
+      "units": 6903
+    },
+    {
+      "rank": 8,
+      "make": "JAC",
+      "units": 5739
+    },
+    {
+      "rank": 9,
+      "make": "Toyota",
+      "units": 5016
+    },
+    {
+      "rank": 10,
+      "make": "Geely",
+      "units": 3794
+    }
+  ],
+  "research_queue": [
+    {
+      "tier": "A",
+      "makes": [
+        "Hyundai",
+        "Chevrolet",
+        "Kia",
+        "Changan",
+        "Chery"
+      ],
+      "reason": "top five Jan-Jul 2026 new-sales proxy"
+    },
+    {
+      "tier": "B",
+      "makes": [
+        "Haval",
+        "Jetour",
+        "JAC",
+        "Toyota",
+        "Geely"
+      ],
+      "reason": "next five Jan-Jul 2026 new-sales proxy"
+    }
+  ],
+  "national_context": {
+    "source_id": "kazakhstan_bns_vehicle_stock_2026_09",
+    "registered_vehicles_total_thousand": 6088.7,
+    "passenger_cars_thousand": 5105.4,
+    "as_of": "2026-09-01"
+  },
+  "next_rule": "For each make, collect OEM/official TSB or manufacturer communication applicability first; only then add manufacturer-specific DTC/repair guidance."
+}
