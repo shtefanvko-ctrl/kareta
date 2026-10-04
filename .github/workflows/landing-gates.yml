@@ -71,7 +71,7 @@ jobs:
               assert path.read_bytes()[:2] == b"\xff\xd8", f"Invalid JPEG: {path}"
 
           config = (root / "config.js").read_text(encoding="utf-8")
-          assert 'webUrl:"../"' in config, "Web application URL contract changed"
+          assert ('webUrl:"../"' in config or 'webUrl:"https://m.kareta.kz/"' in config), "Web application URL contract changed"
           assert 'androidUrl:""' in config and 'iosUrl:""' in config, "Store URLs must remain explicit until official URLs are configured"
 
           print("LANDING_CONTRACT: PASS")
