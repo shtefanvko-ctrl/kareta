@@ -97,6 +97,11 @@ jobs:
       - name: Welcome city geo contract
         run: node tools/test_welcome_city_geo_contract.js
 
+      - name: Design canon contract
+        run: |
+          node tools/test_design_canon_v1.js
+          node tools/build_master_runtime_css.js --check
+
       - name: Asset URL hygiene
         run: php tools/test_asset_url_hygiene.php
 
