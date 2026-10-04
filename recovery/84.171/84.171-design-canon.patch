@@ -1,0 +1,2376 @@
+diff -ruN KARETA_84.170_ORIGINAL/CHANGELOG_84.171_CANDIDATE.md KARETA_84.171_REEXTRACT/CHANGELOG_84.171_CANDIDATE.md
+--- KARETA_84.170_ORIGINAL/CHANGELOG_84.171_CANDIDATE.md	1970-01-01 00:00:00.000000000 +0000
++++ KARETA_84.171_REEXTRACT/CHANGELOG_84.171_CANDIDATE.md	2026-10-04 18:01:22.000000000 +0000
+@@ -0,0 +1,24 @@
++# KARETA 188.5.5.6.84.171 — design canon host-test candidate
++
++Base: `188.5.5.6.84.170` full Plesk server-hardening package. This increment changes presentation/layout contracts only and preserves DB 138, API/business logic, Android and 84.170 server hardening.
++
++## Design canon
++
++1. Added `css/next/design_contract.css` as the shared token and global layer authority. Canonical layer scale: base 0, content 1, sticky 20, shell 40, nav 50, FAB 60, overlay 80, modal 100, toast 120, debug 200.
++2. Rebuilt the active Master shell owner in `master_shell_canonical_84_143.css` around exactly three viewport contracts: phone <=767, tablet 768–1199, desktop >=1200.
++3. Removed the 84.169 two-row 3+3 phone dock. Master phone navigation is exactly six destinations in one row: Биржа / Заказы / График / Сообщество / Запчасти / Ещё. `Сегодня` remains absent.
++4. `master_surfaces.css` is the Master content geometry owner. New canonical owners contain no raw numeric `z-index` declarations.
++5. Master Exchange is normalized in its existing component owner `master_ui_exchange_schedule_flattening.css`: client-directory search/filter language, one card on phone, two substantial cards on tablet/desktop, flat cards and responsive quick-response controls. No API/state/route changes.
++6. Known shell/viewport source layers now consume semantic layer tokens. Legacy bundles remain frozen compatibility inputs until browser acceptance proves they can be retired safely.
++7. Added deterministic `tools/build_master_runtime_css.js`, `tools/test_design_canon_84_171.cjs` and `tools/audit_design_debt_84_171.cjs`.
++
++## Preserved
++
++- Database canonical/current target remains migration 138; no migration 139.
++- 84.170 trusted-proxy IP handling, atomic rate-limit files, authorization-first diagnostics, immutable versioned static caching and Plesk gzip guidance are preserved.
++- 84.168 Service Worker/community failure handling and 84.169 route cancellation/question retry/permissions remain unchanged.
++- Android/native bridge is unchanged.
++
++## Hosting acceptance boundary
++
++Local checks prove package/static contracts only. Host test must still prove PHP-FPM/nginx/MySQL behavior, exact release/provenance, cache headers, fresh Service Worker namespace, authenticated Master two-pass navigation, phone/tablet/desktop layout and absence of mixed-release assets.
+diff -ruN KARETA_84.170_ORIGINAL/VERIFICATION_84.171.json KARETA_84.171_REEXTRACT/VERIFICATION_84.171.json
+--- KARETA_84.170_ORIGINAL/VERIFICATION_84.171.json	1970-01-01 00:00:00.000000000 +0000
++++ KARETA_84.171_REEXTRACT/VERIFICATION_84.171.json	2026-10-04 18:07:36.000000000 +0000
+@@ -0,0 +1,102 @@
++{
++  "release": "188.5.5.6.84.171",
++  "base": "188.5.5.6.84.170",
++  "status": "local_test_candidate",
++  "sourceSha": "16057371910e7ab97c553e1b09c1f0d7d6f6db24",
++  "sourceRef": "local/candidate/design-canon-84.171",
++  "scope": "design canon + Master responsive shell + Exchange visual alignment; preserves DB 138/server hardening; no API/business/Android changes",
++  "syntax": {
++    "php": {
++      "checked": 272,
++      "failures": []
++    },
++    "javascript": {
++      "checked": 175,
++      "scope": "js + tools .js/.cjs",
++      "failures": []
++    }
++  },
++  "runtime": {
++    "verifyRuntime": "PASS",
++    "verifyAssets": "PASS",
++    "verifyConnectivity": "PASS",
++    "masterRuntimeBundle": "PASS: 7 canonical sources, generated bundle fresh",
++    "dbVersion": 138,
++    "migrationTarget": 138,
++    "newMigration": false,
++    "serviceWorkerRelease": "188.5.5.6.84.171",
++    "provenance": "PASS"
++  },
++  "design": {
++    "contract": "PASS",
++    "phone": "<=767; six Master destinations in one bottom row; Exchange one column",
++    "tablet": "768-1199; dedicated right rail; Exchange two-column candidate density",
++    "desktop": ">=1200; desktop header + right rail; bounded 1480px Master content; Exchange two columns",
++    "todayMenuItem": "absent",
++    "canonicalOwnerRawNumericZIndex": 0,
++    "legacyAudit": "docs/design/LEGACY_CSS_AUDIT_84.171.json",
++    "rawNumericZIndexDeltaFrom84_170": -20,
++    "importantDeclarationDeltaFrom84_170": -338,
++    "legacyDeletion": "DEFERRED_UNTIL_HOST_BROWSER_ACCEPTANCE"
++  },
++  "tests": {
++    "designCanon84_171": "PASS",
++    "masterMenu84_165": "PASS: six destinations without Today",
++    "masterNavigation84_164": "PASS",
++    "logFixes84_167": "PASS",
++    "swCommunity84_168": "PASS",
++    "bootCancellation84_169": "PASS",
++    "permissions84_169": "PASS",
++    "questionRetry84_169": "PASS",
++    "serverHardening84_170": "PASS",
++    "vehicleEntry": "PASS",
++    "vehicleRetry": "PASS",
++    "unifiedVehicleLifecycle": "PASS: Node VM; not browser/server",
++    "vehicleSaveCoordination84_167": "PASS",
++    "unifiedVehicleCandidatePlaywright": "NOT_RUN: local environment has no Playwright module"
++  },
++  "localServerPreflight": {
++    "status": "EXPECTED_ENVIRONMENT_FAIL",
++    "passes": [
++      "PHP >= 8.1",
++      "json/session/hash/filter/PDO extensions",
++      "required package files",
++      "writable external storage",
++      "DB auto-create off",
++      "production static OTP off",
++      "deployment provenance valid"
++    ],
++    "notAvailableLocally": [
++      "mbstring",
++      "pdo_mysql",
++      "private production config",
++      "configured production database",
++      "production OTP provider"
++    ],
++    "note": "These are host environment prerequisites, not regressions in the 84.171 package."
++  },
++  "hostAcceptance": {
++    "pleskMysql": "NOT_RUN",
++    "packageVerify": "LOCAL_PACKAGE_VERIFY_PASS",
++    "authenticatedMasterTwoPass": "NOT_RUN",
++    "phoneTabletDesktopVisual": "NOT_RUN",
++    "httpCacheHeaders": "NOT_RUN",
++    "serviceWorkerFreshNamespace": "NOT_RUN",
++    "mixedReleaseRequests": "NOT_RUN",
++    "429TimeoutRootCause": "UNRESOLVED_UNTIL_SERVER_LOG_CORRELATION"
++  },
++  "localHttpSmoke": {
++    "assetManifestRelease": "188.5.5.6.84.171",
++    "designContractHttp": "200 text/css",
++    "masterRuntimeHttp": "200 text/css",
++    "serviceWorkerRelease": "188.5.5.6.84.171",
++    "indexHttp": "200 text/html",
++    "indexVersionReferences": 38
++  },
++  "packageDeltaFrom84_170": {
++    "changed": 15,
++    "addedBeforeDiffReport": 9,
++    "removedOnlyRegeneratedManifest": 1,
++    "report": "docs/verification/84.171/package-diff.json"
++  }
++}
+diff -ruN KARETA_84.170_ORIGINAL/_SERVER_PACKAGE_MANIFEST.json KARETA_84.171_REEXTRACT/_SERVER_PACKAGE_MANIFEST.json
+--- KARETA_84.170_ORIGINAL/_SERVER_PACKAGE_MANIFEST.json	2026-10-04 17:25:44.000000000 +0000
++++ KARETA_84.171_REEXTRACT/_SERVER_PACKAGE_MANIFEST.json	2026-10-04 18:07:36.000000000 +0000
+@@ -1,13 +1,13 @@
+ {
+   "schema": "kareta.server-package.v1",
+-  "release": "188.5.5.6.84.170",
+-  "sourceSha": "554ce5f197c3e1e7f5eeb180118e68865a3cc933",
+-  "baseSourceSha": "93561d5984c2e882cb9008e86c76afda91a283b3",
+-  "gitRef": "local/candidate/server-hardening-84.170",
+-  "builtAt": "2026-10-04T17:25:28Z",
++  "release": "188.5.5.6.84.171",
++  "sourceSha": "16057371910e7ab97c553e1b09c1f0d7d6f6db24",
++  "baseSourceSha": "554ce5f197c3e1e7f5eeb180118e68865a3cc933",
++  "gitRef": "local/candidate/design-canon-84.171",
++  "builtAt": "2026-10-04T18:05:07+00:00",
+   "workflowRunId": "",
+-  "purpose": "plesk-server-test-candidate",
+-  "fileCount": 1474,
++  "purpose": "plesk-design-canon-host-test-candidate",
++  "fileCount": 1484,
+   "checksums": {
+     ".htaccess": "02d7096b77e519057ed31c8360c7d58ef1f64552cd5c2e03b3517456d7b4b393",
+     "CHANGELOG_84.159_CANDIDATE.md": "7b89298e3c5be9ce09e5da931c67d19bf4ed3ee23e41c27b204505fe86e8b18b",
+@@ -20,6 +20,7 @@
+     "CHANGELOG_84.168_CANDIDATE.md": "6701a09c58b110b8c3ae48993fc455149d338cbb962412f0ae6407ea8e502041",
+     "CHANGELOG_84.169_CANDIDATE.md": "a22f2c4d856901983058a4f2566472023a998cb3cae520c1ea68a885c691cfc1",
+     "CHANGELOG_84.170_CANDIDATE.md": "edadcc2496bbb1ec2e87d10f3e226a22a27d20e155d77d56c20786391d179a22",
++    "CHANGELOG_84.171_CANDIDATE.md": "18275fd598667923094748da32ccac1de50199d8bb6d5e704872c3d6ed6c7f0e",
+     "VERIFICATION_84.159.json": "a585ade35251fae10759f78f795d036ebd8244989b50c4affffd6fc1d4d871de",
+     "VERIFICATION_84.160.json": "3a42f7be0d753e62c93faad6e3a2852ed784d6e78fe76f45fce5acb74b53ca06",
+     "VERIFICATION_84.161.json": "1cf9e02803295b4105295c8d72ce088913d7d741e4f595bd90f5eabdb8d46f53",
+@@ -30,7 +31,8 @@
+     "VERIFICATION_84.168.json": "d137994b61b5b4c3dae5de72bb636ccba074c4bec9168020d0602909bbfa2b28",
+     "VERIFICATION_84.169.json": "f17af2bcf3d87df3a0ed6d9f43df80ecc414bce0563a71b3af287610f9ebc620",
+     "VERIFICATION_84.170.json": "99bfb142bbecf9be20c3ac1ea6a9aa630c4334414fa3278800e439baa4ca0f36",
+-    "_SERVER_UPLOAD_README.md": "096c41dd226c2a966de3f118c6343b61162924a595ba857976831c6369b18752",
++    "VERIFICATION_84.171.json": "8f57a271595c53a1336b08b274114a424fe690ba257a2fe4681d4378064e2e12",
++    "_SERVER_UPLOAD_README.md": "76348af0c20b1be0e13d470b04302e9478838db0d48f948b33db6ca69e154351",
+     "api/accessibility_check.php": "74a53c7f32a0e07fc0aae721f84ff0920b1c18a2e16c2399b4ce0fbc97bbe672",
+     "api/account_tariffs.php": "b610db1f693a084cbd4a1ec2638c1ea9f6242783d29e0facbadf423d9f6193a2",
+     "api/account_ui_preferences.php": "792e768543916054ac6e75b081614847d240f146f6ddd281449e3df4b4ddff39",
+@@ -1039,7 +1041,7 @@
+     "css/next/client_surface_layout.css": "916d6594dc7b9efe3ad17518d6d9552331d87b7d3d2602fae18f6ccc897846fa",
+     "css/next/client_surface_modernization_phase2.css": "d94af3d40315e0498e5d83f96f810f791cee113fc491236c0829043299a65451",
+     "css/next/client_surface_modernization_phase3.css": "2fb0ed00e6c385854e3462f669b1379c741da7138d961fd168cdc8593094af05",
+-    "css/next/client_viewport_layers.css": "cd63ef4c24b1b32132c83b08845339115ac767440375574ae70abc447d8e5460",
++    "css/next/client_viewport_layers.css": "0286d14c31ce2d5919eb7fa68cedd6d35475f5579d34e930e0b29d69fccfca53",
+     "css/next/client_width_guard.css": "8794bab0f905a5377cc07b00517efc92c9a78797b6ec92870285b6133a5e8db3",
+     "css/next/client_work_order_v2.css": "934aead2b02efc40a2581a21b3820a9b5c30a3084ac52702c8843694705570d2",
+     "css/next/community.css": "ba99b305e414f5a63f565bf7f97b937d73a46783f973c012a4f950b9733a34f9",
+@@ -1050,6 +1052,7 @@
+     "css/next/core_platform.css": "bd866c593fb1c8dfef3b0ad48278defbe2f7b8c4ac0a6808fdbf5ac72826abcd",
+     "css/next/crm.css": "fca3b0303bbe4945dc99342e8e5454acbeeeca978e56adab2e7cac0adfe19675",
+     "css/next/dashboard_engine.css": "542287aa0552b37a6476457ce945484298f52160686cea3f75b7924fa78bfd78",
++    "css/next/design_contract.css": "cbc45e0a209eb9046e68294827cc4adc4834506e37c6044ccc08e5e4f3173f4f",
+     "css/next/desktop_card_grid_expansion.css": "e61035af1c64f40a2d2eebfbd6132d1fcf1d28cbc192c54b219c2fc3b84d99ec",
+     "css/next/desktop_full_width.css": "2b74d4ad7541bda29e9c581889ca4255468acc3618f4de375cb69aa71b8ce19c",
+     "css/next/details.css": "3e4048a675bbd8b3e120f16788d395277ff99f5eac268395cee1a9d1abc71468",
+@@ -1084,12 +1087,12 @@
+     "css/next/master_role_skin.css": "cc5aba5046bc213c921ab7e7c83eabf4eb04ad05c2f78ae60d1d9eca4b83cb3d",
+     "css/next/master_schedule.css": "695bbb02023cf49d0bdcae374f8fa423fb046169409ee40bc58318968856d584",
+     "css/next/master_service_pricing_native.css": "9ca00330b350b7827bd7dea6a72e3450f8d9ef7f87c335ee4e35863780fcebdc",
+-    "css/next/master_shell_canonical_84_143.css": "84c2f7c7d5934fd5172cfb5a3f805e608e6ab4c74b4801c2d079de307acae7c2",
++    "css/next/master_shell_canonical_84_143.css": "190b63c91365a574328ba42e604232c5cdf448645bab309167bac6d6eb9cd595",
+     "css/next/master_shift_breaks_arrival.css": "500f159156a04803e4ba54f4473d765ae4431560e3fbc6f9783684f30a4622e3",
+     "css/next/master_social_wall.css": "5ab48bd63b0c30caefbab1976ed7b6fd323166550cf3fc7207b926af3a8ab6c5",
+     "css/next/master_surface_contract.css": "1d825381e80b6db25e2e030b635371b4da15e2cb7468fc116c790d496a5833d5",
+-    "css/next/master_surfaces.css": "14f477bd40ed3d60e169708166a7b8e6da8fbad7304904378fa44659baec1c9f",
+-    "css/next/master_ui_exchange_schedule_flattening.css": "52f37088452adce5146be3428afcade491be0df5a03df311e20e7c97d5379d78",
++    "css/next/master_surfaces.css": "76d2697c8c6b3a7b5595f8ff6696eb4a2a65dc4693a9feaa3c2508001e752166",
++    "css/next/master_ui_exchange_schedule_flattening.css": "33b711da85ea58ccb494fad9a969f0e9fbb33f47f55a4c1c1d0c0e0fe8769863",
+     "css/next/master_ui_foundation.css": "f0b06634dec5409093308108f1936c666aa7e9c66dc75583ff9591a89180b78c",
+     "css/next/master_workplace.css": "2d3078373e5ae114253a17c9d6e28d3a9ceb05d38a2c494ee0d54df22396cbae",
+     "css/next/master_workplace_native.css": "a5d377c0a7873ee9df68a8c81dc272f43a0ad965f3d395256c4dcc487c13b165",
+@@ -1122,9 +1125,9 @@
+     "css/next/seller_native_workplace.css": "bfd6646ca36adb5174c37718a276866dc6e4d14e07f3f0c668f3611cee98432b",
+     "css/next/seller_profile_storefront_native.css": "23d084fec15bcbff4d80b1249ba448e1848d43dce37d2844a34dd55e48043b76",
+     "css/next/seller_workspace_windows.css": "535253c496d39d4f073c502d3a38b3a1c0e1bfd25ea4a8e5e8cb8ecea0cb0253",
+-    "css/next/shell_84_109_restore.css": "bbcb0be9d22454459ff5b08bb4fce19ea2f5b23bc46b5291656d77a8f7906ff5",
++    "css/next/shell_84_109_restore.css": "0983aab233020854b2c474598dc30f3082272065aa412e54344a98eb899d3825",
+     "css/next/shell_burger_recovery.css": "3157c4660a2b59a7922fd70c9a076d75784fba8b69e504fdbc58cce2e4c87c86",
+-    "css/next/shell_header_restoration.css": "9df19c19aa276ba6ab319a778460181f6c69a7c97e1282cb6bd20b0f61c1bb17",
++    "css/next/shell_header_restoration.css": "09ad363f02e83363649c3d2b8deb7ee73b4705ceba015ab9ca9b596fc7db47e9",
+     "css/next/shell_session_stability.css": "a72276aba5702a066c463f732c5c4e485bb0f41243bc42acb8cb3832404044e6",
+     "css/next/smart_action_account.css": "b18dbd3dab4848d267226fcb09b9655fbb6f6dc0088def72b5708d01f35ef957",
+     "css/next/smart_action_hub.css": "ee96e6c54d96713f1414691165d993ae43a9a909d22882ea4082842038f0347b",
+@@ -1144,7 +1147,7 @@
+     "css/next/ux_cleanup.css": "ca29858d930bdf99676f46b8a893bd4eea2431dfa64ef472a52fe90ade8f62a6",
+     "css/next/vehicle.css": "0c5ef30a7d822b01d3fc1704744ffcbfcfbffd70ae836d29492bde3cd7b6b7da",
+     "css/next/welcome_background.css": "1c78173edef0763883dd2ce1ea3d9edd25e9ba58f7a38bfd4b766f2773e600ae",
+-    "css/next/window_engine.css": "8ac1a1af5a1d1100eae6c7b98866ec6083d7cd770e4ef4df2bb4969366e968d4",
++    "css/next/window_engine.css": "70755d25c1484e67e9ec2cfbeeaea2330643246a29d93adabfb0d8148caef395",
+     "css/next/work_feed.css": "9c6588045805b4ae4f75e749ce7f4901cf7374487234f9e7ddfbdcf6b28b32e7",
+     "css/next/work_order.css": "4bd1a34a849a372cbf363b058a2228d728f9ee263d79d07e25efbfd8e5938809",
+     "css/next/work_order_windows.css": "961ed2430d25af9a5f80557191c4bd9baf6a241acfe9caf9cceb6d84fc85413e",
+@@ -1161,7 +1164,7 @@
+     "css/routes/finance_runtime.css": "aa630da6b7d6b6f7be785c027a08b777e83f0fe036f250d82e414d1f6e700eed",
+     "css/routes/home_responsive_84_134.css": "13679bdab48da48079bec5e25fe550ffbd20b52cec006fd486979abc3235324d",
+     "css/routes/master_reference_final_84_130.css": "98ac10996c67251e6d253766ec09c4815959284881cab95727b8c711fdd86a8a",
+-    "css/routes/master_runtime.css": "4c18eb196caefc85970ecb1399ae4db0a2bd7e459da04f04c98eab8b8fa0645f",
++    "css/routes/master_runtime.css": "3decc68069f9801f366702f138a25f9bb603c5ffd869c3ae1cb20de0a28c5006",
+     "css/routes/parts_runtime.css": "8709402799d6bf3437ed9c6367723191a8f1a412d4c5e74aad5a5c3824220492",
+     "css/routes/profile_runtime.css": "b12ed90dbbfca2e3f504ae389217cb4b6db5d0c013df3eae05755d07810cc8e5",
+     "css/routes/providers_runtime.css": "7af099d3292108d38a59c74902697a912144dc9b0cd31ce3ffd47185a190d9b9",
+@@ -1179,13 +1182,17 @@
+     "docs/deployment/PLESK_INSTALL_84.166.md": "adf6648705e9918314fe13626f2bcb0013e32dec2d0d70dee19bfba9c753b885",
+     "docs/deployment/PLESK_INSTALL_84.169.md": "fab89833e6f83e311814d755bb876e076a3c9a8a8d940af5dc4b5f1b813edf10",
+     "docs/deployment/PLESK_INSTALL_84.170.md": "ff2d8dcbe42536db743fea6b70713c53edc8cd4be34632adcc38ac0513a106dc",
++    "docs/deployment/PLESK_INSTALL_84.171.md": "44015ec6ec7ede427d99f3de6270c76cd20cde8afa1810785e2fce26b1201b57",
+     "docs/deployment/PLESK_NGINX.conf": "ae7b3bb8e8b36dff3b5b7d9f49edbd0c9512dfae90b97e6dd6f2e5f65c72a218",
+     "docs/deployment/SERVER_TEST_UPLOAD.md": "a4c7d3a155e474e606f9472e2ef03bb674c6c901413c5f4f7d1f9e960abe1a3e",
+-    "docs/release/current.json": "6b388553a0b3fc2b05aad6e503a00c147fb3031a48b98e8d6a2a81fc440fcf93",
++    "docs/design/CANON_84_171.md": "cad31c2d8e330c493678b59d871c81a147f07ac088e4e6ad1c8c3899ee25121f",
++    "docs/design/LEGACY_CSS_AUDIT_84.171.json": "61edf45899a4171d11de0eb6a19b8acdd08b6980942ca2cb62a4fa0e614f41e4",
++    "docs/release/current.json": "50060fa0702eb5a98aeb3ce34412b09f4c2d80f413b2d4995c8c1b2885e77cbb",
+     "docs/verification/84.169/browser-preview.json": "8e02520971d368de2341f254aac40f0f5612a38f3e6919b65d38871a92809c77",
+     "docs/verification/84.169/desktop-welcome-preview.png": "61c5c9d8124b450a65e416620dfda52c35c44933092b8346d1ede78ca7e8a84a",
+-    "inc/asset_registry.php": "2c0fa60b1b71910711af510b2ecc61f20e3f6258bc9caa20e469a0572a79a0f3",
+-    "inc/asset_version.php": "75c83f6f0bf3d8c49e3e6a3c2819face57b19344c4a64b8569cd2de5de8b2afc",
++    "docs/verification/84.171/package-diff.json": "930f134d9a3e2e5f4cb99a67b32a402e8a6b37114babc17de00fe6fe34d84412",
++    "inc/asset_registry.php": "8a45a0ad9e69b8c14c517e5e5e1f75939e9864db1e4f94a0f75bce40c5509c8a",
++    "inc/asset_version.php": "260cd333ed5d30fd14a94f61f1ef8f81f281bcaae16a393d08e4b89b9d56a844",
+     "inc/client_ip.php": "2e599944aad2d4d9ea591785371e73ccd382385bc1fe637241c3304504ad4a60",
+     "inc/deployment_provenance.php": "50de8df70fee2c77831f45d1241a4b776b28e31347d53ad3caaee2f5baf589c6",
+     "inc/error_codes.php": "fba106bec1644720425c56fd1f9863e13c6aa5d6fb4776bdeba00e19d55b696d",
+@@ -1453,10 +1460,12 @@
+     "storage/catalog/products_globaltuning.json": "fc3342a87b130a209ff356a01f1d8b6ad5b773326f3143d6a429c457d245fe19",
+     "storage/catalog/services.json": "8c5aa1e6e7bd886c1e769f8dea0d2a32da4b31c7e635b7734f99285ca48880ff",
+     "storage/catalog/work_posts.json": "90db369e325c1706a49399343e8476dd461b422d6dc0385dcd49995f81fb170e",
+-    "storage/deployment_manifest.json": "1f276c9baacb31ac49ddaf71de33e24e4726f960d86acd402df855968a977824",
++    "storage/deployment_manifest.json": "c218f0b1d2fba1e7cd5194048630a29b54e380ddb6daff27f13d798c8c6bcae6",
+     "storage/uploads/.htaccess": "fa28d421a28ed9b6f4b997d5119c2b8adbacff6e2dd119a179b71230f9664934",
+-    "sw.js": "89839e4ca895cfd86257abe6dcd2abe596c3e9c9a98ed9d78d220f2972c278d6",
++    "sw.js": "663fd2aa3ceb078fab349247b5a21bbccd69a57f65ca59436940bf30a6089bc8",
++    "tools/audit_design_debt_84_171.cjs": "03664ae35af558f90940367457c4b8eaf30d6147f17081954678e06e969a6071",
+     "tools/backup_project.php": "036869025b26d97fb24afbcbb4ccd8a70e44ca1422f14b58231d094585930216",
++    "tools/build_master_runtime_css.js": "d838669b8385ba1bd40d5a812e1a81c74dca3bd0c0cb67e31fa00c8bfd387fb7",
+     "tools/cleanup_runtime.php": "1150b63b9e1d1041e8f12c9da54d713fc592dbabbccbb18c8fd7c622997e723f",
+     "tools/db_upgrade.php": "f4e8e9f1bb740e46ed77d694a15201d1400e869fd9b95f519197bcc273811e53",
+     "tools/generate_deployment_manifest.php": "228c25b306b747422259a6fa8dd3a86d84fb483bb0bdb71f36ec2f42024c9f5f",
+@@ -1466,6 +1475,7 @@
+     "tools/package_verify.php": "856104074b560b05c7980427aaf9a0a0080b7d7a66d5aa79388f05c66c9b7377",
+     "tools/server_preflight.php": "803abbae97813fd8968887eeb33627216eb475b80373edddc88d4e0111adc8f6",
+     "tools/test_boot_cancellation_84_169.cjs": "1d5082a28509636c165ff40bb89a372baf1d850f0026c7a54570bb72ee31ca08",
++    "tools/test_design_canon_84_171.cjs": "1d095847e193bce709dbadee69d34343df8bc0fc33c70094315eb686558ab707",
+     "tools/test_log_fixes_84_167.cjs": "f89cffe0068e9b026cd4200983f8b023c42af94d0be49ee8f1cdd1f801c62875",
+     "tools/test_master_menu_84_165.cjs": "e2321dea8f2605bec4830516f7f9fa29a9d6e6bf9b51bd5a9e529c84af848c2a",
+     "tools/test_master_navigation_84_164.cjs": "f2140b47396736a3d931285c6d1b86cfac60a75f95b897bc5dbc844c1209728c",
+@@ -1480,7 +1490,7 @@
+     "tools/test_vehicle_save_coordination_84_167.cjs": "02c71061a9d405ec1a97ce657e2868fcaa172eadf083b71d352ab8466fb19bb5",
+     "tools/verify_assets.php": "72773a4dd7ee54932e508a0dc40560547cc236145633936887a220615e30d126",
+     "tools/verify_connectivity.php": "57dc14597cceb85e5cc53213b4915eff3923a1d4a85339b484a8334af1fdc7d6",
+-    "tools/verify_runtime.php": "068a69312fa382424472c85a9c69665c8a647c93a96bea408195fd218988940a",
++    "tools/verify_runtime.php": "1e969bbe620fbf522038adf57bd0263cb86ae271fb7676775ec14500fbd49d74",
+     "tools/verify_runtime_provenance.py": "ed824555c9ae7d465b3ed6788bdb9ca331c5ec6c7627841f7b1c92e2a03932bf",
+     "tools/verify_staging_current.py": "5e16389bc392b5fc6e679dd4724c3378b0c78165e62aec313f081b8ece319b36"
+   }
+diff -ruN KARETA_84.170_ORIGINAL/_SERVER_UPLOAD_README.md KARETA_84.171_REEXTRACT/_SERVER_UPLOAD_README.md
+--- KARETA_84.170_ORIGINAL/_SERVER_UPLOAD_README.md	2026-10-04 17:23:31.000000000 +0000
++++ KARETA_84.171_REEXTRACT/_SERVER_UPLOAD_README.md	2026-10-04 18:01:22.000000000 +0000
+@@ -1,6 +1,6 @@
+-# KARETA 188.5.5.6.84.170 — Plesk server hardening
++# KARETA 188.5.5.6.84.171 — Plesk design canon host-test
+ 
+-Полный проект на базе 84.169, каноническое меню мастера из шести пунктов, миграции БД 1–138 и P0 server-hardening. Пошаговая инструкция: docs/deployment/PLESK_INSTALL_84.170.md. Пример nginx-защиты/сжатия: docs/deployment/PLESK_NGINX.conf.
++Полный проект на базе 84.170: DB 138 и server hardening сохранены; добавлен дизайн-канон Master/Биржи для host acceptance. Инструкция: docs/deployment/PLESK_INSTALL_84.171.md.
+ 
+ 1. Сделать backup файлов и БД в Plesk. Сохранить действующий частный config и storage.
+ 2. Для новой установки создать пустую БД и пользователя; распаковать проект в корень document root. Не вкладывать проект в дополнительную папку.
+@@ -22,3 +22,6 @@
+ 84.169: Сегодня удалён из меню; shared route load не зависит от отмены отдельной страницы; исправлена сетка welcome на ПК. Добавлен alias calendar.manage_own и миграция 138 права market.questions.create с сохранением deny. После загрузки обязательно tools/db_upgrade.php --apply (ожидается версия 138); tools/test_permissions_84_169.php проверяет чистую логику прав без БД. Серверные connection reset требуют журналов nginx/PHP/прокси; не объявлены исправленными.
+ 
+ 84.170: исправлен критичный разрыв 84.169 — runtime DB version теперь 138 и совпадает с manifest/migration 138. Добавлено доверенное определение client IP за Plesk/nginx, атомарные файловые rate-limit с Retry-After, authorization-first для schema/identity diagnostics, immutable cache для versioned JS/CSS и gzip-пример nginx. Android/продуктовые сценарии не менялись. Live Plesk/MySQL/browser acceptance обязателен; таймауты не объявлены устранёнными без серверных логов.
++
++
++84.171: единый design token/layer contract, один владелец Master shell, отдельные phone/tablet/desktop геометрии, нижнее меню телефона строго в одну строку из 6 пунктов, Биржа приведена к клиентскому list/search паттерну. API/DB/Android не менялись. Legacy CSS не удаляется до двухпроходного браузерного acceptance на хостинге.
+diff -ruN KARETA_84.170_ORIGINAL/css/next/client_viewport_layers.css KARETA_84.171_REEXTRACT/css/next/client_viewport_layers.css
+--- KARETA_84.170_ORIGINAL/css/next/client_viewport_layers.css	2026-10-04 09:26:40.000000000 +0000
++++ KARETA_84.171_REEXTRACT/css/next/client_viewport_layers.css	2026-10-04 17:58:05.000000000 +0000
+@@ -37,7 +37,7 @@
+   /* COMMUNITY: one sticky rail below the global shell, then overlays own VisualViewport. */
+   html[data-user-role="client"] .k-community-v2 .k-community-feed-tabs{
+     top:var(--k-shell-h,68px)!important;
+-    z-index:70!important;
++    z-index:var(--k-z-sticky)!important;
+   }
+   html[data-user-role="client"]:has(#k-shell-header.is-scroll-hidden) .k-community-v2 .k-community-feed-tabs{
+     top:0!important;
+@@ -148,7 +148,7 @@
+   }
+   html[data-user-role="client"] [data-page="chats"] .k-chat-composer{
+     position:relative!important;
+-    z-index:8!important;
++    z-index:var(--k-z-sticky)!important;
+     padding:7px 8px max(7px,env(safe-area-inset-bottom,0px))!important;
+     background:#fff!important;
+     box-shadow:0 -8px 22px rgba(15,23,42,.05)!important;
+@@ -203,7 +203,7 @@
+   html[data-user-role="client"] .k-master-ref-booking-continue{
+     position:sticky!important;
+     bottom:calc(var(--k-client-active-bottom-space) + 8px)!important;
+-    z-index:12!important;
++    z-index:var(--k-z-sticky)!important;
+     box-shadow:0 8px 0 #fff,0 -8px 22px rgba(15,23,42,.06)!important;
+   }
+ }
+diff -ruN KARETA_84.170_ORIGINAL/css/next/design_contract.css KARETA_84.171_REEXTRACT/css/next/design_contract.css
+--- KARETA_84.170_ORIGINAL/css/next/design_contract.css	1970-01-01 00:00:00.000000000 +0000
++++ KARETA_84.171_REEXTRACT/css/next/design_contract.css	2026-10-04 17:58:34.000000000 +0000
+@@ -0,0 +1,71 @@
++/* KARETA.KZ R188.5.5.6.84.171 — DESIGN CONTRACT V1.
++   Shared visual tokens + canonical application layer scale.
++   This file owns global layer semantics. Route/component files must consume tokens,
++   not invent global z-index numbers. Legacy bundle rules remain migration inputs. */
++:root{
++  --k-radius-xs:5px;
++  --k-radius-control:10px;
++  --k-radius-card:18px;
++  --k-radius-dialog:24px;
++
++  --k-space-1:4px;
++  --k-space-2:8px;
++  --k-space-3:12px;
++  --k-space-4:16px;
++  --k-space-5:20px;
++  --k-space-6:24px;
++  --k-space-8:32px;
++
++  --k-layout-content-max:1480px;
++  --k-layout-page-gutter:clamp(16px,2vw,32px);
++
++  --k-surface-page:#f5f6f8;
++  --k-surface-card:#fff;
++  --k-line:#e4e7ec;
++  --k-text:#111827;
++  --k-muted:#667085;
++  --k-shadow-card:0 9px 28px rgba(15,23,42,.08);
++
++  --k-z-base:0;
++  --k-z-content:1;
++  --k-z-sticky:20;
++  --k-z-shell:40;
++  --k-z-nav:50;
++  --k-z-fab:60;
++  --k-z-overlay:80;
++  --k-z-modal:100;
++  --k-z-toast:120;
++  --k-z-debug:200;
++}
++
++/* Global layer authority. Loaded after runtime_boot_bundle.css on purpose. */
++#k-shell-header.k-shell-header{z-index:var(--k-z-shell)!important}
++#k-shell-header>#k-desktop-nav.k-desktop-nav,
++#k-mobile-nav.k-mobile-nav{z-index:var(--k-z-nav)!important}
++#k-mobile-fab-stack{z-index:var(--k-z-fab)!important}
++#k-menu-drawer.k-menu-drawer,
++.k-shell-location-popover{z-index:var(--k-z-overlay)!important}
++#k-mobile-back.k-mobile-back{z-index:var(--k-z-shell)!important}
++html[data-user-role="client"] #k-shell-header>.k-brand{z-index:var(--k-z-nav)!important}
++.k-entity-window__head{z-index:var(--k-z-sticky)!important}
++.k-toast-host,.k-toast-root{z-index:var(--k-z-toast)!important}
++
++html[data-user-role="client"] .k-community-v2 .k-community-feed-tabs,
++html[data-user-role="client"] [data-page="chats"] .k-chat-composer,
++html[data-user-role="client"] .k-master-ref-booking-continue{
++  z-index:var(--k-z-sticky)!important;
++}
++
++html[data-user-role="master"],html[data-navigation-context="master"]{
++  --k-master-content-max:var(--k-layout-content-max);
++  --k-master-page-x:var(--k-layout-page-gutter);
++  --k-master-control-radius:var(--k-radius-control);
++  --k-master-small-card-radius:var(--k-radius-card);
++  --k-master-card-radius:var(--k-radius-card);
++  --k-master-dialog-radius:var(--k-radius-dialog);
++  --k-master-line:var(--k-line);
++  --k-master-surface:var(--k-surface-card);
++  --k-master-page-bg:var(--k-surface-page);
++  --k-master-text:var(--k-text);
++  --k-master-muted:var(--k-muted);
++}
+diff -ruN KARETA_84.170_ORIGINAL/css/next/master_shell_canonical_84_143.css KARETA_84.171_REEXTRACT/css/next/master_shell_canonical_84_143.css
+--- KARETA_84.170_ORIGINAL/css/next/master_shell_canonical_84_143.css	2026-10-04 11:08:14.000000000 +0000
++++ KARETA_84.171_REEXTRACT/css/next/master_shell_canonical_84_143.css	2026-10-04 17:58:05.000000000 +0000
+@@ -1,721 +1,188 @@
+-/* KARETA.KZ canonical MASTER shell — hardened in R188.5.5.6.84.150
+-   Canonical MASTER shell parity contract.
+-   One owner for Master header/nav geometry across direct loads and route transitions.
+-   Client visual geometry is mirrored, while route composition remains Master-owned. */
+-
++/* KARETA.KZ R188.5.5.6.84.171 — CANONICAL MASTER SHELL V2.
++   Sole owner of Master header/navigation/frame geometry.
++   Breakpoints: phone <=767, tablet 768–1199, desktop >=1200. */
+ html[data-user-role="master"]{
+   --k-master-shell-h:72px;
+-  --k-master-mobile-shell-h:68px;
+-  --k-master-left-nav-w:210px;
++  --k-master-mobile-shell-h:64px;
++  --k-master-tablet-rail:92px;
++  --k-master-desktop-rail:232px;
+   --k-master-mobile-nav-h:72px;
+   --k-master-shell-orange:#ff5a0a;
+   --k-master-shell-orange-soft:#fff1ec;
+   --k-master-shell-ink:#111827;
+   --k-master-shell-muted:#6b7280;
+   --k-master-shell-line:rgba(15,23,42,.08);
++  scrollbar-gutter:stable;
+ }
+ 
+-/* Master header is a stable application control, not scroll-away page chrome. */
++html[data-user-role="master"] :is(.k-app-shell,#k-page-outlet){min-width:0;max-width:100%;box-sizing:border-box}
++html[data-user-role="master"] #k-page-outlet{overflow-x:clip!important}
+ html[data-user-role="master"] #k-shell-header.is-scroll-hidden,
+ html[data-user-role="master"] #k-shell-header.is-scroll-visible{
+-  transform:none!important;
+-  visibility:visible!important;
+-  opacity:1!important;
+-  pointer-events:auto!important;
++  transform:none!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+ }
+-
+-/* Keep shell controls visually consistent in every Master route. */
+ html[data-user-role="master"] #k-shell-header.k-shell-header{
+   box-sizing:border-box!important;
++  z-index:var(--k-z-shell)!important;
+   background:rgba(255,255,255,.98)!important;
+   color:var(--k-master-shell-ink)!important;
+   border-bottom:1px solid var(--k-master-shell-line)!important;
+   box-shadow:0 3px 16px rgba(15,23,42,.035)!important;
+   backdrop-filter:saturate(1.08) blur(14px)!important;
+ }
+-html[data-user-role="master"] #k-shell-header .k-brand-logo--full{
+-  display:block!important;
+-  object-fit:contain!important;
+-}
+-html[data-user-role="master"] #k-shell-header .k-brand-logo--icon{
+-  display:none!important;
+-}
+-html[data-user-role="master"] #k-shell-header>.k-shell-actions{
+-  display:flex!important;
+-  align-items:center!important;
+-  justify-content:flex-end!important;
+-  min-width:0!important;
+-}
++html[data-user-role="master"] #k-shell-header .k-brand-logo--full{display:block!important;object-fit:contain!important}
++html[data-user-role="master"] #k-shell-header .k-brand-logo--icon{display:none!important}
++html[data-user-role="master"] #k-shell-header>.k-shell-actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;min-width:0!important}
+ html[data-user-role="master"] #k-shell-header>.k-shell-actions>.k-shell-location-icon{
+-  display:flex!important;
+-  align-items:center!important;
+-  justify-content:center!important;
+-  border:0!important;
+-  background:var(--k-master-shell-orange-soft)!important;
+-  color:var(--k-master-shell-orange)!important;
+-  box-shadow:none!important;
+-}
+-html[data-user-role="master"] #k-shell-header>.k-shell-actions>.k-shell-location-icon svg{
+-  flex:0 0 22px!important;
+-  width:22px!important;
+-  height:22px!important;
+-  fill:none!important;
+-  stroke:currentColor!important;
+-  stroke-width:2!important;
++  display:flex!important;align-items:center!important;justify-content:center!important;border:0!important;
++  background:var(--k-master-shell-orange-soft)!important;color:var(--k-master-shell-orange)!important;box-shadow:none!important;
+ }
+-html[data-user-role="master"] #k-shell-header .k-header-notifications{
+-  display:grid!important;
+-  place-items:center!important;
+-  border:0!important;
+-  background:transparent!important;
+-  color:#4b5563!important;
+-  box-shadow:none!important;
+-}
+-html[data-user-role="master"] #k-menu-toggle.k-menu-toggle{
+-  display:grid!important;
+-  place-items:center!important;
+-  border:0!important;
+-  background:#111827!important;
+-  color:#fff!important;
+-  box-shadow:none!important;
+-}
+-html[data-user-role="master"] #k-menu-toggle .k-menu-toggle-label{
+-  position:absolute!important;
+-  width:1px!important;
+-  height:1px!important;
+-  margin:-1px!important;
+-  overflow:hidden!important;
+-  clip:rect(0,0,0,0)!important;
+-  white-space:nowrap!important;
+-}
+-
+-/* MOBILE — exact stable app shell, never sticky-inside-content. */
+-@media(max-width:900px){
+-  html[data-user-role="master"] .k-app-shell{
+-    width:100%!important;
+-    min-width:0!important;
+-    padding-top:var(--k-master-mobile-shell-h)!important;
+-    padding-left:0!important;
+-    padding-right:0!important;
+-  }
+-
++html[data-user-role="master"] #k-shell-header .k-header-notifications{display:grid!important;place-items:center!important;border:0!important;background:transparent!important;color:#4b5563!important;box-shadow:none!important}
++html[data-user-role="master"] #k-menu-toggle.k-menu-toggle{display:grid!important;place-items:center!important;border:0!important;background:#111827!important;color:#fff!important;box-shadow:none!important}
++html[data-user-role="master"] #k-menu-toggle .k-menu-toggle-label{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important}
++
++/* PHONE */
++@media(max-width:767px){
++  html[data-user-role="master"] .k-app-shell{width:100%!important;padding:var(--k-master-mobile-shell-h) 0 0!important}
+   html[data-user-role="master"] #k-shell-header.k-shell-header{
+-    position:fixed!important;
+-    inset:0 0 auto 0!important;
+-    z-index:180!important;
+-    width:100%!important;
+-    max-width:100%!important;
+-    min-width:0!important;
+-    height:var(--k-master-mobile-shell-h)!important;
+-    min-height:var(--k-master-mobile-shell-h)!important;
+-    display:block!important;
+-    padding:8px 10px!important;
+-    overflow:visible!important;
++    position:fixed!important;inset:0 0 auto 0!important;width:100%!important;height:var(--k-master-mobile-shell-h)!important;
++    min-height:var(--k-master-mobile-shell-h)!important;display:block!important;padding:8px 10px!important;overflow:visible!important;
+   }
+-
+-  html[data-user-role="master"] #k-shell-header>#k-desktop-nav.k-desktop-nav{
+-    display:none!important;
+-  }
+-
++  html[data-user-role="master"] #k-shell-header>#k-desktop-nav.k-desktop-nav{display:none!important}
+   html[data-user-role="master"] #k-shell-header>.k-brand{
+-    position:absolute!important;
+-    left:50%!important;
+-    top:50%!important;
+-    transform:translate(-50%,-50%)!important;
+-    display:inline-flex!important;
+-    align-items:center!important;
+-    justify-content:center!important;
+-    width:auto!important;
+-    max-width:132px!important;
+-    height:44px!important;
+-    margin:0!important;
+-    padding:0!important;
+-    overflow:hidden!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-brand .k-brand-logo--full{
+-    width:132px!important;
+-    max-width:100%!important;
+-    height:40px!important;
+-    object-position:center!important;
++    position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;
++    display:flex!important;align-items:center!important;justify-content:center!important;width:auto!important;max-width:132px!important;
++    height:42px!important;margin:0!important;padding:0!important;overflow:hidden!important;
+   }
+-
++  html[data-user-role="master"] #k-shell-header>.k-brand .k-brand-logo--full{width:128px!important;height:38px!important;object-position:center!important}
+   html[data-user-role="master"] #k-shell-header>#k-mobile-back.k-mobile-back{
+-    position:absolute!important;
+-    left:10px!important;
+-    top:50%!important;
+-    transform:translateY(-50%)!important;
+-    z-index:2!important;
+-    width:40px!important;
+-    height:40px!important;
+-    min-width:40px!important;
+-    min-height:40px!important;
+-    margin:0!important;
+-    padding:0!important;
+-    border:1px solid #e7e9ed!important;
+-    border-radius:12px!important;
+-    background:#fff!important;
+-    color:#111827!important;
+-    box-shadow:none!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>#k-mobile-back[hidden]{
+-    display:none!important;
++    position:absolute!important;left:10px!important;top:50%!important;transform:translateY(-50%)!important;
++    width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;margin:0!important;padding:0!important;
++    border:1px solid #e7e9ed!important;border-radius:12px!important;background:#fff!important;color:#111827!important;box-shadow:none!important;
+   }
+-
++  html[data-user-role="master"] #k-shell-header>#k-mobile-back[hidden]{display:none!important}
+   html[data-user-role="master"] #k-shell-header>.k-shell-actions{
+-    position:absolute!important;
+-    right:10px!important;
+-    top:50%!important;
+-    transform:translateY(-50%)!important;
+-    z-index:2!important;
+-    width:auto!important;
+-    max-width:calc(50vw - 58px)!important;
+-    gap:2px!important;
+-    overflow:visible!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-shell-actions :is(a,button){
+-    flex:0 0 38px!important;
+-    width:38px!important;
+-    height:40px!important;
+-    min-width:38px!important;
+-    min-height:40px!important;
+-    padding:0!important;
+-    border-radius:12px!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-shell-actions>.k-shell-location-icon{
+-    flex-basis:34px!important;
+-    width:34px!important;
+-    min-width:34px!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-shell-actions>.k-shell-location-icon .k-shell-location-label{
+-    display:none!important;
+-  }
+-  html[data-user-role="master"] #k-menu-toggle.k-menu-toggle{
+-    flex-basis:40px!important;
+-    width:40px!important;
+-    min-width:40px!important;
++    position:absolute!important;right:10px!important;top:50%!important;transform:translateY(-50%)!important;
++    width:auto!important;max-width:calc(50vw - 58px)!important;gap:2px!important;overflow:visible!important;
+   }
++  html[data-user-role="master"] #k-shell-header>.k-shell-actions :is(a,button){flex:0 0 38px!important;width:38px!important;height:40px!important;min-width:38px!important;min-height:40px!important;padding:0!important;border-radius:12px!important}
++  html[data-user-role="master"] #k-shell-header>.k-shell-actions>.k-shell-location-icon{flex-basis:34px!important;width:34px!important;min-width:34px!important}
++  html[data-user-role="master"] #k-shell-header>.k-shell-actions>.k-shell-location-icon .k-shell-location-label{display:none!important}
+ 
+-  html[data-user-role="master"] #k-mobile-nav.k-mobile-nav{
+-    --k-mobile-nav-count:7!important;
+-    position:fixed!important;
+-    inset:auto 0 0 0!important;
+-    z-index:175!important;
+-    width:100%!important;
+-    max-width:100%!important;
+-    min-width:0!important;
+-    height:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px))!important;
++  html[data-user-role="master"] #k-mobile-nav.k-mobile-nav,
++  html[data-user-role="master"] #k-app #k-mobile-nav.k-mobile-nav{
++    --k-mobile-nav-count:6!important;
++    position:fixed!important;inset:auto 0 0 0!important;z-index:var(--k-z-nav)!important;
++    display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;grid-template-rows:1fr!important;
++    width:100%!important;height:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px))!important;
+     min-height:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px))!important;
+-    display:grid!important;
+-    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+-    grid-template-rows:1fr!important;
+-    gap:0!important;
++    max-height:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px))!important;
+     padding:4px max(4px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(4px,env(safe-area-inset-left,0px))!important;
+-    border:0!important;
+-    border-top:1px solid #e6e6e6!important;
+-    border-radius:0!important;
+-    background:rgba(255,255,255,.98)!important;
+-    box-shadow:none!important;
+-    backdrop-filter:none!important;
+-    overflow:hidden!important;
+-  }
+-  html[data-user-role="master"] #k-mobile-nav .k-nav-link{
+-    min-width:0!important;
+-    max-width:100%!important;
+-    min-height:54px!important;
+-    height:auto!important;
+-    display:flex!important;
+-    flex-direction:column!important;
+-    align-items:center!important;
+-    justify-content:center!important;
+-    gap:2px!important;
+-    padding:4px 1px!important;
+-    border:1px solid transparent!important;
+-    border-radius:0!important;
+-    background:transparent!important;
+-    color:#6b7280!important;
+-    box-shadow:none!important;
+-    overflow:hidden!important;
+-  }
+-  html[data-user-role="master"] #k-mobile-nav .k-nav-icon,
+-  html[data-user-role="master"] #k-mobile-nav .k-nav-icon svg{
+-    width:21px!important;
+-    height:21px!important;
+-    flex:0 0 21px!important;
+-    color:currentColor!important;
+-    stroke:currentColor!important;
+-  }
+-  html[data-user-role="master"] #k-mobile-nav .k-nav-label{
+-    display:block!important;
+-    min-width:0!important;
+-    max-width:100%!important;
+-    overflow:hidden!important;
+-    text-overflow:ellipsis!important;
+-    white-space:nowrap!important;
+-    color:inherit!important;
+-    font-size:clamp(8px,2.15vw,10px)!important;
+-    line-height:1.05!important;
+-  }
+-  html[data-user-role="master"] #k-mobile-nav .k-nav-link:is(.is-active,[aria-current="page"]){
+-    border-color:rgba(255,90,10,.10)!important;
+-    background:var(--k-master-shell-orange-soft)!important;
+-    color:var(--k-master-shell-orange)!important;
++    gap:2px!important;border:0!important;border-top:1px solid #e6e6e6!important;border-radius:0!important;
++    background:var(--k-glass-bg-strong,rgba(255,255,255,.96))!important;box-shadow:none!important;
++    backdrop-filter:blur(var(--k-glass-blur,18px))!important;overflow:hidden!important;
+   }
++  html[data-user-role="master"] #k-app #k-mobile-nav>.k-nav-link{
++    min-width:0!important;min-height:54px!important;height:100%!important;display:flex!important;flex-direction:column!important;
++    align-items:center!important;justify-content:center!important;gap:2px!important;padding:4px 1px!important;
++    border:1px solid transparent!important;border-radius:var(--k-radius-xs)!important;background:transparent!important;color:var(--k-master-shell-muted)!important;box-shadow:none!important;overflow:hidden!important;
++  }
++  html[data-user-role="master"] #k-app #k-mobile-nav .k-nav-icon,
++  html[data-user-role="master"] #k-app #k-mobile-nav .k-nav-icon svg{width:21px!important;height:21px!important;flex:0 0 21px!important;color:currentColor!important;stroke:currentColor!important}
++  html[data-user-role="master"] #k-app #k-mobile-nav .k-nav-label{
++    display:block!important;min-width:0!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;
++    white-space:nowrap!important;text-align:center!important;color:inherit!important;font-size:clamp(8px,2.35vw,10px)!important;line-height:1.05!important;font-weight:800!important;
++  }
++  html[data-user-role="master"] #k-app #k-mobile-nav>.k-nav-link:is(.is-active,[aria-current="page"]){background:var(--k-master-shell-orange-soft)!important;color:var(--k-master-shell-orange)!important}
++  html[data-user-role="master"] #k-app #k-mobile-nav>.k-nav-more[aria-expanded="true"]{background:var(--k-master-shell-orange)!important;color:#fff!important}
++  html[data-user-role="master"].k-smart-action-open #k-app #k-mobile-nav>.k-nav-link:not(.k-nav-more):is(.is-active,[aria-current="page"]){background:transparent!important;color:var(--k-master-shell-muted)!important;border-color:transparent!important}
++  html[data-user-role="master"].k-detail-view #k-app #k-mobile-nav{display:none!important}
+ 
+   html[data-user-role="master"] #k-page-outlet{
+-    width:100%!important;
+-    max-width:100%!important;
+-    min-width:0!important;
+-    margin:0!important;
+-    padding-top:0!important;
++    width:100%!important;margin:0!important;padding-top:0!important;
+     padding-bottom:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px) + 18px)!important;
+     scroll-padding-top:var(--k-master-mobile-shell-h)!important;
+     scroll-padding-bottom:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px) + 18px)!important;
+-    box-sizing:border-box!important;
+-    overflow-x:clip!important;
+   }
+-
+   html[data-user-role="master"] #k-mobile-fab-stack{
+-    right:max(12px,env(safe-area-inset-right,0px))!important;
++    z-index:var(--k-z-fab)!important;right:max(12px,env(safe-area-inset-right,0px))!important;
+     bottom:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px) + 10px)!important;
+-    display:grid!important;
+-    grid-template-columns:repeat(2,44px)!important;
+-    grid-auto-flow:column!important;
+-    grid-auto-columns:44px!important;
+-    gap:8px!important;
+-    align-items:center!important;
+-    justify-items:center!important;
+-    transition:opacity .16s ease,visibility .16s ease,transform .16s ease!important;
+-  }
+-  html[data-user-role="master"] #k-mobile-fab-stack[hidden]{
+-    display:none!important;
+-  }
+-  html[data-user-role="master"] #k-mobile-fab-stack .k-mobile-fab{
+-    width:44px!important;
+-    height:44px!important;
+-    min-width:44px!important;
+-    min-height:44px!important;
+-    border-radius:14px!important;
+-    box-shadow:0 10px 26px rgba(15,23,42,.16)!important;
+-  }
+-
+-  /* More/drawer is a temporary navigation state: only its trigger may look active. */
+-  html[data-user-role="master"].k-smart-action-open #k-mobile-nav .k-nav-link:not(.k-nav-more).is-active,
+-  html[data-user-role="master"].k-smart-action-open #k-mobile-nav .k-nav-link:not(.k-nav-more)[aria-current="page"]{
+-    border-color:transparent!important;
+-    background:transparent!important;
+-    color:var(--k-master-shell-muted)!important;
+-  }
+-  html[data-user-role="master"] #k-mobile-nav .k-nav-more:is(.is-active,[aria-expanded="true"]){
+-    border-color:var(--k-master-shell-orange)!important;
+-    background:var(--k-master-shell-orange)!important;
+-    color:#fff!important;
+-  }
+-  html[data-user-role="master"]:is(.k-smart-action-open,.k-menu-open) #k-mobile-fab-stack{
+-    opacity:0!important;
+-    visibility:hidden!important;
+-    pointer-events:none!important;
+-    transform:translateY(8px)!important;
+-  }
+-
+-  /* The horizontal quick rail sits above the dock; reserve scrollable clearance for it. */
+-  html[data-user-role="master"] #k-page-outlet{
+-    padding-bottom:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px) + 66px)!important;
+-    scroll-padding-bottom:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px) + 66px)!important;
+   }
++  html[data-user-role="master"]:is(.k-smart-action-open,.k-menu-open) #k-mobile-fab-stack{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+ }
+-
+-/* Narrow phones: keep logo centered without colliding with Back/actions. */
+ @media(max-width:359px){
+-  html[data-user-role="master"] #k-shell-header>.k-brand{
+-    max-width:108px!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-brand .k-brand-logo--full{
+-    width:108px!important;
+-    height:38px!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-shell-actions{
+-    right:8px!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>#k-mobile-back.k-mobile-back{
+-    left:8px!important;
+-  }
++  html[data-user-role="master"] #k-shell-header>.k-brand{max-width:108px!important}
++  html[data-user-role="master"] #k-shell-header>.k-brand .k-brand-logo--full{width:108px!important;height:36px!important}
+ }
+ 
+-/* TABLET / NARROW DESKTOP — same top-nav behavior as Client before the 210px rail breakpoint. */
+-@media(min-width:901px) and (max-width:1099px){
+-  html[data-user-role="master"] .k-app-shell{
+-    padding-top:var(--k-master-shell-h)!important;
+-    padding-left:0!important;
+-    padding-right:0!important;
+-  }
++/* TABLET */
++@media(min-width:768px) and (max-width:1199px){
++  html[data-user-role="master"] .k-app-shell{padding-top:var(--k-master-shell-h)!important;padding-left:0!important;padding-right:var(--k-master-tablet-rail)!important}
++  html[data-user-role="master"] #k-mobile-nav{display:none!important}
+   html[data-user-role="master"] #k-shell-header.k-shell-header{
+-    position:fixed!important;
+-    inset:0 0 auto 0!important;
+-    z-index:180!important;
+-    width:100%!important;
+-    height:var(--k-master-shell-h)!important;
+-    min-height:var(--k-master-shell-h)!important;
+-    display:grid!important;
+-    grid-template-columns:minmax(128px,154px) minmax(0,1fr) auto!important;
+-    align-items:center!important;
+-    gap:8px!important;
+-    padding:9px 14px!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-brand{
+-    position:static!important;
+-    transform:none!important;
+-    width:auto!important;
+-    min-width:0!important;
+-    margin:0!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-brand .k-brand-logo--full{
+-    width:124px!important;
+-    height:42px!important;
+-    object-position:left center!important;
++    position:fixed!important;top:0!important;left:0!important;right:var(--k-master-tablet-rail)!important;width:auto!important;
++    height:var(--k-master-shell-h)!important;min-height:var(--k-master-shell-h)!important;display:grid!important;
++    grid-template-columns:auto minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;padding:9px 14px!important;
+   }
++  html[data-user-role="master"] #k-shell-header>.k-brand{position:static!important;transform:none!important;width:auto!important;max-width:156px!important;height:46px!important;margin:0!important;padding:0!important}
++  html[data-user-role="master"] #k-shell-header>.k-brand .k-brand-logo--full{width:132px!important;height:42px!important;object-position:left center!important}
+   html[data-user-role="master"] #k-shell-header>#k-desktop-nav.k-desktop-nav{
+-    position:static!important;
+-    display:flex!important;
+-    align-items:center!important;
+-    justify-content:flex-start!important;
+-    width:100%!important;
+-    min-width:0!important;
+-    height:52px!important;
+-    min-height:52px!important;
+-    gap:3px!important;
+-    padding:0!important;
+-    overflow-x:auto!important;
+-    overflow-y:hidden!important;
+-    scrollbar-width:none!important;
+-    background:transparent!important;
+-    border:0!important;
+-    box-shadow:none!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>#k-desktop-nav::-webkit-scrollbar{
+-    display:none!important;
++    position:fixed!important;top:0!important;right:0!important;bottom:0!important;left:auto!important;z-index:var(--k-z-nav)!important;
++    display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;
++    width:var(--k-master-tablet-rail)!important;min-width:var(--k-master-tablet-rail)!important;max-width:var(--k-master-tablet-rail)!important;
++    height:100dvh!important;padding:12px 8px!important;gap:5px!important;overflow-x:hidden!important;overflow-y:auto!important;
++    background:#fff!important;border:0!important;border-left:1px solid var(--k-master-shell-line)!important;border-radius:0!important;
++    box-shadow:-7px 0 24px rgba(15,23,42,.045)!important;scrollbar-width:none!important;
+   }
++  html[data-user-role="master"] #k-shell-header>#k-desktop-nav::-webkit-scrollbar{display:none!important}
+   html[data-user-role="master"] #k-desktop-nav .k-nav-link{
+-    flex:0 0 42px!important;
+-    width:42px!important;
+-    min-width:42px!important;
+-    height:44px!important;
+-    min-height:44px!important;
+-    display:grid!important;
+-    place-items:center!important;
+-    padding:0!important;
+-    border:1px solid transparent!important;
+-    border-radius:12px!important;
+-    background:transparent!important;
+-    color:#6b7280!important;
++    display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
++    width:100%!important;min-height:61px!important;padding:6px 3px!important;gap:4px!important;border:1px solid transparent!important;
++    border-radius:12px!important;background:transparent!important;color:#667085!important;text-align:center!important;
+   }
+   html[data-user-role="master"] #k-desktop-nav .k-nav-icon,
+-  html[data-user-role="master"] #k-desktop-nav .k-nav-icon svg{
+-    width:20px!important;
+-    height:20px!important;
+-    color:currentColor!important;
+-    stroke:currentColor!important;
+-  }
+-  html[data-user-role="master"] #k-desktop-nav .k-nav-label{
+-    position:absolute!important;
+-    width:1px!important;
+-    height:1px!important;
+-    margin:-1px!important;
+-    overflow:hidden!important;
+-    clip:rect(0,0,0,0)!important;
+-    white-space:nowrap!important;
+-  }
+-  html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"]){
+-    border-color:rgba(255,90,10,.12)!important;
+-    background:var(--k-master-shell-orange-soft)!important;
+-    color:var(--k-master-shell-orange)!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-shell-actions{
+-    position:static!important;
+-    transform:none!important;
+-    gap:4px!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-shell-actions :is(a,button){
+-    min-width:40px!important;
+-    width:40px!important;
+-    height:40px!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-shell-actions>.k-shell-location-icon{
+-    width:40px!important;
+-    max-width:40px!important;
+-    padding:0!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-shell-actions>.k-shell-location-icon .k-shell-location-label{
+-    display:none!important;
+-  }
+-  html[data-user-role="master"] #k-mobile-nav{
+-    display:none!important;
+-  }
+-  html[data-user-role="master"] #k-page-outlet{
+-    padding-top:0!important;
+-    padding-bottom:36px!important;
+-  }
++  html[data-user-role="master"] #k-desktop-nav .k-nav-icon svg{width:21px!important;height:21px!important;color:currentColor!important;stroke:currentColor!important}
++  html[data-user-role="master"] #k-desktop-nav .k-nav-label{display:block!important;width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:10px!important;font-weight:800!important;color:inherit!important}
++  html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"]){background:var(--k-master-shell-orange-soft)!important;color:var(--k-master-shell-orange)!important}
++  html[data-user-role="master"] #k-shell-header>.k-shell-actions{position:static!important;grid-column:3!important;transform:none!important;gap:4px!important}
++  html[data-user-role="master"] #k-shell-header>.k-shell-actions>.k-shell-location-icon .k-shell-location-label{display:none!important}
++  html[data-user-role="master"] #k-page-outlet{width:100%!important;padding:0 0 36px!important}
+ }
+ 
+-/* PC — mirror the Client 210px left navigation rail. */
+-@media(min-width:1100px){
+-  html[data-user-role="master"] .k-app-shell{
+-    padding-top:var(--k-master-shell-h)!important;
+-    padding-left:var(--k-master-left-nav-w)!important;
+-    padding-right:0!important;
+-  }
+-
++/* DESKTOP */
++@media(min-width:1200px){
++  html[data-user-role="master"] .k-app-shell{padding-top:var(--k-master-shell-h)!important;padding-left:0!important;padding-right:var(--k-master-desktop-rail)!important}
++  html[data-user-role="master"] #k-mobile-nav{display:none!important}
+   html[data-user-role="master"] #k-shell-header.k-shell-header{
+-    position:fixed!important;
+-    top:0!important;
+-    left:var(--k-master-left-nav-w)!important;
+-    right:0!important;
+-    z-index:180!important;
+-    width:auto!important;
+-    height:var(--k-master-shell-h)!important;
+-    min-height:var(--k-master-shell-h)!important;
+-    display:grid!important;
+-    grid-template-columns:auto minmax(0,1fr) auto!important;
+-    align-items:center!important;
+-    gap:12px!important;
+-    padding:10px 22px!important;
++    position:fixed!important;inset:0 0 auto 0!important;width:100%!important;height:var(--k-master-shell-h)!important;
++    min-height:var(--k-master-shell-h)!important;display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;
++    align-items:center!important;gap:12px!important;padding:9px 18px!important;
+   }
+-
+-  html[data-user-role="master"] #k-shell-header>.k-brand{
+-    position:static!important;
+-    grid-column:1!important;
+-    width:auto!important;
+-    min-width:0!important;
+-    max-width:190px!important;
+-    height:48px!important;
+-    margin:0!important;
+-    padding:0!important;
+-    transform:none!important;
+-    overflow:hidden!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-brand .k-brand-logo--full{
+-    width:144px!important;
+-    height:44px!important;
+-    object-position:left center!important;
+-  }
+-
++  html[data-user-role="master"] #k-shell-header>.k-brand{position:static!important;grid-column:1!important;width:auto!important;min-width:188px!important;max-width:none!important;height:52px!important;margin:0!important;padding:4px 8px!important;transform:none!important;overflow:hidden!important}
++  html[data-user-role="master"] #k-shell-header>.k-brand .k-brand-logo--full{width:132px!important;height:42px!important;object-position:left center!important}
+   html[data-user-role="master"] #k-shell-header>#k-desktop-nav.k-desktop-nav{
+-    position:fixed!important;
+-    left:0!important;
+-    right:auto!important;
+-    top:0!important;
+-    bottom:0!important;
+-    z-index:181!important;
+-    width:var(--k-master-left-nav-w)!important;
+-    min-width:var(--k-master-left-nav-w)!important;
+-    max-width:var(--k-master-left-nav-w)!important;
+-    height:100dvh!important;
+-    min-height:100dvh!important;
+-    display:flex!important;
+-    flex-direction:column!important;
+-    align-items:stretch!important;
+-    justify-content:flex-start!important;
+-    gap:4px!important;
+-    padding:18px 12px!important;
+-    margin:0!important;
+-    overflow-x:hidden!important;
+-    overflow-y:auto!important;
+-    overscroll-behavior:contain!important;
+-    scrollbar-width:thin!important;
+-    background:#fff!important;
+-    border:0!important;
+-    border-right:1px solid var(--k-master-shell-line)!important;
+-    border-radius:0!important;
+-    box-shadow:8px 0 24px rgba(15,23,42,.035)!important;
++    position:fixed!important;top:var(--k-master-shell-h)!important;right:0!important;bottom:0!important;left:auto!important;z-index:var(--k-z-nav)!important;
++    display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;
++    width:var(--k-master-desktop-rail)!important;min-width:var(--k-master-desktop-rail)!important;max-width:var(--k-master-desktop-rail)!important;
++    height:calc(100dvh - var(--k-master-shell-h))!important;padding:16px 12px 18px!important;gap:4px!important;
++    overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;scrollbar-width:thin!important;
++    background:#fff!important;border:0!important;border-left:1px solid var(--k-master-shell-line)!important;border-radius:0!important;
++    box-shadow:-8px 0 28px rgba(15,23,42,.08)!important;
+   }
+   html[data-user-role="master"] #k-desktop-nav .k-nav-link{
+-    position:relative!important;
+-    flex:0 0 auto!important;
+-    width:100%!important;
+-    min-width:0!important;
+-    min-height:48px!important;
+-    display:grid!important;
+-    grid-template-columns:32px minmax(0,1fr)!important;
+-    align-items:center!important;
+-    justify-content:stretch!important;
+-    gap:10px!important;
+-    padding:7px 10px!important;
+-    margin:0!important;
+-    border:1px solid transparent!important;
+-    border-radius:13px!important;
+-    background:transparent!important;
+-    color:#667085!important;
+-    text-align:left!important;
+-    box-shadow:none!important;
+-  }
+-  html[data-user-role="master"] #k-desktop-nav .k-nav-link:hover{
+-    border-color:#eceff2!important;
+-    background:#f8f8f8!important;
+-    color:#111827!important;
++    position:relative!important;width:100%!important;min-width:0!important;min-height:46px!important;display:grid!important;
++    grid-template-columns:34px minmax(0,1fr)!important;align-items:center!important;gap:10px!important;padding:0 12px!important;
++    border:1px solid transparent!important;border-radius:12px!important;background:transparent!important;color:#667085!important;text-align:left!important;box-shadow:none!important;
+   }
++  html[data-user-role="master"] #k-desktop-nav .k-nav-link:hover{border-color:#eceff2!important;background:#f8f8f8!important;color:#111827!important}
+   html[data-user-role="master"] #k-desktop-nav .k-nav-icon,
+-  html[data-user-role="master"] #k-desktop-nav .k-nav-icon svg{
+-    width:22px!important;
+-    height:22px!important;
+-    color:currentColor!important;
+-    stroke:currentColor!important;
+-  }
+-  html[data-user-role="master"] #k-desktop-nav .k-nav-label{
+-    position:static!important;
+-    display:block!important;
+-    width:auto!important;
+-    height:auto!important;
+-    margin:0!important;
+-    clip:auto!important;
+-    overflow:hidden!important;
+-    text-overflow:ellipsis!important;
+-    white-space:nowrap!important;
+-    color:inherit!important;
+-    font-size:13px!important;
+-    line-height:1.15!important;
+-    font-weight:800!important;
+-  }
+-  html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"]){
+-    border-color:rgba(255,90,10,.10)!important;
+-    background:var(--k-master-shell-orange-soft)!important;
+-    color:var(--k-master-shell-orange)!important;
+-  }
++  html[data-user-role="master"] #k-desktop-nav .k-nav-icon svg{width:22px!important;height:22px!important;color:currentColor!important;stroke:currentColor!important}
++  html[data-user-role="master"] #k-desktop-nav .k-nav-label{display:block!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:13px!important;line-height:1.15!important;font-weight:800!important;color:inherit!important}
++  html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"]){background:var(--k-master-shell-orange-soft)!important;color:var(--k-master-shell-orange)!important}
+   html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"])::before,
+-  html[data-user-role="master"] #k-desktop-nav .k-nav-link::after{
+-    display:none!important;
+-    content:none!important;
+-  }
+-
+-  html[data-user-role="master"] #k-shell-header>.k-shell-actions{
+-    position:static!important;
+-    grid-column:3!important;
+-    transform:none!important;
+-    margin-left:auto!important;
+-    gap:6px!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-shell-actions :is(a,button){
+-    min-width:40px!important;
+-    height:40px!important;
+-    min-height:40px!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-shell-actions>.k-shell-location-icon{
+-    width:auto!important;
+-    max-width:168px!important;
+-    padding:0 10px!important;
+-    gap:6px!important;
+-  }
+-  html[data-user-role="master"] #k-shell-header>.k-shell-actions>.k-shell-location-icon .k-shell-location-label{
+-    display:block!important;
+-    max-width:118px!important;
+-    overflow:hidden!important;
+-    text-overflow:ellipsis!important;
+-    white-space:nowrap!important;
+-    color:#374151!important;
+-    font-size:11px!important;
+-  }
+-
+-  html[data-user-role="master"] #k-mobile-nav{
+-    display:none!important;
+-  }
+-
+-  html[data-user-role="master"] #k-page-outlet{
+-    width:100%!important;
+-    max-width:none!important;
+-    min-width:0!important;
+-    margin:0!important;
+-    padding-top:0!important;
+-    padding-right:0!important;
+-    padding-bottom:42px!important;
+-    padding-left:0!important;
+-    box-sizing:border-box!important;
+-  }
+-}
+-
+-html[data-user-role="master"] #k-mobile-nav .k-nav-link.is-active{color:var(--k-master-shell-orange)!important;background:var(--k-master-shell-orange-soft)!important}html[data-user-role="master"] #k-mobile-nav .k-nav-link.is-active .k-nav-icon{color:inherit!important}html[data-user-role="master"] #k-mobile-nav .k-nav-more[aria-expanded="true"]{color:#fff!important;background:var(--k-master-shell-orange)!important}
+-
+-/* 84.169: six stable Master destinations; canonical shell owns geometry even
+-   after legacy/route CSS is loaded. Keep the existing orange state and icons. */
+-@media(max-width:900px){
+-  html[data-user-role="master"]{
+-    --k-mobile-nav-h:var(--k-master-mobile-nav-h);
+-    --k-mobile-nav-height:calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px));
+-  }
+-  html[data-user-role="master"] #k-app #k-mobile-nav.k-mobile-nav{
+-    display:grid!important;
+-    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+-    grid-template-rows:1fr!important;
+-    position:fixed!important;
+-    inset:auto 0 0 0!important;
+-    width:100%!important;
+-    height:var(--k-mobile-nav-height)!important;
+-    min-height:var(--k-mobile-nav-height)!important;
+-    max-height:var(--k-mobile-nav-height)!important;
+-    box-sizing:border-box!important;
+-    padding:4px max(4px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(4px,env(safe-area-inset-left,0px))!important;
+-    gap:2px!important;
+-    border-radius:0!important;
+-    border:0!important;
+-    border-top:1px solid var(--k-master-shell-line)!important;
+-    background:var(--k-glass-bg-strong,rgba(255,255,255,.95))!important;
+-    box-shadow:none!important;
+-    backdrop-filter:blur(var(--k-glass-blur,18px))!important;
+-    -webkit-backdrop-filter:blur(var(--k-glass-blur,18px))!important;
+-    overflow:hidden!important;
+-  }
+-  html[data-user-role="master"] #k-app #k-mobile-nav>.k-nav-link{
+-    display:flex!important;
+-    min-width:44px!important;
+-    min-height:54px!important;
+-    height:100%!important;
+-    box-sizing:border-box!important;
+-    padding:4px 2px!important;
+-    gap:3px!important;
+-    border-radius:var(--k-radius-sm,5px)!important;
+-    color:var(--k-master-shell-muted)!important;
+-  }
+-  html[data-user-role="master"] #k-app #k-mobile-nav .k-nav-label{
+-    font-size:12px!important;
+-    line-height:1.2!important;
+-    white-space:normal!important;
+-    overflow-wrap:anywhere!important;
+-    text-overflow:clip!important;
+-    text-align:center!important;
+-    max-width:100%!important;
+-  }
+-  html[data-user-role="master"] #k-app #k-mobile-nav>.k-nav-link:is(.is-active,[aria-current="page"]){
+-    color:var(--k-master-shell-orange)!important;
+-    background:var(--k-master-shell-orange-soft)!important;
+-  }
+-  html[data-user-role="master"] #k-app #k-mobile-nav>.k-nav-more[aria-expanded="true"]{
+-    color:#fff!important;
+-    background:var(--k-master-shell-orange)!important;
+-  }
+-  html[data-user-role="master"].k-smart-action-open #k-app #k-mobile-nav>.k-nav-link:not(.k-nav-more):is(.is-active,[aria-current="page"]){
+-    color:var(--k-master-shell-muted)!important;
+-    background:transparent!important;
+-    border-color:transparent!important;
+-  }
+-  html[data-user-role="master"] #k-app #k-mobile-nav>.k-nav-unavailable{
+-    color:var(--k-master-shell-muted)!important;
+-    background:transparent!important;
+-    border:1px dashed var(--k-master-shell-line)!important;
+-  }
+-  html[data-user-role="master"] #k-app #k-mobile-nav>.k-nav-link:focus-visible{
+-    outline:2px solid var(--k-master-shell-orange)!important;
+-    outline-offset:-3px!important;
+-  }
+-  html[data-user-role="master"] #k-app #k-page-outlet{
+-    padding-bottom:calc(var(--k-mobile-nav-height) + 18px)!important;
+-    scroll-padding-bottom:calc(var(--k-mobile-nav-height) + 18px)!important;
+-  }
+-  html[data-user-role="master"].k-detail-view #k-app #k-mobile-nav{display:none!important}
+-}
+-@media(max-width:599px){
+-  html[data-user-role="master"]{--k-master-mobile-nav-h:152px}
+-  html[data-user-role="master"] #k-app #k-mobile-nav.k-mobile-nav{
+-    grid-template-columns:repeat(12,minmax(0,1fr))!important;
+-    grid-template-rows:repeat(2,minmax(0,1fr))!important;
+-  }
+-  html[data-user-role="master"] #k-app #k-mobile-nav>.k-nav-link{grid-column:span 4!important}
+-  html[data-user-role="master"] #k-app #k-mobile-nav>.k-nav-link:nth-child(n+5){grid-column:span 4!important}
+-  html[data-user-role="master"] #k-app #k-mobile-nav .k-nav-label{font-size:13px!important}
++  html[data-user-role="master"] #k-desktop-nav .k-nav-link::after{display:none!important;content:none!important}
++  html[data-user-role="master"] #k-shell-header>.k-shell-actions{position:static!important;grid-column:3!important;transform:none!important;margin-left:auto!important;gap:6px!important}
++  html[data-user-role="master"] #k-shell-header>.k-shell-actions>.k-shell-location-icon{width:auto!important;max-width:168px!important;padding:0 10px!important;gap:6px!important}
++  html[data-user-role="master"] #k-shell-header>.k-shell-actions>.k-shell-location-icon .k-shell-location-label{display:block!important;max-width:118px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;color:#374151!important;font-size:11px!important}
++  html[data-user-role="master"] #k-page-outlet{width:100%!important;max-width:100%!important;margin:0!important;padding:0 0 42px!important}
+ }
+diff -ruN KARETA_84.170_ORIGINAL/css/next/master_surfaces.css KARETA_84.171_REEXTRACT/css/next/master_surfaces.css
+--- KARETA_84.170_ORIGINAL/css/next/master_surfaces.css	2026-10-04 09:26:40.000000000 +0000
++++ KARETA_84.171_REEXTRACT/css/next/master_surfaces.css	2026-10-04 17:58:05.000000000 +0000
+@@ -1,5 +1,5 @@
+ /* R188.5.5.6.84.102 — unified Master Surface Contract */
+-html[data-user-role="master"],html[data-navigation-context="master"]{--k-master-content-max:1420px;--k-master-page-x:clamp(14px,2.2vw,34px);--k-master-page-y:18px;--k-master-section-gap:16px;--k-master-control-radius:12px;--k-master-small-card-radius:16px;--k-master-card-radius:20px;--k-master-dialog-radius:24px;--k-master-line:#e5e7eb;--k-master-surface:#fff;--k-master-page-bg:#f5f6f8;--k-master-shadow:0 4px 16px rgba(15,23,42,.045)}
++html[data-user-role="master"],html[data-navigation-context="master"]{--k-master-page-y:18px;--k-master-section-gap:16px;--k-master-shadow:0 4px 16px rgba(15,23,42,.045)}
+ html[data-user-role="master"] #k-page-outlet{background:var(--k-master-page-bg)}
+ html[data-user-role="master"] .k-master-surface-page{width:min(100%,var(--k-master-content-max));max-width:var(--k-master-content-max);margin:0 auto;padding:var(--k-master-page-y) var(--k-master-page-x) calc(var(--k-mobile-nav-live-height,var(--k-mobile-nav-h,72px)) + 28px);box-sizing:border-box}
+ .k-master-surface-icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@@ -26,7 +26,7 @@
+ .k-master-workspace-panel[hidden]{display:none!important}
+ @media (min-width:1100px){
+   .k-master-desktop-workspace-nav{
+-    display:flex;align-items:center;gap:6px;position:sticky;top:8px;z-index:14;
++    display:flex;align-items:center;gap:6px;position:sticky;top:8px;z-index:var(--k-z-sticky);
+     width:max-content;max-width:100%;margin:0 0 16px;padding:6px;
+     border:1px solid #e7e9ed;border-radius:16px;background:rgba(255,255,255,.94);
+     box-shadow:0 8px 28px rgba(15,23,42,.06);backdrop-filter:blur(14px)
+@@ -67,3 +67,36 @@
+ @media (max-width:1099px){
+   .k-master-workspace-panel{display:none!important}
+ }
++
++/* R188.5.5.6.84.171 — MASTER SURFACE CANON V1.
++   Sole owner of Master route content geometry. Shell/nav geometry lives in
++   master_shell_canonical_84_143.css; component geometry stays with components. */
++html[data-user-role="master"] #k-page-outlet{background:var(--k-master-page-bg);min-width:0}
++html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{
++  width:100%;max-width:var(--k-master-content-max);min-width:0;margin-inline:auto;
++  padding:18px var(--k-master-page-x) 34px;box-sizing:border-box;
++}
++html[data-user-role="master"] #k-page-outlet .k-master-surface-page>*{min-width:0}
++html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(img,video,canvas,svg){max-width:100%}
++
++@media(max-width:767px){
++  html[data-user-role="master"]{--k-master-page-x:12px;--k-master-page-y:14px;--k-master-section-gap:12px}
++  html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{
++    max-width:none;padding:14px var(--k-master-page-x) calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px) + 24px);gap:12px;
++  }
++  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(.k-orders-grid--master,.k-service-offers-grid,.k-work-feed-grid){
++    display:grid;grid-template-columns:minmax(0,1fr)!important;gap:12px!important;
++  }
++  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(.k-order-card,.k-service-offer-card,.k-work-card){min-width:0;max-width:100%;border-radius:var(--k-radius-card)}
++}
++@media(min-width:768px) and (max-width:1199px){
++  html[data-user-role="master"]{--k-master-page-x:22px;--k-master-section-gap:15px}
++  html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{max-width:none;padding-top:18px}
++  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(.k-orders-grid--master,.k-service-offers-grid,.k-work-feed-grid){display:grid;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important}
++}
++@media(min-width:1200px){
++  html[data-user-role="master"]{--k-master-page-x:clamp(28px,2.4vw,38px);--k-master-section-gap:18px}
++  html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{padding-top:22px;padding-bottom:40px}
++  html[data-user-role="master"] #k-page-outlet .k-master-surface-page .k-orders-grid--master{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important}
++  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(.k-service-offers-grid,.k-work-feed-grid){display:grid;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important}
++}
+diff -ruN KARETA_84.170_ORIGINAL/css/next/master_ui_exchange_schedule_flattening.css KARETA_84.171_REEXTRACT/css/next/master_ui_exchange_schedule_flattening.css
+--- KARETA_84.170_ORIGINAL/css/next/master_ui_exchange_schedule_flattening.css	2026-10-04 09:26:40.000000000 +0000
++++ KARETA_84.171_REEXTRACT/css/next/master_ui_exchange_schedule_flattening.css	2026-10-04 17:58:05.000000000 +0000
+@@ -64,7 +64,7 @@
+ .k-master-r71-section-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;background:var(--k-surface-soft,#f4f6f8)}.k-master-r71-section-icon svg{width:21px;height:21px}
+ .k-master-r71-day{padding:0;border:1px solid var(--k-line,#e1e5ea);border-radius:20px;background:#fff;overflow:hidden}
+ .k-master-r71-day>header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0;padding:14px 16px;border-bottom:1px solid var(--k-line,#edf0f2)}.k-master-r71-day>header>div{display:flex;align-items:center;gap:10px}.k-master-r71-day>header h2{margin:2px 0 0;font-size:18px}.k-master-r71-day>header>span{font-size:11px;color:#667085}
+-.k-master-r71-day__list{list-style:none;margin:0;padding:0 16px}.k-master-r71-day__list>li{position:relative;display:grid;grid-template-columns:74px 34px minmax(0,1fr) auto;gap:10px;align-items:center;min-height:62px;padding:10px 0;border-top:1px solid var(--k-line,#edf0f2)}.k-master-r71-day__list>li:first-child{border-top:0}.k-master-r71-day__list>li:not(:last-child)::after{content:"";position:absolute;left:90px;top:44px;bottom:-20px;width:1px;background:#d7dce2}.k-master-r71-day__time{display:grid}.k-master-r71-day__time strong{font-variant-numeric:tabular-nums}.k-master-r71-day__time small{color:#667085;font-size:10px}.k-master-r71-day__marker{z-index:1;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#f4f6f8}.k-master-r71-day__marker svg{width:15px;height:15px}.k-master-r71-day__list .is-running .k-master-r71-day__marker{background:#fff0e7;color:#b54708}.k-master-r71-day__list .is-no_show .k-master-r71-day__marker{background:#fff1f0;color:#b42318}.k-master-r71-day__event{display:grid;gap:2px;min-width:0}.k-master-r71-day__event small{color:#667085;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.k-master-r71-day__list nav{display:flex;gap:5px}.k-master-r71-day__list nav a{display:inline-flex;align-items:center;gap:4px;padding:7px 9px;border-radius:9px;background:#f4f6f8;color:#111;text-decoration:none;font-size:11px;font-weight:750}.k-master-r71-day__list nav svg{width:13px;height:13px}
++.k-master-r71-day__list{list-style:none;margin:0;padding:0 16px}.k-master-r71-day__list>li{position:relative;display:grid;grid-template-columns:74px 34px minmax(0,1fr) auto;gap:10px;align-items:center;min-height:62px;padding:10px 0;border-top:1px solid var(--k-line,#edf0f2)}.k-master-r71-day__list>li:first-child{border-top:0}.k-master-r71-day__list>li:not(:last-child)::after{content:"";position:absolute;left:90px;top:44px;bottom:-20px;width:1px;background:#d7dce2}.k-master-r71-day__time{display:grid}.k-master-r71-day__time strong{font-variant-numeric:tabular-nums}.k-master-r71-day__time small{color:#667085;font-size:10px}.k-master-r71-day__marker{z-index:var(--k-z-content);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#f4f6f8}.k-master-r71-day__marker svg{width:15px;height:15px}.k-master-r71-day__list .is-running .k-master-r71-day__marker{background:#fff0e7;color:#b54708}.k-master-r71-day__list .is-no_show .k-master-r71-day__marker{background:#fff1f0;color:#b42318}.k-master-r71-day__event{display:grid;gap:2px;min-width:0}.k-master-r71-day__event small{color:#667085;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.k-master-r71-day__list nav{display:flex;gap:5px}.k-master-r71-day__list nav a{display:inline-flex;align-items:center;gap:4px;padding:7px 9px;border-radius:9px;background:#f4f6f8;color:#111;text-decoration:none;font-size:11px;font-weight:750}.k-master-r71-day__list nav svg{width:13px;height:13px}
+ 
+ .k-schedule-grid{grid-template-columns:1fr;gap:12px}
+ .k-schedule-day--r71{border:1px solid var(--k-line,#e1e5ea);border-radius:20px;background:#fff;overflow:hidden;box-shadow:none}
+@@ -82,3 +82,85 @@
+ @media(max-width:1100px){.k-exchange-r71-grid{grid-template-columns:1fr}.k-exchange-r71-toolbar{grid-template-columns:minmax(220px,1fr) auto auto auto}.k-exchange-r71-toolbar .k-exchange-service-scope{grid-column:1/-1;justify-self:start}.k-master-native-lead,.k-master-native-lead.is-unmatched{grid-template-columns:1fr}.k-master-native-lead>.k-master-native-lead__quick,.k-master-native-lead>footer{grid-column:1;grid-row:auto}}
+ @media(max-width:760px){.k-master-r71-toolbar{align-items:stretch;gap:9px}.k-master-r71-toolbar__state,.k-master-r71-toolbar__actions{width:100%}.k-master-r71-toolbar__actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.k-master-r71-toolbar__actions .k-btn{justify-content:center;padding-inline:8px}.k-master-r71-toolbar__actions .k-btn span{font-size:11px}.k-master-r71-refresh{margin-left:auto}.k-exchange-r71-head{align-items:flex-start;flex-direction:column}.k-exchange-r71-head__actions{width:100%;justify-content:space-between}.k-exchange-r71-toolbar{grid-template-columns:minmax(0,1fr) auto auto}.k-exchange-r71-toolbar .k-exchange-search-field{grid-column:1/-1}.k-exchange-r71-toolbar .k-exchange-service-scope{grid-column:1/-1;width:100%}.k-exchange-r71-toolbar .k-exchange-filter-wrap{grid-column:1}.k-exchange-r71-toolbar .k-exchange-kpi-button{grid-column:2}.k-exchange-r71-facts{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:10px}.k-exchange-r71-facts>div:nth-child(3){padding-left:0;border-left:0}.k-exchange-quick-response--r71{grid-template-columns:1fr 1fr}.k-exchange-r71-response-title{grid-column:1/-1}.k-exchange-quick-response--r71>.k-btn{grid-column:1/-1}.k-master-r71-day__list>li{grid-template-columns:58px 30px minmax(0,1fr)}.k-master-r71-day__list>li:not(:last-child)::after{left:72px}.k-master-r71-day__list nav{grid-column:3;justify-content:flex-start}.k-schedule-slot--r71{grid-template-columns:64px minmax(0,1fr)}.k-schedule-slot--r71 .k-schedule-slot-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.k-master-r71-blocks>div article{grid-template-columns:1fr auto 34px}.k-master-r71-blocks>div article small{grid-column:1/3}.k-master-r70-extension{align-items:stretch}}
+ @media(max-width:480px){.k-master-r71-toolbar__actions{grid-template-columns:1fr 1fr}.k-exchange-r71-head__icon{width:38px;height:38px;border-radius:12px}.k-exchange-r71-head p{font-size:12px}.k-exchange-r71-facts{padding-inline:13px}.k-exchange-r71-subject{padding:14px 13px}.k-exchange-card--r71>.k-exchange-card__head,.k-exchange-quick-response--r71,.k-exchange-r71-card-footer,.k-exchange-r71-actions{padding-inline:13px}.k-exchange-quick-response--r71{grid-template-columns:1fr}.k-exchange-r71-details{grid-template-columns:1fr 1fr}.k-exchange-r71-card-footer,.k-exchange-r71-actions{display:grid;grid-template-columns:1fr}.k-exchange-r71-card-footer .k-btn,.k-exchange-r71-actions .k-btn{justify-content:center}.k-master-r71-day__list{padding-inline:12px}.k-master-r71-day__list>li{grid-template-columns:52px 28px minmax(0,1fr);gap:7px}.k-master-r71-day__list>li:not(:last-child)::after{left:65px}.k-master-r71-day__list nav{grid-column:3}.k-master-r71-day__list nav a span{display:none}.k-schedule-day--r71>header,.k-schedule-day--r71>.k-schedule-capacity,.k-schedule-day--r71>.k-master-r69-blocks,.k-schedule-day--r71>.k-master-r70-extension,.k-schedule-day--r71>.k-master-r69-date-exception{padding-inline:12px}.k-schedule-day--r71>.k-schedule-day-body{padding-inline:12px}.k-schedule-slot--r71{grid-template-columns:54px minmax(0,1fr);gap:9px}.k-schedule-slot--r71 .k-schedule-slot-actions{grid-template-columns:1fr 1fr}.k-schedule-slot--r71 .k-schedule-slot-actions .k-button span{font-size:11px}}
++
++/* R188.5.5.6.84.171 — MASTER EXCHANGE VISUAL CANON.
++   Client directory visual language; Master API/state/route contracts unchanged. */
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71{
++  width:100%;max-width:var(--k-master-content-max);min-width:0;gap:12px;
++}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-head{
++  min-width:0;padding:2px 0 12px;border-bottom:0;
++}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-head__icon{
++  width:40px;height:40px;border-radius:12px;background:#f3f4f6;
++}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-head h1{font-size:clamp(24px,2.2vw,32px);letter-spacing:-.025em}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar{
++  display:grid;grid-template-columns:minmax(260px,1fr) auto auto auto;gap:8px;align-items:center;
++  padding:10px;border:1px solid var(--k-line);border-radius:var(--k-radius-card);background:#fff;box-shadow:none;
++}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar :is(.k-masters-search,.k-exchange-search-field){
++  min-width:0;min-height:48px;border:1px solid var(--k-line);border-radius:12px;background:#fff;box-shadow:none;
++}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar :is(.k-masters-search input,.k-exchange-search-field input){min-width:0;width:100%;font-size:14px}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar :is(.k-exchange-filter-button,.k-exchange-kpi-button,.k-exchange-refresh-button){min-height:44px;border-radius:11px}
++html[data-user-role="master"] #k-page-outlet .k-exchange-service-scope,
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-tabs{
++  width:100%;max-width:100%;display:flex;flex-wrap:nowrap;gap:5px;overflow-x:auto;overflow-y:hidden;
++  padding:3px;border-radius:12px;background:#f3f4f6;scrollbar-width:none;
++}
++html[data-user-role="master"] #k-page-outlet :is(.k-exchange-service-scope,.k-exchange-r71-tabs)::-webkit-scrollbar{display:none}
++html[data-user-role="master"] #k-page-outlet :is(.k-exchange-service-scope,.k-exchange-r71-tabs)>button{
++  flex:0 0 auto;min-width:max-content;min-height:38px;padding:0 12px;border:0;border-radius:9px;background:transparent;white-space:nowrap;
++}
++html[data-user-role="master"] #k-page-outlet :is(.k-exchange-service-scope,.k-exchange-r71-tabs)>button.is-active{background:#fff;color:#17191d;box-shadow:0 1px 2px rgba(16,24,40,.06)}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start;min-width:0}
++html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71{
++  min-width:0;max-width:100%;border:1px solid var(--k-line);border-radius:14px;background:#fff;box-shadow:none;overflow:hidden;
++}
++html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71>.k-exchange-card__head{padding:12px 14px}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-subject{padding:14px;grid-template-columns:32px minmax(0,1fr)}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-subject h2{font-size:17px;line-height:1.25;overflow-wrap:anywhere}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-subject p{font-size:12px;overflow-wrap:anywhere}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-facts,
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-details{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 0}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-facts{padding:0 14px 13px}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-facts>div:nth-child(odd){padding-left:0;border-left:0}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-facts>div:nth-child(even){border-left:1px solid var(--k-line)}
++html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71{
++  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end;gap:8px;padding:12px 14px;background:#f7f8f9;
++}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-response-title,
++html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71>.k-btn{grid-column:1/-1}
++html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71 label{min-width:0}
++html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71 label:nth-of-type(3){grid-column:1/-1}
++html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71 input{width:100%;min-width:0;box-sizing:border-box}
++html[data-user-role="master"] #k-page-outlet :is(.k-exchange-r71-card-footer,.k-exchange-r71-actions){padding:10px 14px}
++
++@media(max-width:767px){
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-head{align-items:flex-start;flex-direction:column;gap:8px}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-head__actions{width:100%;justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar{grid-template-columns:repeat(3,minmax(0,1fr));padding:0;border:0;background:transparent;border-radius:0}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar>.k-exchange-search-field,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar>.k-masters-search,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar>.k-exchange-service-scope,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar>.k-exchange-r71-tabs{grid-column:1/-1;width:100%}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-grid{grid-template-columns:minmax(0,1fr);gap:12px}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71{border-radius:14px}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71{grid-template-columns:minmax(0,1fr)}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-response-title,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71>.k-btn,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71 label:nth-of-type(3){grid-column:auto}
++}
++@media(min-width:768px) and (max-width:1023px){
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar{grid-template-columns:minmax(220px,1fr) auto auto}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar>.k-exchange-service-scope{grid-column:1/-1}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71{grid-template-columns:minmax(0,1fr)}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-response-title,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71>.k-btn,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71 label:nth-of-type(3){grid-column:auto}
++}
++@media(min-width:1200px){
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar{position:sticky;top:calc(var(--k-master-shell-h) + 8px);z-index:var(--k-z-sticky);background:rgba(255,255,255,.96);backdrop-filter:blur(14px)}
++}
+diff -ruN KARETA_84.170_ORIGINAL/css/next/shell_84_109_restore.css KARETA_84.171_REEXTRACT/css/next/shell_84_109_restore.css
+--- KARETA_84.170_ORIGINAL/css/next/shell_84_109_restore.css	2026-10-04 09:26:40.000000000 +0000
++++ KARETA_84.171_REEXTRACT/css/next/shell_84_109_restore.css	2026-10-04 17:58:05.000000000 +0000
+@@ -1,5 +1,5 @@
+ /* R188.5.5.6.84.134 — <600 bottom nav; >=600 right navigation rail. */
+-@media(min-width:600px){:root{--k-client-right-nav-w:88px}.k-app-shell{box-sizing:border-box!important;width:100%!important;padding-left:0!important;padding-right:var(--k-client-right-nav-w)!important}#k-desktop-sidebar{display:none!important}html[data-user-role="client"] #k-shell-header.k-shell-header{left:0!important;right:auto!important;width:calc(100% - var(--k-client-right-nav-w))!important;min-height:68px!important;height:68px!important;grid-template-columns:auto minmax(0,1fr) auto!important;padding:8px 14px!important;transform:none!important;will-change:auto!important}#k-shell-header.is-scroll-hidden,#k-shell-header.is-scroll-visible{transform:none!important;pointer-events:auto!important}#k-shell-header>.k-brand{position:static!important;grid-column:1!important;display:inline-flex!important;width:auto!important;min-height:0!important;padding:0!important;transform:none!important}#k-shell-header .k-brand-logo--full{display:block!important;width:150px!important;height:44px!important;object-position:left center!important}#k-shell-header .k-brand-logo--icon{display:none!important}#k-shell-header>#k-desktop-nav.k-desktop-nav{position:fixed!important;top:0!important;right:calc(-1 * var(--k-client-right-nav-w))!important;bottom:0!important;left:auto!important;z-index:88!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:center!important;width:var(--k-client-right-nav-w)!important;min-width:var(--k-client-right-nav-w)!important;height:100dvh!important;gap:7px!important;padding:12px 8px!important;overflow-x:hidden!important;overflow-y:auto!important;background:rgba(255,255,255,.97)!important;border-left:1px solid rgba(15,23,42,.08)!important;box-shadow:-8px 0 24px rgba(15,23,42,.045)!important;scrollbar-width:none!important}#k-shell-header>#k-desktop-nav::-webkit-scrollbar{display:none!important}#k-shell-header>#k-desktop-nav .k-nav-link{display:flex!important;flex-direction:column!important;width:100%!important;min-height:58px!important;gap:4px!important;margin:0!important;padding:6px 4px!important;border-radius:15px!important;font-size:10px!important;line-height:1.08!important;text-align:center!important;white-space:normal!important}#k-shell-header>#k-desktop-nav .k-nav-icon,#k-shell-header>#k-desktop-nav .k-nav-icon svg{position:static!important;display:grid!important;width:23px!important;height:23px!important}#k-shell-header>#k-desktop-nav .k-nav-label{position:static!important;display:block!important;width:100%!important;height:auto!important;margin:0!important;padding:0!important;overflow:visible!important;clip:auto!important;white-space:normal!important;text-align:center!important}#k-shell-header>.k-shell-actions{position:static!important;grid-column:3!important;display:flex!important;visibility:visible!important;opacity:1!important;gap:5px!important;width:auto!important;max-width:none!important;overflow:visible!important;transform:none!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon{position:static!important;display:flex!important;align-items:center!important;flex:0 1 auto!important;width:auto!important;max-width:112px!important;height:38px!important;min-width:38px!important;gap:6px!important;padding:0 9px!important;border:0!important;border-radius:12px!important;background:rgba(255,107,0,.07)!important;color:#ff6b00!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon svg{flex:0 0 22px!important;width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon .k-shell-location-label{display:block!important;max-width:72px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;color:#374151!important;font-size:10.5px!important;font-weight:750!important}#k-shell-header .k-header-notifications{display:inline-flex!important;visibility:visible!important;opacity:1!important;flex:0 0 38px!important;width:38px!important;min-width:38px!important}#k-menu-toggle.k-menu-toggle{display:inline-flex!important;visibility:visible!important;opacity:1!important;flex:0 0 42px!important;width:42px!important;height:42px!important;min-width:42px!important;padding:0!important}#k-menu-toggle .k-menu-toggle-label{display:none!important}#k-shell-header>#k-mobile-back.k-mobile-back{position:absolute!important;left:12px!important;top:50%!important;right:auto!important;bottom:auto!important;transform:translateY(-50%)!important;display:grid!important;width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;margin:0!important;padding:0!important;z-index:89!important}#k-shell-header>#k-mobile-back[hidden]{display:none!important}#k-shell-header:has(>#k-mobile-back:not([hidden]))>.k-brand{margin-left:50px!important}#k-mobile-nav{display:none!important}.k-page-outlet{margin-left:auto!important;margin-right:auto!important;padding-bottom:40px!important}}@media(min-width:861px){html[data-user-role="client"] #k-shell-header.k-shell-header{height:76px!important;min-height:76px!important;padding:10px 22px!important}#k-shell-header .k-brand-logo--full{width:176px!important;height:48px!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon{max-width:168px!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon .k-shell-location-label{max-width:126px!important;font-size:11.5px!important}}@media(min-width:1024px){:root{--k-client-right-nav-w:132px}#k-shell-header>#k-desktop-nav.k-desktop-nav{padding:14px 10px!important;gap:8px!important}#k-shell-header>#k-desktop-nav .k-nav-link{min-height:64px!important;font-size:11.5px!important}#k-shell-header>#k-desktop-nav .k-nav-icon,#k-shell-header>#k-desktop-nav .k-nav-icon svg{width:24px!important;height:24px!important}}@media(min-width:600px) and (max-width:860px){html[data-user-role="client"] #k-shell-header.k-shell-header{display:block!important}html[data-user-role="client"] #k-shell-header>#k-desktop-nav.k-desktop-nav{right:0!important}#k-shell-header>.k-brand{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;max-width:138px!important;margin:0!important}#k-shell-header .k-brand-logo--full{width:132px!important;height:40px!important;object-position:center!important}#k-shell-header>.k-shell-actions{position:absolute!important;right:10px!important;top:50%!important;transform:translateY(-50%)!important}}@media(max-width:599px){.k-app-shell{padding-left:0!important;padding-right:0!important}html[data-user-role="client"] #k-shell-header.k-shell-header{right:0!important;width:100%!important;height:68px!important;min-height:68px!important;display:block!important;padding:8px 12px!important}#k-shell-header>.k-brand{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;display:inline-flex!important;max-width:108px!important;margin:0!important;padding:0!important}#k-shell-header .k-brand-logo--full{display:block!important;width:108px!important;height:38px!important;object-position:center!important}#k-shell-header .k-brand-logo--icon,#k-shell-header>#k-desktop-nav{display:none!important}#k-shell-header>.k-shell-actions{position:absolute!important;right:10px!important;top:50%!important;transform:translateY(-50%)!important;display:flex!important;visibility:visible!important;opacity:1!important;gap:2px!important;width:auto!important;overflow:visible!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon{display:grid!important;place-items:center!important;flex:0 0 32px!important;width:32px!important;height:38px!important;min-width:32px!important;padding:0!important;border:0!important;border-radius:12px!important;background:rgba(255,107,0,.07)!important;color:#ff6b00!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon svg{width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon .k-shell-location-label{display:none!important}#k-shell-header .k-header-notifications{display:inline-flex!important;visibility:visible!important;opacity:1!important;flex:0 0 36px!important;width:36px!important;min-width:36px!important}#k-menu-toggle.k-menu-toggle{display:inline-flex!important;visibility:visible!important;opacity:1!important;flex:0 0 40px!important;width:40px!important;height:40px!important;min-width:40px!important;padding:0!important}#k-shell-header>#k-mobile-back.k-mobile-back{position:absolute!important;left:10px!important;top:50%!important;right:auto!important;bottom:auto!important;transform:translateY(-50%)!important;display:grid!important;width:42px!important;height:42px!important;margin:0!important;padding:0!important;z-index:89!important}#k-shell-header>#k-mobile-back[hidden]{display:none!important}#k-shell-header:has(>#k-mobile-back:not([hidden]))>.k-shell-actions>.k-shell-location-icon{display:none!important}#k-mobile-nav{display:grid!important}}@media(max-width:359px){#k-shell-header .k-brand-logo--full{width:96px!important}#k-shell-header>.k-brand{max-width:96px!important}}
++@media(min-width:600px){:root{--k-client-right-nav-w:88px}.k-app-shell{box-sizing:border-box!important;width:100%!important;padding-left:0!important;padding-right:var(--k-client-right-nav-w)!important}#k-desktop-sidebar{display:none!important}html[data-user-role="client"] #k-shell-header.k-shell-header{left:0!important;right:auto!important;width:calc(100% - var(--k-client-right-nav-w))!important;min-height:68px!important;height:68px!important;grid-template-columns:auto minmax(0,1fr) auto!important;padding:8px 14px!important;transform:none!important;will-change:auto!important}#k-shell-header.is-scroll-hidden,#k-shell-header.is-scroll-visible{transform:none!important;pointer-events:auto!important}#k-shell-header>.k-brand{position:static!important;grid-column:1!important;display:inline-flex!important;width:auto!important;min-height:0!important;padding:0!important;transform:none!important}#k-shell-header .k-brand-logo--full{display:block!important;width:150px!important;height:44px!important;object-position:left center!important}#k-shell-header .k-brand-logo--icon{display:none!important}#k-shell-header>#k-desktop-nav.k-desktop-nav{position:fixed!important;top:0!important;right:calc(-1 * var(--k-client-right-nav-w))!important;bottom:0!important;left:auto!important;z-index:var(--k-z-nav)!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:center!important;width:var(--k-client-right-nav-w)!important;min-width:var(--k-client-right-nav-w)!important;height:100dvh!important;gap:7px!important;padding:12px 8px!important;overflow-x:hidden!important;overflow-y:auto!important;background:rgba(255,255,255,.97)!important;border-left:1px solid rgba(15,23,42,.08)!important;box-shadow:-8px 0 24px rgba(15,23,42,.045)!important;scrollbar-width:none!important}#k-shell-header>#k-desktop-nav::-webkit-scrollbar{display:none!important}#k-shell-header>#k-desktop-nav .k-nav-link{display:flex!important;flex-direction:column!important;width:100%!important;min-height:58px!important;gap:4px!important;margin:0!important;padding:6px 4px!important;border-radius:15px!important;font-size:10px!important;line-height:1.08!important;text-align:center!important;white-space:normal!important}#k-shell-header>#k-desktop-nav .k-nav-icon,#k-shell-header>#k-desktop-nav .k-nav-icon svg{position:static!important;display:grid!important;width:23px!important;height:23px!important}#k-shell-header>#k-desktop-nav .k-nav-label{position:static!important;display:block!important;width:100%!important;height:auto!important;margin:0!important;padding:0!important;overflow:visible!important;clip:auto!important;white-space:normal!important;text-align:center!important}#k-shell-header>.k-shell-actions{position:static!important;grid-column:3!important;display:flex!important;visibility:visible!important;opacity:1!important;gap:5px!important;width:auto!important;max-width:none!important;overflow:visible!important;transform:none!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon{position:static!important;display:flex!important;align-items:center!important;flex:0 1 auto!important;width:auto!important;max-width:112px!important;height:38px!important;min-width:38px!important;gap:6px!important;padding:0 9px!important;border:0!important;border-radius:12px!important;background:rgba(255,107,0,.07)!important;color:#ff6b00!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon svg{flex:0 0 22px!important;width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon .k-shell-location-label{display:block!important;max-width:72px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;color:#374151!important;font-size:10.5px!important;font-weight:750!important}#k-shell-header .k-header-notifications{display:inline-flex!important;visibility:visible!important;opacity:1!important;flex:0 0 38px!important;width:38px!important;min-width:38px!important}#k-menu-toggle.k-menu-toggle{display:inline-flex!important;visibility:visible!important;opacity:1!important;flex:0 0 42px!important;width:42px!important;height:42px!important;min-width:42px!important;padding:0!important}#k-menu-toggle .k-menu-toggle-label{display:none!important}#k-shell-header>#k-mobile-back.k-mobile-back{position:absolute!important;left:12px!important;top:50%!important;right:auto!important;bottom:auto!important;transform:translateY(-50%)!important;display:grid!important;width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;margin:0!important;padding:0!important;z-index:var(--k-z-shell)!important}#k-shell-header>#k-mobile-back[hidden]{display:none!important}#k-shell-header:has(>#k-mobile-back:not([hidden]))>.k-brand{margin-left:50px!important}#k-mobile-nav{display:none!important}.k-page-outlet{margin-left:auto!important;margin-right:auto!important;padding-bottom:40px!important}}@media(min-width:861px){html[data-user-role="client"] #k-shell-header.k-shell-header{height:76px!important;min-height:76px!important;padding:10px 22px!important}#k-shell-header .k-brand-logo--full{width:176px!important;height:48px!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon{max-width:168px!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon .k-shell-location-label{max-width:126px!important;font-size:11.5px!important}}@media(min-width:1024px){:root{--k-client-right-nav-w:132px}#k-shell-header>#k-desktop-nav.k-desktop-nav{padding:14px 10px!important;gap:8px!important}#k-shell-header>#k-desktop-nav .k-nav-link{min-height:64px!important;font-size:11.5px!important}#k-shell-header>#k-desktop-nav .k-nav-icon,#k-shell-header>#k-desktop-nav .k-nav-icon svg{width:24px!important;height:24px!important}}@media(min-width:600px) and (max-width:860px){html[data-user-role="client"] #k-shell-header.k-shell-header{display:block!important}html[data-user-role="client"] #k-shell-header>#k-desktop-nav.k-desktop-nav{right:0!important}#k-shell-header>.k-brand{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;max-width:138px!important;margin:0!important}#k-shell-header .k-brand-logo--full{width:132px!important;height:40px!important;object-position:center!important}#k-shell-header>.k-shell-actions{position:absolute!important;right:10px!important;top:50%!important;transform:translateY(-50%)!important}}@media(max-width:599px){.k-app-shell{padding-left:0!important;padding-right:0!important}html[data-user-role="client"] #k-shell-header.k-shell-header{right:0!important;width:100%!important;height:68px!important;min-height:68px!important;display:block!important;padding:8px 12px!important}#k-shell-header>.k-brand{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;display:inline-flex!important;max-width:108px!important;margin:0!important;padding:0!important}#k-shell-header .k-brand-logo--full{display:block!important;width:108px!important;height:38px!important;object-position:center!important}#k-shell-header .k-brand-logo--icon,#k-shell-header>#k-desktop-nav{display:none!important}#k-shell-header>.k-shell-actions{position:absolute!important;right:10px!important;top:50%!important;transform:translateY(-50%)!important;display:flex!important;visibility:visible!important;opacity:1!important;gap:2px!important;width:auto!important;overflow:visible!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon{display:grid!important;place-items:center!important;flex:0 0 32px!important;width:32px!important;height:38px!important;min-width:32px!important;padding:0!important;border:0!important;border-radius:12px!important;background:rgba(255,107,0,.07)!important;color:#ff6b00!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon svg{width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important}#k-shell-header>.k-shell-actions>.k-shell-location-icon .k-shell-location-label{display:none!important}#k-shell-header .k-header-notifications{display:inline-flex!important;visibility:visible!important;opacity:1!important;flex:0 0 36px!important;width:36px!important;min-width:36px!important}#k-menu-toggle.k-menu-toggle{display:inline-flex!important;visibility:visible!important;opacity:1!important;flex:0 0 40px!important;width:40px!important;height:40px!important;min-width:40px!important;padding:0!important}#k-shell-header>#k-mobile-back.k-mobile-back{position:absolute!important;left:10px!important;top:50%!important;right:auto!important;bottom:auto!important;transform:translateY(-50%)!important;display:grid!important;width:42px!important;height:42px!important;margin:0!important;padding:0!important;z-index:var(--k-z-shell)!important}#k-shell-header>#k-mobile-back[hidden]{display:none!important}#k-shell-header:has(>#k-mobile-back:not([hidden]))>.k-shell-actions>.k-shell-location-icon{display:none!important}#k-mobile-nav{display:grid!important}}@media(max-width:359px){#k-shell-header .k-brand-logo--full{width:96px!important}#k-shell-header>.k-brand{max-width:96px!important}}
+ 
+ /* R188.5.5.6.84.145 — canonical PC left navigation rail. */
+ @media (min-width:1024px){
+@@ -239,7 +239,7 @@
+     display:flex!important;
+     align-items:center!important;
+     justify-content:flex-start!important;
+-    z-index:140!important;
++    z-index:var(--k-z-nav)!important;
+     pointer-events:auto!important;
+   }
+   html[data-user-role="client"] #k-shell-header>.k-brand .k-brand-logo--full{
+diff -ruN KARETA_84.170_ORIGINAL/css/next/shell_header_restoration.css KARETA_84.171_REEXTRACT/css/next/shell_header_restoration.css
+--- KARETA_84.170_ORIGINAL/css/next/shell_header_restoration.css	2026-10-04 09:26:40.000000000 +0000
++++ KARETA_84.171_REEXTRACT/css/next/shell_header_restoration.css	2026-10-04 17:58:05.000000000 +0000
+@@ -103,7 +103,7 @@
+ 
+ .k-shell-location-popover{
+   position:absolute;
+-  z-index:96;
++  z-index:var(--k-z-overlay);
+   top:calc(100% + 10px);
+   right:50px;
+   display:grid;
+diff -ruN KARETA_84.170_ORIGINAL/css/next/window_engine.css KARETA_84.171_REEXTRACT/css/next/window_engine.css
+--- KARETA_84.170_ORIGINAL/css/next/window_engine.css	2026-10-04 09:26:40.000000000 +0000
++++ KARETA_84.171_REEXTRACT/css/next/window_engine.css	2026-10-04 17:58:05.000000000 +0000
+@@ -14,7 +14,7 @@
+ .k-entity-window{width:min(1440px,94vw);height:min(920px,92dvh);max-width:none;max-height:none;padding:0;border:0;border-radius:24px;background:transparent;box-shadow:0 30px 90px rgba(15,23,42,.28);overflow:hidden}
+ .k-entity-window::backdrop{background:rgba(15,23,42,.52);backdrop-filter:blur(7px)}
+ .k-entity-window__surface{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--k-surface,#fff);color:var(--k-text,#111827);overflow:hidden}
+-.k-entity-window__head{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 18px;border-bottom:1px solid var(--k-line,#e5e7eb);background:color-mix(in srgb,var(--k-surface,#fff) 96%,transparent)}
++.k-entity-window__head{position:relative;z-index:var(--k-z-sticky);display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 18px;border-bottom:1px solid var(--k-line,#e5e7eb);background:color-mix(in srgb,var(--k-surface,#fff) 96%,transparent)}
+ .k-entity-window__head small{display:block;font-size:10px;font-weight:850;letter-spacing:.11em;color:var(--k-muted,#667085)}
+ .k-entity-window__head h2{margin:2px 0 0;font-size:18px;line-height:1.15}
+ .k-entity-window__close{display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--k-line,#e5e7eb);border-radius:50%;background:transparent;color:inherit;font-size:26px;line-height:1;cursor:pointer}
+diff -ruN KARETA_84.170_ORIGINAL/css/routes/master_runtime.css KARETA_84.171_REEXTRACT/css/routes/master_runtime.css
+--- KARETA_84.170_ORIGINAL/css/routes/master_runtime.css	2026-10-04 09:26:40.000000000 +0000
++++ KARETA_84.171_REEXTRACT/css/routes/master_runtime.css	2026-10-04 17:58:34.000000000 +0000
+@@ -1,8 +1,8 @@
+-/* KARETA.KZ R188.5.5.6.84.102 — GENERATED master route bundle. DO NOT EDIT. Run: node tools/build_master_runtime_css.js */
++/* KARETA.KZ generated Master route bundle. DO NOT EDIT. Run: node tools/build_master_runtime_css.js */
+ 
+ /* ===== SOURCE: css/next/master_surfaces.css ===== */
+ /* R188.5.5.6.84.102 — unified Master Surface Contract */
+-html[data-user-role="master"],html[data-navigation-context="master"]{--k-master-content-max:1420px;--k-master-page-x:clamp(14px,2.2vw,34px);--k-master-page-y:18px;--k-master-section-gap:16px;--k-master-control-radius:12px;--k-master-small-card-radius:16px;--k-master-card-radius:20px;--k-master-dialog-radius:24px;--k-master-line:#e5e7eb;--k-master-surface:#fff;--k-master-page-bg:#f5f6f8;--k-master-shadow:0 4px 16px rgba(15,23,42,.045)}
++html[data-user-role="master"],html[data-navigation-context="master"]{--k-master-page-y:18px;--k-master-section-gap:16px;--k-master-shadow:0 4px 16px rgba(15,23,42,.045)}
+ html[data-user-role="master"] #k-page-outlet{background:var(--k-master-page-bg)}
+ html[data-user-role="master"] .k-master-surface-page{width:min(100%,var(--k-master-content-max));max-width:var(--k-master-content-max);margin:0 auto;padding:var(--k-master-page-y) var(--k-master-page-x) calc(var(--k-mobile-nav-live-height,var(--k-mobile-nav-h,72px)) + 28px);box-sizing:border-box}
+ .k-master-surface-icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@@ -29,7 +29,7 @@
+ .k-master-workspace-panel[hidden]{display:none!important}
+ @media (min-width:1100px){
+   .k-master-desktop-workspace-nav{
+-    display:flex;align-items:center;gap:6px;position:sticky;top:8px;z-index:14;
++    display:flex;align-items:center;gap:6px;position:sticky;top:8px;z-index:var(--k-z-sticky);
+     width:max-content;max-width:100%;margin:0 0 16px;padding:6px;
+     border:1px solid #e7e9ed;border-radius:16px;background:rgba(255,255,255,.94);
+     box-shadow:0 8px 28px rgba(15,23,42,.06);backdrop-filter:blur(14px)
+@@ -71,6 +71,39 @@
+   .k-master-workspace-panel{display:none!important}
+ }
+ 
++/* R188.5.5.6.84.171 — MASTER SURFACE CANON V1.
++   Sole owner of Master route content geometry. Shell/nav geometry lives in
++   master_shell_canonical_84_143.css; component geometry stays with components. */
++html[data-user-role="master"] #k-page-outlet{background:var(--k-master-page-bg);min-width:0}
++html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{
++  width:100%;max-width:var(--k-master-content-max);min-width:0;margin-inline:auto;
++  padding:18px var(--k-master-page-x) 34px;box-sizing:border-box;
++}
++html[data-user-role="master"] #k-page-outlet .k-master-surface-page>*{min-width:0}
++html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(img,video,canvas,svg){max-width:100%}
++
++@media(max-width:767px){
++  html[data-user-role="master"]{--k-master-page-x:12px;--k-master-page-y:14px;--k-master-section-gap:12px}
++  html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{
++    max-width:none;padding:14px var(--k-master-page-x) calc(var(--k-master-mobile-nav-h) + env(safe-area-inset-bottom,0px) + 24px);gap:12px;
++  }
++  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(.k-orders-grid--master,.k-service-offers-grid,.k-work-feed-grid){
++    display:grid;grid-template-columns:minmax(0,1fr)!important;gap:12px!important;
++  }
++  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(.k-order-card,.k-service-offer-card,.k-work-card){min-width:0;max-width:100%;border-radius:var(--k-radius-card)}
++}
++@media(min-width:768px) and (max-width:1199px){
++  html[data-user-role="master"]{--k-master-page-x:22px;--k-master-section-gap:15px}
++  html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{max-width:none;padding-top:18px}
++  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(.k-orders-grid--master,.k-service-offers-grid,.k-work-feed-grid){display:grid;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important}
++}
++@media(min-width:1200px){
++  html[data-user-role="master"]{--k-master-page-x:clamp(28px,2.4vw,38px);--k-master-section-gap:18px}
++  html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{padding-top:22px;padding-bottom:40px}
++  html[data-user-role="master"] #k-page-outlet .k-master-surface-page .k-orders-grid--master{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important}
++  html[data-user-role="master"] #k-page-outlet .k-master-surface-page :is(.k-service-offers-grid,.k-work-feed-grid){display:grid;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important}
++}
++
+ /* ===== SOURCE: css/next/master_business_runtime.css ===== */
+ /* R188.5.5.6.17 — database-backed master business runtime */
+ .k-master-business-metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+@@ -253,7 +286,7 @@
+ .k-master-r71-section-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;background:var(--k-surface-soft,#f4f6f8)}.k-master-r71-section-icon svg{width:21px;height:21px}
+ .k-master-r71-day{padding:0;border:1px solid var(--k-line,#e1e5ea);border-radius:20px;background:#fff;overflow:hidden}
+ .k-master-r71-day>header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0;padding:14px 16px;border-bottom:1px solid var(--k-line,#edf0f2)}.k-master-r71-day>header>div{display:flex;align-items:center;gap:10px}.k-master-r71-day>header h2{margin:2px 0 0;font-size:18px}.k-master-r71-day>header>span{font-size:11px;color:#667085}
+-.k-master-r71-day__list{list-style:none;margin:0;padding:0 16px}.k-master-r71-day__list>li{position:relative;display:grid;grid-template-columns:74px 34px minmax(0,1fr) auto;gap:10px;align-items:center;min-height:62px;padding:10px 0;border-top:1px solid var(--k-line,#edf0f2)}.k-master-r71-day__list>li:first-child{border-top:0}.k-master-r71-day__list>li:not(:last-child)::after{content:"";position:absolute;left:90px;top:44px;bottom:-20px;width:1px;background:#d7dce2}.k-master-r71-day__time{display:grid}.k-master-r71-day__time strong{font-variant-numeric:tabular-nums}.k-master-r71-day__time small{color:#667085;font-size:10px}.k-master-r71-day__marker{z-index:1;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#f4f6f8}.k-master-r71-day__marker svg{width:15px;height:15px}.k-master-r71-day__list .is-running .k-master-r71-day__marker{background:#fff0e7;color:#b54708}.k-master-r71-day__list .is-no_show .k-master-r71-day__marker{background:#fff1f0;color:#b42318}.k-master-r71-day__event{display:grid;gap:2px;min-width:0}.k-master-r71-day__event small{color:#667085;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.k-master-r71-day__list nav{display:flex;gap:5px}.k-master-r71-day__list nav a{display:inline-flex;align-items:center;gap:4px;padding:7px 9px;border-radius:9px;background:#f4f6f8;color:#111;text-decoration:none;font-size:11px;font-weight:750}.k-master-r71-day__list nav svg{width:13px;height:13px}
++.k-master-r71-day__list{list-style:none;margin:0;padding:0 16px}.k-master-r71-day__list>li{position:relative;display:grid;grid-template-columns:74px 34px minmax(0,1fr) auto;gap:10px;align-items:center;min-height:62px;padding:10px 0;border-top:1px solid var(--k-line,#edf0f2)}.k-master-r71-day__list>li:first-child{border-top:0}.k-master-r71-day__list>li:not(:last-child)::after{content:"";position:absolute;left:90px;top:44px;bottom:-20px;width:1px;background:#d7dce2}.k-master-r71-day__time{display:grid}.k-master-r71-day__time strong{font-variant-numeric:tabular-nums}.k-master-r71-day__time small{color:#667085;font-size:10px}.k-master-r71-day__marker{z-index:var(--k-z-content);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#f4f6f8}.k-master-r71-day__marker svg{width:15px;height:15px}.k-master-r71-day__list .is-running .k-master-r71-day__marker{background:#fff0e7;color:#b54708}.k-master-r71-day__list .is-no_show .k-master-r71-day__marker{background:#fff1f0;color:#b42318}.k-master-r71-day__event{display:grid;gap:2px;min-width:0}.k-master-r71-day__event small{color:#667085;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.k-master-r71-day__list nav{display:flex;gap:5px}.k-master-r71-day__list nav a{display:inline-flex;align-items:center;gap:4px;padding:7px 9px;border-radius:9px;background:#f4f6f8;color:#111;text-decoration:none;font-size:11px;font-weight:750}.k-master-r71-day__list nav svg{width:13px;height:13px}
+ 
+ .k-schedule-grid{grid-template-columns:1fr;gap:12px}
+ .k-schedule-day--r71{border:1px solid var(--k-line,#e1e5ea);border-radius:20px;background:#fff;overflow:hidden;box-shadow:none}
+@@ -272,389 +305,84 @@
+ @media(max-width:760px){.k-master-r71-toolbar{align-items:stretch;gap:9px}.k-master-r71-toolbar__state,.k-master-r71-toolbar__actions{width:100%}.k-master-r71-toolbar__actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.k-master-r71-toolbar__actions .k-btn{justify-content:center;padding-inline:8px}.k-master-r71-toolbar__actions .k-btn span{font-size:11px}.k-master-r71-refresh{margin-left:auto}.k-exchange-r71-head{align-items:flex-start;flex-direction:column}.k-exchange-r71-head__actions{width:100%;justify-content:space-between}.k-exchange-r71-toolbar{grid-template-columns:minmax(0,1fr) auto auto}.k-exchange-r71-toolbar .k-exchange-search-field{grid-column:1/-1}.k-exchange-r71-toolbar .k-exchange-service-scope{grid-column:1/-1;width:100%}.k-exchange-r71-toolbar .k-exchange-filter-wrap{grid-column:1}.k-exchange-r71-toolbar .k-exchange-kpi-button{grid-column:2}.k-exchange-r71-facts{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:10px}.k-exchange-r71-facts>div:nth-child(3){padding-left:0;border-left:0}.k-exchange-quick-response--r71{grid-template-columns:1fr 1fr}.k-exchange-r71-response-title{grid-column:1/-1}.k-exchange-quick-response--r71>.k-btn{grid-column:1/-1}.k-master-r71-day__list>li{grid-template-columns:58px 30px minmax(0,1fr)}.k-master-r71-day__list>li:not(:last-child)::after{left:72px}.k-master-r71-day__list nav{grid-column:3;justify-content:flex-start}.k-schedule-slot--r71{grid-template-columns:64px minmax(0,1fr)}.k-schedule-slot--r71 .k-schedule-slot-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.k-master-r71-blocks>div article{grid-template-columns:1fr auto 34px}.k-master-r71-blocks>div article small{grid-column:1/3}.k-master-r70-extension{align-items:stretch}}
+ @media(max-width:480px){.k-master-r71-toolbar__actions{grid-template-columns:1fr 1fr}.k-exchange-r71-head__icon{width:38px;height:38px;border-radius:12px}.k-exchange-r71-head p{font-size:12px}.k-exchange-r71-facts{padding-inline:13px}.k-exchange-r71-subject{padding:14px 13px}.k-exchange-card--r71>.k-exchange-card__head,.k-exchange-quick-response--r71,.k-exchange-r71-card-footer,.k-exchange-r71-actions{padding-inline:13px}.k-exchange-quick-response--r71{grid-template-columns:1fr}.k-exchange-r71-details{grid-template-columns:1fr 1fr}.k-exchange-r71-card-footer,.k-exchange-r71-actions{display:grid;grid-template-columns:1fr}.k-exchange-r71-card-footer .k-btn,.k-exchange-r71-actions .k-btn{justify-content:center}.k-master-r71-day__list{padding-inline:12px}.k-master-r71-day__list>li{grid-template-columns:52px 28px minmax(0,1fr);gap:7px}.k-master-r71-day__list>li:not(:last-child)::after{left:65px}.k-master-r71-day__list nav{grid-column:3}.k-master-r71-day__list nav a span{display:none}.k-schedule-day--r71>header,.k-schedule-day--r71>.k-schedule-capacity,.k-schedule-day--r71>.k-master-r69-blocks,.k-schedule-day--r71>.k-master-r70-extension,.k-schedule-day--r71>.k-master-r69-date-exception{padding-inline:12px}.k-schedule-day--r71>.k-schedule-day-body{padding-inline:12px}.k-schedule-slot--r71{grid-template-columns:54px minmax(0,1fr);gap:9px}.k-schedule-slot--r71 .k-schedule-slot-actions{grid-template-columns:1fr 1fr}.k-schedule-slot--r71 .k-schedule-slot-actions .k-button span{font-size:11px}}
+ 
+-/* R188.5.5.6.84.176 — MASTER surfaces aligned with the client r84 card system. */
+-html[data-user-role="master"] [data-page="service-management"]{
+-  --k-master-r84-orange:#ff4b0a;
+-  --k-master-r84-text:#171a1f;
+-  --k-master-r84-muted:#747b84;
+-  --k-master-r84-line:#e6e8eb;
+-  --k-master-r84-soft:#f7f8f9;
+-  width:min(100%,1240px)!important;
+-  max-width:1240px!important;
+-  margin-inline:auto!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-services-overview{
+-  display:grid!important;
+-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+-  gap:8px!important;
+-  margin-bottom:10px!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-services-overview article{
+-  min-width:0!important;
+-  min-height:72px!important;
+-  padding:12px 14px!important;
+-  border:1px solid var(--k-master-r84-line)!important;
+-  border-radius:16px!important;
+-  background:#fff!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-services-overview b{
+-  font-size:21px!important;
+-  line-height:24px!important;
+-  font-weight:900!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-services-overview span{
+-  font-size:10px!important;
+-  line-height:13px!important;
+-  color:var(--k-master-r84-muted)!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-services-toolbar{
+-  display:grid!important;
+-  grid-template-columns:minmax(0,1fr) auto!important;
+-  gap:8px!important;
+-  align-items:center!important;
+-  margin:0 0 10px!important;
+-  padding:8px!important;
+-  border:1px solid var(--k-master-r84-line)!important;
+-  border-radius:16px!important;
+-  background:#fff!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-services-toolbar>label{
+-  min-width:0!important;
+-  min-height:44px!important;
+-  border:1px solid #dfe2e6!important;
+-  border-radius:13px!important;
+-  background:#f8f9fa!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-services-toolbar input[type="search"]{
+-  min-width:0!important;
+-  font-size:13px!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-services-toolbar .k-btn{
+-  min-height:44px!important;
+-  border-radius:13px!important;
+-  padding-inline:16px!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-catalog-status{
+-  margin:0 0 10px!important;
+-  padding:0 2px!important;
+-  color:#7a818a!important;
+-  font-size:10px!important;
+-  line-height:14px!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-services-matrix{
+-  display:grid!important;
+-  gap:12px!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-category-r84{
+-  overflow:visible!important;
+-  padding:0!important;
+-  border:0!important;
+-  border-radius:0!important;
+-  background:transparent!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-category-r84>header{
+-  margin:0 0 8px!important;
+-  padding:0 2px!important;
+-  border:0!important;
+-  background:transparent!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-category-r84>header>label{
+-  display:flex!important;
+-  align-items:center!important;
+-  gap:9px!important;
+-  min-width:0!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-category-r84>header input{
+-  width:19px!important;
+-  height:19px!important;
+-  accent-color:var(--k-master-r84-orange)!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-category-r84>header h2{
+-  margin:1px 0!important;
+-  font-size:17px!important;
+-  line-height:21px!important;
+-  font-weight:900!important;
+-  letter-spacing:-.015em!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-category-r84>header small{
+-  color:#a05c36!important;
+-  font-size:8px!important;
+-  line-height:10px!important;
+-  font-weight:900!important;
+-  letter-spacing:.09em!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-category-r84>header p{
+-  margin:0!important;
+-  color:#858b94!important;
+-  font-size:9px!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-grid-r84{
+-  display:grid!important;
+-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+-  gap:9px!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84{
+-  display:grid!important;
+-  grid-template-columns:1fr!important;
+-  grid-template-rows:minmax(0,1fr) auto!important;
+-  gap:10px!important;
+-  min-width:0!important;
+-  min-height:176px!important;
+-  padding:12px!important;
+-  border:1px solid var(--k-master-r84-line)!important;
+-  border-radius:17px!important;
+-  background:#fff!important;
+-  opacity:1!important;
+-  box-shadow:0 5px 18px rgba(15,23,42,.04)!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84:not(.is-enabled){
+-  background:#fafafa!important;
+-  box-shadow:none!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84.is-enabled{
+-  border-color:#ffc6ad!important;
+-  box-shadow:0 6px 20px rgba(255,75,10,.08)!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__head{
+-  display:grid!important;
+-  grid-template-columns:20px 40px minmax(0,1fr)!important;
+-  gap:8px!important;
+-  align-items:start!important;
+-  min-width:0!important;
+-  cursor:pointer!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__head>input{
+-  width:19px!important;
+-  height:19px!important;
+-  margin:2px 0 0!important;
+-  accent-color:var(--k-master-r84-orange)!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__head>span[aria-hidden="true"]{
+-  display:none!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__icon{
+-  display:grid!important;
+-  place-items:center!important;
+-  width:40px!important;
+-  height:40px!important;
+-  border-radius:12px!important;
+-  background:#fff1ea!important;
+-  color:#e64b0e!important;
+-  font-size:19px!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__head>div{
+-  display:grid!important;
+-  gap:3px!important;
+-  min-width:0!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__head b{
+-  display:block!important;
+-  min-width:0!important;
+-  font-size:13px!important;
+-  line-height:17px!important;
+-  font-weight:900!important;
+-  white-space:normal!important;
+-  word-break:normal!important;
+-  overflow-wrap:normal!important;
+-  hyphens:none!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__head small{
+-  display:-webkit-box!important;
+-  min-width:0!important;
+-  overflow:hidden!important;
+-  color:#777e87!important;
+-  font-size:9.5px!important;
+-  line-height:13px!important;
+-  -webkit-line-clamp:2!important;
+-  -webkit-box-orient:vertical!important;
+-  white-space:normal!important;
+-  word-break:normal!important;
+-  overflow-wrap:normal!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__head em{
+-  display:block!important;
+-  margin-top:2px!important;
+-  color:#50565e!important;
+-  font-size:8.5px!important;
+-  line-height:12px!important;
+-  font-style:normal!important;
+-  font-weight:800!important;
+-  white-space:normal!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__fields{
+-  display:grid!important;
+-  grid-template-columns:1fr 1fr!important;
+-  gap:7px!important;
+-  min-width:0!important;
+-  padding-top:9px!important;
+-  border-top:1px solid #eef0f2!important;
+-  opacity:1!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84:not(.is-enabled) .k-master-service-card-r84__fields{
+-  opacity:.5!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__fields>label{
+-  display:grid!important;
+-  gap:4px!important;
+-  min-width:0!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__fields>label>span{
+-  color:#777e87!important;
+-  font-size:8.5px!important;
+-  line-height:11px!important;
+-  font-weight:850!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__fields>label>div{
+-  display:grid!important;
+-  grid-template-columns:minmax(0,1fr) auto!important;
+-  align-items:center!important;
+-  min-width:0!important;
+-  height:39px!important;
+-  border:1px solid #dfe2e6!important;
+-  border-radius:11px!important;
+-  overflow:hidden!important;
+-  background:#fff!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__fields input{
+-  width:100%!important;
+-  min-width:0!important;
+-  height:37px!important;
+-  padding:0 8px!important;
+-  border:0!important;
+-  border-radius:0!important;
+-  outline:0!important;
+-  background:transparent!important;
+-  font-size:12px!important;
+-  font-weight:800!important;
+-}
+-html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__fields small{
+-  padding:0 8px 0 3px!important;
+-  color:#8a9098!important;
+-  font-size:8.5px!important;
+-  font-weight:850!important;
+-}
+-html[data-user-role="master"] #k-page-outlet :is(.k-exchange-r71,.k-master-workplace-page,.k-master-dashboard-page) .k-empty,
+-html[data-user-role="master"] #k-page-outlet :is(.k-exchange-r71,.k-master-workplace-page,.k-master-dashboard-page) [class*="empty"]{
+-  border:1px dashed #dde1e6!important;
+-  border-radius:17px!important;
+-  background:#fff!important;
+-  box-shadow:none!important;
+-}
++/* R188.5.5.6.84.171 — MASTER EXCHANGE VISUAL CANON.
++   Client directory visual language; Master API/state/route contracts unchanged. */
+ html[data-user-role="master"] #k-page-outlet .k-exchange-r71{
+-  width:min(100%,1180px)!important;
+-  max-width:1180px!important;
+-  margin-inline:auto!important;
++  width:100%;max-width:var(--k-master-content-max);min-width:0;gap:12px;
+ }
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-head{
++  min-width:0;padding:2px 0 12px;border-bottom:0;
++}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-head__icon{
++  width:40px;height:40px;border-radius:12px;background:#f3f4f6;
++}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-head h1{font-size:clamp(24px,2.2vw,32px);letter-spacing:-.025em}
+ html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar{
+-  border:1px solid #e5e8ec!important;
+-  border-radius:16px!important;
+-  background:#fff!important;
+-}
+-@media(max-width:1100px){
+-  html[data-user-role="master"] [data-page="service-management"] .k-master-service-grid-r84{
+-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+-  }
++  display:grid;grid-template-columns:minmax(260px,1fr) auto auto auto;gap:8px;align-items:center;
++  padding:10px;border:1px solid var(--k-line);border-radius:var(--k-radius-card);background:#fff;box-shadow:none;
+ }
+-@media(max-width:699px){
+-  html[data-user-role="master"] [data-page="service-management"]{
+-    width:100%!important;
+-    max-width:none!important;
+-    margin:0!important;
+-  }
+-  html[data-user-role="master"] [data-page="service-management"] .k-master-services-overview{
+-    gap:7px!important;
+-  }
+-  html[data-user-role="master"] [data-page="service-management"] .k-master-services-overview article{
+-    min-height:64px!important;
+-    padding:10px 11px!important;
+-    border-radius:14px!important;
+-  }
+-  html[data-user-role="master"] [data-page="service-management"] .k-master-services-toolbar{
+-    grid-template-columns:1fr!important;
+-    padding:7px!important;
+-    border-radius:14px!important;
+-  }
+-  html[data-user-role="master"] [data-page="service-management"] .k-master-services-toolbar>div{
+-    display:grid!important;
+-    grid-template-columns:1fr!important;
+-  }
+-  html[data-user-role="master"] [data-page="service-management"] .k-master-service-grid-r84{
+-    grid-template-columns:1fr!important;
+-    gap:8px!important;
+-  }
+-  html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84{
+-    min-height:0!important;
+-    padding:11px!important;
+-    border-radius:15px!important;
+-  }
+-  html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__head{
+-    grid-template-columns:20px 38px minmax(0,1fr)!important;
+-  }
+-  html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__icon{
+-    width:38px!important;
+-    height:38px!important;
+-    border-radius:11px!important;
+-  }
+-  html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__fields{
+-    grid-template-columns:1fr 1fr!important;
+-  }
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar :is(.k-masters-search,.k-exchange-search-field){
++  min-width:0;min-height:48px;border:1px solid var(--k-line);border-radius:12px;background:#fff;box-shadow:none;
+ }
+-@media(max-width:350px){
+-  html[data-user-role="master"] [data-page="service-management"] .k-master-service-card-r84__fields{
+-    grid-template-columns:1fr!important;
+-  }
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar :is(.k-masters-search input,.k-exchange-search-field input){min-width:0;width:100%;font-size:14px}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar :is(.k-exchange-filter-button,.k-exchange-kpi-button,.k-exchange-refresh-button){min-height:44px;border-radius:11px}
++html[data-user-role="master"] #k-page-outlet .k-exchange-service-scope,
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-tabs{
++  width:100%;max-width:100%;display:flex;flex-wrap:nowrap;gap:5px;overflow-x:auto;overflow-y:hidden;
++  padding:3px;border-radius:12px;background:#f3f4f6;scrollbar-width:none;
++}
++html[data-user-role="master"] #k-page-outlet :is(.k-exchange-service-scope,.k-exchange-r71-tabs)::-webkit-scrollbar{display:none}
++html[data-user-role="master"] #k-page-outlet :is(.k-exchange-service-scope,.k-exchange-r71-tabs)>button{
++  flex:0 0 auto;min-width:max-content;min-height:38px;padding:0 12px;border:0;border-radius:9px;background:transparent;white-space:nowrap;
++}
++html[data-user-role="master"] #k-page-outlet :is(.k-exchange-service-scope,.k-exchange-r71-tabs)>button.is-active{background:#fff;color:#17191d;box-shadow:0 1px 2px rgba(16,24,40,.06)}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start;min-width:0}
++html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71{
++  min-width:0;max-width:100%;border:1px solid var(--k-line);border-radius:14px;background:#fff;box-shadow:none;overflow:hidden;
++}
++html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71>.k-exchange-card__head{padding:12px 14px}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-subject{padding:14px;grid-template-columns:32px minmax(0,1fr)}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-subject h2{font-size:17px;line-height:1.25;overflow-wrap:anywhere}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-subject p{font-size:12px;overflow-wrap:anywhere}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-facts,
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-details{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 0}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-facts{padding:0 14px 13px}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-facts>div:nth-child(odd){padding-left:0;border-left:0}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-facts>div:nth-child(even){border-left:1px solid var(--k-line)}
++html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71{
++  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end;gap:8px;padding:12px 14px;background:#f7f8f9;
++}
++html[data-user-role="master"] #k-page-outlet .k-exchange-r71-response-title,
++html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71>.k-btn{grid-column:1/-1}
++html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71 label{min-width:0}
++html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71 label:nth-of-type(3){grid-column:1/-1}
++html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71 input{width:100%;min-width:0;box-sizing:border-box}
++html[data-user-role="master"] #k-page-outlet :is(.k-exchange-r71-card-footer,.k-exchange-r71-actions){padding:10px 14px}
++
++@media(max-width:767px){
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-head{align-items:flex-start;flex-direction:column;gap:8px}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-head__actions{width:100%;justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar{grid-template-columns:repeat(3,minmax(0,1fr));padding:0;border:0;background:transparent;border-radius:0}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar>.k-exchange-search-field,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar>.k-masters-search,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar>.k-exchange-service-scope,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar>.k-exchange-r71-tabs{grid-column:1/-1;width:100%}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-grid{grid-template-columns:minmax(0,1fr);gap:12px}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-card--r71{border-radius:14px}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71{grid-template-columns:minmax(0,1fr)}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-response-title,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71>.k-btn,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71 label:nth-of-type(3){grid-column:auto}
++}
++@media(min-width:768px) and (max-width:1023px){
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar{grid-template-columns:minmax(220px,1fr) auto auto}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar>.k-exchange-service-scope{grid-column:1/-1}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71{grid-template-columns:minmax(0,1fr)}
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-response-title,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71>.k-btn,
++  html[data-user-role="master"] #k-page-outlet .k-exchange-quick-response--r71 label:nth-of-type(3){grid-column:auto}
+ }
+-
+-/* R188.5.5.6.84.176 — actionable master empty states. */
+-html[data-user-role="master"] .k-master-empty-r84{
+-  display:grid!important;
+-  place-items:center!important;
+-  align-content:center!important;
+-  gap:8px!important;
+-  min-height:150px!important;
+-  padding:22px 16px!important;
+-  border:1px dashed #dfe2e6!important;
+-  border-radius:17px!important;
+-  background:#fff!important;
+-  text-align:center!important;
+-}
+-html[data-user-role="master"] .k-master-empty-r84 h2,
+-html[data-user-role="master"] .k-master-empty-r84 h3{
+-  margin:0!important;
+-  max-width:560px!important;
+-}
+-html[data-user-role="master"] .k-master-empty-r84 p{
+-  margin:0!important;
+-  max-width:560px!important;
+-  color:#747b84!important;
+-  font-size:11px!important;
+-  line-height:16px!important;
+-}
+-html[data-user-role="master"] .k-master-empty-r84__actions{
+-  display:flex!important;
+-  justify-content:center!important;
+-  flex-wrap:wrap!important;
+-  gap:7px!important;
+-  margin-top:5px!important;
+-}
+-html[data-user-role="master"] .k-master-empty-r84__actions .k-btn{
+-  min-height:38px!important;
+-  padding:0 12px!important;
+-  border-radius:11px!important;
+-  font-size:10.5px!important;
+-}
+-@media(max-width:430px){
+-  html[data-user-role="master"] .k-master-empty-r84{
+-    min-height:132px!important;
+-    padding:18px 12px!important;
+-  }
+-  html[data-user-role="master"] .k-master-empty-r84__actions{
+-    width:100%!important;
+-    display:grid!important;
+-    grid-template-columns:1fr!important;
+-  }
+-  html[data-user-role="master"] .k-master-empty-r84__actions .k-btn{
+-    width:100%!important;
+-    justify-content:center!important;
+-  }
++@media(min-width:1200px){
++  html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar{position:sticky;top:calc(var(--k-master-shell-h) + 8px);z-index:var(--k-z-sticky);background:rgba(255,255,255,.96);backdrop-filter:blur(14px)}
+ }
+diff -ruN KARETA_84.170_ORIGINAL/docs/deployment/PLESK_INSTALL_84.171.md KARETA_84.171_REEXTRACT/docs/deployment/PLESK_INSTALL_84.171.md
+--- KARETA_84.170_ORIGINAL/docs/deployment/PLESK_INSTALL_84.171.md	1970-01-01 00:00:00.000000000 +0000
++++ KARETA_84.171_REEXTRACT/docs/deployment/PLESK_INSTALL_84.171.md	2026-10-04 18:01:22.000000000 +0000
+@@ -0,0 +1,22 @@
++# KARETA 188.5.5.6.84.171 — Plesk install / design acceptance
++
++1. Make a Plesk file + database backup. Preserve the active private config and persistent storage; do not overwrite them from the ZIP.
++2. Upload the full 84.171 package into the application document root. Do not mix individual files from 84.170/84.171.
++3. Keep the 84.170 Plesk/nginx/PHP-FPM configuration, trusted proxy rules and gzip/static-cache directives unchanged.
++4. Run `php tools/package_verify.php`. It must report release `188.5.5.6.84.171` with zero failed files.
++5. Run `php tools/server_preflight.php`. Environment-only failures must be resolved before browser acceptance.
++6. Run `php tools/db_upgrade.php --apply`. Expected schema remains **138**; this release adds no migration.
++7. Verify `/api/provenance.php` reports asset version `188.5.5.6.84.171` and the exact fingerprint from `storage/deployment_manifest.json`.
++8. Verify `/asset_manifest.php` and response header `X-Kareta-Asset-Version` both report `188.5.5.6.84.171`. Do not start visual acceptance while any 84.170 CSS/JS is still requested.
++9. Confirm HTML/SW/manifest remain `no-store`, while versioned CSS/JS remain immutable as in 84.170.
++10. Start a fresh browser/WebView session. If an old Service Worker still controls the page, use the application's retry/recovery path once and confirm the new release-scoped cache namespace is active.
++11. Authenticated Master acceptance, first pass: Биржа → Заказы → График → Сообщество → Запчасти → Ещё → back. Confirm exactly six bottom destinations on phone and no `Сегодня`.
++12. Repeat the same route circle a second time. No menu disappearance, new skeleton loop, mixed-release asset request or route-load error is allowed.
++13. Responsive design acceptance:
++    - phone <=767: one-row six-item bottom nav, no horizontal page overflow, Exchange one card per row;
++    - tablet 768–1199: dedicated right rail, Exchange two columns where content fits, no phone dock;
++    - desktop >=1200: desktop header + right rail, bounded Master content, two substantial Exchange cards per row.
++14. Open/close filters, More/drawer, location popover, chat composer, booking continue controls and entity windows. Confirm sticky/overlay elements do not cover each other.
++15. Inspect `storage/logs/client_errors.log` plus nginx/PHP logs for 429/timeouts. This design release does not claim the transport root cause fixed.
++
++Do not delete legacy CSS files on the host during this acceptance. They are frozen migration inputs; retirement comes only after the visual two-pass proof.
+diff -ruN KARETA_84.170_ORIGINAL/docs/design/CANON_84_171.md KARETA_84.171_REEXTRACT/docs/design/CANON_84_171.md
+--- KARETA_84.170_ORIGINAL/docs/design/CANON_84_171.md	1970-01-01 00:00:00.000000000 +0000
++++ KARETA_84.171_REEXTRACT/docs/design/CANON_84_171.md	2026-10-04 18:01:22.000000000 +0000
+@@ -0,0 +1,25 @@
++# KARETA Design Canon — 84.171
++
++## Owners
++
++- `css/next/design_contract.css` — shared tokens and global layer scale.
++- `css/next/master_shell_canonical_84_143.css` — sole Master header/nav/frame owner (historical path retained for compatibility).
++- `css/next/master_surfaces.css` — Master route content geometry.
++- `css/next/master_ui_exchange_schedule_flattening.css` — Master Exchange component/layout.
++- `css/routes/master_runtime.css` — generated artifact, never edit directly.
++
++## Viewports
++
++- phone <=767px: six destinations in one bottom row; Exchange one column.
++- tablet 768–1199px: right navigation rail; dedicated tablet density.
++- desktop >=1200px: full desktop header + right workspace rail; bounded content; Exchange two columns.
++
++## Layer scale
++
++base 0 → content 1 → sticky 20 → shell 40 → nav 50 → FAB 60 → overlay 80 → modal 100 → toast 120 → debug 200.
++
++Canonical owner files may not use raw numeric `z-index`.
++
++## Legacy rule
++
++Recovery/restore/modernization/legacy files are frozen migration inputs. No new design work goes into them. Physical deletion requires successful phone/tablet/desktop two-pass host browser acceptance.
+diff -ruN KARETA_84.170_ORIGINAL/docs/design/LEGACY_CSS_AUDIT_84.171.json KARETA_84.171_REEXTRACT/docs/design/LEGACY_CSS_AUDIT_84.171.json
+--- KARETA_84.170_ORIGINAL/docs/design/LEGACY_CSS_AUDIT_84.171.json	1970-01-01 00:00:00.000000000 +0000
++++ KARETA_84.171_REEXTRACT/docs/design/LEGACY_CSS_AUDIT_84.171.json	2026-10-04 18:04:42.000000000 +0000
+@@ -0,0 +1,47 @@
++{
++  "release": "188.5.5.6.84.171",
++  "baseRelease": "188.5.5.6.84.170",
++  "baseline84_170": {
++    "cssFiles": 163,
++    "zIndexDeclarations": 695,
++    "rawNumericZIndex": 666,
++    "importantDeclarations": 42723
++  },
++  "candidate84_171": {
++    "cssFiles": 164,
++    "zIndexDeclarations": 704,
++    "rawNumericZIndex": 646,
++    "tokenZIndex": 45,
++    "importantDeclarations": 42385
++  },
++  "delta": {
++    "cssFiles": 1,
++    "zIndexDeclarations": 9,
++    "rawNumericZIndex": -20,
++    "importantDeclarations": -338
++  },
++  "canonicalOwners": [
++    "css/next/design_contract.css",
++    "css/next/master_shell_canonical_84_143.css",
++    "css/next/master_surfaces.css",
++    "css/next/master_ui_exchange_schedule_flattening.css"
++  ],
++  "canonicalOwnerRawNumericZIndex": [],
++  "legacyNamedFiles": 13,
++  "legacyFiles": [
++    "css/legacy_responsive_bundle.css",
++    "css/next/master_shell_canonical_84_143.css",
++    "css/next/client_surface_modernization_phase2.css",
++    "css/next/page_geometry_canonical_84_146.css",
++    "css/next/client_legacy_surface_modernization.css",
++    "css/next/sto_recovery_native_operations.css",
++    "css/next/master_auto_recovery_control_center.css",
++    "css/next/client_surface_modernization_phase3.css",
++    "css/next/shell_84_109_restore.css",
++    "css/next/master_day_operations_auto_recovery.css",
++    "css/next/legacy_role_picker_cleanup.css",
++    "css/next/shell_burger_recovery.css",
++    "css/next/canonical_ui_84_157.css"
++  ],
++  "decision": "Legacy files are frozen, not deleted, until phone/tablet/desktop two-pass hosting acceptance proves route parity."
++}
+diff -ruN KARETA_84.170_ORIGINAL/docs/release/current.json KARETA_84.171_REEXTRACT/docs/release/current.json
+--- KARETA_84.170_ORIGINAL/docs/release/current.json	2026-10-04 17:23:31.000000000 +0000
++++ KARETA_84.171_REEXTRACT/docs/release/current.json	2026-10-04 18:01:22.000000000 +0000
+@@ -1,12 +1,12 @@
+ {
+   "schema": "kareta.release.current.v1",
+-  "release": "188.5.5.6.84.170",
+-  "sourceBranch": "local/candidate/server-hardening-84.170",
++  "release": "188.5.5.6.84.171",
++  "sourceBranch": "local/candidate/design-canon-84.171",
+   "targetBranch": "main",
+   "branchState": {
+     "status": "local_test_candidate",
+-    "baseRelease": "188.5.5.6.84.169",
+-    "note": "Local archive-based server-hardening candidate; remote GitHub head, live Plesk/MySQL and browser acceptance are not claimed."
++    "baseRelease": "188.5.5.6.84.170",
++    "note": "Archive-based design-canon candidate preserving 84.170 DB 138/server hardening; live Plesk/MySQL/browser acceptance is not claimed."
+   },
+   "database": {
+     "canonicalVersion": 138,
+@@ -41,14 +41,14 @@
+   "verification": {
+     "ciWorkflow": ".github/workflows/verify.yml",
+     "stagingWorkflow": ".github/workflows/staging-verify.yml",
+-    "stagingStatus": "NOT_VERIFIED_84_170"
++    "stagingStatus": "NOT_VERIFIED_84_171"
+   },
+   "ui": {
+     "notFound": "first_class_spa_route",
+     "desktopFrameMaxPx": 1280,
+     "masterShell": "css/next/master_shell_canonical_84_143.css",
+-    "masterVisualContract": "84.150",
+-    "masterContentFramePx": 1280,
++    "masterVisualContract": "84.171",
++    "masterContentFramePx": 1480,
+     "masterMobileMoreState": "single visual active state",
+     "masterMobileFab": "horizontal 2x44 rail above dock; hidden under overlays",
+     "routeLoadError": "sanitized fail-soft surface; raw details stay in runtime log",
+@@ -74,7 +74,22 @@
+       "parts",
+       "__more__"
+     ],
+-    "masterMobileMenuLayout": "3+3 below 600px; 6 columns at 600-900px"
++    "masterMobileMenuLayout": "one row / six columns at <=767px; dedicated right rail at 768-1199px; desktop right rail at >=1200px",
++    "designContract": "css/next/design_contract.css",
++    "layerScale": {
++      "base": 0,
++      "content": 1,
++      "sticky": 20,
++      "shell": 40,
++      "nav": 50,
++      "fab": 60,
++      "overlay": 80,
++      "modal": 100,
++      "toast": 120,
++      "debug": 200
++    },
++    "masterExchange": "client-directory visual language; one card column on phone, two on tablet/desktop; API/state unchanged",
++    "legacyCssPolicy": "frozen migration input until hosting browser acceptance; new Master geometry only in canonical owners"
+   },
+   "authorization": {
+     "legacyDirectRoleGates": 108,
+diff -ruN KARETA_84.170_ORIGINAL/docs/verification/84.171/package-diff.json KARETA_84.171_REEXTRACT/docs/verification/84.171/package-diff.json
+--- KARETA_84.170_ORIGINAL/docs/verification/84.171/package-diff.json	1970-01-01 00:00:00.000000000 +0000
++++ KARETA_84.171_REEXTRACT/docs/verification/84.171/package-diff.json	2026-10-04 18:07:09.000000000 +0000
+@@ -0,0 +1,39 @@
++{
++  "base": "188.5.5.6.84.170",
++  "candidate": "188.5.5.6.84.171",
++  "changedCount": 15,
++  "addedCount": 9,
++  "removedCount": 1,
++  "changed": [
++    "_SERVER_UPLOAD_README.md",
++    "css/next/client_viewport_layers.css",
++    "css/next/master_shell_canonical_84_143.css",
++    "css/next/master_surfaces.css",
++    "css/next/master_ui_exchange_schedule_flattening.css",
++    "css/next/shell_84_109_restore.css",
++    "css/next/shell_header_restoration.css",
++    "css/next/window_engine.css",
++    "css/routes/master_runtime.css",
++    "docs/release/current.json",
++    "inc/asset_registry.php",
++    "inc/asset_version.php",
++    "storage/deployment_manifest.json",
++    "sw.js",
++    "tools/verify_runtime.php"
++  ],
++  "added": [
++    "CHANGELOG_84.171_CANDIDATE.md",
++    "VERIFICATION_84.171.json",
++    "css/next/design_contract.css",
++    "docs/deployment/PLESK_INSTALL_84.171.md",
++    "docs/design/CANON_84_171.md",
++    "docs/design/LEGACY_CSS_AUDIT_84.171.json",
++    "tools/audit_design_debt_84_171.cjs",
++    "tools/build_master_runtime_css.js",
++    "tools/test_design_canon_84_171.cjs"
++  ],
++  "removed": [
++    "_SERVER_PACKAGE_MANIFEST.json"
++  ],
++  "note": "_SERVER_PACKAGE_MANIFEST.json excluded because it is regenerated after this report."
++}
+diff -ruN KARETA_84.170_ORIGINAL/inc/asset_registry.php KARETA_84.171_REEXTRACT/inc/asset_registry.php
+--- KARETA_84.170_ORIGINAL/inc/asset_registry.php	2026-10-04 09:26:40.000000000 +0000
++++ KARETA_84.171_REEXTRACT/inc/asset_registry.php	2026-10-04 17:58:05.000000000 +0000
+@@ -10,6 +10,8 @@
+     return [
+         'styles' => [
+             'css/runtime_boot_bundle.css',
++            // R188.5.5.6.84.171: one global token/layer authority after the legacy boot bundle.
++            'css/next/design_contract.css',
+             // Role-scoped shell authority. Eager by design so direct Master deep-links
+             // never depend on which route happened to load first.
+             'css/next/master_shell_canonical_84_143.css',
+@@ -62,6 +64,8 @@
+             'css/next/app_preloader.css',
+             'css/next/app_next.css',
+             'css/next_shell.css',
++            'css/next/design_contract.css',
++            'css/next/master_shell_canonical_84_143.css',
+             'js/next/app_preloader.js',
+             'js/next/api_client.js',
+             'js/next/core/realtime_client.js',
+@@ -172,6 +176,7 @@
+             'cssMode' => 'critical-boot-route-css-v2',
+         ],
+         '_sourceLayers' => [
++            'css/next/design_contract.css',
+             'css/next/app_preloader.css',
+             'css/next/app_next.css',
+             'css/next/context_switcher.css',
+diff -ruN KARETA_84.170_ORIGINAL/inc/asset_version.php KARETA_84.171_REEXTRACT/inc/asset_version.php
+--- KARETA_84.170_ORIGINAL/inc/asset_version.php	2026-10-04 17:23:31.000000000 +0000
++++ KARETA_84.171_REEXTRACT/inc/asset_version.php	2026-10-04 18:01:22.000000000 +0000
+@@ -7,7 +7,7 @@
+  r188568450-community-mobile-autoplay
+  * historical-ui-version:188.5.5.6.84.49
+ */
+-const KARETA_ASSET_VERSION = '188.5.5.6.84.170'; // server hardening: DB 138, trusted proxy IP, health/cache
++const KARETA_ASSET_VERSION = '188.5.5.6.84.171'; // design canon v1 + Master responsive/exchange host-test candidate
+ 
+ /* Historical release markers for regression tests only; never used in public URLs:
+ 20260806-r188555-runtime-dependency-bootstrap-r188556-security-hardening-r1885561-atomic-runtime-bootstrap-r1885562-identity-db-recovery-r1885563-migration98-onboarding-recovery-r1885564-fk-detach-schema-recovery-r1885565-serialized-schema-index-recovery-r1885566-test-otp-transport-recovery-r1885567-otp-length-resend-cooldown-r1885568-mobile-two-column-grids-r1885569-smart-action-account-r1885570-account-type-catalog-requests-r1885571-test-auto-approval-service-catalog-recovery-r1885572-private-db-config-recovery-r1885573-temporary-account-type-auto-activation-r1885574-home-service-category-grid-r1885575-profile-legacy-id-mobile-nav-recovery-r1885576-master-work-surfaces-r1885577-master-business-runtime-r1885578-master-order-full-lifecycle-r1885579-master-aftercare-finance-inventory-r1885580-operational-finance-payroll-receivables-r1885581-client-exchange-production-scale-r1885582-master-mobile-nav-six-surfaces-r1885583-production-dispatch-master-exchange-r1885584-pc-header-session-resume-stability-r1885585-route-session-position-preservation-r1885586-master-surface-header-removal-r1885587-master-mobile-orders-dedup-r1885588-tab-resume-route-authority-r1885589-session-resume-hardening-r1885590-full-page-session-state-r1885591-master-profile-exchange-kpi-r1885592-mobile-workflow-tile-grid-r1885593-exchange-client-search-r1885594-exchange-mobile-card-simplification-r1885595-exchange-card-visual-states-r1885596-png-brand-welcome-restoration-r1885597-desktop-full-width-pages-r1885598-community-group-slide-150-r1885599-community-feed-desktop-grid-r1885600-desktop-card-grid-expansion-r1885601-master-exchange-failsoft-recovery-r1885602-contextual-desktop-navigation-r1885603-role-desktop-menu-completion-r1885604-client-home-native-shell-freeze-r1885605-vehicle-native-passport-r1885606-client-orders-native-r1885607-identity-api-client-garage-recovery-r1885608-client-home-restore-account-native-r1885609-community-native-ui-r1885610-public-master-native-profile-r1885611-master-owner-native-profile-r1885612-master-verified-work-portfolio-r1885613-master-reviews-social-contract-r1885614-master-social-wall-r1885615-master-workplace-native-r1885616-master-service-pricing-native-r1885617-shell-burger-recovery-r1885618-parts-native-marketplace-r1885619-parts-window-lists-product-detail-r1885620-used-market-listing-wizard-r1885621-used-market-owner-management-r1885622-seller-native-workplace-r1885623-seller-profile-storefront-native-r1885624-master-requests-workplace-services-r1885625-master-exchange-acceptance-flow-r1885626-master-order-communication-scheduling-r1885627-master-capacity-reschedule-r1885628-account-tariffs-master-capacity-r1885629-master-shift-breaks-arrival-r18856291-tariff-admin-kareta-pro-r1885630-master-day-operations-auto-recovery-r1885631-master-ui-exchange-schedule-flattening-r1885632-master-auto-recovery-control-center-r1885633-sto-recovery-native-operations-r18856331-master-exchange-runtime-recovery-r1885634-sto-schedule-capacity-command-center-r1885635-sto-native-surface-audit-r1885636-ux-restructure-window-engine-r1885637-work-order-native-lifecycle-r1885638-client-request-garage-window-flow-r1885639-client-account-window-flow-r1885640-social-communication-window-flow-r1885641-master-workspace-window-architecture-r1885642-sto-workspace-window-architecture-r1885643-seller-marketplace-window-architecture-r1885644-global-ux-cleanup-legacy-removal
+diff -ruN KARETA_84.170_ORIGINAL/storage/deployment_manifest.json KARETA_84.171_REEXTRACT/storage/deployment_manifest.json
+--- KARETA_84.170_ORIGINAL/storage/deployment_manifest.json	2026-10-04 17:25:28.000000000 +0000
++++ KARETA_84.171_REEXTRACT/storage/deployment_manifest.json	2026-10-04 18:05:07.000000000 +0000
+@@ -1,8 +1,8 @@
+ {
+     "schema": 1,
+-    "gitSha": "554ce5f197c3e1e7f5eeb180118e68865a3cc933",
+-    "gitRef": "local/candidate/server-hardening-84.170",
+-    "assetVersion": "188.5.5.6.84.170",
+-    "builtAt": "2026-10-04T17:25:28Z",
++    "gitSha": "16057371910e7ab97c553e1b09c1f0d7d6f6db24",
++    "gitRef": "local/candidate/design-canon-84.171",
++    "assetVersion": "188.5.5.6.84.171",
++    "builtAt": "2026-10-04T18:05:07+00:00",
+     "workflowRunId": ""
+ }
+diff -ruN KARETA_84.170_ORIGINAL/sw.js KARETA_84.171_REEXTRACT/sw.js
+--- KARETA_84.170_ORIGINAL/sw.js	2026-10-04 17:23:31.000000000 +0000
++++ KARETA_84.171_REEXTRACT/sw.js	2026-10-04 18:02:11.000000000 +0000
+@@ -1,5 +1,5 @@
+ /* KARETA.KZ Service Worker — boot sequencing r84 */
+-const RELEASE = '188.5.5.6.84.170'; // server hardening: DB 138, trusted proxy IP, health/cache
++const RELEASE = '188.5.5.6.84.171'; // design canon host-test candidate; preserves DB 138/server hardening
+ // Historical release markers for regression tests only; RELEASE above is the only cache key.
+ // 20260806-r188555-runtime-dependency-bootstrap-r188556-security-hardening-r1885561-atomic-runtime-bootstrap-r1885562-identity-db-recovery-r1885563-migration98-onboarding-recovery-r1885564-fk-detach-schema-recovery-r1885565-serialized-schema-index-recovery-r1885566-test-otp-transport-recovery-r1885567-otp-length-resend-cooldown-r1885568-mobile-two-column-grids-r1885569-smart-action-account-r1885570-account-type-catalog-requests-r1885571-test-auto-approval-service-catalog-recovery-r1885572-private-db-config-recovery-r1885573-temporary-account-type-auto-activation-r1885574-home-service-category-grid-r1885575-profile-legacy-id-mobile-nav-recovery-r1885576-master-work-surfaces-r1885577-master-business-runtime-r1885578-master-order-full-lifecycle-r1885579-master-aftercare-finance-inventory-r1885580-operational-finance-payroll-receivables-r1885581-client-exchange-production-scale-r1885582-master-mobile-nav-six-surfaces-r1885583-production-dispatch-master-exchange-r1885584-pc-header-session-resume-stability-r1885585-route-session-position-preservation-r1885586-master-surface-header-removal-r1885587-master-mobile-orders-dedup-r1885588-tab-resume-route-authority-r1885589-session-resume-hardening-r1885590-full-page-session-state-r1885591-master-profile-exchange-kpi-r1885592-mobile-workflow-tile-grid-r1885593-exchange-client-search-r1885594-exchange-mobile-card-simplification-r1885595-exchange-card-visual-states-r1885596-png-brand-welcome-restoration-r1885597-desktop-full-width-pages-r1885598-community-group-slide-150-r1885599-community-feed-desktop-grid-r1885600-desktop-card-grid-expansion-r1885601-master-exchange-failsoft-recovery-r1885602-contextual-desktop-navigation-r1885603-role-desktop-menu-completion-r1885604-client-home-native-shell-freeze-r1885605-vehicle-native-passport-r1885606-client-orders-native-r1885607-identity-api-client-garage-recovery-r1885608-client-home-restore-account-native-r1885609-community-native-ui-r1885610-public-master-native-profile-r1885611-master-owner-native-profile-r1885612-master-verified-work-portfolio-r1885613-master-reviews-social-contract-r1885614-master-social-wall-r1885615-master-workplace-native-r1885616-master-service-pricing-native-r1885617-shell-burger-recovery-r1885618-parts-native-marketplace-r1885619-parts-window-lists-product-detail-r1885620-used-market-listing-wizard-r1885621-used-market-owner-management-r1885622-seller-native-workplace-r1885623-seller-profile-storefront-native-r1885624-master-requests-workplace-services-r1885625-master-exchange-acceptance-flow-r1885626-master-order-communication-scheduling-r1885627-master-capacity-reschedule-r1885628-account-tariffs-master-capacity-r1885629-master-shift-breaks-arrival-r18856291-tariff-admin-kareta-pro-r1885630-master-day-operations-auto-recovery-r1885631-master-ui-exchange-schedule-flattening-r1885632-master-auto-recovery-control-center-r1885633-sto-recovery-native-operations-r18856331-master-exchange-runtime-recovery-r1885634-sto-schedule-capacity-command-center-r1885635-sto-native-surface-audit-r1885636-ux-restructure-window-engine-r1885637-work-order-native-lifecycle-r1885638-client-request-garage-window-flow-r1885639-client-account-window-flow-r1885640-social-communication-window-flow-r1885641-master-workspace-window-architecture-r1885642-sto-workspace-window-architecture-r1885643-seller-marketplace-window-architecture-r1885644-global-ux-cleanup-legacy-removal
+ const CACHE_PREFIX = 'kareta-';
+diff -ruN KARETA_84.170_ORIGINAL/tools/audit_design_debt_84_171.cjs KARETA_84.171_REEXTRACT/tools/audit_design_debt_84_171.cjs
+--- KARETA_84.170_ORIGINAL/tools/audit_design_debt_84_171.cjs	1970-01-01 00:00:00.000000000 +0000
++++ KARETA_84.171_REEXTRACT/tools/audit_design_debt_84_171.cjs	2026-10-04 17:59:17.000000000 +0000
+@@ -0,0 +1,14 @@
++'use strict';
++const fs=require('fs'),path=require('path');
++const root=path.resolve(__dirname,'..');
++const walk=(dir,out=[])=>{for(const e of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,e.name);e.isDirectory()?walk(p,out):out.push(p)}return out};
++const css=walk(path.join(root,'css')).filter(p=>p.endsWith('.css'));
++const rel=p=>path.relative(root,p).replace(/\\/g,'/');
++let z=0,important=0;
++const legacy=[];
++for(const p of css){const t=fs.readFileSync(p,'utf8');z+=(t.match(/z-index\s*:/g)||[]).length;important+=(t.match(/!important/g)||[]).length;if(/canonical|recovery|restore|phase|modernization|legacy/i.test(rel(p)))legacy.push(rel(p));}
++const owners=['css/next/design_contract.css','css/next/master_shell_canonical_84_143.css','css/next/master_surfaces.css','css/next/master_ui_exchange_schedule_flattening.css'];
++const ownerRawZ=owners.flatMap(p=>{const t=fs.readFileSync(path.join(root,p),'utf8');return [...t.matchAll(/z-index\s*:\s*(-?\d+)/gi)].map(m=>({file:p,value:m[1]}));});
++const result={releaseTarget:'188.5.5.6.84.171',cssFiles:css.length,zIndexDeclarations:z,importantDeclarations:important,legacyNamedFiles:legacy.length,legacyFiles:legacy,canonicalOwners:owners,canonicalOwnerRawNumericZIndex:ownerRawZ,policy:'legacy remains frozen until hosting browser acceptance; new Master design changes must land only in canonical owners'};
++console.log(JSON.stringify(result,null,2));
++if(ownerRawZ.length)process.exit(1);
+diff -ruN KARETA_84.170_ORIGINAL/tools/build_master_runtime_css.js KARETA_84.171_REEXTRACT/tools/build_master_runtime_css.js
+--- KARETA_84.170_ORIGINAL/tools/build_master_runtime_css.js	1970-01-01 00:00:00.000000000 +0000
++++ KARETA_84.171_REEXTRACT/tools/build_master_runtime_css.js	2026-10-04 17:58:34.000000000 +0000
+@@ -0,0 +1,30 @@
++'use strict';
++const fs=require('fs'),path=require('path');
++const root=path.resolve(__dirname,'..');
++const target='css/routes/master_runtime.css';
++const sources=[
++  'css/next/master_surfaces.css',
++  'css/next/master_business_runtime.css',
++  'css/next/master_order_lifecycle.css',
++  'css/next/master_aftercare.css',
++  'css/next/master_service_pricing_native.css',
++  'css/next/master_exchange_acceptance_flow.css',
++  'css/next/master_ui_exchange_schedule_flattening.css',
++];
++function build(){
++  const chunks=['/* KARETA.KZ generated Master route bundle. DO NOT EDIT. Run: node tools/build_master_runtime_css.js */\n'];
++  for(const src of sources){
++    const text=fs.readFileSync(path.join(root,src),'utf8').trimEnd();
++    chunks.push(`\n/* ===== SOURCE: ${src} ===== */\n${text}\n`);
++  }
++  return chunks.join('');
++}
++const expected=build(),full=path.join(root,target);
++if(process.argv.includes('--check')){
++  const actual=fs.existsSync(full)?fs.readFileSync(full,'utf8'):'';
++  if(actual!==expected){console.error(`STALE ${target}`);process.exit(1);}
++  console.log(`master runtime fresh: ${sources.length} sources`);
++}else{
++  fs.writeFileSync(full,expected);
++  console.log(`built ${target} (${Buffer.byteLength(expected)} bytes)`);
++}
+diff -ruN KARETA_84.170_ORIGINAL/tools/test_design_canon_84_171.cjs KARETA_84.171_REEXTRACT/tools/test_design_canon_84_171.cjs
+--- KARETA_84.170_ORIGINAL/tools/test_design_canon_84_171.cjs	1970-01-01 00:00:00.000000000 +0000
++++ KARETA_84.171_REEXTRACT/tools/test_design_canon_84_171.cjs	2026-10-04 17:59:17.000000000 +0000
+@@ -0,0 +1,30 @@
++'use strict';
++const fs=require('fs'),path=require('path'),assert=require('assert');
++const root=path.resolve(__dirname,'..');
++const read=p=>fs.readFileSync(path.join(root,p),'utf8');
++const registry=read('inc/asset_registry.php');
++const design=read('css/next/design_contract.css');
++const shell=read('css/next/master_shell_canonical_84_143.css');
++const surfaces=read('css/next/master_surfaces.css');
++const exchange=read('css/next/master_ui_exchange_schedule_flattening.css');
++const runtime=read('css/routes/master_runtime.css');
++const build=read('tools/build_master_runtime_css.js');
++
++for(const token of ['--k-z-base:0','--k-z-content:1','--k-z-sticky:20','--k-z-shell:40','--k-z-nav:50','--k-z-fab:60','--k-z-overlay:80','--k-z-modal:100','--k-z-toast:120','--k-z-debug:200']) assert(design.includes(token),`missing ${token}`);
++assert(registry.indexOf("'css/runtime_boot_bundle.css'") < registry.indexOf("'css/next/design_contract.css'"),'design contract must load after legacy boot bundle');
++assert(registry.indexOf("'css/next/design_contract.css'") < registry.indexOf("'css/next/master_shell_canonical_84_143.css'"),'tokens must load before master shell');
++for(const [name,text] of [['design',design],['shell',shell],['surfaces',surfaces],['exchange',exchange]]) assert(!/z-index\s*:\s*-?\d+/i.test(text),`${name} contains raw numeric z-index`);
++for(const bp of ['@media(max-width:767px)','@media(min-width:768px) and (max-width:1199px)','@media(min-width:1200px)']) assert(shell.includes(bp),`master shell missing ${bp}`);
++assert(shell.includes('grid-template-columns:repeat(6,minmax(0,1fr))!important'),'phone master nav must be six columns');
++assert(!shell.includes('@media(max-width:599px)'),'old 3+3 phone dock must be retired');
++assert(!shell.includes('grid-template-rows:repeat(2'),'phone dock must never become two rows');
++assert(exchange.includes('MASTER EXCHANGE VISUAL CANON'),'exchange canon missing');
++assert(exchange.includes('@media(max-width:767px)'),'exchange phone contract missing');
++assert(exchange.includes('grid-template-columns:minmax(0,1fr);gap:12px'),'exchange phone must be one column');
++assert(exchange.includes('grid-template-columns:repeat(2,minmax(0,1fr));gap:14px'),'exchange desktop/tablet two-card density missing');
++assert(surfaces.includes('MASTER SURFACE CANON V1'),'master surface owner missing');
++assert(!fs.existsSync(path.join(root,'css/next/master_client_r84_postlude.css')),'postlude patch file must not be introduced');
++assert(build.includes("'css/next/master_surfaces.css'"));
++assert(build.includes("'css/next/master_ui_exchange_schedule_flattening.css'"));
++assert(runtime.includes('MASTER SURFACE CANON V1') && runtime.includes('MASTER EXCHANGE VISUAL CANON'),'generated master runtime missing canon sections');
++console.log('PASS: design canon 84.171; global layer tokens; single master shell owner; 6-item one-row phone dock; dedicated tablet/desktop; exchange client-style responsive contract; no postlude.');
+diff -ruN KARETA_84.170_ORIGINAL/tools/verify_runtime.php KARETA_84.171_REEXTRACT/tools/verify_runtime.php
+--- KARETA_84.170_ORIGINAL/tools/verify_runtime.php	2026-10-04 09:26:40.000000000 +0000
++++ KARETA_84.171_REEXTRACT/tools/verify_runtime.php	2026-10-04 18:03:42.000000000 +0000
+@@ -73,6 +73,12 @@
+ $jsLintCommand='timeout 120s sh -c '.escapeshellarg('find '.escapeshellarg($root.'/js').' -type f -name "*.js" -print0 | xargs -0 -n1 -P8 node --check');
+ exec($jsLintCommand.' 2>&1',$jsLintOutput,$jsLintCode);
+ if($jsLintCode!==0)$errors[]='JavaScript lint batch failed: '.implode(' ',array_slice($jsLintOutput,-20));
++$designCanonOutput=[];$designCanonCode=0;
++exec('timeout 30s node ' . escapeshellarg($root . '/tools/test_design_canon_84_171.cjs') . ' 2>&1', $designCanonOutput, $designCanonCode);
++if($designCanonCode!==0)$errors[]='Design canon contract failed: '.implode(' ',array_slice($designCanonOutput,-20));
++$masterBundleOutput=[];$masterBundleCode=0;
++exec('timeout 30s node ' . escapeshellarg($root . '/tools/build_master_runtime_css.js') . ' --check 2>&1', $masterBundleOutput, $masterBundleCode);
++if($masterBundleCode!==0)$errors[]='Master CSS bundle drift: '.implode(' ',array_slice($masterBundleOutput,-20));
+ $community = @file_get_contents($root . '/js/next/pages/community.js') ?: '';
+ if (strpos($community, 'g=groups.find(') !== false) $errors[] = 'community.js: stale undefined groups reference';
+ $runtime = @file_get_contents($root . '/js/next/runtime_integrity.js') ?: '';
