@@ -53,15 +53,21 @@ Current main на момент аудита: `582b8f94baba60c914cb82e598ad32a806
 
 ## Verification status PR #90
 
-Exact evidence SHA `ae2ceb7a091ac16cfc8df7e71a9f80f4ab0897a0`:
-- Master setup M0–M2 focused contracts: PASS.
-- PHP syntax: PASS.
-- Geo reconcile: PASS.
-- Home scanner navigation: PASS.
-- Application gates: FAIL на Design canon contract.
-- последующие asset/provenance steps в этом run: SKIPPED.
+Проверенный кодовый checkpoint: `25d81703649df2799794cd77602472db89e20e3e`.
 
-То есть состояние M2: IMPLEMENTED + focused VERIFIED, но общий merge/release gate ещё не PASS.
+PASS:
+- Application gates run `37238482404`;
+- Master setup M0–M2 contracts;
+- Analysis research runtime alignment;
+- Design canon contract;
+- Current API / route / browser-support contracts;
+- Asset URL hygiene;
+- Provenance contract + exact-candidate artifact;
+- PHP syntax run `37238482379`;
+- Geo runtime reconcile run `37238482459`;
+- Home scanner navigation run `37238482538`.
+
+Это source/CI verification. Реальная MySQL/API с пользовательскими профилями, browser/device smoke и фактический deployment остаются отдельными evidence уровнями.
 
 ## Следующие три шага
 
