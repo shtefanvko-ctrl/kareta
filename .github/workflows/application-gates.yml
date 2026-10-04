@@ -67,6 +67,13 @@ jobs:
       - name: Reconciled assistant and auth boundaries
         run: node tools/test_shared_runtime_reconciliation_20261004.js
 
+      - name: Master setup M0 contracts
+        run: |
+          node tools/test_master_setup_picker.js
+          node tools/test_master_setup_integration.js
+          node tools/test_master_equipment_icon_contract.js
+          php tools/test_master_equipment_profile.php
+
       - name: Identity API recovery contract
         run: node tools/test_r1885607_identity_api_client_garage_recovery.js
 
