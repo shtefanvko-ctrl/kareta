@@ -34,14 +34,21 @@
   // Shared read gate for the monolithic DB endpoint. Some production hosts
   // answer concurrent PHP bursts with HTTP 429 before db.php itself runs.
   // Serialize only GET reads; mutations stay immediate and are never replayed.
-  const DB_READ_MIN_GAP_MS = 300;
-  const DB_READ_RETRY_DEFAULT_MS = 900;
-  const DB_READ_RETRY_MAX_MS = 3000;
+  const DB_READ_MIN_GAP_MS = 650;
+  const DB_READ_RETRY_DEFAULT_MS = 1500;
+  const DB_READ_RETRY_MAX_MS = 8000;
   let dbReadTail = Promise.resolve();
   let dbReadLastStartedAt = 0;
   let dbReadBackoffUntil = 0;
 
-  const sleep = ms => new Promise(resolve => setTimeout(resolve, Math.max(0, ms)));
+  const cancelTimer = timer => { const clear=globalThis.clearTimeout; if(timer && typeof clear==='function') clear(timer); };
+  const sleep = (ms, signal) => new Promise(resolve => {
+    let timer;
+    const cancel=()=>{cancelTimer(timer);signal?.removeEventListener('abort',cancel);resolve(false);};
+    if(signal?.aborted){resolve(false);return;}
+    timer=setTimeout(()=>{signal?.removeEventListener('abort',cancel);resolve(true);},Math.max(0,ms));
+    signal?.addEventListener('abort',cancel,{once:true});
+  });
   function isDbRead(url, method){
     return method === 'GET' && /(?:^|\/)api\/db\.php(?:[?#]|$)/i.test(String(url || ''));
   }
@@ -53,14 +60,14 @@
     const run = async () => {
       const now = Date.now();
       const gapUntil = Math.max(dbReadBackoffUntil, dbReadLastStartedAt + DB_READ_MIN_GAP_MS);
-      if (gapUntil > now) await sleep(gapUntil - now);
+      if (gapUntil > now && !(await sleep(gapUntil - now, fetchOptions.signal))) return execute(url, fetchOptions);
       dbReadLastStartedAt = Date.now();
       let result = await execute(url, fetchOptions);
       if (result.status !== 429) return result;
 
       const retryMs = dbRetryDelayMs(result);
       dbReadBackoffUntil = Math.max(dbReadBackoffUntil, Date.now() + retryMs);
-      await sleep(retryMs);
+      if (!(await sleep(retryMs, fetchOptions.signal))) return execute(url, fetchOptions);
       dbReadLastStartedAt = Date.now();
       result = await execute(url, fetchOptions);
       if (result.status === 429) {
@@ -83,8 +90,8 @@
 
   async function parsePayload(response){
     const contentType = String(response.headers.get('content-type') || '').toLowerCase();
-    if (contentType.includes('application/json')) return response.json().catch(() => null);
-    const text = await response.text().catch(() => '');
+    if (contentType.includes('application/json')) return response.json().catch(error => { if (error?.name === 'AbortError') throw error; return null; });
+    const text = await response.text().catch(error => { if (error?.name === 'AbortError') throw error; return ''; });
     if (!text) return null;
     try { return JSON.parse(text); } catch (_error) { return { raw:text }; }
   }
@@ -123,10 +130,47 @@
     return Object.freeze({ ...result, ...extra });
   }
 
+  const DEFAULT_REQUEST_TIMEOUT_MS = 20000;
+
   async function execute(url, options){
-    const response = await fetch(url, options);
-    const rawPayload = await parsePayload(response);
-    const payload = normalizePayload(rawPayload, response);
+    const hasExplicitTimeout=Object.prototype.hasOwnProperty.call(options,'timeoutMs');
+    const {timeoutMs,...networkOptions}=options;
+    const Controller=globalThis.AbortController;
+    const controller=typeof Controller==='function' ? new Controller() : null;
+    const upstream=options.signal;
+    const startedAt=Date.now();
+    let timedOut=false;
+    const abort=()=>controller?.abort(upstream?.reason);
+    if(upstream?.aborted) abort(); else upstream?.addEventListener?.('abort',abort,{once:true});
+    const deadline=hasExplicitTimeout ? Math.max(0,Number(timeoutMs)||0) : DEFAULT_REQUEST_TIMEOUT_MS;
+    const timer=deadline && controller ? setTimeout(()=>{timedOut=true;controller.abort();},deadline) : 0;
+    let response,rawPayload;
+    try{
+      const requestOptions=controller?{...networkOptions,signal:controller.signal}:networkOptions;
+      response=await fetch(url,requestOptions);
+      rawPayload=await parsePayload(response);
+    }catch(error){
+      const aborted=error?.name==='AbortError'||Boolean(controller?.signal?.aborted);
+      const code=timedOut?'REQUEST_TIMEOUT':(aborted?'REQUEST_ABORTED':'NETWORK_ERROR');
+      const message=timedOut
+        ? 'Превышено время ожидания ответа сервера'
+        : (aborted ? 'Запрос отменён' : 'Ошибка сети. Проверьте подключение и повторите попытку');
+      return Object.freeze({
+        ok:false,status:0,code,message,data:null,errors:[],requestId:'',traceId:'',
+        payload:Object.freeze({ok:false,code,message,errors:[],data:null,meta:Object.freeze({httpStatus:0})}),
+        url:String(url),retryAfter:0,durationMs:Date.now()-startedAt,fromCache:false,
+        networkError:String(error?.message||error||code),
+      });
+    }finally{
+      cancelTimer(timer);
+      upstream?.removeEventListener?.('abort',abort);
+    }
+    const payload=normalizePayload(rawPayload,response);
+    const retryAfterRaw=response.headers.get('retry-after')||'';
+    const retryAfterSeconds=Number(retryAfterRaw);
+    const retryAfter=Number.isFinite(retryAfterSeconds)
+      ? Math.max(0,retryAfterSeconds)
+      : Math.max(0,(Date.parse(retryAfterRaw)-Date.now())/1000)||0;
     return Object.freeze({
       ok:!!(response.ok && payload.ok),
       status:response.status,
@@ -135,9 +179,11 @@
       data:payload.data,
       errors:payload.errors,
       requestId:payload.requestId,
+      traceId:String(response.headers.get('x-kareta-trace-id')||payload.meta?.traceId||''),
       payload,
       url:String(response.url || url),
-      retryAfter:Number(response.headers.get('retry-after') || 0),
+      retryAfter,
+      durationMs:Date.now()-startedAt,
       fromCache:false,
     });
   }
@@ -148,6 +194,7 @@
     const cacheTtlMs = Math.max(0, Number(options.cacheTtlMs ?? (method === 'GET' ? 10000 : 0)) || 0);
     const dedupe = options.dedupe !== false && method === 'GET';
     const force = options.force === true;
+    const dbSafeReplay = options.dbSafeReplay === true;
     const key = requestKey(requestUrl, method, String(options.cacheKey || ''));
 
     const fetchOptions = { ...options };
@@ -155,6 +202,7 @@
     delete fetchOptions.dedupe;
     delete fetchOptions.force;
     delete fetchOptions.cacheKey;
+    delete fetchOptions.dbSafeReplay;
     fetchOptions.method = method;
     fetchOptions.cache = 'no-store';
     fetchOptions.credentials = 'same-origin';
@@ -171,7 +219,7 @@
       if (!force && inFlight.has(key)) return inFlight.get(key);
     }
 
-    const transport = isDbRead(requestUrl, method) ? executeDbRead(requestUrl, fetchOptions) : execute(requestUrl, fetchOptions);
+    const transport = (isDbRead(requestUrl, method) || dbSafeReplay) ? executeDbRead(requestUrl, fetchOptions) : execute(requestUrl, fetchOptions);
     const promise = transport.then(result => {
       if (dedupe && result.ok && cacheTtlMs > 0) { const record={ at:Date.now(), result }; memoryCache.set(key,record); writePersistent(key,record); }
       if(dedupe && !result.ok){const stale=memoryCache.get(key)||readPersistent(key);if(stale?.result)return cloneResult(stale.result,{fromCache:true,stale:true});}
@@ -224,13 +272,31 @@
   function publishWorkPost(payload){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'workPosts.publish',...payload})}); }
   async function addWorkPostComment(postId, body, parentId='', options={}){ const idempotencyKey=String(options.idempotencyKey||makeIdempotencyKey('wpc',[postId,parentId])); const result=await request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json','X-Idempotency-Key':idempotencyKey},body:JSON.stringify({action:'workPosts.comment',postId,body,parentId,idempotencyKey}),cacheTtlMs:0,dedupe:false}); if(result?.ok){const item=result.payload?.comment||result.payload?.data?.comment||{authorName:'Вы',body,createdAt:new Date().toISOString()};const key=`work:${postId}`,current=window.KaretaSocialState?.getPost?.(key);window.KaretaSocialState?.patchPost?.(key,{comments:[...(current?.comments||[]),item]});} return result; }
   async function deleteWorkPostComment(commentId){ const result=await request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'workPosts.commentDelete',commentId}),cacheTtlMs:0,dedupe:false}); return result; }
-  function getChats(options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.getAll'}),cacheTtlMs:0,dedupe:false,...options}); }
-  function getChatContacts(options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.contacts'}),cacheTtlMs:0,dedupe:false,...options}); }
-  function openDirectChat(target, options={}){ const payload=(target&&typeof target==='object')?{...target}:{userId:target}; const targetKey=payload.userId||payload.masterId||payload.stoId||'unknown'; return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.openDirect',...payload,idempotencyKey:`direct:${targetKey}`}),cacheTtlMs:0,dedupe:false,...options}); }
-  function getMessages(chatId, options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'messages.get',chatId}),cacheTtlMs:0,dedupe:false,...options}); }
+  const directChatInFlight=new Map();
+  function getChats(options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.getAll'}),cacheTtlMs:0,dedupe:false,dbSafeReplay:true,...options}); }
+  function getChatContacts(options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.contacts'}),cacheTtlMs:0,dedupe:false,dbSafeReplay:true,...options}); }
+  function openDirectChat(target, options={}){
+    const payload=(target&&typeof target==='object')?{...target}:{userId:target};
+    const targetKey=String(payload.userId||payload.masterId||payload.stoId||'unknown');
+    const flightKey=[payload.userId||'',payload.masterId||'',payload.stoId||''].join('|');
+    if(directChatInFlight.has(flightKey)) return directChatInFlight.get(flightKey);
+    const idempotencyKey=String(options.idempotencyKey||makeIdempotencyKey('direct',[targetKey]));
+    const promise=request('api/db.php',{
+      ...options,
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Idempotency-Key':idempotencyKey},
+      body:JSON.stringify({action:'chats.openDirect',...payload,idempotencyKey}),
+      cacheTtlMs:0,
+      dedupe:false,
+      dbSafeReplay:true,
+    }).finally(()=>{if(directChatInFlight.get(flightKey)===promise) directChatInFlight.delete(flightKey);});
+    directChatInFlight.set(flightKey,promise);
+    return promise;
+  }
+  function getMessages(chatId, options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'messages.get',chatId}),cacheTtlMs:0,dedupe:false,dbSafeReplay:true,...options}); }
   function sendMessage(chatId,msg, options={}){ const idempotencyKey=String(options.idempotencyKey||makeIdempotencyKey('message',[chatId])); return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json','X-Idempotency-Key':idempotencyKey},body:JSON.stringify({action:'messages.add',chatId,msg,idempotencyKey}),cacheTtlMs:0,dedupe:false,...options}); }
   function updateMessage(chatId,messageId,text,options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'messages.update',chatId,messageId,text}),cacheTtlMs:0,dedupe:false,...options}); }
-  function markChatRead(chatId,role){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.markRead',chatId,role})}); }
+  function markChatRead(chatId,role){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.markRead',chatId,role}),cacheTtlMs:0,dedupe:false,dbSafeReplay:true}); }
   function openSupportChat(message, options={}){ return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chats.supportOpen',message,idempotencyKey:`support:${Date.now()}`}),cacheTtlMs:0,dedupe:false,...options}); }
   function createOrder(order, options={}){ const idempotencyKey=String(options.idempotencyKey||order?.idempotencyKey||makeIdempotencyKey('order',[order?.clientPhone||order?.phone||''])); const payload={...order}; delete payload.idempotencyKey; return request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json','X-Idempotency-Key':idempotencyKey},body:JSON.stringify({action:'orders.create',order:payload,idempotencyKey}),cacheTtlMs:0,dedupe:false}); }
   function getBookingSlots(params={},options={}){return request(withQuery(ENDPOINTS.bookingSlots,params),{cacheTtlMs:15000,cacheKey:`booking.slots:${JSON.stringify(params)}`,...options});}
