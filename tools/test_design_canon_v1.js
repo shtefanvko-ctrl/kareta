@@ -9,6 +9,7 @@ const fail=m=>{console.error('DESIGN_CANON_V1: FAIL — '+m);process.exit(1);};
 const contract=read('css/next/design_contract.css');
 const master=read('css/next/master_surfaces.css');
 const shell=read('css/next/master_responsive_shell.css');
+const navSkin=read('css/next/master_mobile_nav.css');
 const postlude=read('css/next/master_client_r84_postlude.css');
 const build=read('tools/build_master_runtime_css.js');
 const runtime=read('css/routes/master_runtime.css');
@@ -32,6 +33,11 @@ if(!shell.includes('Master Responsive Shell Contract')) fail('canonical master s
 if(!shell.includes('z-index:var(--k-z-shell-brand)')) fail('master shell brand layer is not tokenized');
 if(/z-index\s*:\s*-?\d+/i.test(master)) fail('raw numeric z-index remains in master geometry owner');
 if(/z-index\s*:\s*-?\d+/i.test(shell)) fail('raw numeric z-index remains in master shell owner');
+if(!navSkin.includes('@media (max-width:767px)')) fail('mobile nav skin must follow phone breakpoint <=767');
+for(const forbidden of ['.k-app-shell','#k-shell-header','#k-desktop-nav']){
+  if(navSkin.includes(forbidden)) fail('mobile nav skin still owns shell geometry: '+forbidden);
+}
+
 
 const sourceArray=(build.match(/const sources=\[([\s\S]*?)\]/)||[])[1]||'';
 const sourceLines=[...sourceArray.matchAll(/'([^']+\.css)'/g)].map(m=>m[1]);
