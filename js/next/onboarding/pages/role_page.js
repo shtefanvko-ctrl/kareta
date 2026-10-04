@@ -135,25 +135,166 @@
     return { city, vehicleMake:make, brand:make, vehicleModel:model, model, vehicleYear:year, carYear:year, vehiclePlate:plate };
   }
 
-  function captureGeo(){
+  function canonicalCities(){
+    const catalog = window.KaretaOnboardingSelectionCatalog?.cities;
+    const values = Array.isArray(catalog) && catalog.length ? catalog : CITY_POINTS.map(row => row[0]);
+    const current = firstValue([draft.read().city, draft.read().cityName]);
+    return Array.from(new Set([...(values || []), current].map(value => String(value || '').trim()).filter(Boolean)));
+  }
+
+  function writeCityStorage(city){
+    const normalized = String(city || '').trim();
+    if (!normalized) return;
+    try {
+      localStorage.setItem('kareta.entryCity', normalized);
+      localStorage.setItem('kareta_city', normalized);
+    } catch (_error) {}
+  }
+
+  function patchCity(city, source = 'manual'){
+    const normalized = String(city || '').trim();
+    if (!normalized) return draft.read();
+    draft.patch({
+      city:normalized,
+      cityName:normalized,
+      citySelectionSource:String(source || 'manual'),
+      citySelectedAt:new Date().toISOString()
+    }, { source:`onboarding-city-${String(source || 'manual')}` });
+    writeCityStorage(normalized);
+    return draft.read();
+  }
+
+  function welcomeCityOptions(selected){
+    const current = String(selected || '').trim();
+    const cities = canonicalCities();
+    const ordered = current && !cities.includes(current) ? [current, ...cities] : cities;
+    return [
+      `<option value="">Выберите город</option>`,
+      ...ordered.map(city => `<option value="${esc(city)}" ${city === current ? 'selected' : ''}>${esc(city)}</option>`)
+    ].join('');
+  }
+
+  function welcomeCityHtml(){
+    const auto = collectAutoContext();
+    const selected = firstValue([draft.read().city, draft.read().cityName, auto.city]);
+    return `<div class="onb2-welcome-city" data-welcome-city-block>
+      <div class="onb2-welcome-city-head">
+        <span class="onb2-welcome-city-question">Ваш город?</span>
+        <span class="onb2-welcome-city-status" data-welcome-city-status aria-live="polite">Определяем местоположение…</span>
+      </div>
+      <label class="onb2-welcome-city-select-wrap">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z"/><circle cx="12" cy="9" r="2.4"/></svg>
+        <select class="onb2-welcome-city-select" data-welcome-city-select aria-label="Ваш город">
+          ${welcomeCityOptions(selected)}
+        </select>
+        <svg class="onb2-welcome-city-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"/></svg>
+      </label>
+      <button type="button" class="onb2-welcome-find-me" data-action="welcome-find-me">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        <span data-welcome-find-label>Найти меня</span>
+      </button>
+    </div>`;
+  }
+
+  function setWelcomeCityStatus(message, stateName = ''){
+    const node = state.overlay?.querySelector('[data-welcome-city-status]');
+    if (!node) return;
+    node.textContent = String(message || '');
+    node.dataset.state = String(stateName || '');
+  }
+
+  function syncWelcomeCityUi(flow = draft.read()){
+    const select = state.overlay?.querySelector('[data-welcome-city-select]');
+    if (!select) return;
+    const city = firstValue([flow.city, flow.cityName, collectAutoContext().city]);
+    if (city && !Array.from(select.options).some(option => option.value === city)) {
+      const option = document.createElement('option');
+      option.value = city;
+      option.textContent = city;
+      select.appendChild(option);
+    }
+    select.value = city || '';
+  }
+
+  function captureGeo(options = {}){
     const existing = draft.read();
-    if (existing.geoLat && existing.geoLng && existing.city) return Promise.resolve(existing);
-    if (!navigator.geolocation) return Promise.resolve(existing);
+    const force = options.force === true;
+    const preferDetectedCity = options.preferDetectedCity === true;
+    const onStatus = typeof options.onStatus === 'function' ? options.onStatus : () => {};
+    if (!force && existing.geoLat && existing.geoLng && existing.city) {
+      onStatus('cached', { city:existing.city });
+      return Promise.resolve(existing);
+    }
+    if (!navigator.geolocation) {
+      onStatus('unsupported', {});
+      return Promise.resolve(existing);
+    }
+    onStatus('locating', {});
     return new Promise(resolve => {
       navigator.geolocation.getCurrentPosition(position => {
         const lat = Number(position.coords?.latitude || 0);
         const lng = Number(position.coords?.longitude || 0);
         const auto = collectAutoContext();
-        const city = auto.city || nearestCity(lat,lng);
-        const patch = { ...auto, city, geoLat:lat, geoLng:lng, geoAccuracy:Number(position.coords?.accuracy || 0), geoDetectedAt:new Date().toISOString() };
-        draft.patch(patch, { source:'onboarding-auto-geo' });
+        const detectedCity = nearestCity(lat,lng);
+        const city = preferDetectedCity ? (detectedCity || auto.city) : (auto.city || detectedCity);
+        const patch = {
+          ...auto,
+          city,
+          cityName:city,
+          geoLat:lat,
+          geoLng:lng,
+          geoAccuracy:Number(position.coords?.accuracy || 0),
+          geoDetectedAt:new Date().toISOString(),
+          geoSource:'gps'
+        };
+        draft.patch(patch, { source:force ? 'onboarding-refresh-geo' : 'onboarding-auto-geo' });
+        if (city) writeCityStorage(city);
+        onStatus('success', { city, detectedCity, lat, lng });
         resolve(draft.read());
-      }, () => {
+      }, error => {
         const auto = collectAutoContext();
         if (Object.values(auto).some(Boolean)) draft.patch(auto, { source:'onboarding-auto-context' });
+        onStatus('error', { code:Number(error?.code || 0), message:String(error?.message || '') });
         resolve(draft.read());
-      }, { enableHighAccuracy:false, timeout:4500, maximumAge:900000 });
+      }, {
+        enableHighAccuracy:options.enableHighAccuracy === true || force,
+        timeout:force ? 8000 : 4500,
+        maximumAge:force ? 0 : 900000
+      });
     });
+  }
+
+  async function locateWelcomeCity(force = false){
+    const button = state.overlay?.querySelector('[data-action="welcome-find-me"]');
+    const label = button?.querySelector('[data-welcome-find-label]');
+    const oldLabel = label?.textContent || 'Найти меня';
+    if (button) {
+      button.disabled = true;
+      button.setAttribute('aria-busy','true');
+    }
+    if (label) label.textContent = 'Ищем…';
+    setWelcomeCityStatus('Определяем местоположение…', 'loading');
+    try {
+      const flow = await captureGeo({
+        force,
+        preferDetectedCity:force,
+        enableHighAccuracy:force,
+        onStatus(kind, detail){
+          if (kind === 'cached') setWelcomeCityStatus('Город сохранён', 'cached');
+          if (kind === 'unsupported') setWelcomeCityStatus('GPS недоступен — выберите город', 'error');
+          if (kind === 'error') setWelcomeCityStatus('Не удалось определить — выберите город', 'error');
+          if (kind === 'success') setWelcomeCityStatus(detail?.city ? 'Город определён по геопозиции' : 'Выберите город', detail?.city ? 'success' : 'error');
+        }
+      });
+      syncWelcomeCityUi(flow);
+      return flow;
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+      }
+      if (label) label.textContent = oldLabel;
+    }
   }
 
   function branchIcon(role){
@@ -211,6 +352,7 @@
         <div class="onb2-welcome-copy">
           <h1>Добро пожаловать!</h1>
           <p>Всё для автомобиля<br>в одном месте</p>
+          ${welcomeCityHtml()}
           <div class="onb2-desktop-benefits" aria-label="Возможности KARETA.KZ">
             <div><b>Найти мастера</b><span>Услуги, цены, свободное время и запись в одном сценарии.</span></div>
             <div><b>Контролировать ремонт</b><span>Заявка, чат, этапы работ и история автомобиля остаются в приложении.</span></div>
@@ -328,6 +470,9 @@
     document.body?.classList.add('entry-flow-active');
     bind(overlay);
     phone.bindMasks({ scope:overlay, selector:'#onb2-ref-phone', onClearError:input => { input.classList.remove('is-invalid'); input.closest('label')?.classList.remove('is-invalid'); } });
+    if (step === 'welcome') locateWelcomeCity(false).catch(() => {
+      setWelcomeCityStatus('Не удалось определить — выберите город', 'error');
+    });
     if (step === 'profile') captureGeo().catch(() => null);
     if (step === 'code') {
       startResendTimer();
@@ -525,11 +670,19 @@
       if (branch) { const role = selectRole(branch.dataset.roleBranch); navigateFlow('profile',role,{source:'registration-role-branch'}); return; }
       const control = event.target.closest('[data-action]');
       const action = control?.dataset.action;
+      if (action === 'welcome-find-me') { locateWelcomeCity(true).catch(() => setWelcomeCityStatus('Не удалось определить — выберите город', 'error')); return; }
       if (action === 'welcome-next') { state.pendingEnter='neutral'; navigation.to('role', { role:draft.currentRole(), source:'registration-welcome-next' }); }
       if (action === 'back-welcome') { state.pendingEnter='neutral'; navigation.to('welcome', { role:draft.currentRole(), source:'registration-back-welcome' }); }
       if (action === 'back-role') navigateFlow('role', state.selectedRole || draft.currentRole(), {reverse:true,source:'registration-back-role'});
       if (action === 'back-profile') navigateFlow('profile', state.selectedRole || draft.currentRole(), {reverse:true,source:'registration-back-profile'});
       if (action === 'resend-code') requestCode(control, { resend:true });
+    });
+    overlay.querySelector('[data-welcome-city-select]')?.addEventListener('change', event => {
+      const city = String(event.currentTarget?.value || '').trim();
+      if (!city) return;
+      const flow = patchCity(city, 'manual');
+      syncWelcomeCityUi(flow);
+      setWelcomeCityStatus('Город выбран вручную', 'manual');
     });
     overlay.querySelector('[data-onb-profile-form]')?.addEventListener('submit', event => {
       event.preventDefault();
