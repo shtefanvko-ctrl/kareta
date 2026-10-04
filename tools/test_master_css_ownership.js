@@ -16,7 +16,6 @@ const routeSources=[
   'css/next/master_service_pricing_native.css',
   'css/next/master_exchange_acceptance_flow.css',
   'css/next/master_ui_exchange_schedule_flattening.css',
-  'css/next/master_client_r84_postlude.css',
   'css/next/master_surfaces.css'
 ];
 
@@ -37,6 +36,14 @@ for(const shared of ['css/next/design_contract.css','css/next/master_responsive_
   if(build.includes("'"+shared+"'")) fail(shared+' must not be duplicated in master runtime');
 }
 if(!registry.includes("'styles' => ['css/routes/master_runtime.css']")) fail('master route bundle registration missing');
+
+const retired='css/next/master_client_r84_postlude.css';
+if(build.includes("'"+retired+"'")) fail('retired '+retired+' is still built into master runtime');
+const exchangeOwner=read('css/next/master_ui_exchange_schedule_flattening.css');
+if(!exchangeOwner.includes('EXCHANGE CARD DENSITY FIX')) fail('exchange density rules are not owned by exchange/schedule CSS');
+const serviceOwner=read('css/next/master_requests_workplace_services.css');
+if(!serviceOwner.includes('MASTER surfaces aligned with the client r84 card system.')) fail('service-management canonical r84 owner missing');
+if(!serviceOwner.includes('actionable master empty states')) fail('master actionable empty-state owner missing');
 
 const surface=read('css/next/master_surface_contract.css');
 const canonStart=surface.indexOf('/* R188.5.5.6.84.182 — canonical UI system');
