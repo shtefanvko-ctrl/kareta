@@ -26,7 +26,7 @@
 | M5 — demand analytics | NOT IMPLEMENTED | 52 query examples = hypotheses, observed demand отсутствует |
 | M6 — controlled rollout | NOT IMPLEMENTED | нужен feature-off + comparison + exact release evidence |
 
-Current main на момент аудита: `582b8f94baba60c914cb82e598ad32a806a58117`, asset `188.5.5.6.84.176`.
+Current main после повторной сверки: `c43a1c21e1414bc2fc12c69b4b350613d64f0480`, asset `188.5.5.6.84.177`.
 
 ## Материалы
 
