@@ -44,9 +44,10 @@
   let dbReadLastStartedAt = 0;
   let dbReadBackoffUntil = 0;
 
+  const cancelTimer = timer => { const clear=globalThis.clearTimeout; if(timer && typeof clear==='function') clear(timer); };
   const sleep = (ms, signal) => new Promise(resolve => {
     let timer;
-    const cancel=()=>{clearTimeout(timer);signal?.removeEventListener('abort',cancel);resolve(false);};
+    const cancel=()=>{cancelTimer(timer);signal?.removeEventListener('abort',cancel);resolve(false);};
     if(signal?.aborted){resolve(false);return;}
     timer=setTimeout(()=>{signal?.removeEventListener('abort',cancel);resolve(true);},Math.max(0,ms));
     signal?.addEventListener('abort',cancel,{once:true});
@@ -164,7 +165,7 @@
         networkError:String(error?.message||error||code),
       });
     }finally{
-      clearTimeout(timer);
+      cancelTimer(timer);
       upstream?.removeEventListener?.('abort',abort);
     }
     const payload = normalizePayload(rawPayload, response);
