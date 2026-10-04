@@ -69,7 +69,7 @@ html[data-user-role="master"] .k-master-workplace{gap:18px}.k-master-workplace-a
 }
 
 
-/* 2026-10-04 — Master canonical search shell for schedule/orders. */
+/* 2026-10-05 — Master canonical search/filter shell shared by operational surfaces. */
 html[data-user-role="master"]{
   --k-master-canon-orange:#ff4b0a;
   --k-master-canon-line:#dfe1e5;
