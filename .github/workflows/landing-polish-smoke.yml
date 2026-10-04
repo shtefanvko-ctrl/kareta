@@ -1,0 +1,97 @@
+name: Landing polish visual smoke
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'landing/**'
+      - '.github/workflows/landing-polish-smoke.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Chromium
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Start landing
+        run: |
+          python3 -m http.server 4173 --directory landing >/tmp/landing.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/landing.log
+          exit 1
+      - name: Visual smoke
+        run: |
+          mkdir -p landing-smoke
+          cat > landing-smoke.js <<'NODE'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          const cases = [
+            {name:'mobile-390x844',width:390,height:844},
+            {name:'tablet-768x1024',width:768,height:1024},
+            {name:'desktop-1440x900',width:1440,height:900}
+          ];
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const results=[]; let failed=false;
+            for(const c of cases){
+              const context=await browser.newContext({viewport:{width:c.width,height:c.height}});
+              const page=await context.newPage();
+              const consoleErrors=[],requestFailures=[];
+              page.on('console',m=>{if(m.type()==='error')consoleErrors.push(m.text())});
+              page.on('requestfailed',r=>requestFailures.push({url:r.url(),error:r.failure()?.errorText||'unknown'}));
+              const response=await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+              await page.waitForTimeout(250);
+              const base=await page.evaluate(()=>{
+                const imgs=[...document.images];
+                const roleCards=[...document.querySelectorAll('.role-card')];
+                const heroLogo=document.querySelector('.hero-brand-full img');
+                return {
+                  brokenImages:imgs.filter(i=>!i.complete||i.naturalWidth===0).map(i=>i.getAttribute('src')),
+                  viewportWidth:innerWidth,
+                  scrollWidth:document.documentElement.scrollWidth,
+                  roleCount:roleCards.length,
+                  roleWidths:roleCards.map(x=>Math.round(x.getBoundingClientRect().width)),
+                  heroLogoWidth:heroLogo?Math.round(heroLogo.getBoundingClientRect().width):0,
+                  h1:document.querySelector('h1')?.innerText||'',
+                  devCopy:[...document.querySelectorAll('body *')].map(x=>x.childNodes.length===1&&x.childNodes[0].nodeType===3?x.textContent.trim():'').filter(Boolean).filter(t=>/репозитор|github|не макет|desktop-сценар|мобильные ссылки подключаются/i.test(t))
+                };
+              });
+              for(const lang of ['kk','en','ru']) await page.click('[data-lang="'+lang+'"]');
+              if(c.width<=1040){await page.click('[data-menu]');}
+              await page.screenshot({path:'landing-smoke/'+c.name+'.png',fullPage:true});
+              const checks={
+                http200:response?.status()===200,
+                noBrokenImages:base.brokenImages.length===0,
+                noOverflow:base.scrollWidth<=base.viewportWidth+1,
+                rolesPresent:base.roleCount===3,
+                heroLogoVisible:base.heroLogoWidth>=(c.width<=700?250:300),
+                noDevCopy:base.devCopy.length===0,
+                noConsoleErrors:consoleErrors.length===0,
+                noRequestFailures:requestFailures.length===0
+              };
+              if(Object.values(checks).some(v=>v!==true))failed=true;
+              results.push({case:c,base,consoleErrors,requestFailures,checks});
+              await context.close();
+            }
+            await browser.close();
+            fs.writeFileSync('landing-smoke/report.json',JSON.stringify({failed,results},null,2));
+            console.log(JSON.stringify({failed,results},null,2));
+            if(failed)process.exit(1);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+          node landing-smoke.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: LANDING_POLISH_SMOKE
+          path: landing-smoke/
+          if-no-files-found: error
+          retention-days: 7
