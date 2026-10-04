@@ -24,7 +24,7 @@
       admin:{adminMonitoring:'Мониторинг',adminUsers:'Пользователи',adminOrganizations:'Организации',adminManagement:'Управление',platform:'Платформа'}
     };
     const iconHtml=window.KaretaUIIcons?.routeSvg?.(key)||esc(route.icon);
-    const baseLabel=labels[kind]?.[key]||route.label;const resolvedLabel=kind==='master'&&key==='masterDashboard'?'Главная':baseLabel;return {...route,label:resolvedLabel,iconHtml};
+    const baseLabel=labels[kind]?.[key]||route.label;const resolvedLabel=kind==='master'&&key==='masterDashboard'?'Рабочее место':baseLabel;return {...route,label:resolvedLabel,iconHtml};
   }
   function linkHtml(key,surface='desktop'){if(key==='__more__')return `<button type="button" class="k-nav-link k-nav-more" data-mobile-more aria-label="Открыть быстрые действия" aria-controls="k-smart-action-hub" aria-expanded="false"><span class="k-nav-icon k-nav-more-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="k-nav-label">Ещё</span></button>`;const route=routePresentation(key,surface);const badge=key==='chats'&&state.unreadChats>0?`<b class="k-nav-unread" aria-label="Непрочитанных сообщений: ${state.unreadChats}">${state.unreadChats>99?'99+':state.unreadChats}</b>`:'';return `<a class="k-nav-link" href="${esc(route.path)}" data-route-key="${esc(key)}" data-route-link="${esc(key)}" title="${esc(route.label)}" aria-label="${esc(route.label)}"><span class="k-nav-icon" aria-hidden="true">${route.iconHtml}</span><span class="k-nav-label">${esc(route.label)}</span>${badge}</a>`;}
   function nodes(html){const t=document.createElement('template');t.innerHTML=html.trim();return [...t.content.children];}
