@@ -789,7 +789,8 @@ html[data-user-role="master"]{
 }
 
 /* R188.5.5.6.84.182 — canonical UI system: page width, buttons, surfaces, toolbars. */
-:root{
+/* This route-late Master contract can remain loaded after navigation; every rule below is role-scoped to prevent Client/STO/Seller cascade leakage. */
+html[data-user-role="master"]{
   --k-ui-page-max:1440px;
   --k-ui-page-gutter:clamp(18px,2vw,32px);
   --k-ui-control-h:44px;
@@ -807,10 +808,10 @@ html[data-user-role="master"]{
 
 /* One desktop canvas. Intentional wizards/onboarding remain independently sized. */
 @media(min-width:1100px){
-  html[data-user-role] #k-page-outlet{
+  html[data-user-role="master"] #k-page-outlet{
     --k-page-x:var(--k-ui-page-gutter);
   }
-  html[data-user-role] #k-page-outlet > :is(
+  html[data-user-role="master"] #k-page-outlet > :is(
     .k-page,
     .k-page-shell--workspace,
     .k-flow-primary-page,
@@ -835,7 +836,7 @@ html[data-user-role="master"]{
     box-sizing:border-box!important;
   }
 
-  html[data-user-role] #k-page-outlet > :is(
+  html[data-user-role="master"] #k-page-outlet > :is(
     .k-page,
     .k-page-shell--workspace,
     .k-flow-primary-page
@@ -860,7 +861,7 @@ html[data-user-role="master"]{
 }
 
 /* Canonical action buttons. */
-:where(.k-btn,.k-button){
+html[data-user-role="master"] :where(.k-btn,.k-button){
   min-height:var(--k-ui-control-h)!important;
   padding:0 14px!important;
   border-radius:var(--k-ui-control-radius)!important;
@@ -877,56 +878,56 @@ html[data-user-role="master"]{
   cursor:pointer!important;
   transition:background .15s ease,border-color .15s ease,color .15s ease,box-shadow .15s ease,transform .08s ease!important;
 }
-:where(.k-btn,.k-button) svg{
+html[data-user-role="master"] :where(.k-btn,.k-button) svg{
   flex:0 0 auto!important;
   width:18px!important;
   height:18px!important;
 }
-:where(.k-btn-primary,.k-button-primary){
+html[data-user-role="master"] :where(.k-btn-primary,.k-button-primary){
   border:1px solid var(--k-ui-accent)!important;
   background:var(--k-ui-accent)!important;
   color:#fff!important;
   box-shadow:0 6px 16px rgba(255,75,10,.16)!important;
 }
-:where(.k-btn-primary,.k-button-primary):hover{
+html[data-user-role="master"] :where(.k-btn-primary,.k-button-primary):hover{
   border-color:var(--k-ui-accent-hover)!important;
   background:var(--k-ui-accent-hover)!important;
 }
-:where(.k-btn-secondary,.k-button-secondary){
+html[data-user-role="master"] :where(.k-btn-secondary,.k-button-secondary){
   border:1px solid var(--k-ui-line)!important;
   background:#fff!important;
   color:var(--k-ui-text)!important;
   box-shadow:none!important;
 }
-:where(.k-btn-secondary,.k-button-secondary):hover{
+html[data-user-role="master"] :where(.k-btn-secondary,.k-button-secondary):hover{
   border-color:#ffc3ad!important;
   background:#fff8f5!important;
   color:#c73c0a!important;
 }
-:where(.k-btn-ghost,.k-button-ghost){
+html[data-user-role="master"] :where(.k-btn-ghost,.k-button-ghost){
   border:1px solid transparent!important;
   background:transparent!important;
   color:#535a64!important;
   box-shadow:none!important;
 }
-:where(.k-btn-ghost,.k-button-ghost):hover{
+html[data-user-role="master"] :where(.k-btn-ghost,.k-button-ghost):hover{
   border-color:#e8eaed!important;
   background:#f6f7f8!important;
   color:#171a1f!important;
 }
-:where(.k-btn-danger,.k-button-danger,.k-btn.is-danger,.k-button.is-danger){
+html[data-user-role="master"] :where(.k-btn-danger,.k-button-danger,.k-btn.is-danger,.k-button.is-danger){
   border-color:#ef4444!important;
   background:#fff!important;
   color:#c62828!important;
 }
-:where(.k-btn,.k-button):disabled,
-:where(.k-btn,.k-button)[aria-disabled="true"]{
+html[data-user-role="master"] :where(.k-btn,.k-button):disabled,
+html[data-user-role="master"] :where(.k-btn,.k-button)[aria-disabled="true"]{
   opacity:.46!important;
   cursor:not-allowed!important;
   box-shadow:none!important;
   transform:none!important;
 }
-:where(.k-btn-icon,.k-button-icon,.k-icon-btn){
+html[data-user-role="master"] :where(.k-btn-icon,.k-button-icon,.k-icon-btn){
   width:40px!important;
   min-width:40px!important;
   height:40px!important;
@@ -936,7 +937,7 @@ html[data-user-role="master"]{
 }
 
 /* Canonical surfaces: same visual family, component-specific internal layout stays intact. */
-:is(
+html[data-user-role="master"] :is(
   .k-card,
   .k-panel,
   .k-master-reference-card,
@@ -961,7 +962,7 @@ html[data-user-role="master"]{
 }
 
 /* Toolbars/search/filter blocks share one shell. */
-:is(
+html[data-user-role="master"] :is(
   .k-catalog-toolbar,
   .k-orders-search-toolbar,
   .k-shop-toolbar,
@@ -977,7 +978,7 @@ html[data-user-role="master"]{
 }
 
 /* Empty states: no page-specific giant blank cards. */
-:is(
+html[data-user-role="master"] :is(
   .k-empty,
   .k-master-empty-r84,
   .k-schedule-empty,
@@ -990,10 +991,10 @@ html[data-user-role="master"]{
 }
 
 /* Form controls visually align with buttons. */
-.k-page :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea){
+html[data-user-role="master"] .k-page :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea){
   border-radius:12px;
 }
-.k-page :is(input:not([type="checkbox"]):not([type="radio"]),select){
+html[data-user-role="master"] .k-page :is(input:not([type="checkbox"]):not([type="radio"]),select){
   min-height:42px;
 }
 
@@ -1008,7 +1009,7 @@ html[data-user-role="master"]{
 }
 
 /* R188.5.5.6.84.182 — authoritative control specificity. */
-.k-app-shell :is(.k-btn,.k-button):not(.k-nav-link):not(.k-menu-toggle){
+html[data-user-role="master"] .k-app-shell :is(.k-btn,.k-button):not(.k-nav-link):not(.k-menu-toggle){
   min-height:var(--k-ui-control-h)!important;
   padding:0 14px!important;
   border-radius:var(--k-ui-control-radius)!important;
@@ -1021,25 +1022,25 @@ html[data-user-role="master"]{
   line-height:1.1!important;
   font-weight:800!important;
 }
-.k-app-shell :is(.k-btn-primary,.k-button-primary){
+html[data-user-role="master"] .k-app-shell :is(.k-btn-primary,.k-button-primary){
   border:1px solid var(--k-ui-accent)!important;
   background:var(--k-ui-accent)!important;
   color:#fff!important;
   box-shadow:0 6px 16px rgba(255,75,10,.16)!important;
 }
-.k-app-shell :is(.k-btn-secondary,.k-button-secondary){
+html[data-user-role="master"] .k-app-shell :is(.k-btn-secondary,.k-button-secondary){
   border:1px solid var(--k-ui-line)!important;
   background:#fff!important;
   color:var(--k-ui-text)!important;
   box-shadow:none!important;
 }
-.k-app-shell :is(.k-btn-ghost,.k-button-ghost){
+html[data-user-role="master"] .k-app-shell :is(.k-btn-ghost,.k-button-ghost){
   border:1px solid transparent!important;
   background:transparent!important;
   color:#535a64!important;
   box-shadow:none!important;
 }
-.k-app-shell :is(
+html[data-user-role="master"] .k-app-shell :is(
   .k-master-reference-card,
   .k-parts-ref-card,
   .k-master-service-card-r84,
