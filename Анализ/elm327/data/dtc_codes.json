@@ -1,0 +1,796 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "dtc_p0100",
+      "code": "P0100",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Неисправность цепи массового расхода воздуха",
+        "en": "Mass or Volume Air Flow Circuit Malfunction"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "loss_of_power"
+      ],
+      "cause_ids": [
+        "maf_fault",
+        "ecu_power_ground_fault"
+      ],
+      "check_ids": [
+        "maf_live_data_check",
+        "sensor_supply_ground_signal_check"
+      ],
+      "repair_action_ids": [
+        "clean_or_replace_maf_after_test",
+        "repair_sensor_wiring"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0101",
+      "code": "P0101",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Диапазон/характеристика цепи MAF вне ожидаемого",
+        "en": "Mass or Volume Air Flow Circuit Range/Performance"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "loss_of_power",
+        "rough_idle"
+      ],
+      "cause_ids": [
+        "maf_fault",
+        "vacuum_leak"
+      ],
+      "check_ids": [
+        "maf_live_data_check",
+        "smoke_or_vacuum_leak_check"
+      ],
+      "repair_action_ids": [
+        "clean_or_replace_maf_after_test",
+        "repair_intake_leak"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0110",
+      "code": "P0110",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Неисправность цепи датчика температуры воздуха на впуске",
+        "en": "Intake Air Temperature Sensor Circuit Malfunction"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine"
+      ],
+      "cause_ids": [
+        "ecu_power_ground_fault"
+      ],
+      "check_ids": [
+        "sensor_supply_ground_signal_check"
+      ],
+      "repair_action_ids": [
+        "repair_sensor_wiring"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0113",
+      "code": "P0113",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Высокий уровень сигнала датчика температуры воздуха на впуске",
+        "en": "Intake Air Temperature Sensor Circuit High Input"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine"
+      ],
+      "cause_ids": [
+        "ecu_power_ground_fault"
+      ],
+      "check_ids": [
+        "sensor_supply_ground_signal_check"
+      ],
+      "repair_action_ids": [
+        "repair_sensor_wiring"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0120",
+      "code": "P0120",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Неисправность цепи датчика/выключателя положения дросселя A",
+        "en": "Throttle/Pedal Position Sensor/Switch A Circuit Malfunction"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "loss_of_power",
+        "unstable_rpm"
+      ],
+      "cause_ids": [
+        "ecu_power_ground_fault"
+      ],
+      "check_ids": [
+        "sensor_supply_ground_signal_check"
+      ],
+      "repair_action_ids": [
+        "repair_sensor_wiring"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0171",
+      "code": "P0171",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Слишком бедная смесь, банк 1",
+        "en": "System Too Lean (Bank 1)"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "rough_idle",
+        "loss_of_power",
+        "high_fuel_consumption"
+      ],
+      "cause_ids": [
+        "vacuum_leak",
+        "maf_fault",
+        "fuel_pressure_low",
+        "injector_fault"
+      ],
+      "check_ids": [
+        "read_freeze_frame",
+        "inspect_fuel_trims",
+        "smoke_or_vacuum_leak_check",
+        "maf_live_data_check",
+        "fuel_pressure_check"
+      ],
+      "repair_action_ids": [
+        "repair_intake_leak",
+        "clean_or_replace_maf_after_test",
+        "repair_fuel_delivery"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0172",
+      "code": "P0172",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Слишком богатая смесь, банк 1",
+        "en": "System Too Rich (Bank 1)"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "rough_idle",
+        "high_fuel_consumption"
+      ],
+      "cause_ids": [
+        "maf_fault",
+        "fuel_pressure_low",
+        "injector_fault"
+      ],
+      "check_ids": [
+        "read_freeze_frame",
+        "inspect_fuel_trims",
+        "maf_live_data_check",
+        "fuel_pressure_check"
+      ],
+      "repair_action_ids": [
+        "clean_or_replace_maf_after_test",
+        "repair_fuel_delivery"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0200",
+      "code": "P0200",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Неисправность цепи форсунок",
+        "en": "Injector Circuit Malfunction"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "engine_misfire",
+        "loss_of_power"
+      ],
+      "cause_ids": [
+        "injector_fault",
+        "ecu_power_ground_fault"
+      ],
+      "check_ids": [
+        "sensor_supply_ground_signal_check"
+      ],
+      "repair_action_ids": [
+        "repair_sensor_wiring"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0300",
+      "code": "P0300",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Случайные/множественные пропуски воспламенения",
+        "en": "Random/Multiple Cylinder Misfire Detected"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "engine_misfire",
+        "rough_idle",
+        "loss_of_power"
+      ],
+      "cause_ids": [
+        "ignition_coil_fault",
+        "spark_plug_fault",
+        "injector_fault",
+        "vacuum_leak",
+        "fuel_pressure_low"
+      ],
+      "check_ids": [
+        "read_freeze_frame",
+        "misfire_cylinder_isolation",
+        "coil_power_ground_check",
+        "inspect_fuel_trims"
+      ],
+      "repair_action_ids": [
+        "repair_ignition_fault",
+        "repair_fuel_delivery",
+        "repair_intake_leak"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0301",
+      "code": "P0301",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Пропуски воспламенения в цилиндре 1",
+        "en": "Cylinder 1 Misfire Detected"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "engine_misfire",
+        "rough_idle"
+      ],
+      "cause_ids": [
+        "ignition_coil_fault",
+        "spark_plug_fault",
+        "injector_fault"
+      ],
+      "check_ids": [
+        "read_freeze_frame",
+        "misfire_cylinder_isolation",
+        "coil_power_ground_check"
+      ],
+      "repair_action_ids": [
+        "repair_ignition_fault",
+        "repair_fuel_delivery"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0302",
+      "code": "P0302",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Пропуски воспламенения в цилиндре 2",
+        "en": "Cylinder 2 Misfire Detected"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "engine_misfire",
+        "rough_idle"
+      ],
+      "cause_ids": [
+        "ignition_coil_fault",
+        "spark_plug_fault",
+        "injector_fault"
+      ],
+      "check_ids": [
+        "read_freeze_frame",
+        "misfire_cylinder_isolation",
+        "coil_power_ground_check"
+      ],
+      "repair_action_ids": [
+        "repair_ignition_fault",
+        "repair_fuel_delivery"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0325",
+      "code": "P0325",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Неисправность цепи датчика детонации 1",
+        "en": "Knock Sensor 1 Circuit Malfunction"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "loss_of_power"
+      ],
+      "cause_ids": [
+        "ecu_power_ground_fault"
+      ],
+      "check_ids": [
+        "sensor_supply_ground_signal_check"
+      ],
+      "repair_action_ids": [
+        "repair_sensor_wiring"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0335",
+      "code": "P0335",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Неисправность цепи датчика положения коленвала A",
+        "en": "Crankshaft Position Sensor A Circuit Malfunction"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "hard_start",
+        "engine_not_start",
+        "stalling"
+      ],
+      "cause_ids": [
+        "crank_sensor_fault",
+        "ecu_power_ground_fault"
+      ],
+      "check_ids": [
+        "sensor_supply_ground_signal_check"
+      ],
+      "repair_action_ids": [
+        "repair_sensor_wiring"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0340",
+      "code": "P0340",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Неисправность цепи датчика положения распредвала A",
+        "en": "Camshaft Position Sensor A Circuit Malfunction"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "hard_start",
+        "stalling"
+      ],
+      "cause_ids": [
+        "cam_sensor_fault",
+        "ecu_power_ground_fault"
+      ],
+      "check_ids": [
+        "sensor_supply_ground_signal_check"
+      ],
+      "repair_action_ids": [
+        "repair_sensor_wiring"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0401",
+      "code": "P0401",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Недостаточный поток рециркуляции отработавших газов",
+        "en": "Exhaust Gas Recirculation Flow Insufficient Detected"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "rough_idle",
+        "loss_of_power"
+      ],
+      "cause_ids": [
+        "egr_flow_restricted"
+      ],
+      "check_ids": [
+        "egr_command_response_check"
+      ],
+      "repair_action_ids": [
+        "service_egr_after_test"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0420",
+      "code": "P0420",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Эффективность каталитического нейтрализатора ниже порога, банк 1",
+        "en": "Catalyst System Efficiency Below Threshold (Bank 1)"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine"
+      ],
+      "cause_ids": [
+        "catalyst_efficiency_low",
+        "exhaust_leak"
+      ],
+      "check_ids": [
+        "read_freeze_frame",
+        "o2_catalyst_waveform_check"
+      ],
+      "repair_action_ids": [
+        "replace_catalyst_after_root_cause"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0442",
+      "code": "P0442",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Обнаружена небольшая утечка системы EVAP",
+        "en": "Evaporative Emission System Leak Detected (small leak)"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "fuel_smell"
+      ],
+      "cause_ids": [
+        "evap_small_leak"
+      ],
+      "check_ids": [
+        "evap_visual_pressure_check"
+      ],
+      "repair_action_ids": [
+        "repair_evap_leak"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0455",
+      "code": "P0455",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Обнаружена крупная утечка системы EVAP",
+        "en": "Evaporative Emission System Leak Detected (large leak)"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "fuel_smell"
+      ],
+      "cause_ids": [
+        "evap_large_leak"
+      ],
+      "check_ids": [
+        "evap_visual_pressure_check"
+      ],
+      "repair_action_ids": [
+        "repair_evap_leak"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0500",
+      "code": "P0500",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Неисправность датчика скорости автомобиля",
+        "en": "Vehicle Speed Sensor Malfunction"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine"
+      ],
+      "cause_ids": [
+        "vehicle_speed_signal_fault",
+        "ecu_power_ground_fault"
+      ],
+      "check_ids": [
+        "sensor_supply_ground_signal_check"
+      ],
+      "repair_action_ids": [
+        "repair_sensor_wiring"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0505",
+      "code": "P0505",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Неисправность системы управления холостым ходом",
+        "en": "Idle Control System Malfunction"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "rough_idle",
+        "unstable_rpm",
+        "stalling"
+      ],
+      "cause_ids": [
+        "idle_control_fault",
+        "vacuum_leak"
+      ],
+      "check_ids": [
+        "read_freeze_frame",
+        "smoke_or_vacuum_leak_check"
+      ],
+      "repair_action_ids": [
+        "repair_intake_leak"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_p0562",
+      "code": "P0562",
+      "category": "powertrain",
+      "scope": "generic",
+      "title": {
+        "ru": "Низкое напряжение системы",
+        "en": "System Voltage Low"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "check_engine",
+        "low_system_voltage",
+        "hard_start"
+      ],
+      "cause_ids": [
+        "charging_system_low",
+        "ecu_power_ground_fault"
+      ],
+      "check_ids": [
+        "battery_charging_voltage_check",
+        "ecu_power_ground_check"
+      ],
+      "repair_action_ids": [
+        "repair_charging_system"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    },
+    {
+      "id": "dtc_u0100",
+      "code": "U0100",
+      "category": "network",
+      "scope": "generic",
+      "title": {
+        "ru": "Потеря связи с ECM/PCM A",
+        "en": "Lost Communication With ECM/PCM A"
+      },
+      "diagnostic_rule": {
+        "ru": "Код описывает обнаруженное условие и не является автоматическим указанием заменить деталь.",
+        "en": "The code describes a detected condition and is not an automatic instruction to replace a component."
+      },
+      "symptom_ids": [
+        "no_ecu_communication",
+        "engine_not_start"
+      ],
+      "cause_ids": [
+        "ecu_power_ground_fault",
+        "can_bus_fault"
+      ],
+      "check_ids": [
+        "ecu_power_ground_check",
+        "can_bus_basic_check"
+      ],
+      "repair_action_ids": [
+        "repair_ecu_power_or_can"
+      ],
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED",
+      "expert_review_required": true
+    }
+  ]
+}

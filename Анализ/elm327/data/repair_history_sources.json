@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "purpose": "External evidence for recurring failures and repair context; not a substitute for KARETA-owned service outcomes.",
+  "sources": [
+    {
+      "id": "nhtsa_complaints",
+      "kind": "complaints",
+      "url": "https://www.nhtsa.gov/nhtsa-datasets-and-apis",
+      "strength": "REAL_WORLD_REPORTS",
+      "limitations": {
+        "ru": "Жалоба владельца не подтверждает корневую причину или успешный ремонт.",
+        "en": "A consumer complaint does not prove root cause or successful repair."
+      }
+    },
+    {
+      "id": "nhtsa_recalls",
+      "kind": "recalls",
+      "url": "https://www.nhtsa.gov/nhtsa-datasets-and-apis",
+      "strength": "OFFICIAL_SAFETY_CAMPAIGN",
+      "limitations": {
+        "ru": "Кампания относится к конкретным автомобилям/периодам и не является универсальной диагностикой.",
+        "en": "A campaign applies to specific vehicles/time ranges and is not universal diagnosis."
+      }
+    },
+    {
+      "id": "nhtsa_manufacturer_communications",
+      "kind": "manufacturer_communications_tsb",
+      "url": "https://www.nhtsa.gov/nhtsa-datasets-and-apis",
+      "strength": "MANUFACTURER_COMMUNICATION",
+      "limitations": {
+        "ru": "Использовать только с точной привязкой к марке/модели/году/кампании.",
+        "en": "Use only with exact make/model/year/campaign applicability."
+      }
+    },
+    {
+      "id": "kareta_service_outcomes_future",
+      "kind": "first_party_repair_history",
+      "url": null,
+      "strength": "FUTURE_CANONICAL_OUTCOME_LAYER",
+      "fields": [
+        "vehicle_id",
+        "vin_hash",
+        "make",
+        "model",
+        "year",
+        "engine",
+        "dtc_before",
+        "symptoms",
+        "checks_performed",
+        "confirmed_cause",
+        "repair_actions",
+        "parts",
+        "dtc_after",
+        "verification_drive",
+        "resolved",
+        "mileage_km",
+        "repair_date"
+      ],
+      "privacy": "No public raw VIN; use access-controlled identifiers and derived analytics.",
+      "status": "NOT_IMPLEMENTED"
+    }
+  ]
+}

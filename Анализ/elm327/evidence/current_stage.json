@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-05",
+  "branch": "feat/elm327-repair-knowledge-20261005",
+  "base_sha": "307a8f703588ced539149494fe5c2c52a6d3037e",
+  "state": {
+    "research": "IN_PROGRESS",
+    "structured_seed": "IMPLEMENTED",
+    "bulk_import": "NOT_RUN",
+    "expert_review": "NOT_RUN",
+    "runtime_integration": "NOT_RUN",
+    "android": "UNCHANGED",
+    "production_db": "UNCHANGED"
+  },
+  "counts": {
+    "dtc_seed": 22,
+    "pid_seed": 13,
+    "commands": 15,
+    "protocols": 5,
+    "symptoms": 12,
+    "causes": 18,
+    "checks": 14,
+    "repair_actions": 10
+  },
+  "decisions": [
+    "OBDex CC0 selected as preferred generic DTC/PID bulk-import source.",
+    "ODbL sources kept reference-only pending licensing decision.",
+    "NHTSA selected for complaints/recalls/manufacturer-communications evidence, not as proof of successful repair.",
+    "No DTC maps directly to mandatory part replacement."
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "vacuum_leak",
+      "title": {
+        "ru": "Подсос воздуха после расходомера",
+        "en": "Unmetered air / vacuum leak"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "maf_fault",
+      "title": {
+        "ru": "Неисправность или загрязнение MAF",
+        "en": "Faulty or contaminated MAF sensor"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "fuel_pressure_low",
+      "title": {
+        "ru": "Недостаточное давление топлива",
+        "en": "Low fuel pressure"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "injector_fault",
+      "title": {
+        "ru": "Неисправность форсунки или её цепи",
+        "en": "Injector or injector-circuit fault"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "ignition_coil_fault",
+      "title": {
+        "ru": "Неисправность катушки зажигания",
+        "en": "Ignition coil fault"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "spark_plug_fault",
+      "title": {
+        "ru": "Неисправная или загрязнённая свеча",
+        "en": "Faulty or fouled spark plug"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "crank_sensor_fault",
+      "title": {
+        "ru": "Неисправность датчика положения коленвала или цепи",
+        "en": "Crankshaft-position sensor or circuit fault"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "cam_sensor_fault",
+      "title": {
+        "ru": "Неисправность датчика положения распредвала или цепи",
+        "en": "Camshaft-position sensor or circuit fault"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "egr_flow_restricted",
+      "title": {
+        "ru": "Недостаточный поток EGR / засор",
+        "en": "Restricted or insufficient EGR flow"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "catalyst_efficiency_low",
+      "title": {
+        "ru": "Сниженная эффективность каталитического нейтрализатора",
+        "en": "Catalyst efficiency below threshold"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "exhaust_leak",
+      "title": {
+        "ru": "Утечка выхлопа до/около датчиков",
+        "en": "Exhaust leak upstream of or near oxygen sensors"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "evap_small_leak",
+      "title": {
+        "ru": "Небольшая утечка EVAP",
+        "en": "Small EVAP system leak"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "evap_large_leak",
+      "title": {
+        "ru": "Крупная утечка EVAP или открытая крышка бака",
+        "en": "Large EVAP leak or loose/missing fuel cap"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "vehicle_speed_signal_fault",
+      "title": {
+        "ru": "Неточный/отсутствующий сигнал скорости автомобиля",
+        "en": "Missing or implausible vehicle-speed signal"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "idle_control_fault",
+      "title": {
+        "ru": "Неисправность регулирования холостого хода или загрязнение дросселя",
+        "en": "Idle-control fault or throttle contamination"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "charging_system_low",
+      "title": {
+        "ru": "Недозаряд / низкое системное напряжение",
+        "en": "Charging-system undervoltage"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "ecu_power_ground_fault",
+      "title": {
+        "ru": "Проблема питания или массы ЭБУ",
+        "en": "ECU power or ground fault"
+      },
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "can_bus_fault",
+      "title": {
+        "ru": "Неисправность CAN-линии или шлюза",
+        "en": "CAN bus or gateway fault"
+      },
+      "evidence_status": "SUPPORTED"
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "updated_on": "2026-10-05",
+  "canonical_policy": "Git repository is canonical. External datasets are references/import sources only.",
+  "sources": [
+    {
+      "id": "sae_j1979_202505",
+      "name": "SAE J1979_202505 E/E Diagnostic Test Modes",
+      "type": "standard_metadata",
+      "authority": "PRIMARY",
+      "url": "https://saemobilus.sae.org/standards/j1979_202505-e-e-diagnostic-test-modes",
+      "license": "copyrighted standard; metadata/reference only",
+      "use": "protocol/test-mode semantics and validation reference",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "elm_electronics_elm327_v23",
+      "name": "ELM327 / ELM327L official data sheets",
+      "type": "vendor_documentation",
+      "authority": "PRIMARY",
+      "url": "https://www.elmelectronics.com/products/ics/obd/",
+      "license": "vendor documentation; reference only",
+      "use": "AT command and protocol behavior",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "obdex_cc0",
+      "name": "OBDex",
+      "type": "open_dataset",
+      "authority": "SECONDARY_CURATED",
+      "url": "https://github.com/foerbsnavi/obdex",
+      "license": "CC0-1.0 data; MIT tooling",
+      "use": "preferred import source for generic DTC and PID seed data",
+      "status": "IMPORTABLE"
+    },
+    {
+      "id": "nhtsa_datasets",
+      "name": "NHTSA Datasets and APIs",
+      "type": "government_open_data",
+      "authority": "PRIMARY",
+      "url": "https://www.nhtsa.gov/nhtsa-datasets-and-apis",
+      "license": "US government/open-data terms apply",
+      "use": "complaints, recalls, investigations, manufacturer communications/TSBs",
+      "status": "IMPORTABLE_WITH_FIELD_PROVENANCE"
+    },
+    {
+      "id": "nhtsa_vpic",
+      "name": "NHTSA vPIC VIN decoder",
+      "type": "government_api",
+      "authority": "PRIMARY",
+      "url": "https://vpic.nhtsa.dot.gov/decoder/",
+      "license": "US government API",
+      "use": "VIN-derived vehicle metadata where applicable; manufacturer-reported data",
+      "status": "REFERENCE_AND_API"
+    },
+    {
+      "id": "autodiag2_database",
+      "name": "AutoDiag2 database",
+      "type": "open_dataset",
+      "authority": "COMMUNITY",
+      "url": "https://github.com/autodiag2/database",
+      "license": "ODbL-1.0/DbCL-1.0 data; GPL-3.0+ tooling",
+      "use": "vehicle/ECU/manufacturer-specific research only until ODbL integration policy is approved",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "mechanicdb_public",
+      "name": "MechanicDB public sample",
+      "type": "open_sample_dataset",
+      "authority": "COMMUNITY_COMMERCIAL",
+      "url": "https://github.com/MechanicDB/MechanicDB-public",
+      "license": "ODbL-1.0 sample; full dataset commercial",
+      "use": "repair-schema and procedure-ranking research only",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "wal33d_dtc_database",
+      "name": "Wal33D DTC Database",
+      "type": "open_dataset",
+      "authority": "COMMUNITY",
+      "url": "https://github.com/Wal33D/dtc-database",
+      "license": "MIT repository license",
+      "use": "cross-check coverage and offline SQLite implementation; manufacturer-specific provenance requires separate review",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "fixcarcodes_dtc_sample",
+      "name": "obd2-dtc-database",
+      "type": "open_dataset",
+      "authority": "COMMUNITY",
+      "url": "https://github.com/sathya1495/obd2-dtc-database",
+      "license": "MIT",
+      "use": "small cross-check sample only",
+      "status": "REFERENCE_ONLY"
+    }
+  ]
+}

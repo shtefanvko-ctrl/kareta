@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "repair_intake_leak",
+      "title": {
+        "ru": "Устранить подтверждённую утечку во впуске",
+        "en": "Repair the confirmed intake leak"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "clean_or_replace_maf_after_test",
+      "title": {
+        "ru": "Очистить либо заменить MAF только после подтверждения проверки",
+        "en": "Clean or replace the MAF only after diagnostic confirmation"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "repair_fuel_delivery",
+      "title": {
+        "ru": "Устранить подтверждённую неисправность подачи топлива",
+        "en": "Repair the confirmed fuel-delivery fault"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "repair_ignition_fault",
+      "title": {
+        "ru": "Устранить подтверждённую неисправность системы зажигания",
+        "en": "Repair the confirmed ignition fault"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "repair_sensor_wiring",
+      "title": {
+        "ru": "Восстановить подтверждённую неисправность проводки/разъёма датчика",
+        "en": "Repair the confirmed sensor wiring/connector fault"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "service_egr_after_test",
+      "title": {
+        "ru": "Очистить/ремонтировать EGR после подтверждения причины",
+        "en": "Service or repair EGR after confirming the cause"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "replace_catalyst_after_root_cause",
+      "title": {
+        "ru": "Ремонт/замена катализатора только после исключения первичной причины",
+        "en": "Repair/replace catalyst only after the root cause is excluded"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "repair_evap_leak",
+      "title": {
+        "ru": "Устранить найденную утечку EVAP",
+        "en": "Repair the identified EVAP leak"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "repair_charging_system",
+      "title": {
+        "ru": "Устранить подтверждённую неисправность цепи зарядки",
+        "en": "Repair the confirmed charging-system fault"
+      },
+      "requires_confirmation": true
+    },
+    {
+      "id": "repair_ecu_power_or_can",
+      "title": {
+        "ru": "Восстановить подтверждённую неисправность питания/массы/сети ЭБУ",
+        "en": "Repair the confirmed ECU power/ground/network fault"
+      },
+      "requires_confirmation": true
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "read_freeze_frame",
+      "title": {
+        "ru": "Считать Freeze Frame",
+        "en": "Read freeze-frame data"
+      },
+      "equipment_ids": [
+        "obd_scanner"
+      ],
+      "risk": "LOW"
+    },
+    {
+      "id": "inspect_fuel_trims",
+      "title": {
+        "ru": "Проверить STFT/LTFT на холостом ходу и под нагрузкой",
+        "en": "Inspect STFT/LTFT at idle and under load"
+      },
+      "equipment_ids": [
+        "obd_scanner"
+      ],
+      "risk": "LOW"
+    },
+    {
+      "id": "smoke_or_vacuum_leak_check",
+      "title": {
+        "ru": "Проверить тракт впуска на подсос воздуха",
+        "en": "Check intake tract for unmetered-air leaks"
+      },
+      "equipment_ids": [
+        "smoke_machine"
+      ],
+      "risk": "MEDIUM"
+    },
+    {
+      "id": "maf_live_data_check",
+      "title": {
+        "ru": "Сравнить MAF live data с режимом работы двигателя",
+        "en": "Compare MAF live data with engine operating state"
+      },
+      "equipment_ids": [
+        "obd_scanner"
+      ],
+      "risk": "LOW"
+    },
+    {
+      "id": "fuel_pressure_check",
+      "title": {
+        "ru": "Измерить давление топлива по спецификации автомобиля",
+        "en": "Measure fuel pressure against vehicle specification"
+      },
+      "equipment_ids": [
+        "fuel_pressure_gauge"
+      ],
+      "risk": "HIGH"
+    },
+    {
+      "id": "misfire_cylinder_isolation",
+      "title": {
+        "ru": "Локализовать цилиндр по счётчикам пропусков и перестановочным проверкам",
+        "en": "Isolate the cylinder using misfire counters and swap tests"
+      },
+      "equipment_ids": [
+        "obd_scanner",
+        "multimeter"
+      ],
+      "risk": "MEDIUM"
+    },
+    {
+      "id": "coil_power_ground_check",
+      "title": {
+        "ru": "Проверить питание, массу и управляющий сигнал катушки",
+        "en": "Check ignition-coil power, ground and control signal"
+      },
+      "equipment_ids": [
+        "multimeter",
+        "oscilloscope"
+      ],
+      "risk": "HIGH"
+    },
+    {
+      "id": "sensor_supply_ground_signal_check",
+      "title": {
+        "ru": "Проверить питание, массу и сигнал датчика",
+        "en": "Check sensor supply, ground and signal"
+      },
+      "equipment_ids": [
+        "multimeter",
+        "oscilloscope"
+      ],
+      "risk": "MEDIUM"
+    },
+    {
+      "id": "egr_command_response_check",
+      "title": {
+        "ru": "Сопоставить команду EGR и фактическую реакцию двигателя/датчиков",
+        "en": "Compare EGR command with actual engine/sensor response"
+      },
+      "equipment_ids": [
+        "obd_scanner"
+      ],
+      "risk": "MEDIUM"
+    },
+    {
+      "id": "o2_catalyst_waveform_check",
+      "title": {
+        "ru": "Сравнить сигналы датчиков кислорода до и после катализатора",
+        "en": "Compare upstream and downstream oxygen-sensor behavior"
+      },
+      "equipment_ids": [
+        "obd_scanner",
+        "oscilloscope"
+      ],
+      "risk": "MEDIUM"
+    },
+    {
+      "id": "evap_visual_pressure_check",
+      "title": {
+        "ru": "Проверить крышку, шланги и герметичность EVAP подходящим методом",
+        "en": "Inspect fuel cap, hoses and EVAP integrity with an appropriate leak test"
+      },
+      "equipment_ids": [
+        "smoke_machine"
+      ],
+      "risk": "HIGH"
+    },
+    {
+      "id": "battery_charging_voltage_check",
+      "title": {
+        "ru": "Проверить напряжение АКБ и зарядки под нагрузкой",
+        "en": "Check battery and charging voltage under load"
+      },
+      "equipment_ids": [
+        "multimeter",
+        "dc_current_clamp"
+      ],
+      "risk": "MEDIUM"
+    },
+    {
+      "id": "ecu_power_ground_check",
+      "title": {
+        "ru": "Проверить питание и массы ЭБУ по схеме автомобиля",
+        "en": "Check ECU powers and grounds using vehicle wiring information"
+      },
+      "equipment_ids": [
+        "multimeter",
+        "circuit_probe"
+      ],
+      "risk": "HIGH"
+    },
+    {
+      "id": "can_bus_basic_check",
+      "title": {
+        "ru": "Проверить наличие связи, питание модулей и целостность CAN без подмены OEM-схемы",
+        "en": "Check communication, module power and basic CAN integrity without substituting for OEM wiring data"
+      },
+      "equipment_ids": [
+        "obd_scanner",
+        "multimeter",
+        "oscilloscope",
+        "can_interface"
+      ],
+      "risk": "PROFESSIONAL_ONLY"
+    }
+  ]
+}
