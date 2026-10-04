@@ -62,7 +62,7 @@
     { key:'adminMonitoring', section:'system', desktop:85, menu:85, any:['*'] },
     { key:'adminManagement', section:'system', desktop:86, menu:86, any:['*'] },
     { key:'chats', section:'communication', desktop:90, menu:90, mobilePriority:80, any:['chats.use'] },
-    { key:'notifications', section:'communication', menu:91, any:['notifications.read'], contextTypes:['personal','profile','organization'] },
+    { key:'notifications', section:'communication', menu:91, any:['notifications.manage'], contextTypes:['personal','profile','organization'] },
     { key:'cabinet', section:'account', desktop:100, menu:100, mobilePriority:90, any:['profile.read'], masterAny:['profile.edit_own','profile.master'], personalDefault:true },
     { key:'cabinetGarage', section:'account', any:['vehicles.read'], contextTypes:['personal'] },
     { key:'cabinetData', section:'account', any:['profile.read'], contextTypes:['personal'] },
