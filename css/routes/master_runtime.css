@@ -480,12 +480,12 @@ html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar{
   border-radius:16px!important;
   background:#fff!important;
 }
-@media(max-width:1100px){
+@media(max-width:1199px){
   html[data-user-role="master"] [data-page="service-management"] .k-master-service-grid-r84{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
 }
-@media(max-width:699px){
+@media(max-width:767px){
   html[data-user-role="master"] [data-page="service-management"]{
     width:100%!important;
     max-width:none!important;
@@ -711,15 +711,15 @@ html[data-user-role="master"] .k-master-surface-page .k-staff-cabinet-grid{grid-
 html[data-user-role="master"] .k-master-surface-page .k-news-grid,html[data-user-role="master"] .k-master-surface-page [data-master-news-grid]{gap:16px}
 html[data-user-role="master"] .k-master-workplace{gap:18px}.k-master-workplace-actions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.k-master-workplace-action{display:flex;align-items:center;gap:10px;min-height:68px;padding:13px 14px;border:1px solid #e2e7ee;border-radius:var(--k-master-small-card-radius);background:var(--k-master-surface);color:var(--k-master-text);text-decoration:none;box-shadow:none}.k-master-workplace-action:hover{border-color:#ffad66;transform:translateY(-1px)}.k-master-workplace-action>span:first-child{display:grid;place-items:center;width:36px;height:36px;flex:0 0 auto;border-radius:12px;background:#fff1e5;color:#c35100}.k-master-workplace-action b{display:block;font-size:13px}.k-master-workplace-action small{display:block;margin-top:2px;color:#7b8493;font-size:10px;line-height:1.3}
 .k-master-operational-alerts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.k-master-operational-alerts article{display:flex;align-items:center;gap:11px;padding:13px 15px;border:1px solid #e2e7ee;border-radius:var(--k-master-small-card-radius);background:var(--k-master-surface)}.k-master-operational-alerts i{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#f2f4f7;color:#475467;font-style:normal;font-weight:900}.k-master-operational-alerts b{display:block;color:#111827;font-size:13px}.k-master-operational-alerts span{display:block;margin-top:2px;color:#7b8493;font-size:10px}
-@media(min-width:1180px){html[data-user-role="master"] .k-master-surface-page .k-orders-grid--master{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1200px){html[data-user-role="master"] .k-master-surface-page .k-orders-grid--master{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:1050px){.k-master-workplace-actions{grid-template-columns:repeat(3,minmax(0,1fr))}.k-master-operational-alerts{grid-template-columns:1fr}.k-master-surface-page .k-service-offers-grid{grid-template-columns:1fr!important}.k-master-surface-page .k-staff-cabinet-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-@media(max-width:700px){html[data-user-role="master"] .k-master-surface-page{padding-inline:12px;padding-bottom:calc(var(--k-mobile-nav-h,74px) + 28px + env(safe-area-inset-bottom,0px))}.k-master-route-note{align-items:flex-start}.k-master-route-note a{display:none}.k-master-orders-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.k-master-workplace-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.k-master-operational-alerts{grid-template-columns:1fr}.k-master-surface-page .k-staff-cabinet-grid{grid-template-columns:1fr!important}.k-master-surface-page .k-chat-layout{min-height:calc(100dvh - 170px);border-radius:18px}}
+@media(max-width:767px){html[data-user-role="master"] .k-master-surface-page{padding-inline:12px;padding-bottom:calc(var(--k-mobile-nav-h,74px) + 28px + env(safe-area-inset-bottom,0px))}.k-master-route-note{align-items:flex-start}.k-master-route-note a{display:none}.k-master-orders-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.k-master-workplace-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.k-master-operational-alerts{grid-template-columns:1fr}.k-master-surface-page .k-staff-cabinet-grid{grid-template-columns:1fr!important}.k-master-surface-page .k-chat-layout{min-height:calc(100dvh - 170px);border-radius:18px}}
 @media(max-width:380px){.k-master-workplace-actions{grid-template-columns:1fr}.k-master-orders-summary{grid-template-columns:1fr 1fr}}
 
 /* R188.5.5.6.84.123 — master desktop workspace navigation + KPI/statistics. */
 .k-master-desktop-workspace-nav{display:none}
 .k-master-workspace-panel[hidden]{display:none!important}
-@media (min-width:1100px){
+@media (min-width:1200px){
   .k-master-desktop-workspace-nav{
     display:flex;align-items:center;gap:6px;position:sticky;top:8px;z-index:var(--k-z-sticky);
     width:max-content;max-width:100%;margin:0 0 16px;padding:6px;
@@ -756,10 +756,10 @@ html[data-user-role="master"] .k-master-workplace{gap:18px}.k-master-workplace-a
   .k-master-statistics-bars article>i>span{display:block;height:100%;border-radius:inherit;background:#ff6a00}
   .k-master-statistics-bars article>small{text-align:right;color:#6b7280}
 }
-@media (min-width:1100px) and (max-width:1280px){
+@media (min-width:1200px) and (max-width:1399px){
   .k-master-workspace-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media (max-width:1099px){
+@media (max-width:1199px){
   .k-master-workspace-panel{display:none!important}
 }
 
@@ -803,7 +803,7 @@ html[data-user-role="master"]{
 .k-orders-canon-shell + .k-orders-search-result{margin:-6px 0 10px}
 .k-orders-canon-shell .k-master-canon-kind a:last-child{color:var(--k-master-canon-orange)}
 
-@media(max-width:699px){
+@media(max-width:767px){
   .k-master-canon-search-shell{padding:14px 0 12px;margin:0 0 12px;border:0;border-radius:0}
   .k-master-canon-titlebar{gap:8px;margin-bottom:12px}
   .k-master-canon-titlebar h1{font-size:27px;line-height:32px}
@@ -824,7 +824,7 @@ html[data-user-role="master"]{
   .k-master-canon-titlebar h1{font-size:24px;line-height:29px}
   .k-master-canon-filters>button{padding-inline:12px;font-size:12px}
 }
-@media(min-width:600px) and (max-width:899px){
+@media(min-width:768px) and (max-width:1199px){
   .k-master-canon-search-shell{padding:18px 18px 14px}
   .k-master-canon-search{height:56px;border-radius:16px}
   .k-master-canon-filters{grid-template-columns:repeat(3,minmax(0,1fr)) 44px}
