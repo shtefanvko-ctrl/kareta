@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "oem_ota_diagnostic_connector_clear_when_required",
+      "scope": "manufacturer_instruction_dependent",
+      "title": {
+        "ru": "Освобождать диагностический разъём на время OEM OTA, если этого требует производитель",
+        "en": "Keep the diagnostic connector clear during OEM OTA when required by the manufacturer"
+      },
+      "rule": {
+        "ru": "KARETA/ELM327 не должна считать безопасным постоянное подключение адаптера во время OEM OTA. Если официальная инструкция обновления требует отключить устройства от диагностического разъёма, приложение должно предупредить пользователя и прекратить диагностическую сессию перед OTA.",
+        "en": "KARETA/ELM327 must not assume that leaving an adapter connected during OEM OTA is safe. If the official update instructions require diagnostic-port devices to be disconnected, the app should warn the user and end the diagnostic session before OTA."
+      },
+      "source_ids": [
+        "kia_kr_sportage_nq5pe_atcu_mtc_20260720"
+      ],
+      "evidence_status": "SUPPORTED",
+      "runtime_status": "NOT_IMPLEMENTED"
+    }
+  ]
+}
