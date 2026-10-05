@@ -33,33 +33,10 @@ html[data-user-role="master"] [data-page="service-management"] .k-master-service
   line-height:13px!important;
   color:var(--k-master-r84-muted)!important;
 }
-html[data-user-role="master"] [data-page="service-management"] .k-master-services-toolbar{
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
-  gap:8px!important;
-  align-items:center!important;
-  margin:0 0 10px!important;
-  padding:8px!important;
-  border:1px solid var(--k-master-r84-line)!important;
-  border-radius:16px!important;
-  background:#fff!important;
-}
-html[data-user-role="master"] [data-page="service-management"] .k-master-services-toolbar>label{
-  min-width:0!important;
-  min-height:44px!important;
-  border:1px solid #dfe2e6!important;
-  border-radius:13px!important;
-  background:#f8f9fa!important;
-}
-html[data-user-role="master"] [data-page="service-management"] .k-master-services-toolbar input[type="search"]{
-  min-width:0!important;
-  font-size:13px!important;
-}
-html[data-user-role="master"] [data-page="service-management"] .k-master-services-toolbar .k-btn{
-  min-height:44px!important;
-  border-radius:13px!important;
-  padding-inline:16px!important;
-}
+
+
+
+
 html[data-user-role="master"] [data-page="service-management"] .k-catalog-status{
   margin:0 0 10px!important;
   padding:0 2px!important;
@@ -259,8 +236,8 @@ html[data-user-role="master"] [data-page="service-management"] .k-master-service
   font-size:8.5px!important;
   font-weight:850!important;
 }
-html[data-user-role="master"] #k-page-outlet :is(.k-exchange-r71,.k-master-workplace-page,.k-master-dashboard-page) .k-empty,
-html[data-user-role="master"] #k-page-outlet :is(.k-exchange-r71,.k-master-workplace-page,.k-master-dashboard-page) [class*="empty"]{
+html[data-user-role="master"] #k-page-outlet .k-exchange-r71 .k-empty,
+html[data-user-role="master"] #k-page-outlet .k-exchange-r71 [class*="empty"]{
   border:1px dashed #dde1e6!important;
   border-radius:17px!important;
   background:#fff!important;
@@ -295,16 +272,9 @@ html[data-user-role="master"] #k-page-outlet .k-exchange-r71-toolbar{
     padding:10px 11px!important;
     border-radius:14px!important;
   }
-  html[data-user-role="master"] [data-page="service-management"] .k-master-services-toolbar{
-    grid-template-columns:1fr!important;
-    padding:7px!important;
-    border-radius:14px!important;
-  }
-  html[data-user-role="master"] [data-page="service-management"] .k-master-services-toolbar>div{
-    display:grid!important;
-    grid-template-columns:1fr!important;
-  }
-  html[data-user-role="master"] [data-page="service-management"] .k-master-service-grid-r84{
+  
+
+html[data-user-role="master"] [data-page="service-management"] .k-master-service-grid-r84{
     grid-template-columns:1fr!important;
     gap:8px!important;
   }
