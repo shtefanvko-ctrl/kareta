@@ -16,6 +16,16 @@ const build=read('tools/build_master_runtime_css.js');
 const runtime=read('css/routes/master_runtime.css');
 const registry=read('inc/asset_registry.php');
 
+const walkCss=(dir)=>{
+  const out=[];
+  for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
+    const full=path.join(dir,entry.name);
+    if(entry.isDirectory()) out.push(...walkCss(full));
+    else if(entry.isFile()&&entry.name.endsWith('.css')) out.push(full);
+  }
+  return out;
+};
+
 for(const token of [
   '--k-radius-xs:5px','--k-radius-control:10px','--k-radius-card:18px','--k-radius-dialog:24px',
   '--k-layout-page-max:1440px','--k-layout-workspace-gutter:clamp(18px,2vw,32px)',
@@ -49,6 +59,15 @@ for(const alias of [
 
 if(/--k-ui-[a-z0-9-]+\s*:/i.test(clientSurface)){
   fail('client_surface_layout.css still owns --k-ui-* values');
+}
+
+const uiAliasOwners=walkCss(path.join(root,'css')).filter(file=>{
+  const rel=path.relative(root,file).replaceAll('\\','/');
+  if(rel==='css/next/design_contract.css') return false;
+  return /--k-ui-[a-z0-9-]+\s*:/i.test(fs.readFileSync(file,'utf8'));
+});
+if(uiAliasOwners.length){
+  fail('legacy --k-ui-* values declared outside design_contract.css: '+uiAliasOwners.map(file=>path.relative(root,file).replaceAll('\\','/')).join(', '));
 }
 
 if(!registry.includes("'css/next/design_contract.css'")) fail('shared design contract must be eager');
