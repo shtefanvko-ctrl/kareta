@@ -85,7 +85,7 @@ const uiAliasOwners=walkCss(path.join(root,'css')).filter(file=>{
   return /--k-ui-[a-z0-9-]+\s*:/i.test(fs.readFileSync(file,'utf8'));
 });
 if(uiAliasOwners.length){
-  fail('legacy source --k-ui-* values declared outside design_contract.css: +uiAliasOwners.map(file=>path.relative(root,file).replaceAll('\\','/')).join(', '));
+  fail('legacy source --k-ui-* values declared outside design_contract.css: '+uiAliasOwners.map(file=>path.relative(root,file).replaceAll('\\\\','/')).join(', '));
 }
 
 const generatedBoot=read('css/runtime_boot_bundle.css');
