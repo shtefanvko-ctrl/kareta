@@ -8,6 +8,7 @@ const fail=m=>{console.error('DESIGN_CANON_V2: FAIL — '+m);process.exit(1);};
 
 const contract=read('css/next/design_contract.css');
 const clientSurface=read('css/next/client_surface_layout.css');
+const masterSurfaceContract=read('css/next/master_surface_contract.css');
 const master=read('css/next/master_surfaces.css');
 const shell=read('css/next/master_responsive_shell.css');
 const navSkin=read('css/next/master_mobile_nav.css');
@@ -55,6 +56,23 @@ for(const alias of [
   '--k-ui-shadow:var(--k-shadow-surface)'
 ]){
   if(!contract.includes(alias)) fail('missing compatibility alias '+alias);
+}
+
+for(const alias of [
+  '--k-master-content-max:var(--k-layout-content-max)',
+  '--k-master-page-x:var(--k-layout-page-gutter)',
+  '--k-master-section-gap:var(--k-space-4)',
+  '--k-master-control-radius:var(--k-radius-action)',
+  '--k-master-card-radius:var(--k-radius-panel)',
+  '--k-master-dialog-radius:var(--k-radius-dialog)',
+  '--k-master-line:var(--k-line)',
+  '--k-master-surface:var(--k-surface-card)',
+  '--k-master-page-bg:var(--k-surface-page)'
+]){
+  if(!masterSurfaceContract.includes(alias)) fail('master surface contract lost canonical alias '+alias);
+}
+for(const legacy of ['--k-master-content-max:1420px','--k-master-page-x:clamp(14px,2.2vw,34px)','--k-master-card-radius:20px','--k-master-line:#e4e7ec']){
+  if(masterSurfaceContract.includes(legacy)) fail('legacy raw master ownership returned: '+legacy);
 }
 
 if(/--k-ui-[a-z0-9-]+\s*:/i.test(clientSurface)){
