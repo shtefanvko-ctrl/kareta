@@ -63,13 +63,17 @@ if(/--k-ui-[a-z0-9-]+\s*:/i.test(clientSurface)){
 
 const uiAliasOwners=walkCss(path.join(root,'css')).filter(file=>{
   const rel=path.relative(root,file).replaceAll('\\','/');
-  if(rel==='css/next/design_contract.css') return false;
+  if(rel==='css/next/design_contract.css'||rel==='css/runtime_boot_bundle.css') return false;
   return /--k-ui-[a-z0-9-]+\s*:/i.test(fs.readFileSync(file,'utf8'));
 });
 if(uiAliasOwners.length){
-  fail('legacy --k-ui-* values declared outside design_contract.css: '+uiAliasOwners.map(file=>path.relative(root,file).replaceAll('\\','/')).join(', '));
+  fail('legacy source --k-ui-* values declared outside design_contract.css: +uiAliasOwners.map(file=>path.relative(root,file).replaceAll('\\','/')).join(', '));
 }
 
+const generatedBoot=read('css/runtime_boot_bundle.css');
+for(const token of ['--k-ui-page-max:1440px','--k-ui-control-h:44px','--k-ui-card-radius:18px','--k-ui-panel-radius:20px']){
+  if(!generatedBoot.includes(token)) fail('generated boot bundle is not aligned with canonical compatibility values: '+token);
+}
 if(!registry.includes("'css/next/design_contract.css'")) fail('shared design contract must be eager');
 if(!registry.includes("'css/next/master_responsive_shell.css'")) fail('master responsive shell must be eager');
 if(!master.includes('MASTER PAGE VISUAL CONTRACT')) fail('master geometry owner is missing responsive canon');
