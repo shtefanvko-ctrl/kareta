@@ -12,7 +12,7 @@ const sources=[
   'css/next/master_surfaces.css',
 ]
 function build(){
-  const chunks=['/* KARETA.KZ R188.5.5.6.84.102 — GENERATED master route bundle. DO NOT EDIT. Run: node tools/build_master_runtime_css.js */\n'];
+  const chunks=['/* KARETA.KZ — GENERATED master route bundle. DO NOT EDIT. Run: node tools/build_master_runtime_css.js */\n'];
   for(const src of sources){
     const text=fs.readFileSync(path.join(root,src),'utf8').trimEnd();
     chunks.push(`\n/* ===== SOURCE: ${src} ===== */\n${text}\n`);
