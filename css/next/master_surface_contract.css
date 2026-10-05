@@ -2,19 +2,19 @@
    Route/page bridge only. Tokens/components live in master_ui_foundation.css;
    shared-route role skin lives in master_role_skin.css. */
 html[data-user-role="master"]{
-  /* Kept here as contract assertions for legacy regression tooling. */
-  --k-master-content-max:1420px;
-  --k-master-page-x:clamp(14px,2.2vw,34px);
+  /* Role delta only. Shared visual tokens resolve through design_contract.css. */
+  --k-master-content-max:var(--k-layout-content-max);
+  --k-master-page-x:var(--k-layout-page-gutter);
   --k-master-page-y:18px;
-  --k-master-section-gap:16px;
-  --k-master-control-radius:12px;
-  --k-master-small-card-radius:16px;
-  --k-master-card-radius:20px;
-  --k-master-dialog-radius:24px;
-  --k-master-line:#e4e7ec;
-  --k-master-surface:#fff;
-  --k-master-page-bg:var(--k-master-bg,#f5f6f8);
-  --k-master-shadow:0 4px 16px rgba(15,23,42,.045);
+  --k-master-section-gap:var(--k-space-4);
+  --k-master-control-radius:var(--k-radius-action);
+  --k-master-small-card-radius:16px; /* intentional compact Master card delta */
+  --k-master-card-radius:var(--k-radius-panel);
+  --k-master-dialog-radius:var(--k-radius-dialog);
+  --k-master-line:var(--k-line);
+  --k-master-surface:var(--k-surface-card);
+  --k-master-page-bg:var(--k-surface-page);
+  --k-master-shadow:0 4px 16px rgba(15,23,42,.045); /* intentional lower Master elevation */
 }
 
 /* Shell: one position and one density on every Master route. */
