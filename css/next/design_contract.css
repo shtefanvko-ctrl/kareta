@@ -1,11 +1,22 @@
-/* KARETA Design Contract v1 — shared tokens and the canonical layer scale.
-   Role/page files own geometry; generated bundles never own source decisions. */
+/* KARETA Design Contract v2 — single source of shared visual tokens.
+   Role/page files may own layout geometry, but shared visual values must resolve here.
+   Legacy aliases are compatibility-only and must not become a second source of truth. */
 :root{
+  /* Geometry */
+  --k-border-width:1px;
+  --k-border-width-strong:2px;
   --k-radius-xs:5px;
   --k-radius-control:10px;
+  --k-radius-action:12px;
   --k-radius-card:18px;
+  --k-radius-panel:20px;
+  --k-radius-toolbar:16px;
   --k-radius-dialog:24px;
+  --k-radius-pill:999px;
+  --k-control-height:44px;
+  --k-control-height-compact:42px;
 
+  /* Spacing */
   --k-space-1:4px;
   --k-space-2:8px;
   --k-space-3:12px;
@@ -14,16 +25,55 @@
   --k-space-6:24px;
   --k-space-8:32px;
 
+  /* Layout */
   --k-layout-content-max:1480px;
+  --k-layout-page-max:1440px;
   --k-layout-page-gutter:clamp(16px,2vw,32px);
+  --k-layout-workspace-gutter:clamp(18px,2vw,32px);
 
+  /* Surfaces and color */
   --k-surface-page:#f5f6f8;
   --k-surface-card:#fff;
+  --k-surface-soft:#f7f8fa;
   --k-line:#e4e7ec;
+  --k-line-soft:#e5e7eb;
   --k-text:#111827;
+  --k-text-strong:#171a1f;
   --k-muted:#667085;
-  --k-shadow-card:0 9px 28px rgba(15,23,42,.08);
+  --k-muted-ui:#747b84;
+  --k-accent:#ff4b0a;
+  --k-accent-hover:#e74308;
 
+  /* Shadows */
+  --k-shadow-opacity:.055;
+  --k-shadow-blur:24px;
+  --k-shadow-y:8px;
+  --k-shadow-card:0 9px 28px rgba(15,23,42,.08);
+  --k-shadow-surface:0 var(--k-shadow-y) var(--k-shadow-blur) rgba(15,23,42,var(--k-shadow-opacity));
+  --k-shadow-toolbar:0 5px 18px rgba(15,23,42,.035);
+  --k-shadow-primary:0 6px 16px rgba(255,75,10,.16);
+
+  /* Motion */
+  --k-motion-scale:1;
+  --k-motion-fast:80ms;
+  --k-motion-normal:150ms;
+  --k-motion-slow:240ms;
+  --k-motion-easing-standard:ease;
+  --k-motion-easing-enter:cubic-bezier(.2,.8,.2,1);
+  --k-motion-easing-exit:cubic-bezier(.4,0,1,1);
+
+  /* Modal / overlay */
+  --k-modal-radius:var(--k-radius-dialog);
+  --k-modal-backdrop-opacity:.42;
+  --k-modal-backdrop-blur:8px;
+  --k-modal-max-width:640px;
+
+  /* Glass / surface runtime */
+  --k-surface-opacity:1;
+  --k-surface-blur:0px;
+  --k-surface-border-opacity:1;
+
+  /* Canonical layer scale */
   --k-z-base:0;
   --k-z-local-raised:3;
   --k-z-sticky:20;
@@ -35,6 +85,21 @@
   --k-z-toast:120;
   --k-z-shell-brand:161;
   --k-z-debug:200;
+
+  /* Compatibility aliases: references may remain during migration, values may not diverge. */
+  --k-ui-page-max:var(--k-layout-page-max);
+  --k-ui-page-gutter:var(--k-layout-workspace-gutter);
+  --k-ui-control-h:var(--k-control-height);
+  --k-ui-control-radius:var(--k-radius-action);
+  --k-ui-card-radius:var(--k-radius-card);
+  --k-ui-panel-radius:var(--k-radius-panel);
+  --k-ui-line:var(--k-line-soft);
+  --k-ui-soft:var(--k-surface-soft);
+  --k-ui-text:var(--k-text-strong);
+  --k-ui-muted:var(--k-muted-ui);
+  --k-ui-accent:var(--k-accent);
+  --k-ui-accent-hover:var(--k-accent-hover);
+  --k-ui-shadow:var(--k-shadow-surface);
 }
 
 html[data-user-role="master"],
@@ -50,4 +115,13 @@ html[data-navigation-context="master"]{
   --k-master-page-bg:var(--k-surface-page);
   --k-master-text:var(--k-text);
   --k-master-muted:var(--k-muted);
+}
+
+@media(prefers-reduced-motion:reduce){
+  :root{
+    --k-motion-scale:0;
+    --k-motion-fast:0ms;
+    --k-motion-normal:0ms;
+    --k-motion-slow:0ms;
+  }
 }
