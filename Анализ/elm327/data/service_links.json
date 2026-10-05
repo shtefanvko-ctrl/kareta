@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "canonical_service_source": "Анализ/data/service_links.json",
+  "items": [
+    {
+      "dtc_ids": [
+        "dtc_p0100",
+        "dtc_p0101",
+        "dtc_p0110",
+        "dtc_p0113",
+        "dtc_p0120",
+        "dtc_p0300",
+        "dtc_p0301",
+        "dtc_p0302",
+        "dtc_p0325",
+        "dtc_p0335",
+        "dtc_p0340",
+        "dtc_p0401",
+        "dtc_p0420",
+        "dtc_p0442",
+        "dtc_p0455",
+        "dtc_p0500",
+        "dtc_p0505",
+        "dtc_p0562",
+        "dtc_u0100",
+        "dtc_p0001",
+        "dtc_p0010",
+        "dtc_p0011",
+        "dtc_p0016",
+        "dtc_p0087",
+        "dtc_p0088",
+        "dtc_p0093",
+        "dtc_p0190",
+        "dtc_p0191",
+        "dtc_p0201",
+        "dtc_p0202",
+        "dtc_p0203",
+        "dtc_p0204",
+        "dtc_p0303",
+        "dtc_p0304",
+        "dtc_p0305",
+        "dtc_p0306",
+        "dtc_p0351",
+        "dtc_p0352",
+        "dtc_p0353",
+        "dtc_p0354",
+        "dtc_p0506",
+        "dtc_p0507"
+      ],
+      "service_ids": [
+        "computer_diag"
+      ],
+      "rule": "suggest_after_scan"
+    },
+    {
+      "dtc_ids": [
+        "dtc_p0171",
+        "dtc_p0172",
+        "dtc_p0300",
+        "dtc_p0301",
+        "dtc_p0302",
+        "dtc_p0010",
+        "dtc_p0011",
+        "dtc_p0016",
+        "dtc_p0303",
+        "dtc_p0304",
+        "dtc_p0305",
+        "dtc_p0306",
+        "dtc_p0506",
+        "dtc_p0507"
+      ],
+      "service_ids": [
+        "engine_diag"
+      ],
+      "rule": "suggest_after_scan"
+    },
+    {
+      "dtc_ids": [
+        "dtc_p0100",
+        "dtc_p0110",
+        "dtc_p0113",
+        "dtc_p0120",
+        "dtc_p0200",
+        "dtc_p0325",
+        "dtc_p0335",
+        "dtc_p0340",
+        "dtc_p0500",
+        "dtc_p0562",
+        "dtc_u0100",
+        "dtc_p0001",
+        "dtc_p0010",
+        "dtc_p0016",
+        "dtc_p0190",
+        "dtc_p0191",
+        "dtc_p0201",
+        "dtc_p0202",
+        "dtc_p0203",
+        "dtc_p0204",
+        "dtc_p0351",
+        "dtc_p0352",
+        "dtc_p0353",
+        "dtc_p0354"
+      ],
+      "service_ids": [
+        "electric_diag"
+      ],
+      "rule": "suggest_after_scan"
+    },
+    {
+      "dtc_ids": [
+        "dtc_p0171",
+        "dtc_p0172",
+        "dtc_p0200",
+        "dtc_p0001",
+        "dtc_p0087",
+        "dtc_p0088",
+        "dtc_p0093",
+        "dtc_p0190",
+        "dtc_p0191",
+        "dtc_p0201",
+        "dtc_p0202",
+        "dtc_p0203",
+        "dtc_p0204"
+      ],
+      "service_ids": [
+        "fuel_diag"
+      ],
+      "rule": "suggest_after_scan"
+    },
+    {
+      "dtc_ids": [
+        "dtc_u0100",
+        "dtc_p0190",
+        "dtc_p0201",
+        "dtc_p0202",
+        "dtc_p0203",
+        "dtc_p0204",
+        "dtc_p0351",
+        "dtc_p0352",
+        "dtc_p0353",
+        "dtc_p0354"
+      ],
+      "service_ids": [
+        "ecu_check",
+        "wiring_repair"
+      ],
+      "rule": "only_after_power_ground_network_checks"
+    }
+  ]
+}
