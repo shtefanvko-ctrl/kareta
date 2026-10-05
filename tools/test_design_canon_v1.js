@@ -29,6 +29,9 @@ if(!master.includes('MASTER / CLIENT VISUAL CANON')) fail('master geometry owner
 if(!master.includes('KARETA MASTER PAGE VIEWPORT STABILITY')) fail('master geometry owner is missing viewport stability rules');
 if(postlude.includes('MASTER / CLIENT VISUAL CANON')) fail('r84 postlude still duplicates responsive canon');
 if(postlude.includes('MASTER LAYOUT STABILITY GUARD')) fail('legacy stability guard still lives in postlude');
+if(postlude.includes('k-master-services-toolbar')) fail('dead service toolbar selector remains in postlude');
+if(postlude.includes('k-master-workplace-page')||postlude.includes('k-master-dashboard-page')) fail('dead master page selector remains in postlude');
+
 if(!shell.includes('Master Responsive Shell Contract')) fail('canonical master shell owner missing');
 if(!shell.includes('z-index:var(--k-z-shell-brand)')) fail('master shell brand layer is not tokenized');
 if(/z-index\s*:\s*-?\d+/i.test(master)) fail('raw numeric z-index remains in master geometry owner');
