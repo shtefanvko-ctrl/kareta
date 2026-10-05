@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "targetDbVersion": 137,
+  "targetDbVersion": 144,
   "migrations": [
     {
       "version": 1,
@@ -686,6 +686,41 @@
       "version": 137,
       "file": "137_geo_platform_core.php",
       "sha256": "0c6c324014470280c951c9ec5564ac15522df96e1424834df027da2e5073c1ed"
+    },
+    {
+      "version": 138,
+      "file": "138_account_type_profile_lifecycle.php",
+      "sha256": "8b242351e9aca282beb267a598b71a9eef245777037a1c1b8cc4879cfe24eef6"
+    },
+    {
+      "version": 139,
+      "file": "139_client_first_entry_daily_prompt.php",
+      "sha256": "81b90df9aa113be68ec2c4df88743a9bf42e9368a9eea6e6922b632b274bfd06"
+    },
+    {
+      "version": 140,
+      "file": "140_identity_schema_reconciliation.php",
+      "sha256": "768e5292e97c0982381f547f91eb2de6c6e7052c3d512d9e191ad9844d2ae325"
+    },
+    {
+      "version": 141,
+      "file": "141_master_first_entry_three_steps.php",
+      "sha256": "2a2e10cdf60ed7017bb2853214e6b8a8c5f60f695f766ad5202048e3d3c86768"
+    },
+    {
+      "version": 142,
+      "file": "142_client_first_entry_three_steps.php",
+      "sha256": "6937d80206b6e3db546c824ed1a38624a4f8eb434c20dbd793c866ce849ffe37"
+    },
+    {
+      "version": 143,
+      "file": "143_master_navigation_capabilities.php",
+      "sha256": "a23b9826035422aee4710da396bb7f6f024eaddc46c1721bae582b6f811ef1e0"
+    },
+    {
+      "version": 144,
+      "file": "144_vehicle_catalog_stable_ids.php",
+      "sha256": "53929335a512fe143364d74dadf3e508c75a95b59373a14f2985a121b57a1216"
     }
   ]
 }
