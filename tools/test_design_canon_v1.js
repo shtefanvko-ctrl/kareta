@@ -47,6 +47,7 @@ const sourceLines=[...sourceArray.matchAll(/'([^']+\.css)'/g)].map(m=>m[1]);
 if(sourceLines[sourceLines.length-1]!=='css/next/master_surfaces.css') fail('master_surfaces.css must be the final route geometry owner');
 if(sourceLines.includes('css/next/design_contract.css')) fail('design contract must not be duplicated inside master runtime');
 if(sourceLines.includes('css/next/master_responsive_shell.css')) fail('eager master shell must not be duplicated inside master runtime');
+if(sourceLines.includes('css/next/master_client_r84_postlude.css')) fail('legacy master postlude must be retired from runtime builder');
 
 for(const bp of ['@media(max-width:767px)','@media(min-width:768px) and (max-width:1199px)','@media(min-width:1200px)']){
   if(!master.includes(bp)) fail('missing page responsive contract '+bp);
@@ -62,6 +63,7 @@ for(const legacy of [
 }
 if(runtime.includes('SOURCE: css/next/design_contract.css')) fail('generated master runtime duplicates design contract');
 if(runtime.includes('SOURCE: css/next/master_responsive_shell.css')) fail('generated master runtime duplicates responsive shell');
+if(runtime.includes('SOURCE: css/next/master_client_r84_postlude.css')) fail('generated master runtime still contains legacy postlude');
 if(!runtime.includes('MASTER / CLIENT VISUAL CANON')) fail('generated master runtime misses canonical responsive geometry');
 if(!runtime.trimEnd().endsWith(master.trimEnd())) fail('master_surfaces.css must be final generated CSS owner');
 
