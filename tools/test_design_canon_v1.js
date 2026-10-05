@@ -4,9 +4,10 @@ const fs=require('fs');
 const path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const fail=m=>{console.error('DESIGN_CANON_V1: FAIL — '+m);process.exit(1);};
+const fail=m=>{console.error('DESIGN_CANON_V2: FAIL — '+m);process.exit(1);};
 
 const contract=read('css/next/design_contract.css');
+const clientSurface=read('css/next/client_surface_layout.css');
 const master=read('css/next/master_surfaces.css');
 const shell=read('css/next/master_responsive_shell.css');
 const navSkin=read('css/next/master_mobile_nav.css');
@@ -17,10 +18,37 @@ const registry=read('inc/asset_registry.php');
 
 for(const token of [
   '--k-radius-xs:5px','--k-radius-control:10px','--k-radius-card:18px','--k-radius-dialog:24px',
+  '--k-layout-page-max:1440px','--k-layout-workspace-gutter:clamp(18px,2vw,32px)',
+  '--k-control-height:44px','--k-radius-action:12px','--k-radius-panel:20px',
+  '--k-line-soft:#e5e7eb','--k-surface-soft:#f7f8fa','--k-text-strong:#171a1f',
+  '--k-muted-ui:#747b84','--k-accent:#ff4b0a','--k-accent-hover:#e74308',
+  '--k-shadow-surface:0 8px 24px rgba(15,23,42,.055)',
   '--k-z-base:0','--k-z-local-raised:3','--k-z-sticky:20','--k-z-shell:40','--k-z-nav:50',
   '--k-z-fab:60','--k-z-overlay:80','--k-z-modal:100','--k-z-toast:120','--k-z-shell-brand:161','--k-z-debug:200'
 ]){
   if(!contract.includes(token)) fail('missing '+token);
+}
+
+for(const alias of [
+  '--k-ui-page-max:var(--k-layout-page-max)',
+  '--k-ui-page-gutter:var(--k-layout-workspace-gutter)',
+  '--k-ui-control-h:var(--k-control-height)',
+  '--k-ui-control-radius:var(--k-radius-action)',
+  '--k-ui-card-radius:var(--k-radius-card)',
+  '--k-ui-panel-radius:var(--k-radius-panel)',
+  '--k-ui-line:var(--k-line-soft)',
+  '--k-ui-soft:var(--k-surface-soft)',
+  '--k-ui-text:var(--k-text-strong)',
+  '--k-ui-muted:var(--k-muted-ui)',
+  '--k-ui-accent:var(--k-accent)',
+  '--k-ui-accent-hover:var(--k-accent-hover)',
+  '--k-ui-shadow:var(--k-shadow-surface)'
+]){
+  if(!contract.includes(alias)) fail('missing compatibility alias '+alias);
+}
+
+if(/--k-ui-[a-z0-9-]+\s*:/i.test(clientSurface)){
+  fail('client_surface_layout.css still owns --k-ui-* values');
 }
 
 if(!registry.includes("'css/next/design_contract.css'")) fail('shared design contract must be eager');
@@ -67,4 +95,4 @@ if(runtime.includes('SOURCE: css/next/master_client_r84_postlude.css')) fail('ge
 if(!runtime.includes('MASTER / CLIENT VISUAL CANON')) fail('generated master runtime misses canonical responsive geometry');
 if(!runtime.trimEnd().endsWith(master.trimEnd())) fail('master_surfaces.css must be final generated CSS owner');
 
-console.log('DESIGN_CANON_V1: PASS');
+console.log('DESIGN_CANON_V2: PASS');
