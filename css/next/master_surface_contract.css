@@ -791,19 +791,6 @@ html[data-user-role="master"]{
 /* R188.5.5.6.84.182 — canonical UI system: page width, buttons, surfaces, toolbars. */
 /* Route-late Master CSS may remain loaded after navigation. Every rule in this block is role-scoped. */
 html[data-user-role="master"]{
-  --k-ui-page-max:1440px;
-  --k-ui-page-gutter:clamp(18px,2vw,32px);
-  --k-ui-control-h:44px;
-  --k-ui-control-radius:12px;
-  --k-ui-card-radius:18px;
-  --k-ui-panel-radius:20px;
-  --k-ui-line:#e5e7eb;
-  --k-ui-soft:#f7f8fa;
-  --k-ui-text:#171a1f;
-  --k-ui-muted:#747b84;
-  --k-ui-accent:#ff4b0a;
-  --k-ui-accent-hover:#e74308;
-  --k-ui-shadow:0 8px 24px rgba(15,23,42,.055);
 }
 
 /* One desktop canvas. Intentional wizards/onboarding remain independently sized. */
