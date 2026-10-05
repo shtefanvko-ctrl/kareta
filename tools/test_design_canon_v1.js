@@ -72,9 +72,18 @@ if(uiAliasOwners.length){
 
 if(!registry.includes("'css/next/design_contract.css'")) fail('shared design contract must be eager');
 if(!registry.includes("'css/next/master_responsive_shell.css'")) fail('master responsive shell must be eager');
-if(!master.includes('MASTER / CLIENT VISUAL CANON')) fail('master geometry owner is missing responsive canon');
+if(!master.includes('MASTER PAGE VISUAL CONTRACT')) fail('master geometry owner is missing responsive canon');
 if(!master.includes('KARETA MASTER PAGE VIEWPORT STABILITY')) fail('master geometry owner is missing viewport stability rules');
-if(postlude.includes('MASTER / CLIENT VISUAL CANON')) fail('r84 postlude still duplicates responsive canon');
+for(const duplicate of [
+  '--k-master-content-max:var(--k-layout-content-max)',
+  '--k-master-canon-gutter',
+  '--k-master-canon-card-radius',
+  '--k-master-canon-control-radius',
+  '--k-master-canon-mobile-shadow'
+]){
+  if(master.includes(duplicate)) fail('duplicate master token ownership remains: '+duplicate);
+}
+if(postlude.includes('MASTER PAGE VISUAL CONTRACT')) fail('r84 postlude still duplicates responsive canon');
 if(postlude.includes('MASTER LAYOUT STABILITY GUARD')) fail('legacy stability guard still lives in postlude');
 if(postlude.includes('k-master-services-toolbar')) fail('dead service toolbar selector remains in postlude');
 if(postlude.includes('k-master-workplace-page')||postlude.includes('k-master-dashboard-page')) fail('dead master page selector remains in postlude');
@@ -111,7 +120,7 @@ for(const legacy of [
 if(runtime.includes('SOURCE: css/next/design_contract.css')) fail('generated master runtime duplicates design contract');
 if(runtime.includes('SOURCE: css/next/master_responsive_shell.css')) fail('generated master runtime duplicates responsive shell');
 if(runtime.includes('SOURCE: css/next/master_client_r84_postlude.css')) fail('generated master runtime still contains legacy postlude');
-if(!runtime.includes('MASTER / CLIENT VISUAL CANON')) fail('generated master runtime misses canonical responsive geometry');
+if(!runtime.includes('MASTER PAGE VISUAL CONTRACT')) fail('generated master runtime misses canonical responsive geometry');
 if(!runtime.trimEnd().endsWith(master.trimEnd())) fail('master_surfaces.css must be final generated CSS owner');
 
 console.log('DESIGN_CANON_V2: PASS');
