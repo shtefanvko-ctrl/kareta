@@ -46,7 +46,7 @@ jobs:
       KARETA_DB_AUTO_CREATE: '1'
       KARETA_DB_AUTO_MIGRATE: '1'
       KARETA_DEMO_SEED: '0'
-      KARETA_STORAGE_ROOT: /tmp/kareta-runtime-storage
+      KARETA_STORAGE_ROOT: ${{ github.workspace }}/storage
       KARETA_DIAGNOSTICS_TOKEN: runtime-acceptance-diagnostics-token-000000000000
       KARETA_ACCEPTANCE_BASE_URL: http://127.0.0.1:8080
       KARETA_ACCEPTANCE_EXPECTED_VERSION: 188.5.5.6.84.178
@@ -147,5 +147,6 @@ jobs:
             /tmp/identity-health.json
             /tmp/provenance.json
             /tmp/kareta-runtime-server.log
+            storage/logs/**
           if-no-files-found: warn
           retention-days: 30
