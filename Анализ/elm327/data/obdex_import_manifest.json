@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "source": {
+    "repository": "foerbsnavi/OBDex",
+    "commit": "bc58b0eb7273226a1aabae98e956b70b8362bda1",
+    "data_license": "CC0-1.0",
+    "tooling_license": "MIT",
+    "license_data_path": "LICENSE-DATA",
+    "license_code_path": "LICENSE-CODE"
+  },
+  "generic": [
+    {
+      "family": "B0",
+      "source_path": "data/generic/B0xxx_enriched.yaml",
+      "blob_sha": "8a50268ebd802309842ffa46a493daa78e939427",
+      "bytes": 445985,
+      "records": 323
+    },
+    {
+      "family": "C0",
+      "source_path": "data/generic/C0xxx_enriched.yaml",
+      "blob_sha": "9e18cf17899310e33a788aa25f1297f38cebc0b1",
+      "bytes": 1041438,
+      "records": 626
+    },
+    {
+      "family": "P0",
+      "source_path": "data/generic/P0xxx_enriched.yaml",
+      "blob_sha": "633367625b8a447d69d315a788cb8e1dc91dfb07",
+      "bytes": 6206241,
+      "records": 3705
+    },
+    {
+      "family": "P2",
+      "source_path": "data/generic/P2xxx_enriched.yaml",
+      "blob_sha": "bd82da669394cdf084c55cd0915fef5111609279",
+      "bytes": 5750928,
+      "records": 3495
+    },
+    {
+      "family": "P3",
+      "source_path": "data/generic/P3xxx_enriched.yaml",
+      "blob_sha": "9f208eba2b83be5f7e7b2c451338055d1c12faae",
+      "bytes": 255238,
+      "records": 155
+    },
+    {
+      "family": "U0",
+      "source_path": "data/generic/U0xxx_enriched.yaml",
+      "blob_sha": "d53cfced20d35867ebf231545e3133c6bf99ed39",
+      "bytes": 2228894,
+      "records": 1055
+    },
+    {
+      "family": "U3",
+      "source_path": "data/generic/U3xxx_enriched.yaml",
+      "blob_sha": "6ff02e942339443ddcacaa4ccf22459508172d7e",
+      "bytes": 370022,
+      "records": 174
+    }
+  ],
+  "pids": [
+    {
+      "mode": "01",
+      "source_path": "data/pids/mode01.yaml",
+      "blob_sha": "fde7561e9bca18c3429b32eb6e23e75c7bb30459",
+      "bytes": 32408,
+      "records": 119
+    },
+    {
+      "mode": "09",
+      "source_path": "data/pids/mode09.yaml",
+      "blob_sha": "202f4f1e13ef50d92728831f148c91c5de862929",
+      "bytes": 2893,
+      "records": 13
+    }
+  ],
+  "totals": {
+    "generic_dtc": 9533,
+    "pids": 132
+  },
+  "import_policy": {
+    "destination": "Анализ/elm327/staging/obdex",
+    "canonical_destination": "Анализ/elm327/data",
+    "canonical_requires": [
+      "ru_and_en",
+      "source_provenance",
+      "referential_validation",
+      "expert_review_for_repair_hypotheses"
+    ],
+    "upstream_de_is_reference_only": true,
+    "automatic_part_replacement_from_dtc": false
+  }
+}

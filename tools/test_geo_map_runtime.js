@@ -31,7 +31,9 @@ assert.match(core,/data-home-nearby-map/);
 assert.match(core,/resolveCityCenter\?\.\(selectedCity\)/);
 assert.match(core,/String\(rawLat\)\.trim\(\)===''/);
 assert.match(core,/points:mapPoints,center,notice/);
-assert.doesNotMatch(core,/api\/geo\.php/);
+assert.match(core,/api\/geo\.php\?action=nearby/);
+assert.match(core,/types=sto,master/);
+assert.match(core,/mobile\.bestLocation/);
 
 const runtime=read('js/boot/runtime_core_bundle.js');
 assert.match(runtime,/data-home-nearby-map/);
@@ -49,4 +51,4 @@ assert.match(index,/KARETA_GEO_MAP_CONFIG/);
 assert.match(index,/\$geoImgSource/);
 assert.match(index,/mobile_native_bridge\.js\?v=<\?= rawurlencode\(\$assetVersion\) \?>/);
 
-console.log('PASS geo runtime reconcile: 8 cities, city map without GPS, strict coords, lazy map, CSP/config, source/runtime parity');
+console.log('PASS geo runtime reconcile: 8 cities, city fallback, shared best-location, public nearby overlay, lazy map, CSP/config, source/runtime parity');

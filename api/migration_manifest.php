@@ -4,7 +4,7 @@ declare(strict_types=1);
 // Generated release manifest. Only files listed here participate in runtime migration discovery.
 // Extra PHP files left in api/migrations by an overwrite deployment are treated as stale artifacts.
 return [
-    'version' => 137,
+    'version' => 144,
     'files' => [
         1 => ['file' => '001_initial_schema.php', 'checksum' => '15c3088fe6ce7aa6793007ef0efd96757c1880c1c9ddf35349f31c735b293b14'],
         2 => ['file' => '002_schema_columns_indexes.php', 'checksum' => '6a0444c00d5bb652e8ee25e5689064a96919f4a9df816d358e61532209f66a85'],
@@ -143,5 +143,12 @@ return [
         135 => ['file' => '135_obd_elm327_diagnostics.php', 'checksum' => '1d8d0f223ee71082011d8efba3df0c16df2db3da9a39103ada1e405748b33d96'],
         136 => ['file' => '136_obd_remote_control_plane.php', 'checksum' => '3105e6b701a4901d42cf8410e6e8f04e3d8c4421e66e457ef81b2586e039dad9'],
         137 => ['file' => '137_geo_platform_core.php', 'checksum' => '0c6c324014470280c951c9ec5564ac15522df96e1424834df027da2e5073c1ed'],
+        138 => ['file' => '138_account_type_profile_lifecycle.php', 'checksum' => '8b242351e9aca282beb267a598b71a9eef245777037a1c1b8cc4879cfe24eef6'],
+        139 => ['file' => '139_client_first_entry_daily_prompt.php', 'checksum' => '81b90df9aa113be68ec2c4df88743a9bf42e9368a9eea6e6922b632b274bfd06'],
+        140 => ['file' => '140_identity_schema_reconciliation.php', 'checksum' => '768e5292e97c0982381f547f91eb2de6c6e7052c3d512d9e191ad9844d2ae325'],
+        141 => ['file' => '141_master_first_entry_three_steps.php', 'checksum' => '2a2e10cdf60ed7017bb2853214e6b8a8c5f60f695f766ad5202048e3d3c86768'],
+        142 => ['file' => '142_client_first_entry_three_steps.php', 'checksum' => '6937d80206b6e3db546c824ed1a38624a4f8eb434c20dbd793c866ce849ffe37'],
+        143 => ['file' => '143_master_navigation_capabilities.php', 'checksum' => 'a23b9826035422aee4710da396bb7f6f024eaddc46c1721bae582b6f811ef1e0'],
+        144 => ['file' => '144_vehicle_catalog_stable_ids.php', 'checksum' => '53929335a512fe143364d74dadf3e508c75a95b59373a14f2985a121b57a1216'],
     ],
 ];

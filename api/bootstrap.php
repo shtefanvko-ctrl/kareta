@@ -2234,6 +2234,10 @@ function kareta_create_schema(PDO $pdo): void
     try { $pdo->exec("ALTER TABLE `orders` ADD COLUMN `vehicle_title` VARCHAR(191) NOT NULL DEFAULT '' AFTER `client_vehicle_id`"); } catch (Throwable $_e) {}
     try { $pdo->exec("ALTER TABLE `orders` ADD INDEX `idx_client_vehicle_id` (`client_vehicle_id`)"); } catch (Throwable $_e) {}
     try { $pdo->exec("ALTER TABLE `orders` ADD COLUMN `time_mode` VARCHAR(16) NOT NULL DEFAULT 'exact' AFTER `time`"); } catch (Throwable $_e) {}
+    // Legacy vehicle generation text is part of the existing vehicle DTO and is
+    // a prerequisite for migration 144, which adds generation_id AFTER generation.
+    // Keep this pre-migration bridge idempotent for both fresh and older databases.
+    try { $pdo->exec("ALTER TABLE `client_vehicles` ADD COLUMN `generation` VARCHAR(64) NULL DEFAULT NULL AFTER `year_label`"); } catch (Throwable $_e) {}
     try { $pdo->exec("ALTER TABLE `client_vehicles` ADD COLUMN `mileage_km` INT NOT NULL DEFAULT 0 AFTER `note`"); } catch (Throwable $_e) {}
     try { $pdo->exec("ALTER TABLE `client_vehicles` ADD COLUMN `service_at` DATETIME NULL AFTER `mileage_km`"); } catch (Throwable $_e) {}
     try { $pdo->exec("ALTER TABLE `client_vehicles` ADD COLUMN `service_note` VARCHAR(191) NOT NULL DEFAULT '' AFTER `service_at`"); } catch (Throwable $_e) {}
