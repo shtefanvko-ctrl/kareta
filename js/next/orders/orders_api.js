@@ -98,7 +98,7 @@
     if (!api || typeof api.request !== 'function') throw new Error('Exchange API requires KaretaApi.request');
     const result = await api.request('api/db.php', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(Object.assign({action},body)), cacheTtlMs:0, dedupe:false, signal:options.signal,
+      body:JSON.stringify(Object.assign({action},window.KaretaFormContract?.prepare?.('order',body)?.compatPayload||body)), cacheTtlMs:0, dedupe:false, signal:options.signal,
     });
     if(!result || !result.ok){const payload=result&&result.payload||{};const error=new Error(String(payload.message||payload.error||'Операция биржи не выполнена'));error.status=result?result.status:0;error.payload=payload;throw error;}
     return result.payload||{};

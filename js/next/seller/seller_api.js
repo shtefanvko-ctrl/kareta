@@ -8,7 +8,7 @@
       method:'POST',
       ...options,
       headers:{ 'Content-Type':'application/json', ...(options.headers || {}) },
-      body:JSON.stringify({ action, ...data })
+      body:JSON.stringify({ action, ...(window.KaretaFormContract?.prepare?.('seller',data)?.compatPayload||data) })
     });
     if (!response.ok) {
       const error = new Error(response.payload?.message || response.payload?.error || 'Ошибка магазина');
