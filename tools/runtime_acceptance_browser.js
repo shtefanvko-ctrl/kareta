@@ -91,7 +91,15 @@ async function waitRoute(page,hash,key,round){
     page.on('requestfailed',req=>{
       try{
         const url=new URL(req.url());
-        if(url.origin===new URL(base).origin) report.errors.request.push({url:req.url(),type:req.resourceType(),failure:req.failure()?.errorText||''});
+        if(url.origin===new URL(base).origin){
+          const type=req.resourceType();
+          const failure=req.failure()?.errorText||'';
+          // Route lifecycle deliberately aborts in-flight fetch/XHR work when the user
+          // leaves a page. Treat that cancellation as expected, but keep all other
+          // same-origin failures actionable.
+          if(failure==='net::ERR_ABORTED'&&(type==='fetch'||type==='xhr'))return;
+          report.errors.request.push({url:req.url(),type,failure});
+        }
       }catch(_error){}
     });
     page.on('response',res=>{
