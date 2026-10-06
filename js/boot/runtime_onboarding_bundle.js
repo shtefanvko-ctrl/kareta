@@ -2760,7 +2760,9 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
       // finalize()/role_page.js own the successful transition while the role picker is active.
       // Completing + routing again from this listener caused CLIENT to inherit a stale MASTER
       // context and open the master questionnaire. Preserve the selected branch and defer.
-      if (router.isOnboarding() || flow?.pending === true) {
+      const pendingStage=String(flow?.stage || router.parse()?.step || '');
+      const recoverableWelcome=pendingStage==='welcome' && !normalizePhone(flow?.phone || flow?.contactPhone || '');
+      if ((router.isOnboarding() || flow?.pending === true) && !recoverableWelcome) {
         state.write({ role:explicitRole, entryRole:explicitRole });
         lastAction='session-confirmed-deferred-to-onboarding-owner';
         return;
