@@ -49,6 +49,7 @@ $response = [
     'runtimeState'=>PHP_VERSION_ID >= 80100 ? 'compatible' : 'php_version_unsupported',
     'configurationSource'=>defined('KARETA_DB_CONFIG_SOURCE') ? KARETA_DB_CONFIG_SOURCE : 'unknown',
     'missingConfigurationFields'=>function_exists('kareta_db_missing_config_fields') ? kareta_db_missing_config_fields() : [],
+    'realtimeTransport'=>defined('KARETA_REALTIME') && is_array(KARETA_REALTIME) ? (string)(KARETA_REALTIME['transport'] ?? 'poll') : 'poll',
     'assetVersion'=>defined('KARETA_ASSET_VERSION') ? KARETA_ASSET_VERSION : '',
     'durationMs'=>(int)round((microtime(true)-$started)*1000),
     'failureStage'=>$failureMeta['failureStage'],
