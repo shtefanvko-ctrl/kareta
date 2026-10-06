@@ -22,10 +22,12 @@ Deployment provenance is generated from the exact candidate by tools/generate_de
 
 Application gates must validate provenance and generate the exact-candidate deployment-provenance artifact.
 
-## Deferred lines
-PR #97 Geo backend must be reconciled only after this recovery base is green.
-PR #98 and #99 must not be merged while their exact HEAD Application gates fail.
-ELM327/Landing polish branches based on older bases require separate reconciliation.
+## Reconciled and deferred lines
+Geo backend/runtime from the PR #97 line is reconciled into this recovery candidate. Static Geo core and map-runtime contracts are owned by the dedicated Geo runtime workflow; browser/mobile acceptance remains required by the Definition of Done.
+
+PR #98/#99 design source ownership is reconciled into this candidate where the canonical source/generated files match. Their historical branch-only test differences are not merge evidence for this HEAD.
+
+ELM327 research/tooling is integrated as isolated recovery content. Upstream imported knowledge remains staging-only where RU verification is incomplete. Landing polish or other branches based on older bases still require separate reconciliation.
 
 ## Definition of Done
 A release is not DONE until all required evidence belongs to the exact candidate/deployed SHA:
