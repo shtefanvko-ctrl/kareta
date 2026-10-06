@@ -482,6 +482,39 @@ function kareta_runtime_maintenance(PDO $pdo): void
     kareta_safe_step($pdo, 'BOOTSTRAP_STATS', static function(PDO $pdo): void { kareta_rebuild_user_stats($pdo); });
 }
 
+function kareta_db_auto_upgrade_log(string $status, int $fromVersion, int $toVersion, string $detail = ''): void
+{
+    $dir = defined('KARETA_LOG_ROOT') ? KARETA_LOG_ROOT : dirname(__DIR__) . '/storage/logs';
+    if (!is_dir($dir)) @mkdir($dir, 0775, true);
+    $payload = [
+        'time'=>date('c'),
+        'status'=>$status,
+        'environment'=>defined('KARETA_ENVIRONMENT') ? KARETA_ENVIRONMENT : 'unknown',
+        'assetVersion'=>defined('KARETA_ASSET_VERSION') ? KARETA_ASSET_VERSION : '',
+        'fromVersion'=>$fromVersion,
+        'toVersion'=>$toVersion,
+        'detail'=>substr($detail, 0, 500),
+    ];
+    @file_put_contents(
+        $dir . '/db_upgrade.log',
+        json_encode($payload, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) . PHP_EOL,
+        FILE_APPEND
+    );
+}
+
+function kareta_db_runtime_schema_version(PDO $pdo): int
+{
+    try {
+        $exists = (int)$pdo->query("SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='db_meta'")->fetchColumn();
+        if ($exists <= 0) return 0;
+        $st = $pdo->prepare("SELECT `value` FROM `db_meta` WHERE `key`='schema_version' LIMIT 1");
+        $st->execute();
+        return max(0, (int)($st->fetchColumn() ?: 0));
+    } catch (Throwable $_error) {
+        return 0;
+    }
+}
+
 function kareta_bootstrap_runtime(PDO $pdo): void
 {
     static $done = false;
@@ -503,14 +536,36 @@ function kareta_bootstrap_runtime(PDO $pdo): void
         // Another request can finish migrations while this request waits for the
         // lock. Re-check after lock acquisition and skip duplicate DDL if ready.
         if (kareta_schema_bootstrap_required($pdo)) {
-            kareta_db_set_failure_context('bootstrap.create_schema');
-            kareta_create_schema($pdo);
-            if (!defined('KARETA_DB_AUTO_MIGRATE') || KARETA_DB_AUTO_MIGRATE) {
-                kareta_db_set_failure_context('bootstrap.migrate');
-                kareta_migrate($pdo);
+            $autoUpgrade = defined('KARETA_DB_AUTO_UPGRADE') && KARETA_DB_AUTO_UPGRADE;
+            $targetVersion = defined('KARETA_DB_VERSION') ? (int)KARETA_DB_VERSION : 0;
+            $beforeVersion = kareta_db_runtime_schema_version($pdo);
+            if ($autoUpgrade) {
+                kareta_db_auto_upgrade_log('START', $beforeVersion, $targetVersion);
             }
-            kareta_db_set_failure_context('bootstrap.ensure_schema.post_migration');
-            kareta_ensure_schema_columns($pdo);
+
+            try {
+                kareta_db_set_failure_context('bootstrap.create_schema');
+                kareta_create_schema($pdo);
+                if (!defined('KARETA_DB_AUTO_MIGRATE') || KARETA_DB_AUTO_MIGRATE) {
+                    kareta_db_set_failure_context('bootstrap.migrate');
+                    kareta_migrate($pdo);
+                }
+                kareta_db_set_failure_context('bootstrap.ensure_schema.post_migration');
+                kareta_ensure_schema_columns($pdo);
+
+                if ($autoUpgrade) {
+                    $afterVersion = kareta_db_runtime_schema_version($pdo);
+                    if ($targetVersion > 0 && $afterVersion !== $targetVersion) {
+                        throw new RuntimeException('Automatic DB upgrade version mismatch: current=' . $afterVersion . ', expected=' . $targetVersion);
+                    }
+                    kareta_db_auto_upgrade_log('PASS', $beforeVersion, $afterVersion);
+                }
+            } catch (Throwable $upgradeError) {
+                if ($autoUpgrade) {
+                    kareta_db_auto_upgrade_log('FAIL', $beforeVersion, $targetVersion, $upgradeError->getMessage());
+                }
+                throw $upgradeError;
+            }
         }
         kareta_db_clear_failure_context();
         $done = true;
