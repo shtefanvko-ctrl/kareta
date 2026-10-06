@@ -28,7 +28,7 @@ function kareta_asset_registry(): array
         ],
         'images' => [
             'media/kareta_create_request_vehicle_background_r188_5_5_6_84_31.png',
-            'assets/onboarding/kareta_logo_full.png',
+            'assets/logo/main/kareta_logo_full.png',
             'assets/onboarding/kareta_logo_icon.png',
             'assets/onboarding/backgrounds/welcome/city-calm/city-calm-mobile.png',
             'assets/onboarding/backgrounds/welcome/city-calm/city-calm-desktop-narrow.png',
@@ -70,7 +70,7 @@ function kareta_asset_registry(): array
             'js/next/route_asset_loader.js',
             'js/next/session_resume_runtime.js',
             'js/next/app_next.js',
-            'assets/onboarding/kareta_logo_full.png',
+            'assets/logo/main/kareta_logo_full.png',
             'assets/onboarding/kareta_logo_icon.png',
         ],
         // R188.5.5.6.84.82: canonical source modules retained for audit/build integrity.
