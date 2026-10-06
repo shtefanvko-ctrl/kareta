@@ -107,7 +107,7 @@ async function waitRoute(page,hash,key,round){
         const url=new URL(res.url());
         if(url.origin!==new URL(base).origin)return;
         const type=res.request().resourceType();
-        if((type==='script'||type==='stylesheet')&&res.status()>=400)report.errors.http.push({url:res.url(),status:res.status(),type});
+        if((type==='script'||type==='stylesheet'||type==='image')&&res.status()>=400)report.errors.http.push({url:res.url(),status:res.status(),type});
         if(url.pathname.startsWith('/api/')&&res.status()>=500)report.errors.http.push({url:res.url(),status:res.status(),type});
       }catch(_error){}
     });
