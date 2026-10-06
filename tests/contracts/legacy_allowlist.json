@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.0.0",
+  "removeGradually": true,
+  "fields": {
+    "account_id": "accountId",
+    "person_id": "personId",
+    "context_id": "contextId",
+    "city_id": "cityId",
+    "vehicle_id": "vehicleId",
+    "client_vehicle_id": "vehicleId",
+    "brand_id": "brandId",
+    "model_id": "modelId",
+    "generation_id": "generationId",
+    "sto_id": "stoId",
+    "master_id": "masterId",
+    "seller_id": "sellerId",
+    "order_id": "orderId",
+    "source_order_id": "orderId",
+    "service_id": "serviceId",
+    "work_order_id": "workOrderId",
+    "device_id": "deviceId",
+    "adapter_id": "adapterId",
+    "diagnostic_session_id": "diagnosticSessionId",
+    "diagnostic_job_id": "diagnosticJobId",
+    "dtc_code": "dtcCode",
+    "code_value": "dtcCode",
+    "protocol_label": "protocol",
+    "snapshot_json": "snapshot",
+    "request_id": "requestId",
+    "idempotency_key": "idempotencyKey",
+    "schema_version": "schemaVersion",
+    "created_at": "createdAt",
+    "updated_at": "updatedAt"
+  },
+  "presentationLegacy": [
+    "city",
+    "brand",
+    "model",
+    "generation",
+    "clientVehicleId"
+  ]
+}

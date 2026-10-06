@@ -14,6 +14,8 @@ function kareta_asset_registry(): array
         'scripts' => [
             'js/next/runtime_logger.js',
             'js/next/runtime_dependencies.js',
+            'js/next/contracts/enterprise_data_v1.js',
+            'js/next/forms/form_contract.js',
             'js/next/recovery_manager.js',
             'js/next/diagnostics_snapshot.js',
             'js/next/app_preloader.js',
@@ -52,6 +54,8 @@ function kareta_asset_registry(): array
         'critical' => [
             'js/next/runtime_logger.js',
             'js/next/runtime_dependencies.js',
+            'js/next/contracts/enterprise_data_v1.js',
+            'js/next/forms/form_contract.js',
             'css/next/app_preloader.css',
             'css/next/app_next.css',
             'css/next_shell.css',

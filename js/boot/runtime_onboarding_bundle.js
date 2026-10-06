@@ -591,7 +591,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function payloadFromFlow(flow){
-    return {
+    const payload = {
       role:String(flow.role || 'client'),
       name:String(flow.accountName || flow.name || ''),
       phone:String(flow.phone || flow.contactPhone || ''),
@@ -625,6 +625,15 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
       },
       onboardingVersion:'20260718-request-correlation-r87'
     };
+    const prepared=window.KaretaFormContract?.prepare?.('onboarding',payload,{
+      canonical:{
+        accountId:flow.accountId,
+        personId:flow.personId,
+        contextId:flow.contextId,
+        cityId:flow.cityId || window.KaretaOnboardingSelectionCatalog?.resolveCityId?.(flow.city || flow.cityName || '')
+      }
+    });
+    return prepared?.compatPayload || payload;
   }
 
   function normalizePhone(value){
@@ -1607,10 +1616,17 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     'Павлодар': '🌊'
   });
 
-  const cities = Object.freeze([
-    'Алматы','Астана','Шымкент','Караганда',
-    'Усть-Каменогорск','Семей','Павлодар','Риддер'
+  const cityRecords = Object.freeze([
+    Object.freeze({id:'almaty',name:'Алматы'}),
+    Object.freeze({id:'astana',name:'Астана'}),
+    Object.freeze({id:'shymkent',name:'Шымкент'}),
+    Object.freeze({id:'karaganda',name:'Караганда'}),
+    Object.freeze({id:'ust-kamenogorsk',name:'Усть-Каменогорск'}),
+    Object.freeze({id:'semey',name:'Семей'}),
+    Object.freeze({id:'pavlodar',name:'Павлодар'}),
+    Object.freeze({id:'ridder',name:'Риддер'})
   ]);
+  const cities = Object.freeze(cityRecords.map(row=>row.name));
 
   // Approximate WGS84 centers are for city browsing only, never user/provider identity.
   const cityCenters=Object.freeze({
@@ -1624,9 +1640,16 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     'Риддер':Object.freeze({latitude:50.34524,longitude:83.515621})
   });
   const cityAliases=Object.freeze({'өскемен':'Усть-Каменогорск','oskemen':'Усть-Каменогорск','семей':'Семей','semey':'Семей','алматы':'Алматы','almaty':'Алматы','астана':'Астана','astana':'Астана','шымкент':'Шымкент','shymkent':'Шымкент','қарағанды':'Караганда','karaganda':'Караганда','павлодар':'Павлодар','pavlodar':'Павлодар','риддер':'Риддер','ridder':'Риддер'});
-  const resolveCityCenter=value=>{
+  const resolveCityName=value=>{
     const name=String(value||'').trim(),lower=name.toLocaleLowerCase('ru-RU');
-    const key=cityAliases[lower]||cities.find(city=>city.toLocaleLowerCase('ru-RU')===lower);
+    return cityAliases[lower]||cities.find(city=>city.toLocaleLowerCase('ru-RU')===lower)||'';
+  };
+  const resolveCityId=value=>{
+    const name=resolveCityName(value);
+    return cityRecords.find(row=>row.name===name)?.id||'';
+  };
+  const resolveCityCenter=value=>{
+    const key=resolveCityName(value);
     return key&&cityCenters[key]?{...cityCenters[key],city:key,precision:'city',source:'GeoNames'}:null;
   };
 
@@ -1640,7 +1663,9 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
 
   window.KaretaOnboardingSelectionCatalog = Object.freeze({
     cities,
+    cityRecords,
     cityIcons,
+    resolveCityId,
     resolveCityCenter,
     brands,
     audit(){
