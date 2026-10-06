@@ -145,4 +145,5 @@ if(runtime.includes('SOURCE: css/next/master_client_r84_postlude.css')) fail('ge
 if(!runtime.includes('MASTER PAGE VISUAL CONTRACT')) fail('generated master runtime misses canonical responsive geometry');
 if(!runtime.trimEnd().endsWith(master.trimEnd())) fail('master_surfaces.css must be final generated CSS owner');
 
+require('./test_shared_components_contract_v1.js');
 console.log('DESIGN_CANON_V2: PASS');
