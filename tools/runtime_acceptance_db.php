@@ -31,7 +31,7 @@ if((int)($history['c']??0)!==$expected||(int)($history['min_v']??0)!==1||(int)($
 }
 if((int)($history['empty_checksums']??0)!==0) acceptance_fail('migration_checksum_missing');
 
-$requiredTables=['users','accounts','persons','person_profiles','identity_sessions','geo_points','orders','obd_sessions'];
+$requiredTables=['users','accounts','persons','person_profiles','auth_sessions','geo_points','orders','obd_sessions'];
 $tableStmt=$pdo->prepare("SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?");
 foreach($requiredTables as $table){
     $tableStmt->execute([$table]);
