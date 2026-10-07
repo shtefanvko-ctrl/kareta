@@ -1,0 +1,47 @@
+name: DEVIL developer mode
+
+on:
+  pull_request:
+    paths:
+      - 'AGENTS.md'
+      - 'ai/DEVIL.md'
+      - 'ai/CONTEXT_ROUTER.md'
+      - 'ai/WORKFLOW.md'
+      - 'ai/SURFACE_MAP.json'
+      - 'ai/CHANGE_LANES.md'
+      - 'MB_MONITORING.md'
+      - '.github/prompts/devil.prompt.md'
+      - '.cursor/commands/devil.md'
+      - 'tools/test_devil_developer_mode.js'
+      - '.github/workflows/devil-developer-mode.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Prove exact checkout
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$EXPECTED_SHA"
+          echo "EXACT_HEAD: $actual"
+
+      - name: DEVIL developer mode contract
+        run: node tools/test_devil_developer_mode.js
