@@ -27,6 +27,9 @@ function kareta_asset_registry(): array
             'js/boot/runtime_core_bundle.js',
             'js/next/app_next.js',
         ],
+        'standaloneScripts' => [
+            'js/mobile_native_bridge.js',
+        ],
         'images' => [
             'media/kareta_create_request_vehicle_background_r188_5_5_6_84_31.png',
             'assets/logo/main/kareta_logo_full.png',
@@ -789,6 +792,7 @@ function kareta_asset_missing(): array
     $paths = array_values(array_unique(array_merge(
         $registry['styles'],
         $registry['scripts'],
+        $registry['standaloneScripts'] ?? [],
         $registry['scriptSources'] ?? [],
         $registry['images'],
         function_exists('kareta_route_asset_paths') ? kareta_route_asset_paths() : []
