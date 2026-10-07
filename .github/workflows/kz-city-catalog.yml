@@ -1,0 +1,21 @@
+name: KZ city catalog
+on:
+  pull_request:
+    paths:
+      - 'js/next/geo/kz_city_catalog.js'
+      - 'inc/asset_registry.php'
+      - 'tools/test_kz_city_catalog.js'
+      - '.github/workflows/kz-city-catalog.yml'
+  workflow_dispatch:
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Kazakhstan 90-city geo catalog contract
+        run: node tools/test_kz_city_catalog.js
+      - name: PHP syntax asset registry
+        run: php -l inc/asset_registry.php

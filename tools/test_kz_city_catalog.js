@@ -1,0 +1,13 @@
+const fs=require('fs'),vm=require('vm');
+const source=fs.readFileSync('js/next/geo/kz_city_catalog.js','utf8');
+const sandbox={window:{KaretaOnboardingSelectionCatalog:Object.freeze({brands:[],audit(){return {brands:0};}})},console};
+vm.createContext(sandbox);vm.runInContext(source,sandbox);
+const c=sandbox.window.KaretaKzCityCatalog,o=sandbox.window.KaretaOnboardingSelectionCatalog;
+const fail=m=>{console.error('KZ_CITY_CATALOG: FAIL — '+m);process.exit(1);};
+if(!c)fail('global missing');
+const a=c.audit();if(a.count!==90||!a.uniqueIds||!a.uniqueNames||!a.valid)fail(JSON.stringify(a));
+['Алматы','Астана','Шымкент','Усть-Каменогорск','Семей','Зайсан','Алатау','Косшы'].forEach(n=>{if(!c.resolveCityId(n))fail('unresolved '+n);});
+if(c.resolveCityId('Өскемен')!=='ust-kamenogorsk')fail('Өскемен alias');
+if(o.cities.length!==90||o.cityRecords.length!==90)fail('onboarding bridge');
+if(!c.resolveMapTarget('Зайсан')?.mapQuery)fail('map target');
+console.log('KZ_CITY_CATALOG: PASS — 90 cities, unique ids/names, onboarding bridge, map targets');
