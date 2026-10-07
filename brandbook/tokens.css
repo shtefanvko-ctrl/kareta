@@ -1,0 +1,70 @@
+/*
+ * KARETA.KZ Brandbook token map.
+ * Documentation layer only: runtime source of truth remains css/next/design_contract.css.
+ * Do not import this file into production bundles until contract ownership is explicitly approved.
+ */
+:root {
+  /* Brand primitives */
+  --kb-orange-500: #FF6B00;
+  --kb-orange-700: #C2410C;
+  --kb-graphite-700: #444444;
+  --kb-ink-900: #111827;
+
+  /* Runtime-aligned shared geometry */
+  --kb-radius-xs: 5px;
+  --kb-radius-control: 10px;
+  --kb-radius-card: 18px;
+  --kb-radius-dialog: 24px;
+
+  --kb-space-1: 4px;
+  --kb-space-2: 8px;
+  --kb-space-3: 12px;
+  --kb-space-4: 16px;
+  --kb-space-5: 20px;
+  --kb-space-6: 24px;
+  --kb-space-8: 32px;
+
+  --kb-layout-content-max: 1480px;
+  --kb-layout-page-gutter: clamp(16px, 2vw, 32px);
+
+  /* Runtime-aligned neutrals */
+  --kb-surface-page: #F5F6F8;
+  --kb-surface-card: #FFFFFF;
+  --kb-line: #E4E7EC;
+  --kb-text: #111827;
+  --kb-muted: #667085;
+
+  /* Brand semantic proposal */
+  --kb-brand-primary: var(--kb-orange-500);
+  --kb-brand-text: var(--kb-orange-700);
+  --kb-brand-secondary: var(--kb-graphite-700);
+  --kb-ink: var(--kb-ink-900);
+
+  --kb-success: #067647;
+  --kb-warning: #B54708;
+  --kb-danger: #B42318;
+  --kb-info: #175CD3;
+
+  --kb-motion-fast: 120ms;
+  --kb-motion-base: 200ms;
+  --kb-motion-slow: 320ms;
+  --kb-ease-standard: cubic-bezier(.2, 0, 0, 1);
+}
+
+/*
+ * Mapping target (not an override):
+ *
+ * --k-radius-xs        <= --kb-radius-xs
+ * --k-radius-control   <= --kb-radius-control
+ * --k-radius-card      <= --kb-radius-card
+ * --k-radius-dialog    <= --kb-radius-dialog
+ * --k-space-*          <= --kb-space-*
+ * --k-layout-*         <= --kb-layout-*
+ * --k-surface-*        <= --kb-surface-*
+ * --k-line             <= --kb-line
+ * --k-text             <= --kb-text
+ * --k-muted            <= --kb-muted
+ *
+ * Brand color mapping requires a dedicated reconciliation commit because
+ * current role foundations still contain historical accents such as #ff5a1f.
+ */
