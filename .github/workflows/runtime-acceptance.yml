@@ -126,6 +126,9 @@ jobs:
             echo "HTTP_RUNTIME: PASS db=144 version={$expectedVersion} sha={$expectedSha}\n";
           '
 
+      - name: OBD sync and history acceptance
+        run: node tools/runtime_acceptance_obd_http.js
+
       - name: Install headless browser
         shell: bash
         run: |
