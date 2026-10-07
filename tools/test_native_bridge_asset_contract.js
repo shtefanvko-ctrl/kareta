@@ -12,8 +12,11 @@ if (!registry.includes("'standaloneScripts' => [") || !registry.includes("'js/mo
 if (!registry.includes("$registry['standaloneScripts'] ?? []")) {
   throw new Error('standalone bridge is missing from asset existence inventory');
 }
-if (!manifest.includes("foreach (['styles', 'scripts', 'standaloneScripts', 'images'] as $group)")) {
+if (!manifest.includes("foreach (($registry['standaloneScripts'] ?? []) as $order => $path)")) {
   throw new Error('full asset manifest does not expose standalone scripts');
+}
+if (!manifest.includes("$assetEntry('scripts', (int)$order, $path, false, 'standalone')")) {
+  throw new Error('standalone bridge must preserve the public scripts group');
 }
 if (!manifest.includes("'standaloneScriptCount' => count($registry['standaloneScripts'] ?? [])")) {
   throw new Error('full asset manifest does not report standalone script count');
