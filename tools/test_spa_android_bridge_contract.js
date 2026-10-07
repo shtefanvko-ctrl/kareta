@@ -24,7 +24,7 @@ must(bridge, 'KARETA_NATIVE_API_UNSUPPORTED', 'bridge');
 must(bridge, 'KARETA_NATIVE_CAPABILITY_UNAVAILABLE', 'bridge');
 must(bridge, 'ready: () => probeNative()', 'bridge');
 
-const webCommands = [...bridge.matchAll(/call\("([^"]+)"/g)].map(match => match[1]);
+const webCommands = [...bridge.matchAll(/\b(?:call|rawCall)\("([^"]+)"/g)].map(match => match[1]);
 const expectedCommands = [
   'requestPermission','getLocation','openMap','ping','appInfo','network','pushToken',
   'registerPush','unregisterPush','logout','pickImage','takePhoto','pickContact',
