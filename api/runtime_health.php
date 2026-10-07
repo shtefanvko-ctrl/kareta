@@ -40,6 +40,7 @@ try {
     $port = (int)($db['port'] ?? 3306);
     $name = (string)($db['database'] ?? $db['dbname'] ?? '');
     $charset = (string)($db['charset'] ?? 'utf8mb4');
+    $socket = trim((string)($db['socket'] ?? ''));
     $user = (string)($db['username'] ?? $db['user'] ?? '');
     $pass = (string)($db['password'] ?? $db['pass'] ?? '');
     if ($name === '') throw new RuntimeException('Database name is empty');
