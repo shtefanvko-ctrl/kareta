@@ -29,6 +29,9 @@ assert(parts.includes('data-parts-nearby-detect'),'parts nearby shops trigger mi
 assert(parts.includes('types=shop&limit=20'),'parts nearby pickup query missing');
 assert(parts.includes("String(row.kind||'')==='pickup'"),'parts must filter public pickup points');
 assert(parts.includes('openBestMap'),'parts route action must use shared map opener');
+assert(parts.includes('KaretaKzCityCatalog?.resolveMapTarget?.(raw)'),'parts city fallback must use canonical Kazakhstan city catalog');
+assert(parts.includes("source='gps'")&&parts.includes("source='city'"),'parts nearby origin must distinguish GPS from city fallback');
+assert(parts.includes('GEO_OR_CITY_CENTER_UNAVAILABLE'),'parts must not invent coordinates when city center is unavailable');
 assert(masters.includes('const loadGeoNearby=async'),'masters nearby geo query missing');
 assert(masters.includes("types='+encodeURIComponent(providerKind)"),'masters geo query provider type missing');
 assert(masters.includes('if(af!==bf)return af?-1:1'),'masters nearby sort must prioritize rows with real distance');
