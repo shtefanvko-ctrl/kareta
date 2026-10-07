@@ -11,7 +11,7 @@
     if (!text.startsWith('#/')) {
       let url;
       try { url = new URL(text); } catch (_) { throw new Error('Это не ссылка KARETA.'); }
-      if (url.protocol !== 'https:' || !['kareta.kz','www.kareta.kz','s.kareta.kz'].includes(url.hostname) || url.username || url.password || url.port || url.pathname !== '/' || url.search) throw new Error('Это не ссылка KARETA.');
+      if (url.protocol !== 'https:' || !['kareta.kz','www.kareta.kz','m.kareta.kz','s.kareta.kz'].includes(url.hostname) || url.username || url.password || url.port || url.pathname !== '/' || url.search) throw new Error('Это не ссылка KARETA.');
       hash = url.hash;
     }
     if (hash.includes('?') || !/^#\/(?:works\/item|parts\/item|services\/item|masters\/profile\/(?:master|sto)|garage\/car|orders\/item)\/[A-Za-z0-9_-]{1,128}$/.test(hash)) throw new Error('Этот формат QR пока не поддерживается.');
