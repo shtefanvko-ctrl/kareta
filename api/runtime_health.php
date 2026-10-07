@@ -47,8 +47,11 @@ try {
 
     // Health check deliberately does not load bootstrap.php: bootstrap performs schema
     // maintenance and content backfills, which must never run from a monitoring request.
+    $dsn = $socket !== ''
+        ? 'mysql:unix_socket=' . $socket . ';dbname=' . $name . ';charset=' . $charset
+        : sprintf('mysql:host=%s;port=%d;dbname=%s;charset=%s', $host, $port, $name, $charset);
     $pdo = new PDO(
-        sprintf('mysql:host=%s;port=%d;dbname=%s;charset=%s', $host, $port, $name, $charset),
+        $dsn,
         $user,
         $pass,
         [
