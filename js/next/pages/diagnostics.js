@@ -178,7 +178,7 @@
         selectedVehicle=vehicles.find(v=>String(v.id)===remembered)||vehicles.find(v=>v.is_default||v.isDefault||v.primary)||vehicles[0]||null;
         renderVehicleChoice();
       }catch(_){
-        vehicleCurrent.innerHTML='<p class="k-obd-muted">Не удалось загрузить гараж. Диагностику можно выполнить без привязки.</p>';
+        vehicleCurrent.innerHTML='<p class="k-obd-muted">Не удалось загрузить гараж. Диагностика доступна, но история не будет сохранена или синхронизирована без vehicleId.</p>';
       }
     }
 
