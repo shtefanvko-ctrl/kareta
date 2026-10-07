@@ -19954,6 +19954,32 @@ html[data-user-role="master"]{
   --k-accent-hover:#e74308;
   --k-shadow-surface:0 8px 24px rgba(15,23,42,.055);
 
+
+  /* Shared Components v1 semantic contract.
+     These values intentionally mirror the current UI so ownership can move
+     without changing visual output. Component selectors migrate separately. */
+  --k-component-control-h:var(--k-control-height);
+
+  --k-component-button-radius:var(--k-radius-action);
+  --k-component-button-gap:7px;
+  --k-component-button-font-size:12.5px;
+  --k-component-button-font-weight:800;
+  --k-component-button-icon-size:18px;
+  --k-component-button-accent:var(--k-accent);
+  --k-component-button-accent-hover:var(--k-accent-hover);
+
+  --k-component-field-h:42px;
+  --k-component-field-radius:var(--k-radius-action);
+  --k-component-field-line:var(--k-line-soft);
+  --k-component-field-surface:var(--k-surface-card);
+  --k-component-field-text:var(--k-text-strong);
+  --k-component-field-muted:var(--k-muted-ui);
+
+  --k-component-state-radius:16px;
+  --k-component-state-line:#dde1e6;
+  --k-component-state-surface:var(--k-surface-card);
+  --k-component-state-text:var(--k-muted-ui);
+
   /* Canonical layer scale */
   --k-z-base:0;
   --k-z-local-raised:3;
@@ -19997,7 +20023,6 @@ html[data-navigation-context="master"]{
   --k-master-text:var(--k-text);
   --k-master-muted:var(--k-muted);
 }
-
 /* ===== SOURCE: css/next/master_responsive_shell.css ===== */
 /* KARETA Master Responsive Shell Contract.
    Canonical owner of master shell geometry only:
