@@ -140,13 +140,18 @@ if ($mode === 'route-loader') {
 // static inventory and strict missing-file status for deployment tooling.
 $entries = [];
 $seen = [];
-foreach (['styles', 'scripts', 'standaloneScripts', 'images'] as $group) {
+foreach (['styles', 'scripts', 'images'] as $group) {
     foreach (($registry[$group] ?? []) as $order => $path) {
         if (!is_string($path) || $path === '') continue;
         $entry = $assetEntry($group, (int)$order, $path, false, null);
         $entries[] = $entry;
         $seen[$group . ':' . $path] = true;
     }
+}
+foreach (($registry['standaloneScripts'] ?? []) as $order => $path) {
+    if (!is_string($path) || $path === '' || isset($seen['scripts:' . $path])) continue;
+    $entries[] = $assetEntry('scripts', (int)$order, $path, false, 'standalone');
+    $seen['scripts:' . $path] = true;
 }
 
 foreach ($routeBundles as $bundleName => $bundle) {
