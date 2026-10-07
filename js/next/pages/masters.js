@@ -172,36 +172,10 @@
     const matchesSpec=row=>!specFilter||String([row.spec,row.description,row.servicesLabel].filter(Boolean).join(' ')).toLowerCase().includes(specFilter);
     const syncKind=()=>{root.querySelectorAll('[data-master-provider-kind]').forEach(btn=>btn.classList.toggle('is-active',btn.dataset.masterProviderKind===providerKind));if(title)title.textContent=providerKind==='sto'?'СТО рядом':'Мастера';};
     const paint=()=>{let view=applyGeo(rows).filter(matchesSpec);if(mode==='available')view=view.filter(isFree);if(mode==='rating')view=[...view].sort((a,b)=>score(b)-score(a));if(mode==='nearby')view=[...view].sort((a,b)=>{const ad=Number(a.distanceKm),bd=Number(b.distanceKm),af=Number.isFinite(ad),bf=Number.isFinite(bd);if(af!==bf)return af?-1:1;if(af&&bf&&ad!==bd)return ad-bd;return Number(isFree(b))-Number(isFree(a))||score(b)-score(a);});directory.innerHTML=view.length?view.map(row=>providerKind==='sto'?referenceStationCard(row):masterCard(row)).join(''):'<div class="k-master-reference-empty"><b>Ничего не найдено</b><span>Измените поиск или фильтр.</span></div>';status.textContent=view.length?('Найдено: '+view.length+(mode==='nearby'&&!userCoords?' · нажмите «Рядом», чтобы определить расстояние':'')):'По вашему запросу ничего не найдено';status.hidden=view.length>0&&!(mode==='nearby'&&!userCoords);};
-    const load=async({force=false,reason='route'}={})=>{
-      syncKind();
-      const key=mastersCacheId(providerKind,search);
-      const cached=readMastersCache(key);
-      const hasCached=Boolean(cached?.rows);
-      if(hasCached){rows=cached.rows;if(userCoords)void loadGeoNearby().then(()=>paint());paint();}
-      else{status.hidden=false;status.textContent='Загружаем исполнителей…';directory.innerHTML=skeleton();}
-      if(hasCached&&!force&&(Date.now()-Number(cached.at||0))<MASTERS_CACHE_TTL)return;
-      try{
-        const result=await api.getMastersCatalog({type:providerKind,search},{force:force||hasCached,signal:context.lifecycle?.signal});
-        if(!result?.ok)throw new Error(result?.payload?.message||'Не удалось загрузить каталог');
-        const data=result.payload?.data||{};
-        const nextRows=providerKind==='sto'?(Array.isArray(data.stos)?data.stos:Array.isArray(data.stations)?data.stations:[]):(Array.isArray(data.masters)?data.masters:[]);
-        const nextSignature=mastersSignature(nextRows);
-        writeMastersCache(key,nextRows);
-        if(!hasCached||nextSignature!==cached.signature){rows=nextRows;}else{rows=cached.rows;}
-        if(userCoords)await loadGeoNearby();paint();
-      }catch(error){
-        if(hasCached){rows=cached.rows;paint();return;}
-        rows=[];directory.innerHTML='<div class="k-master-reference-empty"><b>Каталог временно недоступен</b><span>Попробуйте обновить страницу.</span></div>';status.hidden=false;status.textContent=error?.message||'Не удалось загрузить каталог';
-      }
-    };
+    const load=async()=>{syncKind();status.hidden=false;status.textContent='Загружаем исполнителей…';directory.innerHTML=skeleton();try{const result=await api.getMastersCatalog({type:providerKind,search},{signal:context.lifecycle?.signal});if(!result?.ok)throw new Error(result?.payload?.message||'Не удалось загрузить каталог');const data=result.payload?.data||{};rows=providerKind==='sto'?(Array.isArray(data.stos)?data.stos:Array.isArray(data.stations)?data.stations:[]):(Array.isArray(data.masters)?data.masters:[]);if(userCoords)await loadGeoNearby();paint();}catch(error){rows=[];directory.innerHTML='<div class="k-master-reference-empty"><b>Каталог временно недоступен</b><span>Попробуйте обновить страницу.</span></div>';status.hidden=false;status.textContent=error?.message||'Не удалось загрузить каталог';}};
     root.addEventListener('click',async event=>{const kind=event.target.closest('[data-master-provider-kind]');if(kind){const next=kind.dataset.masterProviderKind;if(next&&next!==providerKind){providerKind=next;specFilter='';geoNearby=new Map();lastGeoKey='';try{const q=new URLSearchParams(String(location.hash||'').split('?')[1]||'');q.set('type',providerKind);history.replaceState(null,'',location.pathname+location.search+'#/masters?'+q.toString());}catch(_e){}load();}return;}const modeButton=event.target.closest('[data-master-mode]');if(modeButton){mode=modeButton.dataset.masterMode||'nearby';root.querySelectorAll('[data-master-mode]').forEach(x=>x.classList.toggle('is-active',x===modeButton));if(mode==='nearby'&&!userCoords){status.hidden=false;status.textContent='Определяем ваше местоположение…';try{await requestLocation();}catch(_error){status.hidden=false;status.textContent='Не удалось определить геопозицию. Разрешите доступ или выберите другой фильтр.';}}paint();return;}const toggle=event.target.closest('[data-master-filter-toggle]');if(toggle){filterPanel.hidden=!filterPanel.hidden;return;}const spec=event.target.closest('[data-master-spec]');if(spec){specFilter=String(spec.dataset.masterSpec||'');filterPanel.querySelectorAll('[data-master-spec]').forEach(x=>x.classList.toggle('is-active',x===spec));filterPanel.hidden=true;paint();}},{signal:context.lifecycle?.signal});
     input?.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(()=>{search=String(input.value||'').trim();load();},260);},{signal:context.lifecycle?.signal});
     input?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();clearTimeout(timer);search=String(input.value||'').trim();load();}},{signal:context.lifecycle?.signal});
-    const refreshFromRealtime=event=>{const type=String(event.detail?.event?.eventType||'');if(/^(master|sto|provider|serviceOffer|service)\./i.test(type))void load({force:true,reason:'realtime'});};
-    const refreshOnResume=()=>{if(!document.hidden)void load({force:true,reason:'resume'});};
-    window.addEventListener('kareta:realtime:event',refreshFromRealtime,{signal:context.lifecycle?.signal});
-    document.addEventListener('visibilitychange',refreshOnResume,{signal:context.lifecycle?.signal});
-    window.addEventListener('online',refreshOnResume,{signal:context.lifecycle?.signal});
     readSavedLocation();
     const cityFallback=()=>{const raw=params().get('cityId')||params().get('city')||localStorage.getItem('kareta.cityId')||localStorage.getItem('kareta.city')||'';const target=window.KaretaKzCityCatalog?.resolveMapTarget?.(raw);if(!userCoords&&target?.center){userCoords={lat:Number(target.center.latitude),lng:Number(target.center.longitude),source:'city',cityId:target.cityId};}return target;};
     cityFallback();
