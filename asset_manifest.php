@@ -140,7 +140,7 @@ if ($mode === 'route-loader') {
 // static inventory and strict missing-file status for deployment tooling.
 $entries = [];
 $seen = [];
-foreach (['styles', 'scripts', 'images'] as $group) {
+foreach (['styles', 'scripts', 'standaloneScripts', 'images'] as $group) {
     foreach (($registry[$group] ?? []) as $order => $path) {
         if (!is_string($path) || $path === '') continue;
         $entry = $assetEntry($group, (int)$order, $path, false, null);
@@ -174,6 +174,7 @@ $emit([
     'assetMetrics' => [
         'styleCount' => count($registry['styles'] ?? []),
         'scriptCount' => count($registry['scripts'] ?? []),
+        'standaloneScriptCount' => count($registry['standaloneScripts'] ?? []),
         'sourceScriptCount' => count($registry['scriptSources'] ?? ($registry['scripts'] ?? [])),
         'imageCount' => count($registry['images'] ?? []),
         'lazyStyleCount' => count(array_filter($entries, static fn(array $entry): bool => $entry['group'] === 'styles' && !empty($entry['lazy']))),
