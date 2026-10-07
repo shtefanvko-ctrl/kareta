@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-05",
+  "result": "PASS_WITH_LICENSE_BOUNDARIES",
+  "preferred_import": {
+    "source_id": "obdex_cc0",
+    "reason": "CC0 data, broad generic DTC/PID coverage, machine-readable schema and explicit source links",
+    "claimed_coverage": {
+      "generic_dtc": 9533,
+      "pids_mode01_mode09": 132
+    }
+  },
+  "reference_only": [
+    {
+      "source_id": "autodiag2_database",
+      "reason": "ODbL/DbCL database share-alike boundary"
+    },
+    {
+      "source_id": "mechanicdb_public",
+      "reason": "ODbL public sample; full dataset commercial"
+    },
+    {
+      "source_id": "python_obd",
+      "reason": "GPL code; use as implementation reference only"
+    },
+    {
+      "source_id": "obdb_vehicle_profiles",
+      "reason": "share-alike/per-repository license verification required"
+    },
+    {
+      "source_id": "real_vehicle_obd_dataset",
+      "reason": "no license file confirmed"
+    }
+  ],
+  "official_history_sources": [
+    "nhtsa_datasets",
+    "nhtsa_vpic"
+  ],
+  "note": "NHTSA complaints/recalls/TSBs are evidence of reported failures/campaigns, not verified repair outcomes."
+}

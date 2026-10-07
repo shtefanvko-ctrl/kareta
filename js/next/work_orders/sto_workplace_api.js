@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const get=(api,options={})=>api.request('api/db.php?action=stoWorkplace.get',{cacheTtlMs:8000,force:true,...options});
-  const post=(api,action,payload={})=>api.request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...payload}),cacheTtlMs:0,dedupe:false});
+  const post=(api,action,payload={})=>api.request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...(window.KaretaFormContract?.prepare?.('sto',payload)?.compatPayload||payload)}),cacheTtlMs:0,dedupe:false});
   const assign=(api,p)=>post(api,'stoBays.assign',p);
   const release=(api,p)=>post(api,'stoBays.release',p);
   const assignMaster=(api,p)=>post(api,'stoOrders.assignMaster',p);

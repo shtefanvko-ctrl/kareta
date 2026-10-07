@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kareta.kz/schemas/enterprise-data-v1.schema.json",
+  "title": "KARETA Enterprise Data Contract v1",
+  "type": "object",
+  "required": ["schemaVersion", "requestId", "idempotencyKey", "data"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "requestId": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "idempotencyKey": { "type": "string", "maxLength": 160 },
+    "data": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[A-Za-z][A-Za-z0-9]*$" },
+      "properties": {
+        "accountId": { "$ref": "#/$defs/id" },
+        "personId": { "$ref": "#/$defs/id" },
+        "contextId": { "$ref": "#/$defs/id" },
+        "cityId": { "$ref": "#/$defs/id" },
+        "vehicleId": { "$ref": "#/$defs/id" },
+        "brandId": { "$ref": "#/$defs/id" },
+        "modelId": { "$ref": "#/$defs/id" },
+        "generationId": { "$ref": "#/$defs/id" },
+        "vin": { "type": "string", "maxLength": 32 },
+        "stoId": { "$ref": "#/$defs/id" },
+        "masterId": { "$ref": "#/$defs/id" },
+        "sellerId": { "$ref": "#/$defs/id" },
+        "orderId": { "$ref": "#/$defs/id" },
+        "serviceId": { "$ref": "#/$defs/id" },
+        "workOrderId": { "$ref": "#/$defs/id" },
+        "deviceId": { "$ref": "#/$defs/id" },
+        "adapterId": { "$ref": "#/$defs/id" },
+        "diagnosticSessionId": { "$ref": "#/$defs/id" },
+        "diagnosticJobId": { "$ref": "#/$defs/id" },
+        "dtcCode": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" },
+        "pid": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" },
+        "protocol": { "type": "string" },
+        "snapshot": {},
+        "requestId": { "type": "string" },
+        "idempotencyKey": { "type": "string" },
+        "schemaVersion": { "const": "1.0.0" },
+        "createdAt": { "type": ["string", "null"] },
+        "updatedAt": { "type": ["string", "null"] },
+        "role": { "enum": ["client", "master", "sto", "seller", "admin", "owner"] },
+        "severity": { "enum": ["info", "warning", "low", "medium", "high", "critical"] }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": ["string", "integer", "null"],
+      "minLength": 1
+    }
+  }
+}

@@ -11,7 +11,7 @@
     if (!text.startsWith('#/')) {
       let url;
       try { url = new URL(text); } catch (_) { throw new Error('Это не ссылка KARETA.'); }
-      if (url.protocol !== 'https:' || !['kareta.kz','www.kareta.kz','s.kareta.kz'].includes(url.hostname) || url.username || url.password || url.port || url.pathname !== '/' || url.search) throw new Error('Это не ссылка KARETA.');
+      if (url.protocol !== 'https:' || !['kareta.kz','www.kareta.kz','m.kareta.kz','s.kareta.kz'].includes(url.hostname) || url.username || url.password || url.port || url.pathname !== '/' || url.search) throw new Error('Это не ссылка KARETA.');
       hash = url.hash;
     }
     if (hash.includes('?') || !/^#\/(?:works\/item|parts\/item|services\/item|masters\/profile\/(?:master|sto)|garage\/car|orders\/item)\/[A-Za-z0-9_-]{1,128}$/.test(hash)) throw new Error('Этот формат QR пока не поддерживается.');
@@ -72,8 +72,23 @@
     listen(stopButton, 'click', () => { stop(); status.textContent = 'Сканирование остановлено.'; });
     listen(start, 'click', async () => {
       stop(); fileRun++; clearTarget(); const run = cameraRun;
-      start.disabled = true; status.textContent = 'Открываем камеру…';
+      start.disabled = true; status.textContent = 'Открываем сканер…';
       try {
+        const mobile = window.KaretaMobile;
+        if (mobile?.available?.() && typeof mobile.scanQr === 'function') {
+          try {
+            const scanned = await mobile.scanQr();
+            if (!active() || run !== cameraRun) return;
+            const rawValue = String(scanned?.rawValue ?? scanned?.displayValue ?? '').trim();
+            if (rawValue) { show(rawValue); return; }
+          } catch (nativeError) {
+            if (!active() || run !== cameraRun) return;
+            if (nativeError?.code === 'CANCELLED') {
+              stop(); status.textContent = 'Сканирование отменено.'; return;
+            }
+            status.textContent = 'Нативный сканер недоступен. Открываем камеру…';
+          }
+        }
         const reader = await detector();
         if (!active() || run !== cameraRun) return;
         if (!navigator.mediaDevices?.getUserMedia) throw new Error('Камера недоступна. Используйте HTTPS и разрешите доступ к камере.');

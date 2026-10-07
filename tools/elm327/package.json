@@ -1,0 +1,16 @@
+{
+  "name": "kareta-elm327-import-tools",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "yaml": "2.9.0"
+  },
+  "scripts": {
+    "import:obdex": "node import_obdex.mjs",
+    "verify:obdex": "node import_obdex.mjs --verify-only",
+    "fetch:nhtsa": "node fetch_nhtsa_vehicle.mjs"
+  }
+}

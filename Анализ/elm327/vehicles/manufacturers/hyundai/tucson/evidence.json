@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "make": "Hyundai",
+  "model": "Tucson",
+  "market_scope": "REFERENCE_RECORDS_NOT_KZ_APPLICABILITY",
+  "items": [
+    {
+      "id": "hyundai_tucson_us_p1326_txxm_t6g",
+      "make": "Hyundai",
+      "model": "Tucson",
+      "model_year": null,
+      "market": "US",
+      "generation": "LM/TL",
+      "platform": "LM/TL",
+      "engine": "specified Theta II/Nu engines",
+      "ecu": "ECM/KSDS",
+      "vin_pattern": null,
+      "applicability": "EXACT_PLATFORM",
+      "source_id": "hyundai_txxm_t6g_20260326",
+      "evidence_type": "TSB",
+      "status": "REFERENCE_ONLY",
+      "published_on": "2026-03-26",
+      "title": {
+        "ru": "Hyundai Tucson: кампания TXXM/T6G — P1326, проверка подшипников двигателя",
+        "en": "Hyundai Tucson TXXM/T6G campaign — P1326 engine-bearing inspection workflow"
+      },
+      "summary": {
+        "ru": "Документ Hyundai связывает DTC P1326 и/или ненормальный шум либо no-crank/no-start, относящиеся к износу шатунного подшипника, с обязательной процедурой диагностики по TSB 22-01-023H-2. Для Tucson перечислены конкретные поколения/двигатели: 2010–2013 LM Theta II 2.4 MPI, 2014–2015 LM Nu 2.0 GDI и 2016–2021 TL Nu 2.0 GDI.",
+        "en": "Hyundai's document links DTC P1326 and/or abnormal noise or no-crank/no-start related to connecting-rod bearing wear to an inspection workflow in TSB 22-01-023H-2. Tucson applicability is explicitly limited to listed generations/engines: 2010–2013 LM Theta II 2.4 MPI, 2014–2015 LM Nu 2.0 GDI and 2016–2021 TL Nu 2.0 GDI."
+      },
+      "source_ref": "Hyundai TXXM/T6G dealer notification / TSB 26-01-033H context",
+      "affected_variants": [
+        {
+          "years": "2010-2013",
+          "platform": "LM",
+          "engine": "Theta II 2.4L MPI"
+        },
+        {
+          "years": "2014-2015",
+          "platform": "LM",
+          "engine": "Nu 2.0L GDI"
+        },
+        {
+          "years": "2016-2021",
+          "platform": "TL",
+          "engine": "Nu 2.0L GDI"
+        }
+      ],
+      "dtc_codes": [
+        "P1326"
+      ],
+      "repair_rule": {
+        "ru": "P1326 не преобразуется в автоматическую замену двигателя. Сначала выполняется OEM-процедура диагностики/проверки, и решение о ремонте или замене зависит от результатов.",
+        "en": "P1326 does not map to automatic engine replacement. The OEM inspection/diagnostic process comes first; repair or replacement depends on the inspection result."
+      },
+      "kz_applicability": "UNPROVEN"
+    },
+    {
+      "id": "hyundai_tucson_2026_us_26v047_cluster",
+      "make": "Hyundai",
+      "model": "Tucson",
+      "model_year": 2026,
+      "market": "US",
+      "generation": null,
+      "platform": null,
+      "engine": "spark ignition",
+      "ecu": "instrument_cluster",
+      "vin_pattern": null,
+      "applicability": "MODEL_YEAR_MARKET",
+      "source_id": "nhtsa_hyundai_26v047",
+      "evidence_type": "RECALL",
+      "status": "REFERENCE_ONLY",
+      "published_on": "2026-02-13",
+      "title": {
+        "ru": "Отзыв Hyundai Tucson 2026 в США: перезапуск/погасание комбинации приборов",
+        "en": "US 2026 Hyundai Tucson recall: instrument-cluster reboot/blank display"
+      },
+      "summary": {
+        "ru": "NHTSA 26V047 относится к определённым Tucson 2026 для продажи в США. Электрический шум в PMIC может вызвать ложное срабатывание термозащиты и перезапуск комбинации приборов; решение — обновление ПО комбинации приборов у дилера или OTA.",
+        "en": "NHTSA 26V047 covers certain 2026 Tucson vehicles produced for sale in the US. Electrical noise in the PMIC can incorrectly trigger thermal protection and reboot the instrument cluster; the remedy is instrument-cluster software updated at a dealer or via OTA."
+      },
+      "source_ref": "NHTSA 26V047 / Hyundai 293",
+      "production_window": {
+        "from": "2025-08-25",
+        "to": "2025-10-11"
+      },
+      "kz_applicability": "UNPROVEN"
+    }
+  ]
+}
