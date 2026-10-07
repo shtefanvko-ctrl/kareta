@@ -4,6 +4,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
+const {runObdAcceptance}=require('./runtime_acceptance_obd');
 
 const root=path.resolve(__dirname,'..');
 const base=String(process.env.KARETA_ACCEPTANCE_BASE_URL||'http://127.0.0.1:8080').replace(/\/$/,'');
@@ -84,6 +85,8 @@ async function waitRoute(page,hash,key,round){
       registered=true;
     }
     report.auth={phoneMasked:'***0144',registered,existingAccount:Boolean(verify.existingAccount)};
+
+    await runObdAcceptance({context,base,json,report});
 
     const page=await context.newPage();
     page.on('pageerror',error=>report.errors.page.push(String(error?.stack||error)));
