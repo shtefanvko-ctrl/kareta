@@ -1,0 +1,39 @@
+name: PR37 recovery contract gate
+
+on:
+  pull_request:
+    paths:
+      - 'api/**'
+      - 'config.php'
+      - 'tools/test_booking_service_boundary_84_153.js'
+      - 'tools/test_health_readonly_boundary_84_154.js'
+      - 'tools/test_idempotency_scope_84_154.js'
+      - 'tools/test_notification_center_bridge_84_152.js'
+      - 'tools/test_runtime_maintenance_boundary_84_154.js'
+      - 'tools/backfill_notification_center_from_legacy.php'
+      - '.github/workflows/pr37-recovery-contract.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Booking service boundary
+        run: node tools/test_booking_service_boundary_84_153.js
+      - name: Health read-only boundary
+        run: node tools/test_health_readonly_boundary_84_154.js
+      - name: Idempotency stable scope
+        run: node tools/test_idempotency_scope_84_154.js
+      - name: Notification center bridge
+        run: node tools/test_notification_center_bridge_84_152.js
+      - name: Runtime maintenance boundary
+        run: node tools/test_runtime_maintenance_boundary_84_154.js
