@@ -151,7 +151,7 @@
 
     function renderVehicleChoice(){
       if(!vehicles.length){
-        vehicleCurrent.innerHTML='<p class="k-obd-muted">В гараже пока нет автомобиля. Диагностику можно выполнить без привязки.</p>';
+        vehicleCurrent.innerHTML='<p class="k-obd-muted">В гараже пока нет автомобиля. Диагностику можно выполнить, но сохранение и синхронизация истории требуют привязки к автомобилю.</p>';
         vehicleList.hidden=true;
         return;
       }
@@ -358,13 +358,21 @@
       return out.replace(/[^A-HJ-NPR-Z0-9]/gi,'').slice(0,17);
     }
 
+    const queuedVehicleId=item=>String(
+      item?.payload?.vehicleId ?? item?.payload?.carId ?? item?.payload?.autoId ?? item?.payload?.elmVehicleId ?? ''
+    ).trim();
+
     async function saveOffline(snapshot){
       if(!mobile?.available?.())return null;
+      const vehicleId=String(selectedVehicle?.id||'').trim();
+      if(!vehicleId){
+        return {skipped:true,code:'VEHICLE_ID_REQUIRED'};
+      }
       const payload={
         kind:'obd_session',
         capturedAt:Date.now(),
         adapter:currentAdapter||{},
-        vehicleId:selectedVehicle?.id||'',
+        vehicleId,
         vin:snapshot?.vin||parseVin(snapshot?.vinRaw),
         dtc:{raw:snapshot?.dtcRaw||'',codes:Array.isArray(snapshot?.dtcCodes)?snapshot.dtcCodes:[]},
         snapshot
@@ -376,24 +384,32 @@
 
     async function syncOffline(){
       if(!navigator.onLine || !mobile?.available?.())return false;
-      let drained=null;
       try{
         const state=await mobile.offlineState();
         if(!Number(state.count||0))return true;
-        drained=await mobile.offlineDrain();
+        const drained=await mobile.offlineDrain();
         const items=Array.isArray(drained.items)?drained.items:[];
         if(!items.length)return true;
+        const eligible=items.filter(item=>queuedVehicleId(item)!=='');
+        const blocked=items.length-eligible.length;
+        if(!eligible.length){
+          if(blocked) setResult(blocked+' локальных диагностических сессий не синхронизированы: отсутствует vehicleId. Привяжите автомобиль и повторите диагностику.');
+          return false;
+        }
         const response=await fetch('/api/obd.php?action=sync',{
           method:'POST',credentials:'same-origin',
           headers:{'Content-Type':'application/json','Accept':'application/json'},
-          body:JSON.stringify({items})
+          body:JSON.stringify({items:eligible})
         });
         const payload=await response.json();
         if(!response.ok||!payload.ok)throw new Error(payload.code||'SYNC_FAILED');
-        await mobile.offlineAcknowledge(items);
+        await mobile.offlineAcknowledge(eligible);
         await updateOffline();
         await loadHistory();
-        return true;
+        if(blocked){
+          setResult('Синхронизировано '+eligible.length+' сессий. '+blocked+' старых локальных записей без vehicleId оставлены на устройстве.');
+        }
+        return blocked===0;
       }catch(error){
         await updateOffline();
         setResult('Сессия сохранена офлайн. Синхронизация будет повторена: '+(error.message||String(error)));
@@ -407,11 +423,15 @@
       setResult('Читаем основные параметры автомобиля…');
       try{
         const snapshot=await mobile.elmSnapshot();
-        await saveOffline(snapshot);
+        const saved=await saveOffline(snapshot);
         renderLive(snapshot);
         renderDtc(snapshot?.dtcCodes||[]);
-        setResult(snapshot);
-        if(navigator.onLine)await syncOffline();
+        if(saved?.skipped){
+          setResult({snapshot,warning:'Диагностика выполнена, но история не сохранена: сначала добавьте или выберите автомобиль.'});
+        }else{
+          setResult(snapshot);
+          if(navigator.onLine)await syncOffline();
+        }
       }catch(error){setResult(error.message||String(error));}
       finally{snapshotBtn.disabled=!ready;}
     }
