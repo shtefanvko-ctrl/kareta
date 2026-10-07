@@ -25,6 +25,7 @@ assert.match(scanner.render(), /href="#\/master"/);
 location.hash = '#/scan/qr';
 assert.match(scanner.render(), /href="#\/scan"/);
 assert.equal(scanner.qrTarget('https://kareta.kz/#/services/item/oil_1'), '#/services/item/oil_1');
+assert.equal(scanner.qrTarget('https://m.kareta.kz/#/services/item/oil_1'), '#/services/item/oil_1');
 assert.equal(scanner.qrTarget('#/masters/profile/master/ms_001'), '#/masters/profile/master/ms_001');
 for (const code of ['javascript:alert(1)','https://evil.example/#/services/item/oil','https://kareta.kz.evil.example/#/services/item/oil','https://u:p@kareta.kz/#/services/item/oil','http://kareta.kz/#/services/item/oil','https://kareta.kz:444/#/services/item/oil','#/admin/users','#/services/item/oil?x=1','#/services/item/%3Cimg%3E','<img onerror=alert(1)>']) assert.throws(()=>scanner.qrTarget(code));
 location.hash = '#/scan/document';

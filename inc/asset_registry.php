@@ -20,11 +20,15 @@ function kareta_asset_registry(): array
             'js/next/diagnostics_snapshot.js',
             'js/next/app_preloader.js',
             'js/boot/runtime_onboarding_bundle.js',
+            'js/next/geo/kz_city_catalog.js',
             'js/boot/runtime_identity_bundle.js',
             'js/boot/runtime_shell_bundle.js',
             'js/boot/runtime_ui_bundle.js',
             'js/boot/runtime_core_bundle.js',
             'js/next/app_next.js',
+        ],
+        'standaloneScripts' => [
+            'js/mobile_native_bridge.js',
         ],
         'images' => [
             'media/kareta_create_request_vehicle_background_r188_5_5_6_84_31.png',
@@ -96,6 +100,7 @@ function kareta_asset_registry(): array
             'js/next/kflow_windows.js',
             'js/next/onboarding/pages/role_definitions.js',
             'js/next/onboarding/onboarding_selection_catalog.js',
+            'js/next/geo/kz_city_catalog.js',
             'js/next/onboarding/pages/role_page.js',
             'js/next/onboarding/pages/client_profile_page.js',
             'js/next/onboarding/pages/master_profile_page.js',
@@ -787,6 +792,7 @@ function kareta_asset_missing(): array
     $paths = array_values(array_unique(array_merge(
         $registry['styles'],
         $registry['scripts'],
+        $registry['standaloneScripts'] ?? [],
         $registry['scriptSources'] ?? [],
         $registry['images'],
         function_exists('kareta_route_asset_paths') ? kareta_route_asset_paths() : []
