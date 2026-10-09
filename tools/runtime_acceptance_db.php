@@ -14,7 +14,7 @@ $pdo=kareta_pdo();
 if(!$pdo instanceof PDO) acceptance_fail('pdo_unavailable');
 
 $expected=(int)(defined('KARETA_DB_VERSION')?KARETA_DB_VERSION:0);
-if($expected!==144) acceptance_fail('unexpected_db_version_'.$expected);
+if($expected<144) acceptance_fail('unsupported_db_version_'.$expected);
 
 $versionStmt=$pdo->prepare("SELECT `value` FROM `db_meta` WHERE `key`='schema_version' LIMIT 1");
 $versionStmt->execute();
@@ -32,6 +32,7 @@ if((int)($history['c']??0)!==$expected||(int)($history['min_v']??0)!==1||(int)($
 if((int)($history['empty_checksums']??0)!==0) acceptance_fail('migration_checksum_missing');
 
 $requiredTables=['users','accounts','persons','person_profiles','auth_sessions','geo_points','orders','obd_diagnostic_sessions'];
+if($expected>=145) $requiredTables[]='order_assignments';
 $tableStmt=$pdo->prepare("SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?");
 foreach($requiredTables as $table){
     $tableStmt->execute([$table]);
