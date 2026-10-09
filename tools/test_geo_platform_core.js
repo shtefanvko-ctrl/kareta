@@ -40,7 +40,11 @@ assert(api.includes("exact_mobile_origin_requires_explicit_consent"),'mobile ori
 assert(api.includes("$pdo->prepare"),'geo API must use parameterized queries');
 assert(!api.includes("visibility IN ('exact','approximate')"),'approximate private coordinates must not leak through public nearby');
 
-assert.strictEqual(manifestJson.targetDbVersion,144,'JSON migration target must match current canonical DB 144');
+const phpDbVersionMatch=manifestPhp.match(/'version'\s*=>\s*(\d+)/);
+assert(phpDbVersionMatch,'PHP canonical DB manifest version missing');
+const phpDbVersion=Number(phpDbVersionMatch[1]);
+assert(phpDbVersion>=144,'Geo platform requires canonical DB version >=144');
+assert.strictEqual(manifestJson.targetDbVersion,phpDbVersion,'JSON migration target must match current PHP manifest version');
 assert(manifestJson.migrations.some(x=>x.version===137&&x.file==='137_geo_platform_core.php'),'JSON manifest geo migration missing');
 assert(manifestJson.migrations.some(x=>x.version===144&&x.file==='144_vehicle_catalog_stable_ids.php'),'JSON manifest must preserve migrations through DB 144');
 assert(manifestPhp.includes("137 => ['file' => '137_geo_platform_core.php'"),'PHP manifest geo migration missing');

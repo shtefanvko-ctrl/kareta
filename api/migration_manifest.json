@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "targetDbVersion": 144,
+  "targetDbVersion": 145,
   "migrations": [
     {
       "version": 1,
@@ -721,6 +721,11 @@
       "version": 144,
       "file": "144_vehicle_catalog_stable_ids.php",
       "sha256": "53929335a512fe143364d74dadf3e508c75a95b59373a14f2985a121b57a1216"
+    },
+    {
+      "version": 145,
+      "file": "145_order_assignments_readiness.php",
+      "sha256": "ce3a0a13646cf5d0d1eb15cbc1db16f8b29ec294d2c0993dc962c0a830f8538f"
     }
   ]
 }

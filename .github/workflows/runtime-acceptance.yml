@@ -120,10 +120,13 @@ jobs:
             $prov=json_decode(file_get_contents("/tmp/provenance.json"),true,64,JSON_THROW_ON_ERROR);
             $expectedSha=strtolower((string)getenv("EXPECTED_SHA"));
             $expectedVersion=(string)getenv("KARETA_ACCEPTANCE_EXPECTED_VERSION");
-            if(empty($schema["ok"])||($schema["status"]??"")!=="ready"||(int)($schema["dbVersion"]??0)!==144) throw new RuntimeException("schema_health_not_ready");
-            if(empty($identity["ok"])||($identity["status"]??"")!=="ready"||(int)($identity["dbVersion"]??0)!==144) throw new RuntimeException("identity_health_not_ready");
+            $canonicalManifest=require "api/migration_manifest.php";
+            $expectedDb=(int)($canonicalManifest["version"]??0);
+            if($expectedDb<144) throw new RuntimeException("canonical_db_version_too_old");
+            if(empty($schema["ok"])||($schema["status"]??"")!=="ready"||(int)($schema["dbVersion"]??0)!==$expectedDb) throw new RuntimeException("schema_health_not_ready");
+            if(empty($identity["ok"])||($identity["status"]??"")!=="ready"||(int)($identity["dbVersion"]??0)!==$expectedDb) throw new RuntimeException("identity_health_not_ready");
             if(empty($prov["ok"])||strtolower((string)($prov["gitSha"]??""))!==$expectedSha||(string)($prov["assetVersion"]??"")!==$expectedVersion) throw new RuntimeException("provenance_mismatch");
-            echo "HTTP_RUNTIME: PASS db=144 version={$expectedVersion} sha={$expectedSha}\n";
+            echo "HTTP_RUNTIME: PASS db={$expectedDb} version={$expectedVersion} sha={$expectedSha}\n";
           '
 
       - name: Install headless browser
