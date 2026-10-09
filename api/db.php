@@ -3649,6 +3649,10 @@ function orders_create(?PDO $pdo, array $b): void {
     if ($stoOrderId !== '') { $dupWhere .= " AND COALESCE(sto_id,'')=?"; $dupParams[] = $stoOrderId; }
     if ($vehicleId) { $dupWhere .= " AND (client_vehicle_id=? OR client_vehicle_id='' OR client_vehicle_id IS NULL)"; $dupParams[] = $vehicleId; }
     if ($type)      { $dupWhere .= " AND type=?"; $dupParams[] = $type; }
+    if (!empty($o['bookingRequired']) && !empty($o['masterId'])) {
+        $dupWhere .= " AND master_id=? AND date=? AND time=?";
+        array_push($dupParams,(string)$o['masterId'],(string)($o['date']??''),(string)($o['time']??''));
+    }
     if ($serviceSig !== '') { $dupWhere .= " AND (service_ids=? OR service_names LIKE ?)"; $dupParams[] = $serviceSig; $dupParams[] = '%'.$serviceSig.'%'; }
     $stDup = $pdo->prepare("SELECT id FROM `orders` WHERE {$dupWhere} ORDER BY created_at DESC LIMIT 1");
     $stDup->execute($dupParams);
@@ -3872,7 +3876,7 @@ function orders_create(?PDO $pdo, array $b): void {
             !empty($o['scheduleRequired']) ||
             !empty($o['bookingRequired']) ||
             (string)($o['mode'] ?? '') === 'appointment' ||
-            (string)($o['source'] ?? '') === 'booking_wizard'
+            in_array((string)($o['source'] ?? ''), ['booking_wizard','master_booking'], true)
         );
         if ($clientName === '') kareta_json(['ok'=>false,'error'=>'client_name_required','message'=>'Укажите имя клиента'], 400);
         if ($clientPhone === '' || strlen(preg_replace('/\D+/', '', $clientPhone)) < 10) kareta_json(['ok'=>false,'error'=>'client_phone_required','message'=>'Укажите корректный телефон'], 400);
@@ -3881,6 +3885,48 @@ function orders_create(?PDO $pdo, array $b): void {
         if ($requiresSchedule && $dateValue === '') kareta_json(['ok'=>false,'error'=>'date_required','message'=>'Укажите дату записи'], 400);
         if ($requiresSchedule && $timeMode === 'exact' && $timeValue === '') kareta_json(['ok'=>false,'error'=>'time_required','message'=>'Укажите время записи'], 400);
         if ($type === 'service_order' && $timeMode !== 'exact') $timeValue = '';
+        if ($actorRole === 'client' && $requiresSchedule && $masterId !== '0') {
+            // Serialize bookings on the master row, within the same transaction as INSERT.
+            if (str_starts_with($masterId,'demo-master-')) {
+                $pdo->rollBack();
+                kareta_json(['ok'=>false,'error'=>'demo_master_unbookable'],422);
+            }
+            $tz=new DateTimeZone('Asia/Almaty');
+            $appointment=DateTimeImmutable::createFromFormat('!Y-m-d H:i',$dateValue.' '.$timeValue,$tz);
+            if (!$appointment || $appointment->format('Y-m-d H:i')!==$dateValue.' '.$timeValue || $appointment<=new DateTimeImmutable('now',$tz)) {
+                $pdo->rollBack();
+                kareta_json(['ok'=>false,'error'=>'invalid_booking_datetime','message'=>'Дата или время записи недействительны'],422);
+            }
+            if (!$serviceIds) {
+                $pdo->rollBack();
+                kareta_json(['ok'=>false,'error'=>'booking_service_required'],422);
+            }
+            $stBookOffer=$pdo->prepare("SELECT duration_min FROM service_offers WHERE owner_type='master' AND BINARY owner_entity_id=BINARY ? AND BINARY service_id=BINARY ? AND active=1 AND booking_enabled=1 AND availability_status<>'paused' AND moderation_status='approved' LIMIT 1");
+            $stBookOffer->execute([$masterId,$serviceIds[0]]);
+            $bookOffer=$stBookOffer->fetch(PDO::FETCH_ASSOC);
+            if (!$bookOffer) {
+                $pdo->rollBack();
+                kareta_json(['ok'=>false,'error'=>'service_offer_unavailable'],422);
+            }
+            $bookingSlotDuration=max(30,(int)($bookOffer['duration_min']?:120));
+            $stBookLock=$pdo->prepare("SELECT id FROM masters WHERE BINARY id=BINARY ? AND active=1 FOR UPDATE");
+            $stBookLock->execute([$masterId]);
+            if (!$stBookLock->fetchColumn()) {
+                $pdo->rollBack();
+                kareta_json(['ok'=>false,'error'=>'master_not_available'],422);
+            }
+            $stBusy=$pdo->prepare("SELECT time,COALESCE(estimated_duration_min,120) AS duration FROM orders WHERE BINARY master_id=BINARY ? AND date=? AND status NOT IN ('cancelled','deleted') AND time<>'' FOR UPDATE");
+            $stBusy->execute([$masterId,$dateValue]);
+            $start=$appointment->getTimestamp();$end=$start+$bookingSlotDuration*60;
+            foreach($stBusy->fetchAll(PDO::FETCH_ASSOC) as $row){
+                $other=(new DateTimeImmutable($dateValue.' '.(string)$row['time'],$tz))->getTimestamp();
+                if($start<$other+max(30,(int)$row['duration'])*60 && $end>$other){
+                    $pdo->rollBack();
+                    kareta_json(['ok'=>false,'error'=>'booking_slot_conflict','message'=>'Время занято. Выберите другой слот'],409);
+                }
+            }
+        }
+
         $orderCategory = kareta_clean_text($o['category'] ?? ($type === 'parts_request' ? 'parts' : 'service'), 64);
         if ($orderCategory === '') $orderCategory = $type === 'parts_request' ? 'parts' : 'service';
         $orderSource = kareta_clean_text($o['source'] ?? '', 64);
@@ -3965,6 +4011,9 @@ function orders_create(?PDO $pdo, array $b): void {
                 '[]','[]',
                 kareta_normalize_datetime_value($o['createdAt'] ?? '', 'now')
             ]);
+        if (isset($bookingSlotDuration) && kareta_column_exists($pdo,'orders','estimated_duration_min')) {
+            $pdo->prepare("UPDATE orders SET estimated_duration_min=? WHERE BINARY id=BINARY ?")->execute([$bookingSlotDuration,$id]);
+        }
         if ($verifiedOfferId !== null) {
             $pdo->prepare("UPDATE `orders` SET service_offer_id=?,service_offer_price=?,service_offer_price_type=?,price=? WHERE BINARY id=BINARY ?")
                 ->execute([$verifiedOfferId,$verifiedOfferPrice,$verifiedOfferPriceType,$resolvedOrderPrice,$id]);
