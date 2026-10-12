@@ -85,3 +85,46 @@
 @media (min-width:861px) and (max-width:900px){
   #k-shell-header:has(> #k-mobile-back:not([hidden])) > .k-brand{margin-left:54px!important}
 }
+
+/* Guest shell canon 2026-10-13: the branded masthead belongs to Home only.
+   Inner routes reuse the existing #k-mobile-back DOM node with a contextual title. */
+#k-shell-header[data-kareta-header-mode="inner"] > .k-brand,
+#k-shell-header[data-kareta-header-mode="onboarding"] > .k-brand{
+  display:none!important;
+}
+#k-shell-header .k-shell-page-title{display:none}
+#k-shell-header > #k-mobile-back[hidden]{display:none!important}
+@media (max-width:860px){
+  #k-shell-header[data-kareta-header-mode="inner"] .k-shell-page-title{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    display:block;width:min(54vw,270px);margin:0;
+    color:#111827;text-align:center;font-size:17px;font-weight:800;
+    line-height:1.2;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;
+    pointer-events:none;
+  }
+  #k-shell-header[data-kareta-header-mode="inner"] > .k-shell-actions{display:none!important}
+  /* The outlet owns its search, tabs and contextual action below this one-line header. */
+  #k-page-outlet .k-services-canon-titlebar > h1{
+    position:absolute!important;width:1px!important;height:1px!important;
+    padding:0!important;margin:-1px!important;overflow:hidden!important;
+    clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important;
+  }
+}
+@media (min-width:861px){
+  #k-shell-header[data-kareta-header-mode="inner"] .k-shell-page-title{
+    display:flex;align-items:center;min-width:0;min-height:44px;
+    padding-left:52px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    font-size:16px;font-weight:800;color:#111827;
+  }
+  #k-shell-header[data-kareta-header-mode="inner"] > #k-mobile-back.k-mobile-back{
+    position:absolute!important;left:12px!important;top:50%!important;
+    right:auto!important;bottom:auto!important;transform:translateY(-50%)!important;
+    display:grid!important;place-items:center!important;
+    width:44px!important;height:44px!important;border-radius:12px!important;
+    background:#fff!important;color:#111827!important;z-index:4!important;
+    border:1px solid rgba(17,24,39,.1)!important;
+  }
+  #k-shell-header[data-kareta-header-mode="inner"] > #k-mobile-back.k-mobile-back:focus-visible{
+    outline:3px solid rgba(255,107,0,.32)!important;
+  }
+}
