@@ -5,10 +5,17 @@
   const ONBOARDING = /^(#(?:\/)?(?:role|profile|entry|onboarding|welcome|benefits|transparency))/i;
   let syncFrame = 0;
   const routeTrail = [];
-  const ROUTE_TITLES = Object.freeze({home:'Главная',services:'Услуги',parts:'Запчасти',masters:'Мастера и СТО',community:'Сообщество',chats:'Сообщения',messages:'Сообщения',diagnostics:'Диагностика ЭБУ',orders:'Заказы',cabinet:'Аккаунт',garage:'Гараж',works:'Работы мастеров',scanner:'Сканер',map:'Карта',seller:'Магазин',notifications:'Уведомления',assistant:'Помощник электрика'});
+  const ROUTE_TITLES = Object.freeze({home:'Главная',services:'Услуги',parts:'Запчасти',masters:'Мастера и СТО',community:'Сообщество',chats:'Сообщения',messages:'Сообщения',cart:'Корзина',checkout:'Оформление заказа',market:'Маркет',account:'Аккаунт',diagnostics:'Диагностика ЭБУ',orders:'Заказы',cabinet:'Аккаунт',garage:'Гараж',works:'Работы мастеров',scanner:'Сканер',map:'Карта',seller:'Магазин',notifications:'Уведомления',assistant:'Помощник электрика'});
 
   function routeTitle(hash) {
-    const segment = String(hash || HOME).split('?')[0].replace(/^#\//, '').split('/')[0];
+    const route = String(hash || HOME).split('?')[0];
+    if (/^#\/parts\/item(?:\/|$)/.test(route)) return 'Карточка товара';
+    if (/^#\/parts\/store(?:\/|$)/.test(route)) return 'Магазин';
+    if (/^#\/services\/item(?:\/|$)/.test(route)) return 'Услуга';
+    if (/^#\/masters\/profile(?:\/|$)/.test(route)) return 'Профиль мастера или СТО';
+    if (/^#\/orders\/new(?:\/|$)/.test(route)) return 'Новая заявка';
+    if (/^#\/orders\/item(?:\/|$)/.test(route)) return 'Детали заказа';
+    const segment = route.replace(/^#\//, '').split('/')[0];
     return ROUTE_TITLES[segment] || window.KaretaRouteRegistry?.get?.(segment)?.label || 'Раздел';
   }
 
