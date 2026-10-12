@@ -288,7 +288,7 @@
       nativeText.textContent='Bluetooth Classic, BLE, Wi-Fi и офлайн-хранилище доступны в APK 1.5.3.';
       try{
         const status=await mobile.elmStatus();
-        if(!status.permission){
+        if(status.transport!=='wifi_tcp'&&!status.permission){
           try{
             const permission=await mobile.requestPermission('bluetooth');
             if(permission?.granted===false){
@@ -407,10 +407,14 @@
         });
         const payload=await response.json();
         if(!response.ok||!payload.ok)throw new Error(payload.code||'SYNC_FAILED');
-        await mobile.offlineAcknowledge(items);
+        const accepted=new Set(Array.isArray(payload.accepted)?payload.accepted.map(String):[]);
+        const confirmed=items.filter(item=>accepted.has(String(item?.id||'')));
+        if(confirmed.length)await mobile.offlineAcknowledge(confirmed);
         await updateOffline();
         await loadHistory();
-        return true;
+        const pending=items.length-confirmed.length;
+        if(pending)setResult('Синхронизировано '+confirmed.length+' сессий; '+pending+' остаются офлайн.');
+        return pending===0;
       }catch(error){
         await updateOffline();
         setResult('Сессия сохранена офлайн. Синхронизация будет повторена: '+(error.message||String(error)));
