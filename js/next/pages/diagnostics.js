@@ -66,14 +66,14 @@
           <p class="k-obd-muted">Поддержка: Bluetooth Classic (сопряжённые устройства), BLE UART (сканирование) и Wi-Fi TCP (локальная сеть адаптера). Выберите транспорт — команды диагностики одинаковые.</p>
           <div class="k-obd-actions">
             <button type="button" class="k-btn k-btn-primary" data-obd-devices>Bluetooth Classic</button>
-            <button type="button" class="k-btn" data-obd-scan-ble>Найти BLE</button>
+            <button type="button" class="k-btn" data-obd-scan-ble disabled>Найти BLE</button>
             <button type="button" class="k-btn" data-obd-init disabled>Инициализировать</button>
             <button type="button" class="k-btn" data-obd-disconnect disabled>Отключить</button>
           </div>
           <div class="k-obd-wifi-connect">
             <label>Wi-Fi ELM327 — IP<input type="text" inputmode="decimal" maxlength="15" value="192.168.0.10" placeholder="192.168.0.10" data-obd-wifi-host></label>
             <label>TCP-порт<input type="number" min="1" max="65535" value="35000" data-obd-wifi-port></label>
-            <button type="button" class="k-btn" data-obd-wifi-connect>Подключить Wi-Fi</button>
+            <button type="button" class="k-btn" data-obd-wifi-connect disabled>Подключить Wi-Fi</button>
           </div>
           <p class="k-obd-muted">Сначала подключите телефон к Wi-Fi-сети адаптера. Другие адреса и порты укажите согласно его инструкции. USB OTG пока не поддерживается.</p>
           <div class="k-obd-devices" data-obd-device-list hidden></div>
