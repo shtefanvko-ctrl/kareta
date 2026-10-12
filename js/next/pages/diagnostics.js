@@ -288,6 +288,17 @@
       nativeText.textContent='Bluetooth Classic, BLE, Wi-Fi и офлайн-хранилище доступны в APK 1.5.3.';
       try{
         const status=await mobile.elmStatus();
+        const transports=Array.isArray(status?.supportedTransports)
+          ? status.supportedTransports : [status?.transport||'classic_spp'];
+        const bleEnabled=transports.includes('ble_gatt');
+        const wifiEnabled=transports.includes('wifi_tcp');
+        const bleButton=q('[data-obd-scan-ble]');
+        const wifiButton=q('[data-obd-wifi-connect]');
+        if(bleButton)bleButton.disabled=!bleEnabled;
+        if(wifiButton)wifiButton.disabled=!wifiEnabled;
+        nativeText.textContent=(bleEnabled&&wifiEnabled)
+          ? 'Android поддерживает Classic, BLE и Wi-Fi ELM327.'
+          : 'Доступен Bluetooth Classic. Для BLE/Wi-Fi обновите Android KARETA до 1.5.3.';
         if(status.transport!=='wifi_tcp'&&!status.permission){
           try{
             const permission=await mobile.requestPermission('bluetooth');
