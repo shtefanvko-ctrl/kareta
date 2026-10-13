@@ -48,7 +48,7 @@
   --k-parts-accent:#ff3b0a;
   --k-parts-line:#e4e6ea;
   --k-parts-soft:#f6f7f8;
-  width:min(100%,1180px);
+  width:100%;max-width:none;
   margin:0 auto;
   padding:18px 20px 110px;
   background:#fff;
@@ -491,13 +491,13 @@
 @media(min-width:1180px){
   .k-community-v2 .k-community-layout-v2{
     display:grid!important;
-    grid-template-columns:190px minmax(520px,640px) 260px!important;
+    grid-template-columns:minmax(170px,220px) minmax(0,1fr) minmax(230px,300px)!important;
     grid-template-areas:"community-nav community-feed community-aside"!important;
-    justify-content:center!important;
+    justify-content:stretch!important;
     align-items:start!important;
     gap:18px!important;
-    width:min(100%,1144px)!important;
-    max-width:1144px!important;
+    width:100%!important;
+    max-width:none!important;
     margin:0 auto!important;
     padding:18px 12px!important;
   }
@@ -530,8 +530,8 @@
     display:grid!important;
     grid-template-columns:minmax(0,1fr) minmax(240px,320px)!important;
     gap:16px!important;
-    width:min(100%,960px)!important;
-    max-width:960px!important;
+    width:100%!important;
+    max-width:none!important;
     margin:0 auto!important;
     padding:16px!important;
   }
@@ -976,9 +976,11 @@
   .k-parts-ref-page .k-parts-master-search,
   .k-parts-ref-page .k-parts-master-filters,
   .k-parts-ref-page>[data-parts-stores]{
-    width:min(100%,920px)!important;
-    margin-left:auto!important;
-    margin-right:auto!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin-left:0!important;
+    margin-right:0!important;
   }
   .k-parts-ref-page .k-parts-ref-head h1{font-size:34px!important;line-height:40px!important}
 }

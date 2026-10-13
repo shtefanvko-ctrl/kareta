@@ -21,7 +21,7 @@
   --k-flow-target:44px;
   --k-flow-shadow:0 8px 24px rgba(20,24,32,.07);
   --k-flow-shadow-hover:0 12px 30px rgba(20,24,32,.10);
-  --k-flow-content-max:1600px;
+  --k-flow-content-max:100%;
   --k-flow-rail-w:320px;
   --k-flow-ease:cubic-bezier(.22,1,.36,1);
 }

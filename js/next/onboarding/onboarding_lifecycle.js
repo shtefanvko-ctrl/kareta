@@ -11,6 +11,10 @@
     throw new Error('Compact onboarding lifecycle dependencies are incomplete');
   }
 
+  const guestActive=()=>{
+    if(!['s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname))return false;
+    try{return sessionStorage.getItem('kareta.guest.preview.v1')==='1';}catch(_error){return false;}
+  };
   const OVERLAY_STEPS = Object.freeze(['welcome','role','profile','code']);
   let booted = false;
   let listenersBound = false;
@@ -127,6 +131,7 @@
     try {
       const flow = draft.read();
       const parsed = raw && typeof raw === 'object' ? raw : router.parse(raw);
+      if(parsed && guestActive())try{sessionStorage.removeItem('kareta.guest.preview.v1');}catch(_error){}
       if (state.isDone()) {
         if (parsed || context.forceDoneCheck) transitionToApp(flow, { source:lastSource, forceRoute:!!parsed });
         else app.setActive(false);
@@ -142,6 +147,7 @@
   }
 
   function resume(options = {}){
+    if(guestActive()&&!router.isOnboarding()){removeSurfaces();app.setActive(false);return String(location.hash||'#/home');}
     const flow = draft.read();
     if (state.isDone()) return transitionToApp(flow, { source:options.source || 'resume-done', forceRoute:router.isOnboarding() });
     app.setActive(true);
@@ -169,6 +175,7 @@
   }
 
   function reconcile(source, options = {}){
+    if(guestActive()&&!router.isOnboarding()){removeSurfaces();app.setActive(false);return false;}
     if (state.isDone()) {
       if (router.isOnboarding()) return transitionToApp(draft.read(), { source, forceRoute:true });
       removeSurfaces();
@@ -192,6 +199,7 @@
       if (event.key === state.FLOW_KEY || state.DONE_KEYS.includes(event.key)) reconcile('storage-sync');
     });
     window.addEventListener('kareta:session-anonymous', event => {
+      if(guestActive()&&!router.isOnboarding())return;
       const flow=state.read();
       const hadCompletedState=state.isDone() || flow?.serverConfirmed === true || flow?.onboardingCompleted === true;
       if (!hadCompletedState) return;
@@ -217,7 +225,9 @@
       // finalize()/role_page.js own the successful transition while the role picker is active.
       // Completing + routing again from this listener caused CLIENT to inherit a stale MASTER
       // context and open the master questionnaire. Preserve the selected branch and defer.
-      if (router.isOnboarding() || flow?.pending === true) {
+      const pendingStage=String(flow?.stage || router.parse()?.step || '');
+      const recoverableWelcome=pendingStage==='welcome' && !normalizePhone(flow?.phone || flow?.contactPhone || '');
+      if ((router.isOnboarding() || flow?.pending === true) && !recoverableWelcome) {
         state.write({ role:explicitRole, entryRole:explicitRole });
         lastAction='session-confirmed-deferred-to-onboarding-owner';
         return;
@@ -256,6 +266,7 @@
   }
 
   function start(options = {}){
+    if(guestActive()&&!router.isOnboarding()){removeSurfaces();app.setActive(false);return false;}
     if (!options.force && state.isDone() && !router.isOnboarding()) return false;
     if (options.force && options.skipWelcome === true && !router.isOnboarding()) {
       const target = router.canonical(draft.currentRole(), 'role');

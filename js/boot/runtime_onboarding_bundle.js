@@ -591,7 +591,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function payloadFromFlow(flow){
-    return {
+    const payload = {
       role:String(flow.role || 'client'),
       name:String(flow.accountName || flow.name || ''),
       phone:String(flow.phone || flow.contactPhone || ''),
@@ -625,6 +625,15 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
       },
       onboardingVersion:'20260718-request-correlation-r87'
     };
+    const prepared=window.KaretaFormContract?.prepare?.('onboarding',payload,{
+      canonical:{
+        accountId:flow.accountId,
+        personId:flow.personId,
+        contextId:flow.contextId,
+        cityId:flow.cityId || window.KaretaOnboardingSelectionCatalog?.resolveCityId?.(flow.city || flow.cityName || '')
+      }
+    });
+    return prepared?.compatPayload || payload;
   }
 
   function normalizePhone(value){
@@ -1238,7 +1247,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   function modalHeader(options = {}) {
     const roleIcon = options.roleIcon ? `<div class="onb2-modal-role-ico">${esc(options.roleIcon)}</div>` : '';
     return `<div class="onb2-modal-head onb2-modal-head--compact">
-      <div class="onb2-headbar"><div class="onb2-brandbox onb2-brandbox--official"><img class="onb2-brand-logo onb2-brand-logo--full" src="assets/onboarding/kareta_logo_full.png" alt="KARETA.KZ Автосервис"></div></div>
+      <div class="onb2-headbar"><div class="onb2-brandbox onb2-brandbox--official"><img class="onb2-brand-logo onb2-brand-logo--full" src="/assets/logo/main/kareta_logo_full.png?rev=20261013-approved" alt="KARETA.KZ Автосервис"></div></div>
       ${roleIcon}
       <div class="onb2-modal-title">${esc(options.title || '')}</div>
       <div class="onb2-modal-sub">${esc(options.sub || '')}</div>
@@ -1607,10 +1616,17 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     'Павлодар': '🌊'
   });
 
-  const cities = Object.freeze([
-    'Алматы','Астана','Шымкент','Караганда',
-    'Усть-Каменогорск','Семей','Павлодар','Риддер'
+  const cityRecords = Object.freeze([
+    Object.freeze({id:'almaty',name:'Алматы'}),
+    Object.freeze({id:'astana',name:'Астана'}),
+    Object.freeze({id:'shymkent',name:'Шымкент'}),
+    Object.freeze({id:'karaganda',name:'Караганда'}),
+    Object.freeze({id:'ust-kamenogorsk',name:'Усть-Каменогорск'}),
+    Object.freeze({id:'semey',name:'Семей'}),
+    Object.freeze({id:'pavlodar',name:'Павлодар'}),
+    Object.freeze({id:'ridder',name:'Риддер'})
   ]);
+  const cities = Object.freeze(cityRecords.map(row=>row.name));
 
   // Approximate WGS84 centers are for city browsing only, never user/provider identity.
   const cityCenters=Object.freeze({
@@ -1624,9 +1640,16 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     'Риддер':Object.freeze({latitude:50.34524,longitude:83.515621})
   });
   const cityAliases=Object.freeze({'өскемен':'Усть-Каменогорск','oskemen':'Усть-Каменогорск','семей':'Семей','semey':'Семей','алматы':'Алматы','almaty':'Алматы','астана':'Астана','astana':'Астана','шымкент':'Шымкент','shymkent':'Шымкент','қарағанды':'Караганда','karaganda':'Караганда','павлодар':'Павлодар','pavlodar':'Павлодар','риддер':'Риддер','ridder':'Риддер'});
-  const resolveCityCenter=value=>{
+  const resolveCityName=value=>{
     const name=String(value||'').trim(),lower=name.toLocaleLowerCase('ru-RU');
-    const key=cityAliases[lower]||cities.find(city=>city.toLocaleLowerCase('ru-RU')===lower);
+    return cityAliases[lower]||cities.find(city=>city.toLocaleLowerCase('ru-RU')===lower)||'';
+  };
+  const resolveCityId=value=>{
+    const name=resolveCityName(value);
+    return cityRecords.find(row=>row.name===name)?.id||'';
+  };
+  const resolveCityCenter=value=>{
+    const key=resolveCityName(value);
     return key&&cityCenters[key]?{...cityCenters[key],city:key,precision:'city',source:'GeoNames'}:null;
   };
 
@@ -1640,7 +1663,9 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
 
   window.KaretaOnboardingSelectionCatalog = Object.freeze({
     cities,
+    cityRecords,
     cityIcons,
+    resolveCityId,
     resolveCityCenter,
     brands,
     audit(){
@@ -1674,6 +1699,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
 
   const state = { overlay:null, selectedRole:'', currentStep:'welcome', submitting:false, resendTimer:null, requestTimer:null, pendingEnter:'neutral', otpCleanup:null };
   const esc = formUI.esc;
+  const guestAllowed=()=>['s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname);
+  const guestAction=label=>guestAllowed()?'<button type="button" class="k-guest-entry" data-action="guest-preview">'+label+'</button>':'';
   const normalizeRole = value => definitions.normalizeRole(value || 'client');
   window.normalizeEntryRole = normalizeRole;
 
@@ -1956,6 +1983,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function branchIcon(role){
+    if(role==='sto') return '<span aria-hidden="true" style="font-size:32px">🏪</span>';
+    if(role==='seller') return '<span aria-hidden="true" style="font-size:32px">📦</span>';
     if(role==='master') return `<svg viewBox="0 0 36 36" aria-hidden="true"><path d="M22.5 7.2a8.2 8.2 0 0 0-9.7 10.7L6.7 24a3.1 3.1 0 0 0 4.4 4.4l6.1-6.1A8.2 8.2 0 0 0 28 12.6l-4.2 4.2-4.6-1.1-1.1-4.6 4.4-3.9Z"/></svg>`;
     return `<svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="12" cy="10" r="4"/><path d="M5.5 23c.8-4.5 3-7 6.5-7 3.1 0 5.2 2 6.2 5.4"/><path d="M18 24.5h11.5l-1.3-5.1a2.5 2.5 0 0 0-2.4-1.9h-4.9a2.5 2.5 0 0 0-2.3 1.5L16 24.5Z"/><circle cx="20.5" cy="26.5" r="2"/><circle cx="27.2" cy="26.5" r="2"/></svg>`;
   }
@@ -1967,8 +1996,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
 
   function roleBranch(role){
     const master=role==='master';
-    const title=master?'Мастер':'Клиент';
-    const desc=master?'Оказываю услуги':'Ищу услуги';
+    const title=({client:'Клиент',master:'Мастер',sto:'СТО',seller:'Магазин'})[role]||'Клиент';
+    const desc=({client:'Ищу услуги',master:'Оказываю услуги',sto:'Управляю сервисом',seller:'Продаю запчасти'})[role]||'Ищу услуги';
     return `<div class="k-flow-role-column">
       <button type="button" class="k-flow-role-card" data-role-branch="${role}" data-role="${role}" aria-label="${title}: ${desc}">
         <span class="k-flow-role-icon">${branchIcon(role)}</span>
@@ -1987,7 +2016,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     const action=step==='role'?'back-welcome':step==='profile'?'back-role':'back-profile';
     return `<header class="k-flow-header">
       <button type="button" class="k-flow-back" data-action="${action}" aria-label="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6"/></svg></button>
-      <img class="k-flow-logo" src="assets/onboarding/kareta_logo_full.png" alt="KARETA.KZ">
+      <img class="k-flow-logo" src="/assets/logo/main/kareta_logo_full.png?rev=20261013-approved" alt="KARETA.KZ">
       <span class="k-flow-header-spacer" aria-hidden="true"></span>
     </header>`;
   }
@@ -2005,7 +2034,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   function welcomeStepHtml(){
     return `<section id="onb2-step-welcome" class="onb2-step active" data-step="welcome">
       <div class="onb2-welcome-card onb2-flow-shell">
-        <div class="onb2-flow-brand"><img class="onb2-welcome-logo" src="assets/onboarding/kareta_logo_full.png" alt="KARETA.KZ Автосервис"></div>
+        <div class="onb2-flow-brand"><img class="onb2-welcome-logo" src="/assets/logo/main/kareta_logo_full.png?rev=20261013-approved" alt="KARETA.KZ Автосервис"></div>
         ${progressHtml('welcome')}
         <div class="onb2-welcome-copy">
           <h1>Добро пожаловать!</h1>
@@ -2017,14 +2046,14 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
             <div><b>Запчасти и сообщество</b><span>Подбор деталей, реальные работы, вопросы и помощь других участников.</span></div>
           </div>
         </div>
-        <div class="onb2-flow-actions onb2-flow-actions--single"><button type="button" class="onb2-btn onb2-btn--primary onb2-welcome-next" data-action="welcome-next">Начать</button></div>
+        <div class="onb2-flow-actions onb2-flow-actions--single"><button type="button" class="onb2-btn onb2-btn--primary onb2-welcome-next" data-action="welcome-next">Начать</button>${guestAction('Смотреть без регистрации')}</div>
       </div>
     </section>`;
   }
 
   function roleStepHtml(){
     return `<section id="onb2-step-role" class="onb2-step active" data-step="role">
-      ${sharedModal('Кто вы?','Выберите, как будете пользоваться приложением',`<div class="k-flow-role-grid" role="list" aria-label="Выбор ветки KARETA.KZ">${roleBranch('master')}${roleBranch('client')}</div>`,'','role',`<div class="k-flow-desktop-context"><div><b>Для клиента</b><span>Гараж, заявки на ремонт, выбор мастера, чат, история и запчасти.</span></div><div><b>Для мастера</b><span>Биржа заявок, рабочий график, услуги, клиенты, запчасти и сообщество.</span></div></div>`)}
+      ${sharedModal('Кто вы?','Выберите, как будете пользоваться приложением',`<div class="k-flow-role-grid" role="list" aria-label="Выбор ветки KARETA.KZ">${roleBranch('client')}${roleBranch('master')}${roleBranch('sto')}</div><button type="button" class="k-role-seller-entry" data-role-branch="seller" data-role="seller">Магазин запчастей →</button>${guestAction('Просто посмотреть без регистрации')}`,'','role',`<div class="k-flow-desktop-context"><div><b>Для клиента</b><span>Гараж, заявки на ремонт, выбор мастера, чат, история и запчасти.</span></div><div><b>Для мастера</b><span>Биржа заявок, рабочий график, услуги, клиенты, запчасти и сообщество.</span></div></div>`)}
     </section>`;
   }
 
@@ -2038,7 +2067,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
       ${sharedModal(title,subtitle,`<form class="onb2-compact-profile k-flow-form" data-onb-profile-form novalidate>
         ${formUI.registrationForm({ flow })}
         <div class="onb2-compact-error" data-onb-profile-error hidden></div>
-        <div class="k-flow-actions"><button type="submit" class="onb2-btn onb2-btn--primary k-flow-primary" data-action="request-code">${submitLabel}</button><div class="k-flow-trust k-flow-trust--mobile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5.5 5.5v5.8c0 4.2 2.5 7.8 6.5 9.7 4-1.9 6.5-5.5 6.5-9.7V5.5L12 3Z"/><path d="m9.2 12 1.8 1.8 3.8-4"/></svg><span>Мы защищаем ваши данные</span></div></div>
+        <div class="k-flow-actions"><button type="submit" class="onb2-btn onb2-btn--primary k-flow-primary" data-action="request-code">${submitLabel}</button>${guestAction('Продолжить без SMS — гостевой просмотр')}<div class="k-flow-trust k-flow-trust--mobile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5.5 5.5v5.8c0 4.2 2.5 7.8 6.5 9.7 4-1.9 6.5-5.5 6.5-9.7V5.5L12 3Z"/><path d="m9.2 12 1.8 1.8 3.8-4"/></svg><span>Мы защищаем ваши данные</span></div></div>
       </form>`,'onb2-modal--profile-match','profile',`<div class="k-flow-trust k-flow-trust--wide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5.5 5.5v5.8c0 4.2 2.5 7.8 6.5 9.7 4-1.9 6.5-5.5 6.5-9.7V5.5L12 3Z"/><path d="m9.2 12 1.8 1.8 3.8-4"/></svg><span>Мы защищаем ваши данные</span></div>`)}
     </section>`;
   }
@@ -2315,6 +2344,15 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     finally { state.submitting = false; if (button && document.body.contains(button)) { button.disabled = false; button.textContent = oldText; } }
   }
 
+  function enterGuest(){
+    if(!guestAllowed())return;
+    try{sessionStorage.setItem('kareta.guest.preview.v1','1');}catch(_error){}
+    cleanup();app.setActive(false);
+    try{history.replaceState(null,'','#/home');}catch(_error){location.hash='#/home';}
+    try{window.KaretaRouteRuntime?.transition?.('home',{source:'guest-public-preview'});}catch(_error){}
+    try{window.KaretaShellNav?.refresh?.({activeKey:'home'});}catch(_error){}
+    try{window.dispatchEvent(new HashChangeEvent('hashchange'));}catch(_error){}
+  }
   const boundOverlays = new WeakSet();
   function bind(overlay){
     if (!overlay || boundOverlays.has(overlay)) {
@@ -2324,6 +2362,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     boundOverlays.add(overlay);
     window.KaretaRuntimeLog?.add('onboarding.role.bound', {overlayId:overlay.id || ''});
     overlay.addEventListener('click', event => {
+      if(event.target.closest('[data-action="guest-preview"]')){enterGuest();return;}
       const branch = event.target.closest('[data-role-branch]');
       if (branch) { const role = selectRole(branch.dataset.roleBranch); navigateFlow('profile',role,{source:'registration-role-branch'}); return; }
       const control = event.target.closest('[data-action]');
@@ -2554,6 +2593,10 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     throw new Error('Compact onboarding lifecycle dependencies are incomplete');
   }
 
+  const guestActive=()=>{
+    if(!['s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname))return false;
+    try{return sessionStorage.getItem('kareta.guest.preview.v1')==='1';}catch(_error){return false;}
+  };
   const OVERLAY_STEPS = Object.freeze(['welcome','role','profile','code']);
   let booted = false;
   let listenersBound = false;
@@ -2670,6 +2713,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     try {
       const flow = draft.read();
       const parsed = raw && typeof raw === 'object' ? raw : router.parse(raw);
+      if(parsed && guestActive())try{sessionStorage.removeItem('kareta.guest.preview.v1');}catch(_error){}
       if (state.isDone()) {
         if (parsed || context.forceDoneCheck) transitionToApp(flow, { source:lastSource, forceRoute:!!parsed });
         else app.setActive(false);
@@ -2685,6 +2729,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function resume(options = {}){
+    if(guestActive()&&!router.isOnboarding()){removeSurfaces();app.setActive(false);return String(location.hash||'#/home');}
     const flow = draft.read();
     if (state.isDone()) return transitionToApp(flow, { source:options.source || 'resume-done', forceRoute:router.isOnboarding() });
     app.setActive(true);
@@ -2712,6 +2757,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function reconcile(source, options = {}){
+    if(guestActive()&&!router.isOnboarding()){removeSurfaces();app.setActive(false);return false;}
     if (state.isDone()) {
       if (router.isOnboarding()) return transitionToApp(draft.read(), { source, forceRoute:true });
       removeSurfaces();
@@ -2735,6 +2781,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
       if (event.key === state.FLOW_KEY || state.DONE_KEYS.includes(event.key)) reconcile('storage-sync');
     });
     window.addEventListener('kareta:session-anonymous', event => {
+      if(guestActive()&&!router.isOnboarding())return;
       const flow=state.read();
       const hadCompletedState=state.isDone() || flow?.serverConfirmed === true || flow?.onboardingCompleted === true;
       if (!hadCompletedState) return;
@@ -2760,7 +2807,9 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
       // finalize()/role_page.js own the successful transition while the role picker is active.
       // Completing + routing again from this listener caused CLIENT to inherit a stale MASTER
       // context and open the master questionnaire. Preserve the selected branch and defer.
-      if (router.isOnboarding() || flow?.pending === true) {
+      const pendingStage=String(flow?.stage || router.parse()?.step || '');
+      const recoverableWelcome=pendingStage==='welcome' && !normalizePhone(flow?.phone || flow?.contactPhone || '');
+      if ((router.isOnboarding() || flow?.pending === true) && !recoverableWelcome) {
         state.write({ role:explicitRole, entryRole:explicitRole });
         lastAction='session-confirmed-deferred-to-onboarding-owner';
         return;
@@ -2799,6 +2848,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function start(options = {}){
+    if(guestActive()&&!router.isOnboarding()){removeSurfaces();app.setActive(false);return false;}
     if (!options.force && state.isDone() && !router.isOnboarding()) return false;
     if (options.force && options.skipWelcome === true && !router.isOnboarding()) {
       const target = router.canonical(draft.currentRole(), 'role');

@@ -45,6 +45,9 @@
   async function followingKeys(signal){
     if(!hasProtectedSession())return new Set();
     try{
+      // Revalidate the server session: legacy UI state can outlive its cookie.
+      const session=await api.getSession({signal});
+      if(!session?.ok||!session?.payload?.user)return new Set();
       const r=await api.getFollowingMasters({signal});
       if(!r?.ok)return new Set();
       return new Set(list(r,['items']).map(row=>providerKey(row.type,row.id)));

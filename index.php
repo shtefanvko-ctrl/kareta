@@ -20,6 +20,16 @@ $geoMapPublicConfig = [
     'defaultZoom'=>(int)($geoMapConfig['default_zoom'] ?? 13),
 ];
 
+$realtimeConfig = defined('KARETA_REALTIME') && is_array(KARETA_REALTIME) ? KARETA_REALTIME : [];
+$realtimePublicConfig = [
+    'transport'=>in_array((string)($realtimeConfig['transport'] ?? 'poll'), ['poll','sse'], true)
+        ? (string)$realtimeConfig['transport'] : 'poll',
+    'pollIntervalMs'=>(int)($realtimeConfig['poll_interval_ms'] ?? 15000),
+    'requestTimeoutMs'=>(int)($realtimeConfig['request_timeout_ms'] ?? 8000),
+    'failureBaseMs'=>(int)($realtimeConfig['failure_base_ms'] ?? 10000),
+    'failureMaxMs'=>(int)($realtimeConfig['failure_max_ms'] ?? 60000),
+];
+
 $requestPath = parse_url((string)($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH);
 if (in_array($requestPath, ['/sites/kareta.kz', '/sites/kareta.kz/'], true)) {
     $query = trim((string)($_SERVER['QUERY_STRING'] ?? ''));
@@ -98,6 +108,22 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/assets/onboarding/kareta_logo_icon.png">
   <link rel="apple-touch-icon" href="/assets/onboarding/kareta_logo_icon.png">
+  <script id="k-staging-logo-cache-recovery">
+    // Temporary staging cache migration for the original Base64-encoded PNG.
+    document.addEventListener('error', function(event) {
+      const img = event.target;
+      if (!(img instanceof HTMLImageElement) || img.dataset.karetaLogoRecovery === '1') return;
+      let url;
+      try { url = new URL(img.currentSrc || img.src, location.href); } catch (_) { return; }
+      if (url.origin !== location.origin || ![
+        '/assets/logo/main/kareta_logo_full.png',
+        '/assets/onboarding/kareta_logo_full.png'
+      ].includes(url.pathname)) return;
+      img.dataset.karetaLogoRecovery = '1';
+      url.searchParams.set('logo_rev', '20261013-binaryfix');
+      img.src = url.href;
+    }, true);
+  </script>
   <?= kareta_render_styles() ?>
   <style id="k-critical-recovery-css">
     html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:#f4f6f9;color:#111827}
@@ -253,6 +279,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
     window.KARETA_FRONTEND_MODE = 'next';
     window.KARETA_ASSET_MANIFEST_URL = '/asset_manifest.php?v=' + encodeURIComponent(window.KARETA_NEXT_ASSET_VERSION);
     window.KARETA_GEO_MAP_CONFIG = Object.freeze(<?= json_encode($geoMapPublicConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>);
+    window.KARETA_REALTIME_CONFIG = Object.freeze(<?= json_encode($realtimePublicConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>);
   </script>
 </head>
 <body>

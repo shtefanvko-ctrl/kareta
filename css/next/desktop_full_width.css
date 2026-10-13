@@ -3,14 +3,14 @@
 @media (min-width: 901px) {
   :root,
   #app[data-kareta-layout="stable"] {
-    --k-page-max: 1440px;
-    --k-shell-max: 1440px;
-    --k-shell-content-w: 1440px;
+    --k-page-max: 100%;
+    --k-shell-max: 100%;
+    --k-shell-content-w: 100%;
   }
 
   #k-page-outlet {
     width: 100%;
-    max-width: var(--k-page-max, 1440px) !important;
+    max-width: none !important;
     margin-inline: auto;
   }
 
@@ -19,7 +19,7 @@
   #k-page-outlet > [data-page].k-page,
   #k-page-outlet .k-page-content {
     width: 100% !important;
-    max-width: var(--k-page-max, 1440px) !important;
+    max-width: none !important;
     margin-inline: auto !important;
   }
 
@@ -37,7 +37,7 @@
     .k-admin-workspace-grid
   ) {
     width: 100% !important;
-    max-width: var(--k-page-max, 1440px) !important;
+    max-width: none !important;
   }
 
   /* Stable legacy shells embedded in the current app should obey the same page limit. */
@@ -47,6 +47,6 @@
     .k-page-route,
     .k-page-content
   ) {
-    max-width: var(--k-page-max, 1440px) !important;
+    max-width: none !important;
   }
 }

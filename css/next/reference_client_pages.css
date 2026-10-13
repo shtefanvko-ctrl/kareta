@@ -18,13 +18,13 @@
 
 /* Services reference — unified navigation/search/cards */
 [data-page="services"].k-page-shell--workspace{
-  width:min(100%,1040px);margin-inline:auto;
+  width:100%;max-width:none;min-width:0;margin-inline:auto;
   font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif;
 }
 [data-page="services"]>.k-workspace-head{padding:0 0 12px!important;border:0!important}
 [data-page="services"]>.k-workspace-head small,[data-page="services"]>.k-workspace-head p{display:none!important}
 [data-page="services"]>.k-workspace-head h1{margin:0;font-size:30px;line-height:1.08;letter-spacing:-.035em;font-weight:750;color:var(--k-ref-text)}
-.k-services-reference-layout{width:min(100%,980px);margin-inline:auto}
+.k-services-reference-layout{width:100%;min-width:0;margin-inline:auto}
 .k-services-reference-shell{display:grid;gap:12px;min-width:0}
 .k-services-reference-composer{max-width:none!important;margin:0!important;box-shadow:none!important}
 .k-services-reference-composer input{
@@ -211,6 +211,11 @@
 [data-page="services"] .k-services-ref-card--service-category .k-services-ref-card__count{font-size:10px;line-height:1.25}
 @media(min-width:768px){[data-page="services"] .k-services-ref-grid--service-categories{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(min-width:1180px){[data-page="services"] .k-services-ref-grid--service-categories{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* Canon: desktop capacity uses available workspace; mobile stays two columns. */
+@media(min-width:1450px){html[data-user-role="client"] [data-page="services"] .k-services-ref-grid.k-services-ref-grid--service-categories{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+html[data-user-role="client"] [data-page="services"] .k-services-ref-services-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(min-width:1800px){html[data-user-role="client"] [data-page="services"] .k-services-ref-grid.k-services-ref-grid--service-categories{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+html[data-user-role="client"] [data-page="services"] .k-services-ref-services-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
 @media(max-width:420px){[data-page="services"] .k-services-ref-card--service-category{min-height:136px;padding:12px 24px 12px 9px}[data-page="services"] .k-services-ref-card--service-category>b{font-size:14px}}
 
 /* R188.5.5.6.84.45 — popular services visible on client mobile home. */

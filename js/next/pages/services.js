@@ -194,10 +194,6 @@
 
   function rootCategoriesBlock(snapshot){ return referenceRootCategories(snapshot); }
 
-  function navigatorHead(title,text,backHref='#/services'){
-    return `<div class="k-services-ref-navigator-head"><a href="${backHref}" data-service-back="${backHref==='#/services'?'root':'group'}" aria-label="Назад">‹</a><div><h2>${ui.escHtml(title)}</h2>${text?`<p>${ui.escHtml(text)}</p>`:''}</div></div>`;
-  }
-
   function renderNavigator(snapshot,options={}){
     if(snapshot.status==='loading'||snapshot.status==='idle') return '<div class="k-services-ref-state"><h2>Загрузка каталога</h2><p>Получаем актуальный список услуг.</p></div>';
     if(snapshot.status==='error') return `<div class="k-services-ref-state"><h2>Каталог недоступен</h2><p>${ui.escHtml(snapshot.error?.message||'Ошибка загрузки')}</p></div>`;
@@ -209,12 +205,11 @@
     const group=selectedGroup();
     if(!view.category){
       const categories=snapshot.serviceCategories.filter(category=>group?.categories.includes(category.key)&&Number(category.count)>0);
-      return `${navigatorHead(group?.name||'Категории','Выберите конкретную работу.')}
+      return `
         <div class="k-services-ref-grid k-services-ref-grid--categories">${categories.map(referenceCategoryCard).join('')}</div>`;
     }
     const services=filteredServices(snapshot);
-    const backHref=group?groupUrl(group.key):'#/services';
-    return `${navigatorHead(categoryLabel(view.category),group?.name||'Каталог услуг',backHref)}
+    return `
       <div class="k-services-ref-results-head"><div><h2>${ui.escHtml(categoryLabel(view.category))}</h2><p>${view.search?`Поиск: «${ui.escHtml(view.search)}»`:'Выберите подходящую услугу.'}</p></div><span>${services.length}</span></div>
       ${services.length?`<section class="${useCategoryVisualForServices()?'k-services-ref-grid k-services-ref-grid--categories k-services-ref-grid--service-categories':'k-services-ref-services-grid'}">${services.map(useCategoryVisualForServices()?referenceServiceAsCategoryCard:serviceCard).join('')}</section>`:'<div class="k-services-ref-state"><h2>Ничего не найдено</h2><p>Измените запрос или вернитесь к категориям.</p></div>'}`;
   }

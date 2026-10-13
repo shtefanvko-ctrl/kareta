@@ -2,19 +2,19 @@
    Route/page bridge only. Tokens/components live in master_ui_foundation.css;
    shared-route role skin lives in master_role_skin.css. */
 html[data-user-role="master"]{
-  /* Kept here as contract assertions for legacy regression tooling. */
-  --k-master-content-max:1420px;
-  --k-master-page-x:clamp(14px,2.2vw,34px);
+  /* Role delta only. Shared visual tokens resolve through design_contract.css. */
+  --k-master-content-max:var(--k-layout-content-max);
+  --k-master-page-x:var(--k-layout-page-gutter);
   --k-master-page-y:18px;
-  --k-master-section-gap:16px;
-  --k-master-control-radius:12px;
-  --k-master-small-card-radius:16px;
-  --k-master-card-radius:20px;
-  --k-master-dialog-radius:24px;
-  --k-master-line:#e4e7ec;
-  --k-master-surface:#fff;
-  --k-master-page-bg:var(--k-master-bg,#f5f6f8);
-  --k-master-shadow:0 4px 16px rgba(15,23,42,.045);
+  --k-master-section-gap:var(--k-space-4);
+  --k-master-control-radius:var(--k-radius-action);
+  --k-master-small-card-radius:16px; /* intentional compact Master card delta */
+  --k-master-card-radius:var(--k-radius-panel);
+  --k-master-dialog-radius:var(--k-radius-dialog);
+  --k-master-line:var(--k-line);
+  --k-master-surface:var(--k-surface-card);
+  --k-master-page-bg:var(--k-surface-page);
+  --k-master-shadow:0 4px 16px rgba(15,23,42,.045); /* intentional lower Master elevation */
 }
 
 /* Shell: one position and one density on every Master route. */
@@ -40,11 +40,11 @@ html[data-user-role="master"] #k-menu-toggle.k-menu-toggle{min-width:44px;height
 /* Page contour. */
 html[data-user-role="master"] #k-page-outlet.k-page-outlet{width:100%;max-width:none;margin:0;padding:0;background:transparent}
 html[data-user-role="master"] #k-page-outlet>.k-master-page.k-master-surface-page{
-  width:min(100%,var(--k-master-content-max));max-width:var(--k-master-content-max);margin-inline:auto;
+  width:100%;max-width:none;margin-inline:auto;
   padding:var(--k-master-page-y) var(--k-master-page-x) calc(var(--k-mobile-nav-live-height,var(--k-mobile-nav-h,72px)) + 28px + env(safe-area-inset-bottom,0px));
   box-sizing:border-box;gap:var(--k-master-section-gap)
 }
-html[data-user-role="master"] #k-page-outlet>.k-page:not(.k-master-surface-page){width:min(100%,var(--k-master-content-max));max-width:var(--k-master-content-max);margin-inline:auto}
+html[data-user-role="master"] #k-page-outlet>.k-page:not(.k-master-surface-page){width:100%;max-width:none;margin-inline:auto}
 
 /* Master Page Header bridge: old page names map to one component contract. */
 html[data-user-role="master"] #k-page-outlet :is(.k-master-page-header,.k-workspace-head,.k-exchange-r71-head,.k-master-owner-hero,.k-master-wall-owner-hero,.k-master-works-hero,.k-master-reviews-head,.k-staff-cabinet-head,.k-master-r81-schedule-toolbar,.k-client-subhead){
@@ -318,9 +318,9 @@ html[data-user-role="master"] #k-page-outlet .k-exchange-r131-empty{
 
 /* R188.5.5.6.84.178 — MASTER responsive navigation: phone dock / tablet rail / desktop workspace sidebar. */
 html[data-user-role="master"]{
-  --k-master-nav-dark:#15181d;
-  --k-master-nav-text:#f4f6f8;
-  --k-master-nav-muted:#9ca3ad;
+  --k-master-nav-surface:var(--k-surface-card,#fff);
+  --k-master-nav-text:#171a1f;
+  --k-master-nav-muted:#667085;
   --k-master-nav-accent:#ff5a1f;
 }
 
@@ -400,13 +400,14 @@ html[data-user-role="master"]{
   }
   html[data-user-role="master"] #k-mobile-nav{display:none!important}
   html[data-user-role="master"] #k-shell-header.k-shell-header{
-    left:var(--k-master-tablet-rail)!important;
+    left:0!important;
     right:0!important;
-    width:auto!important;
+    width:100%!important;
     min-height:68px!important;
     height:68px!important;
     grid-template-columns:minmax(0,1fr) auto!important;
-    padding:8px 14px!important;
+    padding:8px 14px 8px calc(var(--k-master-tablet-rail) + 14px)!important;
+    transform:none!important;
   }
   html[data-user-role="master"] #k-shell-header>.k-brand{
     position:fixed!important;
@@ -502,7 +503,7 @@ html[data-user-role="master"]{
   }
 }
 
-/* Desktop: wide dark workspace sidebar. */
+/* Desktop: client-canonical light workspace sidebar. */
 @media(min-width:1100px){
   html[data-user-role="master"]{
     --k-master-desktop-rail:232px;
@@ -566,7 +567,7 @@ html[data-user-role="master"]{
     gap:4px!important;
     border:0!important;
     border-radius:0!important;
-    background:var(--k-master-nav-dark)!important;
+    background:var(--k-master-nav-surface)!important;
     box-shadow:8px 0 28px rgba(15,23,42,.10)!important;
     overflow-y:auto!important;
     scrollbar-width:none!important;
@@ -608,14 +609,14 @@ html[data-user-role="master"]{
     text-align:left!important;
   }
   html[data-user-role="master"] #k-desktop-nav .k-nav-link:hover{
-    border-color:rgba(255,255,255,.08)!important;
-    background:rgba(255,255,255,.055)!important;
-    color:#fff!important;
+    border-color:#e6e8ed!important;
+    background:#f4f6f8!important;
+    color:#171a1f!important;
   }
   html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"]){
-    border-color:rgba(255,90,31,.35)!important;
-    background:#242830!important;
-    color:#fff!important;
+    border-color:#ffd8ca!important;
+    background:#fff1eb!important;
+    color:#b9380c!important;
     box-shadow:none!important;
   }
   html[data-user-role="master"] #k-desktop-nav .k-nav-link:is(.is-active,[aria-current="page"])::before{
@@ -641,7 +642,7 @@ html[data-user-role="master"]{
     right:10px!important;
     top:-7px!important;
     height:1px!important;
-    background:rgba(255,255,255,.08)!important;
+    background:#e7eaee!important;
   }
   html[data-user-role="master"] #k-shell-header>.k-shell-actions{
     grid-column:2!important;
@@ -659,8 +660,8 @@ html[data-user-role="master"]{
     --k-master-desktop-header-h:72px;
   }
   html[data-user-role="master"] .k-app-shell{
-    padding-left:0!important;
-    padding-right:var(--k-master-desktop-rail,232px)!important;
+    padding-left:var(--k-master-desktop-rail,232px)!important;
+    padding-right:0!important;
   }
   html[data-user-role="master"] #k-shell-header.k-shell-header{
     position:fixed!important;
@@ -695,9 +696,9 @@ html[data-user-role="master"]{
   }
   html[data-user-role="master"] #k-shell-header>#k-desktop-nav.k-desktop-nav{
     position:fixed!important;
-    inset:var(--k-master-desktop-header-h) 0 0 auto!important;
-    left:auto!important;
-    right:0!important;
+    inset:var(--k-master-desktop-header-h) auto 0 0!important;
+    left:0!important;
+    right:auto!important;
     top:var(--k-master-desktop-header-h)!important;
     bottom:0!important;
     width:var(--k-master-desktop-rail,232px)!important;
@@ -791,19 +792,6 @@ html[data-user-role="master"]{
 /* R188.5.5.6.84.182 — canonical UI system: page width, buttons, surfaces, toolbars. */
 /* Route-late Master CSS may remain loaded after navigation. Every rule in this block is role-scoped. */
 html[data-user-role="master"]{
-  --k-ui-page-max:1440px;
-  --k-ui-page-gutter:clamp(18px,2vw,32px);
-  --k-ui-control-h:44px;
-  --k-ui-control-radius:12px;
-  --k-ui-card-radius:18px;
-  --k-ui-panel-radius:20px;
-  --k-ui-line:#e5e7eb;
-  --k-ui-soft:#f7f8fa;
-  --k-ui-text:#171a1f;
-  --k-ui-muted:#747b84;
-  --k-ui-accent:#ff4b0a;
-  --k-ui-accent-hover:#e74308;
-  --k-ui-shadow:0 8px 24px rgba(15,23,42,.055);
 }
 
 /* One desktop canvas. Intentional wizards/onboarding remain independently sized. */
@@ -1060,19 +1048,19 @@ html[data-user-role="master"] .k-app-shell :is(
   border-color:var(--k-ui-line)!important;
 }
 
-/* R188.5.5.6.84.183 — Master shell aligned with canonical CLIENT visual language. */
+/* R188.5.5.6.84.183 — Master shell uses the light CLIENT canonical header and left navigation. */
 html[data-user-role="master"] #k-shell-header.k-shell-header{
-  background:#17191d!important;
-  border-bottom-color:rgba(255,255,255,.08)!important;
-  box-shadow:0 8px 24px rgba(15,23,42,.16)!important;
-  color:#fff!important;
+  background:var(--k-surface-card,#fff)!important;
+  border-bottom-color:var(--k-line-soft,#e5e7eb)!important;
+  box-shadow:0 4px 16px rgba(15,23,42,.05)!important;
+  color:var(--k-text-strong,#171a1f)!important;
 }
 html[data-user-role="master"] #k-shell-header #k-desktop-nav.k-desktop-nav{
-  background:rgba(255,255,255,.06)!important;
-  border-color:rgba(255,255,255,.08)!important;
+  background:var(--k-surface-card,#fff)!important;
+  border-color:var(--k-line-soft,#e5e7eb)!important;
 }
-html[data-user-role="master"] #k-shell-header #k-desktop-nav .k-nav-link{color:#d7dbe1!important}
-html[data-user-role="master"] #k-shell-header #k-desktop-nav .k-nav-link:hover{background:rgba(255,255,255,.1)!important;color:#fff!important;border-color:rgba(255,255,255,.08)!important}
-html[data-user-role="master"] #k-shell-header #k-menu-toggle.k-menu-toggle{background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.12)!important;color:#fff!important}
-html[data-user-role="master"] #k-shell-header>.k-brand::after{background:rgba(255,90,31,.16)!important;color:#ffb090!important}
-@media(max-width:700px){html[data-user-role="master"] #k-shell-header.k-shell-header{background:#17191d!important}}
+html[data-user-role="master"] #k-shell-header #k-desktop-nav .k-nav-link{color:#667085!important}
+html[data-user-role="master"] #k-shell-header #k-desktop-nav .k-nav-link:hover{background:#f4f6f8!important;color:#171a1f!important;border-color:#e6e8ed!important}
+html[data-user-role="master"] #k-shell-header #k-menu-toggle.k-menu-toggle{background:#fff!important;border-color:#e6e8ed!important;color:#171a1f!important}
+html[data-user-role="master"] #k-shell-header>.k-brand::after{background:#fff1eb!important;color:#b9380c!important}
+@media(max-width:700px){html[data-user-role="master"] #k-shell-header.k-shell-header{background:#fff!important}}

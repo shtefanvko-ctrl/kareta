@@ -243,7 +243,8 @@
   }
 
   function getState(options = {}){ return request(ENDPOINTS.state, { cacheTtlMs:20000, ...options }); }
-  function getSession(options = {}){ return request(ENDPOINTS.session, { cacheTtlMs:5000, ...options }); }
+  // Authentication must never be restored from a cached or stale response.
+  function getSession(options = {}){ return request(ENDPOINTS.session, { ...options, cacheTtlMs:0, dedupe:false, force:true }); }
   function postDeploy(options = {}){ return request(ENDPOINTS.postDeploy, options); }
   function version(options = {}){ return request(ENDPOINTS.version, options); }
   function getShopCatalog(params = {}, options = {}){
