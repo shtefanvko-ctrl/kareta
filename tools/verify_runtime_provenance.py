@@ -8,6 +8,7 @@ import urllib.request
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--base-url", required=True)
+parser.add_argument("--origin-host", default="", help="Optional Host header for checking the local staging origin")
 parser.add_argument("--expected-sha", required=True)
 parser.add_argument("--expected-asset-version", default="")
 args = parser.parse_args()
@@ -17,8 +18,10 @@ if not re.fullmatch(r"[a-f0-9]{40}", expected_sha):
     raise SystemExit("expected SHA must be 40 hex chars")
 
 url = args.base_url.rstrip("/") + "/api/provenance.php"
+headers = {"Host": args.origin_host} if args.origin_host else {}
+request = urllib.request.Request(url, headers=headers)
 try:
-    with urllib.request.urlopen(url, timeout=15) as response:
+    with urllib.request.urlopen(request, timeout=15) as response:
         status = response.status
         payload = json.loads(response.read().decode("utf-8"))
 except urllib.error.HTTPError as error:
