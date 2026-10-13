@@ -41,6 +41,7 @@ run_check "migration manifest/checksums" php tools/test_release_migration_manife
 
 section "DEPLOYMENT PROVENANCE"
 run_check "deployment provenance schema contract" php tools/test_deployment_preflight_contract.php
+run_check "deployment provenance CLI negative cases" php tools/test_deployment_preflight_cli.php
 # Normal source-level CI is not a deployment and must not claim live provenance.
 # Real deployment checks are fail-closed when KARETA_REQUIRE_PROVENANCE=1.
 if [ "${KARETA_REQUIRE_PROVENANCE:-0}" = "1" ] || [ -n "${KARETA_DEPLOY_GIT_SHA:-}" ]; then
