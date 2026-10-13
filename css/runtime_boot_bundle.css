@@ -20504,6 +20504,7 @@ html[data-user-role="master"] body{max-width:100%!important;overflow-x:clip!impo
   }
 }
 
+/* ===== SOURCE: staging-inline/onboarding_visual_acceptance_v2.css ===== */
 /* KARETA onboarding visual acceptance adjustment v2 (last priority). */
 @media(min-width:900px){
  #onb2-step-welcome .onb2-welcome-card{grid-template-rows:76px 46px auto auto!important;align-content:start!important}
@@ -20529,3 +20530,84 @@ html[data-user-role="master"] body{max-width:100%!important;overflow-x:clip!impo
 #onb2-step-profile .k-guest-entry:hover{filter:brightness(1.03)!important;color:#fff!important}
 #onb2-step-profile [data-action="request-code"]{background:#fff!important;color:#ef3b14!important;border:1px solid #ff573a!important;box-shadow:none!important}
 #onb2-step-profile .k-flow-actions{display:flex!important;flex-direction:column-reverse!important;gap:10px!important}
+
+/* ===== SOURCE: PR129 synchronized canonical CSS deltas ===== */
+/* ===== RUNTIME SYNCHRONIZATION: PR #129 inner header and ECU CTA ===== */
+/* Guest shell canon 2026-10-13: the branded masthead belongs to Home only.
+   Inner routes reuse the existing #k-mobile-back DOM node with a contextual title. */
+#k-shell-header[data-kareta-header-mode="inner"] > .k-brand,
+#k-shell-header[data-kareta-header-mode="onboarding"] > .k-brand{
+  display:none!important;
+}
+#k-shell-header .k-shell-page-title{display:none}
+#k-shell-header > #k-mobile-back[hidden]{display:none!important}
+@media (max-width:860px){
+  #k-shell-header[data-kareta-header-mode="inner"] .k-shell-page-title{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    display:block;width:min(54vw,270px);margin:0;
+    color:#111827;text-align:center;font-size:17px;font-weight:800;
+    line-height:1.2;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;
+    pointer-events:none;
+  }
+  #k-shell-header[data-kareta-header-mode="inner"] > .k-shell-actions{display:none!important}
+  /* The outlet owns its search, tabs and contextual action below this one-line header. */
+  #k-page-outlet .k-services-canon-titlebar > h1{
+    position:absolute!important;width:1px!important;height:1px!important;
+    padding:0!important;margin:-1px!important;overflow:hidden!important;
+    clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important;
+  }
+}
+@media (min-width:861px){
+  #k-shell-header[data-kareta-header-mode="inner"] .k-shell-page-title{
+    display:flex;align-items:center;min-width:0;min-height:44px;
+    padding-left:52px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    font-size:16px;font-weight:800;color:#111827;
+  }
+  #k-shell-header[data-kareta-header-mode="inner"] > #k-mobile-back.k-mobile-back{
+    position:absolute!important;left:12px!important;top:50%!important;
+    right:auto!important;bottom:auto!important;transform:translateY(-50%)!important;
+    display:grid!important;place-items:center!important;
+    width:44px!important;height:44px!important;border-radius:12px!important;
+    background:#fff!important;color:#111827!important;z-index:4!important;
+    border:1px solid rgba(17,24,39,.1)!important;
+  }
+  #k-shell-header[data-kareta-header-mode="inner"] > #k-mobile-back.k-mobile-back:focus-visible{
+    outline:3px solid rgba(255,107,0,.32)!important;
+  }
+}
+
+/* 2026-10-13 — integrated ECU diagnosis entry; routes to existing #/diagnostics.
+   Explicitly separate self-diagnostics from paid station diagnostic services. */
+.k-services-ecu-cta,
+.k-home-ref-ecu-cta{
+  display:flex;align-items:center;gap:12px;min-width:0;min-height:68px;
+  padding:12px 14px;margin-block:10px;
+  border:1px solid rgba(255,107,0,.26);border-radius:18px;
+  background:linear-gradient(115deg,#fff7f1 0%,#fff 100%);
+  box-shadow:0 2px 12px rgba(15,23,42,.035);color:#171717;
+  text-decoration:none;
+}
+.k-services-ecu-cta:hover,.k-home-ref-ecu-cta:hover{border-color:#ff6b00;background:#fff7f1}
+.k-services-ecu-cta:focus-visible,.k-home-ref-ecu-cta:focus-visible{
+  outline:3px solid rgba(255,107,0,.38);outline-offset:2px;
+}
+.k-services-ecu-cta__icon,.k-home-ref-ecu-cta__icon{
+  flex:0 0 42px;width:42px;height:42px;display:grid;place-items:center;
+  border-radius:13px;background:#ff6b00;color:#fff;
+}
+.k-services-ecu-cta__icon svg,.k-home-ref-ecu-cta__icon svg{
+  width:23px;height:23px;stroke:currentColor;fill:none;
+}
+.k-services-ecu-cta__text,.k-home-ref-ecu-cta__text{display:grid;flex:1;min-width:0;gap:4px}
+.k-services-ecu-cta__text b,.k-home-ref-ecu-cta__text b{font-size:16px;line-height:1.15;font-weight:800}
+.k-services-ecu-cta__text small,.k-home-ref-ecu-cta__text small{font-size:12px;line-height:1.3;color:#5d6674}
+.k-services-ecu-cta__arrow,.k-home-ref-ecu-cta__arrow{font-size:24px;flex:0 0 24px;text-align:center;color:#ff6b00}
+@media (max-width:359px){
+  .k-services-ecu-cta,.k-home-ref-ecu-cta{gap:8px;padding:10px}
+  .k-services-ecu-cta__text b,.k-home-ref-ecu-cta__text b{font-size:14px}
+}
+/* Nested services navigation must not display a second back arrow.
+   The Shell's single #k-mobile-back owns navigation across all routes. */
+#k-shell-header[data-kareta-header-mode="inner"] ~ #k-page-outlet .k-services-ref-navigator-head > a[data-service-back]{
+  display:none!important;
+}

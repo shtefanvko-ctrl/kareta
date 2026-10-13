@@ -12,7 +12,11 @@ const sw=read('sw.js');
 
 // Shell HTML remains frozen; runtime moves the SAME node before binding it.
 expect((index.match(/id="k-mobile-back"/g)||[]).length===1,'duplicate #k-mobile-back nodes in frozen shell');
-expect(index.includes('<div id="k-mobile-fab-stack"')&&index.indexOf('id="k-mobile-back"')>index.indexOf('<div id="k-mobile-fab-stack"'),'frozen shell baseline unexpectedly changed');
+const headerStart=index.indexOf('id="k-shell-header"');
+const outletStart=index.indexOf('id="k-page-outlet"');
+const stackStart=index.indexOf('id="k-mobile-fab-stack"');
+const backStart=index.indexOf('id="k-mobile-back"');
+expect(headerStart>=0 && outletStart>headerStart && stackStart>outletStart && ((backStart>headerStart && backStart<outletStart) || backStart>stackStart),'single Back must originate in shell header or legacy FAB stack');
 expect(logic.includes('function ensureHeaderPlacement()'),'runtime header placement function missing');
 expect(logic.includes("document.getElementById('k-shell-header')"),'shell header lookup missing');
 expect(logic.includes("header.querySelector(':scope > .k-brand')"),'brand placement anchor missing');

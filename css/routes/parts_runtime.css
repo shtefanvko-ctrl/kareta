@@ -1023,3 +1023,18 @@
 @media(max-width:900px){.k-parts-mine-status{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.k-parts-mine-status{display:flex;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.k-parts-mine-status::-webkit-scrollbar{display:none}.k-parts-mine-status button{min-width:122px;flex:0 0 auto}.k-parts-owner-actions{grid-template-columns:repeat(3,minmax(0,1fr))}.k-parts-owner-actions button{min-height:42px}}
 @media(max-width:390px){.k-parts-owner-actions{grid-template-columns:1fr}.k-parts-owner-state{display:grid}.k-parts-owner-state small{text-align:left}}
+
+/* 84.178.4: small-screen filters must remain legible; no overlapping controls. */
+@media (max-width:345px){
+  .k-parts-ref-page .k-parts-master-filters{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  .k-parts-ref-page .k-parts-master-filters>button{
+    width:100%!important;
+    min-width:0!important;
+    justify-content:center!important;
+    padding:0 8px!important;
+  }
+  .k-parts-ref-page .k-parts-master-filter-icon{width:100%!important}
+}

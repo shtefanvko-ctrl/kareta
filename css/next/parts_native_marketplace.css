@@ -981,3 +981,18 @@
   .k-parts-ref-page .k-parts-ref-head h1{font-size:34px!important;line-height:40px!important}
 }
 
+
+/* 84.178.4: small-screen filters must remain legible; no overlapping controls. */
+@media (max-width:345px){
+  .k-parts-ref-page .k-parts-master-filters{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  .k-parts-ref-page .k-parts-master-filters>button{
+    width:100%!important;
+    min-width:0!important;
+    justify-content:center!important;
+    padding:0 8px!important;
+  }
+  .k-parts-ref-page .k-parts-master-filter-icon{width:100%!important}
+}
