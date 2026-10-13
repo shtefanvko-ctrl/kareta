@@ -8,6 +8,8 @@ const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 const back=read('js/next/mobile_back.js');
 const header=read('css/next/mobile_brand_center.css');
 const cards=read('css/next/reference_client_pages.css');
+const bootCss=read('css/runtime_boot_bundle.css');
+const clientCss=read('css/routes/client_guard_postlude.css');
 const home=read('js/next/pages/core.js');
 const services=read('js/next/pages/services.js');
 const registry=read('inc/asset_registry.php');
@@ -21,6 +23,13 @@ assert(back.includes('routeTrail.length > 1 && history.length > 1'),'no safe gua
 assert(home.includes('href="#/diagnostics" data-ecu-entry="home"'),'Home ECU entry missing');
 assert(services.includes('href="#/diagnostics" data-ecu-entry="services"'),'Services ECU entry missing');
 assert(cards.includes('.k-services-ecu-cta')&&cards.includes('.k-home-ref-ecu-cta'),'ECU card CSS missing');
+for(const [marker,source] of [['/* Guest shell canon 2026-10-13',header],['/* 2026-10-13 — integrated ECU diagnosis entry',cards]]){
+  const pos=source.indexOf(marker);
+  assert(pos>=0,'required CSS source delta missing: '+marker);
+  const delta=source.slice(pos).trimEnd();
+  assert(bootCss.includes(delta),'eager runtime CSS missing source delta: '+marker);
+  assert(clientCss.includes(delta),'route CSS missing source delta: '+marker);
+}
 assert(registry.includes("'routeKeys' => ['diagnostics']"),'preexisting diagnostics lazy route missing');
 assert(fs.existsSync(path.join(root,'js/next/pages/diagnostics.js')),'real diagnostics module missing');
 assert(fs.existsSync(path.join(root,'api/obd.php')),'OBD API missing');
