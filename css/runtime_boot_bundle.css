@@ -20252,6 +20252,7 @@ html[data-user-role="master"] body{max-width:100%!important;overflow-x:clip!impo
 }
 
 
+/* ===== SOURCE: PR129 synchronized canonical CSS deltas ===== */
 /* ===== RUNTIME SYNCHRONIZATION: PR #129 inner header and ECU CTA ===== */
 /* Guest shell canon 2026-10-13: the branded masthead belongs to Home only.
    Inner routes reuse the existing #k-mobile-back DOM node with a contextual title. */
