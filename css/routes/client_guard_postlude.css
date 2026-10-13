@@ -2274,6 +2274,7 @@ html.k-request-window-open #k-mobile-nav{visibility:hidden!important;pointer-eve
 
 
 
+/* ===== SOURCE: PR129 synchronized canonical CSS deltas ===== */
 /* ===== RUNTIME SYNCHRONIZATION: PR #129 inner header and ECU CTA ===== */
 /* Guest shell canon 2026-10-13: the branded masthead belongs to Home only.
    Inner routes reuse the existing #k-mobile-back DOM node with a contextual title. */
