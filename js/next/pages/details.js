@@ -416,9 +416,13 @@
       timeBox.innerHTML='<span class="k-master-ref-loading-slots">Загружаем…</span>';
       try{
         const result=await api.getBookingSlots({masterId:id,date:selectedDate,serviceId:serviceIdOf(selectedService)},{signal:ctx.lifecycle?.signal,cacheTtlMs:0,force:true});
+        if(ctx.lifecycle?.signal?.aborted||token!==loadToken)return;
         if(!result?.ok)throw new Error(result?.payload?.message||'Не удалось проверить свободное время');
         slots=Array.isArray(result?.payload?.data?.slots)?result.payload.data.slots:[];
-      }catch(error){slots=[];slotError=error?.message||'Не удалось получить свободное время';}
+      }catch(error){
+        if(ctx.lifecycle?.signal?.aborted||token!==loadToken)return;
+        slots=[];slotError=error?.message||'Не удалось получить свободное время';
+      }
       if(ctx.lifecycle?.signal?.aborted||token!==loadToken)return;
       paintSlots();
     };
