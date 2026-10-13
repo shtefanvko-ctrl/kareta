@@ -1,0 +1,10 @@
+'use strict';
+const fs = require('node:fs');
+const assert = require('node:assert/strict');
+const css = fs.readFileSync('css/next/mobile_brand_center.css', 'utf8');
+const token = fs.readFileSync('css/next/design_contract.css', 'utf8');
+assert.match(token, /--k-text\s*:/);
+const rules = [...css.matchAll(/#k-shell-header\[data-kareta-header-mode="inner"\] \.k-shell-page-title\s*\{([^}]+)\}/g)];
+assert.equal(rules.length, 2);
+for (const rule of rules) assert.match(rule[1], /color\s*:\s*var\(--k-text,#111827\)/);
+console.log('PASS inner page title theme token 2/2');
