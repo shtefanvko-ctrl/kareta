@@ -33,6 +33,7 @@ if((int)($history['empty_checksums']??0)!==0) acceptance_fail('migration_checksu
 
 $requiredTables=['users','accounts','persons','person_profiles','auth_sessions','geo_points','orders','obd_diagnostic_sessions'];
 if($expected>=145) $requiredTables[]='order_assignments';
+if($expected>=146) $requiredTables[]='parts_request_offers';
 $tableStmt=$pdo->prepare("SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?");
 foreach($requiredTables as $table){
     $tableStmt->execute([$table]);
