@@ -185,7 +185,7 @@
       const d=await load();
       const directFirstVehicle=/(?:\?|&)firstVehicle=1(?:&|$)/.test(String(location.hash||''));
       let fromRequest=false;try{fromRequest=sessionStorage.getItem('kareta.firstVehicle.openFromRequest')==='1';}catch(_e){}const wantsIntro=Boolean(firstVehicleFlow?.consumePendingIntro?.());
-      if((fromRequest||((directFirstVehicle||wantsIntro)&&!(d.vehicles||[]).length))&&firstVehicleFlow){
+      if((fromRequest||directFirstVehicle||(wantsIntro&&!(d.vehicles||[]).length))&&firstVehicleFlow){
         if(fromRequest){try{sessionStorage.removeItem('kareta.firstVehicle.openFromRequest');}catch(_e){}}
         replace(garageShell(d,`<div data-first-vehicle-bootstrap></div>`));
         const flowRoot=document.querySelector('#k-page-outlet .k-client-cabinet-page');
