@@ -5,6 +5,35 @@
   if (!ui) throw new Error('KaretaPageUI is required before pages/diagnostics.js');
   const esc = ui.escHtml;
 
+  // Shared page-language signal: the main SPA updates <html lang> without rebuilding the route.
+  // BLE and Wi-Fi are roadmap modes until native transport adapters are actually verified.
+  const OBD_TRANSPORT_COPY=Object.freeze({
+    ru:{title:'Подключение к автомобилю',intro:'Выберите способ связи со сканером',classic:'Bluetooth Classic',classicHint:'ELM327 (Android)',ble:'Bluetooth BLE',wifi:'Wi-Fi OBD-II',planned:'Пока недоступно',permission:'Разрешение Bluetooth',adapter:'Подключение адаптера',ecu:'Ответ электронного блока',choose:'Разрешите Bluetooth, затем выберите ELM327.',paired:'Разрешение есть. Выберите сопряжённый ELM327.',linked:'Адаптер подключён. Дождитесь ответа ЭБУ.',ready:'ЭБУ отвечает. Можно начинать диагностику.',browser:'Подключение через ELM327 доступно только в Android-приложении KARETA.',status:'Состояние подключения'},
+    kk:{title:'Автокөлікке қосылу',intro:'Сканермен байланыс түрін таңдаңыз',classic:'Bluetooth Classic',classicHint:'ELM327 (Android)',ble:'Bluetooth BLE',wifi:'Wi-Fi OBD-II',planned:'Әзірге қолжетімсіз',permission:'Bluetooth рұқсаты',adapter:'Адаптерге қосылу',ecu:'Электрондық блоктың жауабы',choose:'Bluetooth рұқсатын беріп, ELM327 таңдаңыз.',paired:'Рұқсат берілді. Жұптастырылған ELM327 таңдаңыз.',linked:'Адаптер қосылды. ЭБУ жауабын күтіңіз.',ready:'ЭБУ жауап берді. Диагностиканы бастауға болады.',browser:'ELM327 арқылы қосылу тек KARETA Android қолданбасында қолжетімді.',status:'Қосылу күйі'},
+    en:{title:'Connect to your vehicle',intro:'Choose the scanner connection type',classic:'Bluetooth Classic',classicHint:'ELM327 (Android)',ble:'Bluetooth BLE',wifi:'Wi-Fi OBD-II',planned:'Not available yet',permission:'Bluetooth permission',adapter:'Adapter connection',ecu:'ECU response',choose:'Allow Bluetooth, then choose your ELM327.',paired:'Permission granted. Select a paired ELM327.',linked:'Adapter connected. Waiting for the ECU.',ready:'ECU responding. You can start diagnostics.',browser:'ELM327 connection is available only in the KARETA Android app.',status:'Connection status'}
+  });
+  const obdTransportCopy=()=>{
+    const lang=String(document.documentElement?.lang||'ru').slice(0,2).toLowerCase();
+    return OBD_TRANSPORT_COPY[lang]||OBD_TRANSPORT_COPY.ru;
+  };
+  function obdTransportGuide(){
+    const t=obdTransportCopy();
+    return `<section class="k-obd-transport-guide" data-obd-transport-guide>
+      <header class="k-obd-transport-intro"><strong data-obd-transport-title>${t.title}</strong><span data-obd-transport-intro>${t.intro}</span></header>
+      <div class="k-obd-transport-choices">
+        <span class="k-obd-transport-choice is-supported" data-obd-transport="classic"><b data-obd-classic-title>${t.classic}</b><small data-obd-classic-hint>${t.classicHint}</small><i aria-hidden="true">✓</i></span>
+        <span class="k-obd-transport-choice is-planned" data-obd-transport="ble"><b data-obd-ble-title>${t.ble}</b><small data-obd-ble-hint>${t.planned}</small></span>
+        <span class="k-obd-transport-choice is-planned" data-obd-transport="wifi"><b data-obd-wifi-title>${t.wifi}</b><small data-obd-wifi-hint>${t.planned}</small></span>
+      </div>
+      <ol class="k-obd-connection-steps" aria-label="${t.status}" data-obd-steps-label>
+        <li data-obd-step="permission" data-state="pending"><span class="k-obd-step-count">1</span><span data-obd-step-permission>${t.permission}</span></li>
+        <li data-obd-step="adapter" data-state="pending"><span class="k-obd-step-count">2</span><span data-obd-step-adapter>${t.adapter}</span></li>
+        <li data-obd-step="ecu" data-state="pending"><span class="k-obd-step-count">3</span><span data-obd-step-ecu>${t.ecu}</span></li>
+      </ol>
+      <p role="status" aria-live="polite" class="k-obd-transport-status" data-obd-transport-status>${t.choose}</p>
+    </section>`;
+  }
+
   function renderDiagnostics(){
     return `<section class="k-page k-diagnostics-page" data-page="diagnostics">
       <header class="k-r84-workspace-head k-diagnostics-head">
@@ -63,6 +92,7 @@
             <div><span>1</span><h2>ELM327</h2></div>
             <button type="button" class="k-btn" data-obd-settings>Bluetooth</button>
           </div>
+          ${obdTransportGuide()}
           <p class="k-obd-muted">Сначала выполните сопряжение ELM327 в настройках Android. KARETA показывает уже сопряжённые Bluetooth-устройства.</p>
           <div class="k-obd-actions">
             <button type="button" class="k-btn k-btn-primary" data-obd-devices>Выбрать ELM327</button>
@@ -149,6 +179,7 @@
     const liveSpeed=q('[data-obd-live-speed]');
     const liveCoolant=q('[data-obd-live-coolant]');
     const liveVoltage=q('[data-obd-live-voltage]');
+    let permissionOk=false;
     let connected=false;
     let ready=false;
     let currentAdapter=null;
@@ -270,6 +301,27 @@
     }
 
 
+    function updateTransportGuide(){
+      const t=obdTransportCopy();
+      const labelPairs=[
+        ['[data-obd-transport-title]',t.title],['[data-obd-transport-intro]',t.intro],
+        ['[data-obd-classic-title]',t.classic],['[data-obd-classic-hint]',t.classicHint],
+        ['[data-obd-ble-title]',t.ble],['[data-obd-ble-hint]',t.planned],
+        ['[data-obd-wifi-title]',t.wifi],['[data-obd-wifi-hint]',t.planned],
+        ['[data-obd-step-permission]',t.permission],['[data-obd-step-adapter]',t.adapter],['[data-obd-step-ecu]',t.ecu]
+      ];
+      labelPairs.forEach(([selector,label])=>{const element=q(selector);if(element)element.textContent=label;});
+      const stages={permission:permissionOk,adapter:connected,ecu:ready};
+      Object.entries(stages).forEach(([name,isDone])=>{
+        const step=q('[data-obd-step="'+name+'"]');
+        if(step)step.dataset.state=isDone?'done':name==='permission'?'active':name==='adapter'&&permissionOk?'active':name==='ecu'&&connected?'active':'pending';
+      });
+      const state=q('[data-obd-transport-status]');
+      if(state)state.textContent=!mobile?.available?.()?t.browser:ready?t.ready:connected?t.linked:permissionOk?t.paired:t.choose;
+      const steps=q('[data-obd-steps-label]');
+      if(steps)steps.setAttribute('aria-label',t.status);
+    }
+
     const setDiagnosticReady=value=>{
       ready=!!value;
       snapshotBtn.disabled=!ready;
@@ -278,6 +330,7 @@
       qa('[data-obd-command]').forEach(button=>button.disabled=!ready);
       clearBtn.disabled=!ready;
       if(!ready)stopLive();
+      updateTransportGuide();
     };
     const setConnected=value=>{
       connected=!!value;
@@ -286,6 +339,7 @@
       if(!connected)setDiagnosticReady(false);
       btChip.textContent=ready?'Готово':connected?'Адаптер':'Не подключено';
       btChip.classList.toggle('is-ok',connected);
+      updateTransportGuide();
     };
     const updateNetwork=()=>{
       const online=navigator.onLine;
@@ -305,6 +359,7 @@
     async function refreshStatus(){
       updateNetwork();
       if(!mobile?.available?.()){
+        permissionOk=false;
         nativeChip.textContent='Только Android';
         nativeChip.classList.add('is-warn');
         nativeText.textContent='ELM327 доступен в приложении KARETA.KZ - Автосервис. В обычном браузере раздел работает только как история диагностики.';
@@ -316,9 +371,11 @@
       nativeText.textContent='Bluetooth и офлайн-хранилище доступны.';
       try{
         const status=await mobile.elmStatus();
+        permissionOk=!!status.permission;
         if(!status.permission){
           try{
             const permission=await mobile.requestPermission('bluetooth');
+            permissionOk=permission?.granted===true;
             if(permission?.granted===false){
               btChip.textContent='Нужно разрешение';
               btChip.classList.add('is-warn');
@@ -329,6 +386,7 @@
         setDiagnosticReady(!!status.ready);
         btChip.textContent=status.ready?'Готово':status.connected?'Адаптер':'Не подключено';
         if(status.lastError&&!status.ready) nativeText.textContent='ELM327: '+status.lastError;
+        updateTransportGuide();
         if(status.address){
           currentAdapter={name:status.name||'ELM327',address:status.address};
           deviceText.textContent=`${currentAdapter.name} · ${currentAdapter.address}`;
@@ -345,9 +403,12 @@
         try{
           const permission=await mobile.requestPermission('bluetooth');
           if(permission?.granted===false){
+            permissionOk=false;
+            updateTransportGuide();
             setResult('Подтвердите системное разрешение Bluetooth, затем снова нажмите «Выбрать ELM327».');
             return;
           }
+          if(permission?.granted===true){permissionOk=true;updateTransportGuide();}
         }catch(_){}
         const payload=await mobile.elmDevices();
         const devices=Array.isArray(payload.devices)?payload.devices:[];
@@ -654,6 +715,9 @@
     };
 
     root.addEventListener('click',click);
+    const transportObserver=typeof MutationObserver==='function'?new MutationObserver(updateTransportGuide):null;
+    transportObserver?.observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+    updateTransportGuide();
     const online=()=>{updateNetwork();syncOffline();};
     const offline=()=>updateNetwork();
     window.addEventListener('online',online);
@@ -666,6 +730,7 @@
     const cleanup=()=>{
       disposed=true;
       stopLive();
+      transportObserver?.disconnect();
       root.removeEventListener('click',click);
       window.removeEventListener('online',online);
       window.removeEventListener('offline',offline);
