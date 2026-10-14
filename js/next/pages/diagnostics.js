@@ -80,7 +80,28 @@
     "saveCar": "Сохранить для выбранного автомобиля",
     "history": "История",
     "refresh": "Обновить",
-    "commandPlaceholder": "OBD / AT команда, например 010C"
+    "commandPlaceholder": "OBD / AT команда, например 010C",
+    "noGarage": "Диагностика доступна без автомобиля. Для сохранения результата в гараже сначала добавьте автомобиль.",
+    "openGarage": "Открыть мой гараж",
+    "unbound": "Диагностика без автомобиля",
+    "boundHint": "Отчёт будет связан с выбранным автомобилем",
+    "unboundHint": "Сканирование доступно без гаража. Выберите автомобиль только для сохранения истории.",
+    "change": "Изменить",
+    "selectVehicle": "Выбрать автомобиль",
+    "missingCar": "Запрошенный автомобиль не найден или недоступен. История не будет привязана автоматически.",
+    "withoutVehicle": "Без автомобиля",
+    "noAutoSave": "Не сохранять результат в гараж автоматически",
+    "vehicleFromGarage": "Автомобиль из гаража",
+    "selected": "Выбрано",
+    "select": "Выбрать",
+    "failedGarage": "Не удалось загрузить гараж. Диагностика доступна без автомобиля; сохранение истории недоступно до подтверждённого выбора.",
+    "foundCodes": "Найдены коды неисправностей",
+    "explainError": "Разобрать ошибку",
+    "askMasters": "Спросить мастеров",
+    "powertrain": "Силовой агрегат",
+    "chassis": "Шасси",
+    "body": "Кузов",
+    "networkDtc": "Сеть/связь"
   },
   "kk": {
     "eyebrow": "АВТОКӨЛІК ДИАГНОСТИКАСЫ",
@@ -127,7 +148,28 @@
     "saveCar": "Таңдалған автокөлікке сақтау",
     "history": "Тарих",
     "refresh": "Жаңарту",
-    "commandPlaceholder": "OBD / AT командасы, мысалы 010C"
+    "commandPlaceholder": "OBD / AT командасы, мысалы 010C",
+    "noGarage": "Автокөліксіз диагностика жасауға болады. Нәтижені гаражға сақтау үшін алдымен көлік қосыңыз.",
+    "openGarage": "Гаражды ашу",
+    "unbound": "Автокөлік таңдалмаған",
+    "boundHint": "Есеп таңдалған автокөлікке тіркеледі",
+    "unboundHint": "Гаражсыз сканерлеуге болады. Тарихқа сақтау үшін автокөлікті таңдаңыз.",
+    "change": "Өзгерту",
+    "selectVehicle": "Автокөлікті таңдау",
+    "missingCar": "Сұралған автокөлік табылмады немесе қолжетімсіз. Тарих автоматты түрде тіркелмейді.",
+    "withoutVehicle": "Автокөліксіз",
+    "noAutoSave": "Нәтижені гаражға автоматты сақтамау",
+    "vehicleFromGarage": "Гараждағы автокөлік",
+    "selected": "Таңдалды",
+    "select": "Таңдау",
+    "failedGarage": "Гараж жүктелмеді. Автокөліксіз диагностика қолжетімді; тарихты сақтау үшін көлікті таңдаңыз.",
+    "foundCodes": "Табылған ақау кодтары",
+    "explainError": "Қатені түсіндіру",
+    "askMasters": "Шеберлерден сұрау",
+    "powertrain": "Күштік агрегат",
+    "chassis": "Шасси",
+    "body": "Шанақ",
+    "networkDtc": "Желі/байланыс"
   },
   "en": {
     "eyebrow": "VEHICLE DIAGNOSTICS",
@@ -174,7 +216,28 @@
     "saveCar": "Save for selected vehicle",
     "history": "History",
     "refresh": "Refresh",
-    "commandPlaceholder": "OBD / AT command, e.g. 010C"
+    "commandPlaceholder": "OBD / AT command, e.g. 010C",
+    "noGarage": "You can scan without a vehicle. Add a car to save the results to your garage.",
+    "openGarage": "Open my garage",
+    "unbound": "Diagnostics without a vehicle",
+    "boundHint": "The report will be associated with the selected vehicle",
+    "unboundHint": "Scan without a garage. Select a vehicle only to save diagnostics history.",
+    "change": "Change",
+    "selectVehicle": "Choose a vehicle",
+    "missingCar": "The requested vehicle was not found or is unavailable. History will not be linked automatically.",
+    "withoutVehicle": "Without a vehicle",
+    "noAutoSave": "Do not automatically save results to the garage",
+    "vehicleFromGarage": "Garage vehicle",
+    "selected": "Selected",
+    "select": "Select",
+    "failedGarage": "The garage could not be loaded. You can scan without a car, but history cannot be saved until a vehicle is selected.",
+    "foundCodes": "Trouble codes found",
+    "explainError": "Explain code",
+    "askMasters": "Ask mechanics",
+    "powertrain": "Powertrain",
+    "chassis": "Chassis",
+    "body": "Body",
+    "networkDtc": "Network/communication"
   }
 });
   const obdScreenCopy=()=>OBD_SCREEN_COPY[String(document.documentElement?.lang||'ru').slice(0,2).toLowerCase()]||OBD_SCREEN_COPY.ru;
@@ -359,21 +422,22 @@
     }
 
     function renderVehicleChoice(){
+      const t=obdScreenCopy();
       updateRepairLinks();
       if(!vehicles.length){
-        vehicleCurrent.innerHTML='<p class="k-obd-muted">Диагностика доступна без автомобиля. Для сохранения результата в гараже сначала добавьте автомобиль.</p><a class="k-btn" href="#/cabinet/garage">Открыть мой гараж</a>';
+        vehicleCurrent.innerHTML=`<p class="k-obd-muted">${esc(t.noGarage)}</p><a class="k-btn" href="#/cabinet/garage">${esc(t.openGarage)}</a>`;
         vehicleList.hidden=true;
         refreshPendingSave();
         return;
       }
       vehicleCurrent.innerHTML=`<button type="button" class="k-obd-selected-vehicle" data-obd-vehicle-toggle>
-        <span><b>${selectedVehicle?esc(vehicleTitle(selectedVehicle)):'Диагностика без автомобиля'}</b><small>${selectedVehicle?esc(vehicleMeta(selectedVehicle)||'Отчёт будет связан с выбранным автомобилем'):'Сканирование доступно без гаража. Выберите автомобиль только для сохранения истории.'}</small></span>
-        <em>${selectedVehicle?'Изменить':'Выбрать автомобиль'}</em>
-      </button>${launchVehicleMissing?'<p class="k-obd-muted" role="alert">Запрошенный автомобиль не найден или недоступен. История не будет привязана автоматически.</p>':''}`;
-      vehicleList.innerHTML=`<button type="button" class="k-obd-vehicle-option ${!selectedVehicle?'is-active':''}" data-obd-vehicle-unbind><span><b>Без автомобиля</b><small>Не сохранять результат в гараж автоматически</small></span></button>`+
+        <span><b>${selectedVehicle?esc(vehicleTitle(selectedVehicle)):esc(t.unbound)}</b><small>${selectedVehicle?esc(vehicleMeta(selectedVehicle)||t.boundHint):esc(t.unboundHint)}</small></span>
+        <em>${selectedVehicle?esc(t.change):esc(t.selectVehicle)}</em>
+      </button>${launchVehicleMissing?`<p class="k-obd-muted" role="alert">${esc(t.missingCar)}</p>`:''}`;
+      vehicleList.innerHTML=`<button type="button" class="k-obd-vehicle-option ${!selectedVehicle?'is-active':''}" data-obd-vehicle-unbind><span><b>${esc(t.withoutVehicle)}</b><small>${esc(t.noAutoSave)}</small></span></button>`+
         vehicles.map(v=>`<button type="button" class="k-obd-vehicle-option ${String(v.id)===String(selectedVehicle?.id)?'is-active':''}" data-obd-vehicle-id="${esc(v.id||'')}">
-        <span><b>${esc(vehicleTitle(v))}</b><small>${esc(vehicleMeta(v)||'Автомобиль из гаража')}</small></span>
-        <em>${String(v.id)===String(selectedVehicle?.id)?'Выбрано':'Выбрать'}</em>
+        <span><b>${esc(vehicleTitle(v))}</b><small>${esc(vehicleMeta(v)||t.vehicleFromGarage)}</small></span>
+        <em>${String(v.id)===String(selectedVehicle?.id)?esc(t.selected):esc(t.select)}</em>
       </button>`).join('');
       refreshPendingSave();
     }
@@ -395,21 +459,24 @@
         launchVehicleMissing=!!launchVehicleId&&!selectedVehicle;
         renderVehicleChoice();
       }catch(_){
-        vehicleCurrent.innerHTML='<p class="k-obd-muted">Не удалось загрузить гараж. Диагностика доступна без автомобиля; сохранение истории недоступно до подтверждённого выбора.</p>';
+        vehicleCurrent.innerHTML=`<p class="k-obd-muted">${esc(obdScreenCopy().failedGarage)}</p>`;
       }
     }
 
     const dtcSystem=code=>{
-      const c=String(code||'').charAt(0);
-      return c==='P'?'Силовой агрегат':c==='C'?'Шасси':c==='B'?'Кузов':c==='U'?'Сеть/связь':'OBD-II';
+      const c=String(code||'').charAt(0),t=obdScreenCopy();
+      return c==='P'?t.powertrain:c==='C'?t.chassis:c==='B'?t.body:c==='U'?t.networkDtc:'OBD-II';
     };
+    let lastDtcCodes=[];
     function renderDtc(codes){
+      lastDtcCodes=Array.isArray(codes)?codes:[];
+      const t=obdScreenCopy();
       const list=Array.isArray(codes)?Array.from(new Set(codes.map(c=>String(c||'').trim().toUpperCase()).filter(c=>/^[PCBU][0-9A-F]{4}$/.test(c)))):[];
       repairActions.hidden=!list.length;
       if(!list.length){dtcList.hidden=true;dtcList.innerHTML='';return;}
       dtcList.hidden=false;
-      dtcList.innerHTML=`<div class="k-obd-dtc-head"><b>Найдены коды неисправностей</b><span>${list.length}</span></div>
-        <div class="k-obd-dtc-grid">${list.map(code=>`<article><strong>${esc(code)}</strong><span>${esc(dtcSystem(code))}</span><a href="#/assistant" data-obd-dtc-help="${esc(code)}">Разобрать ошибку</a><a href="#/community/question/create?mode=help" data-obd-dtc-question="${esc(code)}">Спросить мастеров</a></article>`).join('')}</div>`;
+      dtcList.innerHTML=`<div class="k-obd-dtc-head"><b>${esc(t.foundCodes)}</b><span>${list.length}</span></div>
+        <div class="k-obd-dtc-grid">${list.map(code=>`<article><strong>${esc(code)}</strong><span>${esc(dtcSystem(code))}</span><a href="#/assistant" data-obd-dtc-help="${esc(code)}">${esc(t.explainError)}</a><a href="#/community/question/create?mode=help" data-obd-dtc-question="${esc(code)}">${esc(t.askMasters)}</a></article>`).join('')}</div>`;
     }
 
     function renderLive(data={}){
@@ -879,7 +946,11 @@
     };
 
     root.addEventListener('click',click);
-    const transportObserver=typeof MutationObserver==='function'?new MutationObserver(updateTransportGuide):null;
+    const transportObserver=typeof MutationObserver==='function'?new MutationObserver(()=>{
+      updateTransportGuide();
+      renderVehicleChoice();
+      if(lastDtcCodes.length)renderDtc(lastDtcCodes);
+    }):null;
     transportObserver?.observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
     updateTransportGuide();
     const online=()=>{updateNetwork();syncOffline();};
