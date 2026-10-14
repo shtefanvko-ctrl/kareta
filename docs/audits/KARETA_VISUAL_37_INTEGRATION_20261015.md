@@ -46,3 +46,13 @@ The collages contain overlapping functional pages; do not create 37 duplicate ro
 - API contract and unauthorized-owner negative tests before any business-state changes.
 - No regression in garage, diagnostics without garage, scanner/OCR, QR, orders, marketplace/seller, notifications, chat, community.
 - Explicit staging release decision and proven deploy SHA before shipping; production is out of scope.
+
+## Additional UI increment P1-A (after approval)
+
+- Added inline specialization search to the existing modal backed by `model.categories`; no new catalog, API or persisted selection model.
+- Filtering hides only nonmatching existing category buttons and displays an explicit empty-results state.
+- Search placeholder and empty-results text support RU/KK/EN, updated on `html[lang]` changes without rebuilding the wizard or discarding the draft.
+- The focused `tools/test_master_onboarding_visual_canon_20261015.js` includes a source-level search regression check.
+- Status: source committed; V8 syntax/static contract verified; full browser and Android interaction tests are not yet run.
+
+Next: P0-B navigation/Back conflict audit; P1-B service/price edit consistency and draft reopen tests; P2-A equipment/post/staff domain contract review.
