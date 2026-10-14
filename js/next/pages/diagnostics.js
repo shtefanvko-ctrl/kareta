@@ -9,7 +9,7 @@
     return `<section class="k-page k-diagnostics-page" data-page="diagnostics">
       <header class="k-r84-workspace-head k-diagnostics-head">
         <span>ДИАГНОСТИКА АВТОМОБИЛЯ</span>
-        <h1>ELM327 · Bluetooth OBD-II</h1>
+        <h1>Диагностика ЭБУ · ELM327</h1>
         <p>Подключение адаптера, чтение основных параметров и кодов неисправностей. Сессии сохраняются офлайн и синхронизируются с KARETA.KZ после появления сети.</p>
       </header>
 
@@ -94,6 +94,11 @@
           <button type="button" class="k-btn" data-obd-sync>Синхронизировать</button>
         </div>
         <div class="k-obd-dtc-list" data-obd-dtc-list hidden></div>
+        <div class="k-obd-pending-save" data-obd-pending-save hidden>
+          <p class="k-obd-muted">Диагностика выполнена без автомобиля. Результат доступен в текущем сеансе, но пока не сохранён в историю гаража.</p>
+          <button type="button" class="k-btn k-btn-primary" data-obd-save-current disabled>Сохранить для выбранного автомобиля</button>
+          <a class="k-btn" href="#/cabinet/garage">Мой гараж</a>
+        </div>
         <pre class="k-obd-result" data-obd-result>Подключите ELM327 и запустите диагностику.</pre>
       </article>
 
@@ -127,6 +132,7 @@
     const vehicleCurrent=q('[data-obd-vehicle-current]');
     const vehicleList=q('[data-obd-vehicle-list]');
     const dtcList=q('[data-obd-dtc-list]');
+    const pendingSave=q('[data-obd-pending-save]');
     const liveStart=q('[data-obd-live-start]');
     const liveStop=q('[data-obd-live-stop]');
     const liveState=q('[data-obd-live-state]');
@@ -139,6 +145,9 @@
     let currentAdapter=null;
     let selectedVehicle=null;
     let vehicles=[];
+    let launchVehicleMissing=false;
+    let pendingSnapshot=null;
+    let pendingCapturedAt=0;
     let liveTimer=0;
     let liveBusy=false;
     let liveFailures=0;
@@ -149,36 +158,49 @@
     const vehicleTitle=v=>String(v?.title||[v?.brand,v?.model,v?.year_label||v?.year].filter(Boolean).join(' ')||'Автомобиль');
     const vehicleMeta=v=>[v?.vin,v?.plate||v?.plate_number,v?.mileage_km?String(v.mileage_km)+' км':''].filter(Boolean).join(' · ');
 
+    function refreshPendingSave(){
+      pendingSave.hidden=!pendingSnapshot;
+      const saveButton=pendingSave.querySelector('[data-obd-save-current]');
+      if(saveButton)saveButton.disabled=!selectedVehicle;
+    }
+
     function renderVehicleChoice(){
       if(!vehicles.length){
-        vehicleCurrent.innerHTML='<p class="k-obd-muted">В гараже пока нет автомобиля. Диагностику можно выполнить, но сохранение и синхронизация истории требуют привязки к автомобилю.</p>';
+        vehicleCurrent.innerHTML='<p class="k-obd-muted">Диагностика доступна без автомобиля. Для сохранения результата в гараже сначала добавьте автомобиль.</p><a class="k-btn" href="#/cabinet/garage">Открыть мой гараж</a>';
         vehicleList.hidden=true;
+        refreshPendingSave();
         return;
       }
-      if(!selectedVehicle)selectedVehicle=vehicles.find(v=>v.is_default||v.isDefault||v.primary)||vehicles[0];
       vehicleCurrent.innerHTML=`<button type="button" class="k-obd-selected-vehicle" data-obd-vehicle-toggle>
-        <span><b>${esc(vehicleTitle(selectedVehicle))}</b><small>${esc(vehicleMeta(selectedVehicle)||'Выбран для диагностической истории')}</small></span>
-        <em>Изменить</em>
-      </button>`;
-      vehicleList.innerHTML=vehicles.map(v=>`<button type="button" class="k-obd-vehicle-option ${String(v.id)===String(selectedVehicle?.id)?'is-active':''}" data-obd-vehicle-id="${esc(v.id||'')}">
+        <span><b>${selectedVehicle?esc(vehicleTitle(selectedVehicle)):'Диагностика без автомобиля'}</b><small>${selectedVehicle?esc(vehicleMeta(selectedVehicle)||'Отчёт будет связан с выбранным автомобилем'):'Сканирование доступно без гаража. Выберите автомобиль только для сохранения истории.'}</small></span>
+        <em>${selectedVehicle?'Изменить':'Выбрать автомобиль'}</em>
+      </button>${launchVehicleMissing?'<p class="k-obd-muted" role="alert">Запрошенный автомобиль не найден или недоступен. История не будет привязана автоматически.</p>':''}`;
+      vehicleList.innerHTML=`<button type="button" class="k-obd-vehicle-option ${!selectedVehicle?'is-active':''}" data-obd-vehicle-unbind><span><b>Без автомобиля</b><small>Не сохранять результат в гараж автоматически</small></span></button>`+
+        vehicles.map(v=>`<button type="button" class="k-obd-vehicle-option ${String(v.id)===String(selectedVehicle?.id)?'is-active':''}" data-obd-vehicle-id="${esc(v.id||'')}">
         <span><b>${esc(vehicleTitle(v))}</b><small>${esc(vehicleMeta(v)||'Автомобиль из гаража')}</small></span>
         <em>${String(v.id)===String(selectedVehicle?.id)?'Выбрано':'Выбрать'}</em>
       </button>`).join('');
+      refreshPendingSave();
     }
 
     async function loadVehicles(){
+      // The garage vehicle page hands off its vehicleId once. Home entry stays unbound.
+      let launchVehicleId='';
+      try{
+        launchVehicleId=sessionStorage.getItem('kareta.obd.vehicleId')||'';
+        sessionStorage.removeItem('kareta.obd.vehicleId');
+      }catch(_){}
       try{
         const api=window.KaretaClientCabinetApi;
         if(!api?.get){renderVehicleChoice();return;}
         const response=await api.get({cacheTtlMs:0,force:true,dedupe:false});
         const payload=response?.payload?.data||response?.payload||{};
         vehicles=Array.isArray(payload.vehicles)?payload.vehicles.filter(v=>String(v?.status||'active')!=='archived'):[];
-        let remembered='';
-        try{remembered=sessionStorage.getItem('kareta.obd.vehicleId')||'';}catch(_){}
-        selectedVehicle=vehicles.find(v=>String(v.id)===remembered)||vehicles.find(v=>v.is_default||v.isDefault||v.primary)||vehicles[0]||null;
+        selectedVehicle=launchVehicleId?vehicles.find(v=>String(v.id)===launchVehicleId)||null:null;
+        launchVehicleMissing=!!launchVehicleId&&!selectedVehicle;
         renderVehicleChoice();
       }catch(_){
-        vehicleCurrent.innerHTML='<p class="k-obd-muted">Не удалось загрузить гараж. Диагностика доступна, но история не будет сохранена или синхронизирована без vehicleId.</p>';
+        vehicleCurrent.innerHTML='<p class="k-obd-muted">Не удалось загрузить гараж. Диагностика доступна без автомобиля; сохранение истории недоступно до подтверждённого выбора.</p>';
       }
     }
 
@@ -362,15 +384,15 @@
       item?.payload?.vehicleId ?? item?.payload?.carId ?? item?.payload?.autoId ?? item?.payload?.elmVehicleId ?? ''
     ).trim();
 
-    async function saveOffline(snapshot){
-      if(!mobile?.available?.())return null;
+    async function saveOffline(snapshot,capturedAt=Date.now()){
+      if(!mobile?.available?.())return {skipped:true,code:'NATIVE_UNAVAILABLE'};
       const vehicleId=String(selectedVehicle?.id||'').trim();
       if(!vehicleId){
         return {skipped:true,code:'VEHICLE_ID_REQUIRED'};
       }
       const payload={
         kind:'obd_session',
-        capturedAt:Date.now(),
+        capturedAt,
         adapter:currentAdapter||{},
         vehicleId,
         vin:snapshot?.vin||parseVin(snapshot?.vinRaw),
@@ -423,15 +445,21 @@
       setResult('Читаем основные параметры автомобиля…');
       try{
         const snapshot=await mobile.elmSnapshot();
-        const saved=await saveOffline(snapshot);
+        const capturedAt=Date.now();
+        const saved=await saveOffline(snapshot,capturedAt);
         renderLive(snapshot);
         renderDtc(snapshot?.dtcCodes||[]);
         if(saved?.skipped){
-          setResult({snapshot,warning:'Диагностика выполнена, но история не сохранена: сначала добавьте или выберите автомобиль.'});
+          pendingSnapshot=snapshot;
+          pendingCapturedAt=capturedAt;
+          setResult({snapshot,warning:'Диагностика выполнена без привязки к гаражу. Для сохранения выберите автомобиль и подтвердите действие.'});
         }else{
+          pendingSnapshot=null;
+          pendingCapturedAt=0;
           setResult(snapshot);
           if(navigator.onLine)await syncOffline();
         }
+        refreshPendingSave();
       }catch(error){setResult(error.message||String(error));}
       finally{snapshotBtn.disabled=!ready;}
     }
@@ -458,10 +486,39 @@
     const click=async event=>{
       const vehicleToggle=event.target.closest('[data-obd-vehicle-toggle]');
       if(vehicleToggle){vehicleList.hidden=!vehicleList.hidden;return;}
+      if(event.target.closest('[data-obd-vehicle-unbind]')){
+        selectedVehicle=null;
+        launchVehicleMissing=false;
+        vehicleList.hidden=true;
+        renderVehicleChoice();
+        await loadHistory();
+        return;
+      }
+      if(event.target.closest('[data-obd-save-current]')){
+        if(!selectedVehicle||!pendingSnapshot)return;
+        const scannedVin=String(pendingSnapshot?.vin||parseVin(pendingSnapshot?.vinRaw)||'').trim().toUpperCase();
+        const garageVin=String(selectedVehicle?.vin||'').trim().toUpperCase();
+        if(scannedVin&&garageVin&&scannedVin!==garageVin&&!window.confirm('VIN считанного автомобиля отличается от VIN в гараже. Подтвердить сохранение для выбранного автомобиля?'))return;
+        const button=pendingSave.querySelector('[data-obd-save-current]');
+        if(button)button.disabled=true;
+        try{
+          const saved=await saveOffline(pendingSnapshot,pendingCapturedAt);
+          if(saved?.skipped)throw new Error(saved.code||'SAVE_NOT_AVAILABLE');
+          pendingSnapshot=null;
+          pendingCapturedAt=0;
+          refreshPendingSave();
+          setResult('Диагностическая сессия добавлена в офлайн-очередь выбранного автомобиля.');
+          if(navigator.onLine)await syncOffline();
+        }catch(error){
+          setResult('Не удалось сохранить диагностику: '+(error.message||String(error)));
+          refreshPendingSave();
+        }
+        return;
+      }
       const vehicleOption=event.target.closest('[data-obd-vehicle-id]');
       if(vehicleOption){
         selectedVehicle=vehicles.find(v=>String(v.id)===String(vehicleOption.dataset.obdVehicleId||''))||selectedVehicle;
-        try{sessionStorage.setItem('kareta.obd.vehicleId',String(selectedVehicle?.id||''));}catch(_){}
+        launchVehicleMissing=false;
         vehicleList.hidden=true;
         renderVehicleChoice();
         await loadHistory();
