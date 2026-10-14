@@ -15,8 +15,17 @@
     if (/^#\/masters\/profile(?:\/|$)/.test(route)) return 'Профиль мастера или СТО';
     if (/^#\/orders\/new(?:\/|$)/.test(route)) return 'Новая заявка';
     if (/^#\/orders\/item(?:\/|$)/.test(route)) return 'Детали заказа';
+    // Reuse the canonical registry for nested routes, without changing root labels.
+    // Explicit detail titles above remain authoritative.
+    if (route.slice(2).includes('/')) {
+      const registry = window.KaretaRouteRegistry;
+      const key = registry?.keyFromHash?.(route);
+      const label = key && registry?.has?.(key) ? registry.get(key)?.label : '';
+      if (label) return label;
+    }
     const segment = route.replace(/^#\//, '').split('/')[0];
-    return ROUTE_TITLES[segment] || window.KaretaRouteRegistry?.get?.(segment)?.label || 'Раздел';
+    const registry = window.KaretaRouteRegistry;
+    return ROUTE_TITLES[segment] || (registry?.has?.(segment) ? registry.get(segment)?.label : '') || 'Раздел';
   }
 
   function ensurePageTitle(header) {

@@ -96,13 +96,19 @@
 #k-shell-header > #k-mobile-back[hidden]{display:none!important}
 @media (max-width:860px){
   #k-shell-header[data-kareta-header-mode="inner"] .k-shell-page-title{
-    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    display:block;width:min(54vw,270px);margin:0;
+    position:absolute;left:62px;right:142px;top:50%;transform:translateY(-50%);
+    display:block;width:auto;min-width:0;margin:0;
     color:#111827;text-align:center;font-size:17px;font-weight:800;
     line-height:1.2;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;
     pointer-events:none;
   }
-  #k-shell-header[data-kareta-header-mode="inner"] > .k-shell-actions{display:none!important}
+  /* Keep the existing city selector and menu reachable on every inner route. */
+  #k-shell-header[data-kareta-header-mode="inner"] > .k-shell-actions{
+    display:flex!important;visibility:visible!important;align-items:center;
+  }
+  #k-shell-header[data-kareta-header-mode="inner"] > .k-shell-actions .k-shell-location-label{
+    display:none!important;
+  }
   /* The outlet owns its search, tabs and contextual action below this one-line header. */
   #k-page-outlet .k-services-canon-titlebar > h1{
     position:absolute!important;width:1px!important;height:1px!important;
