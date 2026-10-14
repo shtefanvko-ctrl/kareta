@@ -68,22 +68,27 @@ async function setup(startVehicleId) {
   const home=await setup();
   assert.match(home.q('[data-obd-vehicle-current]').innerHTML,/Диагностика без автомобиля/);
   assert.doesNotMatch(home.q('[data-obd-vehicle-current]').innerHTML,/Peugeot 308/);
+  assert.equal(home.q('[data-obd-repair-parts]').href,'#/parts','home scan must not transmit garage identity to parts');
 
   const car=await setup('car-2');
   assert.match(car.q('[data-obd-vehicle-current]').innerHTML,/Toyota Corolla/);
   assert.equal(car.store.has('kareta.obd.vehicleId'),false,'vehicle handoff must be one-shot');
+  assert.equal(car.q('[data-obd-repair-parts]').href,'#/parts?vehicleId=car-2');
 
   const forbidden=await setup('other-user-car');
   assert.match(forbidden.q('[data-obd-vehicle-current]').innerHTML,/Диагностика без автомобиля/);
   assert.match(forbidden.q('[data-obd-vehicle-current]').innerHTML,/недоступен/);
   assert.equal(forbidden.store.has('kareta.obd.vehicleId'),false);
+  assert.equal(forbidden.q('[data-obd-repair-parts]').href,'#/parts','unknown/unauthorized vehicle must be unbound');
 
   const click=car.listeners.get('click');
   assert.equal(typeof click,'function');
   await click({target:{closest:sel=>sel==='[data-obd-vehicle-unbind]'?{}:null}});
   assert.match(car.q('[data-obd-vehicle-current]').innerHTML,/Диагностика без автомобиля/);
+  assert.equal(car.q('[data-obd-repair-parts]').href,'#/parts');
   await click({target:{closest:sel=>sel==='[data-obd-vehicle-id]'?{dataset:{obdVehicleId:'car-1'}}:null}});
   assert.match(car.q('[data-obd-vehicle-current]').innerHTML,/Peugeot 308/);
+  assert.equal(car.q('[data-obd-repair-parts]').href,'#/parts?vehicleId=car-1');
   assert.equal(car.store.has('kareta.obd.vehicleId'),false,'manual selection must not leak to a future home launch');
   console.log('DIAGNOSTICS_ENTRY_INTENT: PASS — home unbound, garage scoped, unknown ID rejected, explicit choice');
 })().catch(err=>{console.error(err);process.exitCode=1});
