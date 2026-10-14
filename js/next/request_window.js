@@ -37,7 +37,14 @@
     const pages=window.KaretaRequestPages;
     if(!pages?.renderRequestWindow||!pages?.mountRequest)throw new Error('request_pages_unavailable_after_lazy_load');
     state.body.innerHTML=pages.renderRequestWindow({state:window.KaretaNext?.state||{},windowMode:true})||'';
-    const ctx=context(state.body);const result=pages.mountRequest(ctx);if(typeof result==='function')state.cleanups.push(result);
+    const ctx=context(state.body),result=pages.mountRequest(ctx);
+    if(result&&typeof result.then==='function'){
+      result.then(cleanupFn=>{
+        if(typeof cleanupFn!=='function')return;
+        if(ctx.lifecycle.isActive()&&token===state.loadToken)state.cleanups.push(cleanupFn);
+        else cleanupFn();
+      }).catch(error=>{if(ctx.lifecycle.isActive())console.error('[KARETA request async mount]',error);});
+    }else if(typeof result==='function')state.cleanups.push(result);
     requestAnimationFrame(()=>state.body.querySelector('button,input,[tabindex]')?.focus?.({preventScroll:true}));
     window.dispatchEvent(new CustomEvent('kareta:request-window-open',{detail:{targetHash:state.targetHash,baseHash:state.baseHash,lazy:true}}));
     return true;

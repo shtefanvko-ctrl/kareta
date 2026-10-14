@@ -104,6 +104,9 @@ jobs:
       - name: Browser support contract
         run: node tools/test_browser_support_matrix_84_109.js
 
+      - name: Client three-step booking handoff contract
+        run: node tools/test_client_request_three_steps_84_23.js
+
       - name: Route binding contract
         run: node tools/test_route_binding_contract.js
 
