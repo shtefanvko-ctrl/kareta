@@ -1,0 +1,17 @@
+name: Feature preservation (repository only)
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-no-feature-loss:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify protected routes, entry points and RU/KK/EN keys
+        run: python3 tools/test_feature_preservation.py --self-test
