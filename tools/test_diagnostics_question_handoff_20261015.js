@@ -31,7 +31,7 @@ sendQuestion({
   brand:'Peugeot',model:'308',year:2018,vin:'PRIVATE_VIN',plate:'PRIVATE_PLATE'
 },store,location);
 assert.equal(location.hash,'#/community/question/create?mode=help');
-const draft=store.get('kareta.obd.communityDraft');
+const draft=store.getItem('kareta.obd.communityDraft');
 assert.match(draft,/P0110/);
 assert.match(draft,/Peugeot 308 2018/);
 assert.doesNotMatch(draft,/PRIVATE_VIN|PRIVATE_PLATE/);
