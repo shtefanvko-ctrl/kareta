@@ -43,3 +43,6 @@ Load only what applies:
 - parallel PR / integration-lane rules: `ai/CHANGE_LANES.md`
 
 Do not read every historical patch note by default. Use historical documents only when they are directly relevant to the task or needed to resolve a conflict.
+
+## Skill routing
+Use project skills from `.agents/skills/` when the task matches their trigger. Load only the smallest relevant skill set. `kareta-devil-review` is mandatory for shared contracts, auth/identity, DB/migrations, release/provenance, PR convergence, or changes touching more than five production files.

@@ -1,0 +1,17 @@
+{
+  "schema": "kareta.agent-skills.v1",
+  "skills": [
+    "kareta-continue-pr",
+    "kareta-pr-convergence",
+    "kareta-verification-audit",
+    "kareta-runtime-contracts",
+    "kareta-devil-review",
+    "kareta-regression-debug",
+    "kareta-handoff"
+  ],
+  "policy": {
+    "router": "AGENTS.md + ai/CONTEXT_ROUTER.md",
+    "devilRequiredForHighRisk": true,
+    "noDuplicateSkills": true
+  }
+}
