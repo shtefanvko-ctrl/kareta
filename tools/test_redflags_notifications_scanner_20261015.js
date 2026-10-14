@@ -7,8 +7,15 @@ const vm=require('node:vm');
 const accountSource=fs.readFileSync('js/next/account_window.js','utf8');
 const exposed=accountSource.replace(/\}\)\(\);\s*$/, 'window.__testNotifications=notificationEventsHtml;})();');
 assert.notEqual(exposed,accountSource,'notification renderer must remain discoverable in the existing module');
-const accountWindow={KaretaClientCabinetApi:{}};
-vm.runInNewContext(exposed,{window:accountWindow,console});
+const registered=[];
+const accountWindow={KaretaClientCabinetApi:{},
+  addEventListener:(name,fn)=>registered.push(['window',name,fn])};
+const accountDocument={addEventListener:(name,fn,capture)=>registered.push(['document',name,fn,capture])};
+vm.runInNewContext(exposed,{window:accountWindow,document:accountDocument,setTimeout:()=>0,console});
+assert(registered.some(([scope,event,fn,capture])=>scope==='document'&&event==='click'&&typeof fn==='function'&&capture===true),
+  'account window must retain its capturing click handler');
+assert(registered.some(([scope,event])=>scope==='window'&&event==='hashchange'),
+  'account window route lifecycle handler must remain registered');
 const render=accountWindow.__testNotifications;
 assert.equal(typeof render,'function');
 for(const response of [
