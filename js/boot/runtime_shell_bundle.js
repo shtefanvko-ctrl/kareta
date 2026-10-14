@@ -1791,7 +1791,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
       if (label) return label;
     }
     const segment = route.replace(/^#\//, '').split('/')[0];
-    return ROUTE_TITLES[segment] || window.KaretaRouteRegistry?.get?.(segment)?.label || 'Раздел';
+    const registry = window.KaretaRouteRegistry;
+    return ROUTE_TITLES[segment] || (registry?.has?.(segment) ? registry.get(segment)?.label : '') || 'Раздел';
   }
 
   function ensurePageTitle(header) {
