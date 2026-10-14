@@ -31,6 +31,7 @@ For status semantics and release evidence, `MB_MONITORING.md` is authoritative.
 - Treat auth, identity, capability checks, payments, personal data, secrets, DB migrations, and production deployment as high-risk surfaces.
 - Never commit credentials, tokens, private keys, session material, or production secrets.
 - When desired, implemented, verified, and deployed states differ, keep them explicitly separate.
+- For KARETA visual regressions read ai/rules/visual-canon-v3.md and verify real assets and mobile states.
 - Prefer reversible, incremental changes with a clear restore point.
 
 ## Context modules

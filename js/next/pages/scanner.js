@@ -53,7 +53,7 @@
   function mountDocument(root,context={}){
     const target=root.querySelector('[data-doc-stage]');if(!target)return ()=>{};
     const camera=root.querySelector('[data-doc-camera]'),gallery=root.querySelector('[data-doc-gallery]'),status=root.querySelector('[data-doc-status]');
-    const life=context.lifecycle||{},photo={front:'',rear:''},files={front:null,rear:null};let step='intro',disposed=false,revision=0,recognized=null,busy=false;
+    const life=context.lifecycle||{},photo={front:'',rear:''},files={front:null,rear:null};let step='front',disposed=false,revision=0,recognized=null,busy=false;
     const alive=()=>!disposed&&life.isActive?.()!==false&&root.isConnected;
     const release=k=>{if(photo[k]){URL.revokeObjectURL(photo[k]);photo[k]='';}files[k]=null;};
     const button=(key,title,primary=false)=>'<button type="button" class="k-btn '+(primary?'k-btn-primary':'k-btn-secondary')+'" data-doc-next="'+key+'">'+title+'</button>';
@@ -66,11 +66,11 @@
       if(step==='intro')out=block(t[1],t[4])+button('choose',t[5],true)+manual(t[6]);
       if(step==='choose')out=block(t[7],t[4])+button('front',t[5],true)+manual(t[6])+button('intro',t[0]);
       if(step==='front'||step==='rear'){
-        const first=step==='front',src=photo[step];out='<div class="k-document-step">'+t[10]+' '+(first?'1':'2')+' / 2</div>'+block(first?t[8]:t[9],first?t[8]:t[9])
-          +'<div class="k-document-preview">'+(src?'<img src="'+src+'" alt="'+(first?t[8]:t[9])+'">':'<span aria-hidden="true">▣</span>')+'</div>'
+        const first=step==='front',src=photo[step];out='<div class="k-document-step">'+t[10]+' '+(first?'1':'2')+' / 3</div>'+block(first?t[8]:t[9],t[4])
+          +'<div class="k-document-preview">'+(src?'<img src="'+src+'" alt="'+(first?t[8]:t[9])+'">':'<span aria-hidden="true" class="k-document-preview__icon">'+(window.KaretaUIIcons?.svg?.('document')||'▣')+'</span>')+'</div>'
           +button('camera',src?t[14]+' · '+t[11]:t[11],true)+button('gallery',t[12])+(src?button(first?'rear':'ready',t[13],true):'')+button(first?'choose':'front',t[0]);
       }
-      if(step==='ready')out=block(t[15],t[16])+'<div class="k-document-review"><img src="'+photo.front+'" alt="'+t[8]+'"><img src="'+photo.rear+'" alt="'+t[9]+'"></div>'
+      if(step==='ready')out='<div class="k-document-step">'+t[10]+' 3 / 3</div>'+block(t[15],t[16])+'<div class="k-document-review"><img src="'+photo.front+'" alt="'+t[8]+'"><img src="'+photo.rear+'" alt="'+t[9]+'"></div>'
         +(window.KaretaDocumentOCR?.available?.()?button('recognize',ocr.run,true):'<p>'+ocr.unavailable+'</p>')
         +manual(t[17])+button('rear',t[14])+button('reset',t[18]);
       if(step==='review'){
@@ -130,7 +130,7 @@
         location.hash='#/cabinet/garage?firstVehicle=1';
         return;
       }
-      if(action==='reset'){revision++;recognized=null;release('front');release('rear');step='intro';}
+      if(action==='reset'){revision++;recognized=null;release('front');release('rear');step='front';}
       else if(['intro','choose','front','rear','ready'].includes(action)){if(action==='ready'&&(!photo.front||!photo.rear))return;revision++;step=action;}
       status.textContent='';draw();
     };

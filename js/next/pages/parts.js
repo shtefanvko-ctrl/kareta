@@ -74,7 +74,9 @@
     const row=(Array.isArray(categories)?categories:[]).find(x=>String(x?.key||'')===id)||{};
     const fallback=fallbackCategories[id]||{name:id,icon:'parts'};
     const name=String(row.name||fallback.name),groupName=String(row.groupName||'');
-    return {key:id,name,icon:categoryIcon(name+' '+groupName,fallback.icon),count:Number(row.count||0),groupName};
+    // The product key owns the icon; the group label must not turn audio products into padlocks.
+    const glyph=Object.hasOwn(fallbackCategories,id)?fallback.icon:categoryIcon(name,fallback.icon);
+    return {key:id,name,icon:glyph,count:Number(row.count||0),groupName};
   }
   function uniqueCategories(snapshot){
     const map=new Map();

@@ -8,7 +8,8 @@
     { title:'Запись', route:'#/orders/new', icon:'calendar' },
     { title:'Чаты', route:'#/chats', icon:'chats' },
     { title:'Мастера', route:'#/masters', icon:'master' },
-    { title:'Сканировать', route:'#/scan', icon:'camera' }
+    { title:'Сканировать', route:'#/scan', icon:'camera' },
+    { title:'Диагностика ЭБУ', route:'#/diagnostics', icon:'diagnostics' }
   ]);
 
 

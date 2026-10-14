@@ -1943,7 +1943,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     }
     hideZeroBadge('k-mobile-chat-badge');
     hideZeroBadge('k-mobile-orders-badge');
-    if (stack) stack.hidden = isOnboarding(hash) || protectContent;
+    // Fixed shortcuts obscure forms and product cards; keep them on home only.
+    if (stack) stack.hidden = isOnboarding(hash) || protectContent || cleanHash !== HOME;
   }
 
   function sync() {

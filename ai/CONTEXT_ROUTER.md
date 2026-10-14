@@ -16,6 +16,7 @@ Goal: maximize useful project context while minimizing context pollution. The ag
 | architecture, router, shared state, cross-module refactor, public contracts | `ai/rules/architecture.md` | unrelated historical patch notes |
 | auth, identity, permissions, capabilities, cookies, sessions, secrets, uploads, destructive actions | `ai/rules/security.md` | broad UI/product docs unless affected |
 | tests, regression, release, staging, deploy, DONE/PASS, baseline, evidence | `ai/rules/verification-release.md`, `MB_MONITORING.md` | assuming latest commit == verified release |
+| mobile visual canon, logo, header, diagnostics button, scanner, catalog and overlays | ai/rules/visual-canon-v3.md and ai/rules/web-spa.md | unrelated history |
 | web SPA / routing / lazy assets / cache | `ai/rules/web-spa.md` | backend/catalog history unless required |
 | PHP/API/DB contract | `ai/rules/backend-api.md` | unrelated UI history |
 | seller/store/product catalog | `ai/rules/marketplace-catalog.md` | loading the full catalog into startup context |
