@@ -13,6 +13,16 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Verify exact candidate HEAD
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          echo "FEATURE_PRESERVATION_EXACT_HEAD: PASS $EXPECTED_SHA"
+      - name: Verify checkout ref contract and negative cases
+        run: python3 ai/tests/test_feature_preservation_checkout.py --self-test
       - name: Verify protected routes, entry points and RU/KK/EN keys
         run: python3 tools/test_feature_preservation.py --self-test
       - name: Verify generated mobile Back shell and negative regression
