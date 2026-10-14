@@ -13,7 +13,8 @@ async function exercise({android=true}={}){
     querySelector(){return {disabled:false}}
   });
   const q=s=>{if(!elements.has(s))elements.set(s,create());return elements.get(s)};
-  const page={querySelector:q,querySelectorAll:()=>[],addEventListener:(name,fn)=>handlers.set(name,fn),removeEventListener(){}};
+  const staticNodes=[{dataset:{obdI18n:'chooseElm'},textContent:''},{dataset:{obdI18n:'saveCar'},textContent:''}];
+  const page={querySelector:q,querySelectorAll:selector=>selector==='[data-obd-i18n]'?staticNodes:[],addEventListener:(name,fn)=>handlers.set(name,fn),removeEventListener(){}};
   const doc={documentElement:{lang:'ru'},querySelector:()=>page};
   let callback=null,observerDisconnected=false; 
   class MutationObserverMock{
@@ -53,6 +54,8 @@ async function exercise({android=true}={}){
   win.KaretaDiagnosticsPages.mountDiagnostics({lifecycle:{addCleanup:fn=>{cleanup=fn}}});
   await new Promise(r=>setTimeout(r,25));
   const state=name=>q('[data-obd-step="'+name+'"]').dataset.state;
+  assert.equal(staticNodes[0].textContent,'Выбрать ELM327');
+  assert.equal(staticNodes[1].textContent,'Сохранить для выбранного автомобиля');
   if(android){
     assert.equal(state('permission'),'done');
     assert.equal(state('adapter'),'active');
@@ -63,9 +66,13 @@ async function exercise({android=true}={}){
   }
   doc.documentElement.lang='kk';callback();
   assert.equal(q('[data-obd-ble-hint]').textContent,'Әзірге қолжетімсіз');
+  assert.equal(staticNodes[0].textContent,'ELM327 таңдау');
+  assert.equal(staticNodes[1].textContent,'Таңдалған автокөлікке сақтау');
   assert.match(q('[data-obd-transport-title]').textContent,/Автокөлікке/);
   doc.documentElement.lang='en';callback();
   assert.equal(q('[data-obd-wifi-hint]').textContent,'Not available yet');
+  assert.equal(staticNodes[0].textContent,'Choose ELM327');
+  assert.equal(staticNodes[1].textContent,'Save for selected vehicle');
   if(android){
     await handlers.get('click')({target:{closest:selector=>selector==='[data-obd-address]'?{dataset:{obdAddress:'00:11',obdName:'ELM327'}}:null}});
     assert.equal(state('permission'),'done');
