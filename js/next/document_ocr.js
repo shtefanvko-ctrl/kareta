@@ -61,9 +61,80 @@
     return {ok:Object.keys(errors).length===0,fields,errors};
   }
 
-  const available=()=>typeof window.TextDetector==='function'&&typeof createImageBitmap==='function';
+
+  const nativeAvailable=()=>Boolean(window.KaretaMobile?.available?.()
+    &&window.KaretaMobile?.supports?.('documentOcr')===true
+    &&typeof window.KaretaMobile?.recognizeDocumentImage==='function');
+  const browserAvailable=()=>typeof window.TextDetector==='function'&&typeof createImageBitmap==='function';
+  const nativeCatalog=()=>Array.isArray(window.KaretaFirstVehicleFlow?.CATALOG)
+    ?window.KaretaFirstVehicleFlow.CATALOG.map(brand=>({
+      name:String(brand.name||''),models:(brand.models||[]).map(model=>({name:String(model.name||'')}))
+    })):[];
+
+  async function imageBase64(file){
+    let bitmap=null,preview=null,objectUrl='';
+    try{
+      if(typeof createImageBitmap==='function')bitmap=await createImageBitmap(file);
+      else {
+        if(typeof Image!=='function')throw new Error('DOCUMENT_IMAGE_DECODE_UNAVAILABLE');
+        preview=new Image();
+        objectUrl=URL.createObjectURL(file);
+        await new Promise((resolve,reject)=>{
+          preview.onload=resolve;
+          preview.onerror=()=>reject(new Error('DOCUMENT_IMAGE_DECODE_FAILED'));
+          preview.src=objectUrl;
+        });
+      }
+      const width=bitmap?.width||preview?.naturalWidth||0,height=bitmap?.height||preview?.naturalHeight||0;
+      if(!width||!height||width>10000||height>10000)throw new Error('DOCUMENT_IMAGE_INVALID');
+      const canvas=document.createElement('canvas');
+      const ratio=Math.min(1,1600/Math.max(width,height));
+      canvas.width=Math.max(1,Math.round(width*ratio));
+      canvas.height=Math.max(1,Math.round(height*ratio));
+      try{
+        const ctx=canvas.getContext('2d',{alpha:false});
+        if(!ctx)throw new Error('DOCUMENT_CANVAS_UNAVAILABLE');
+        ctx.drawImage(bitmap||preview,0,0,canvas.width,canvas.height);
+        const data=canvas.toDataURL('image/jpeg',0.78);
+        const encoded=data.startsWith('data:image/jpeg;base64,')?data.slice(23):'';
+        if(!encoded||encoded.length>1900000)throw new Error('DOCUMENT_IMAGE_TOO_LARGE');
+        return encoded;
+      }finally{canvas.width=0;canvas.height=0;}
+    }finally{
+      bitmap?.close?.();
+      if(objectUrl)URL.revokeObjectURL(objectUrl);
+    }
+  }
+
+  async function recognizeNative(photos,{signal}={}){
+    const values=[],catalog=nativeCatalog();
+    for(const side of ['front','rear']){
+      if(signal?.aborted||!photos?.[side])throw new Error('DOCUMENT_OCR_CANCELLED');
+      const image=await imageBase64(photos[side]);
+      if(signal?.aborted)throw new Error('DOCUMENT_OCR_CANCELLED');
+      const response=await window.KaretaMobile.recognizeDocumentImage(image,catalog);
+      if(signal?.aborted)throw new Error('DOCUMENT_OCR_CANCELLED');
+      if(!response||typeof response.fields!=='object'||Array.isArray(response.fields))
+        throw new Error('DOCUMENT_NATIVE_INVALID_RESPONSE');
+      values.push(response.fields);
+    }
+    const fields={};
+    for(const key of ['brandName','modelName','year','vin','plateNumber']){
+      const unique=new Set(values.map(side=>String(side[key]||'').trim()).filter(Boolean));
+      if(unique.size===1)fields[key]=[...unique][0];
+    }
+    return {engine:'native-mlkit-latin',fields};
+  }
+
+  const available=()=>nativeAvailable()||browserAvailable();
   async function recognize(photos,{signal}={}){
-    if(!available())throw new Error('DOCUMENT_OCR_UNAVAILABLE');
+    if(nativeAvailable()){
+      try{return await recognizeNative(photos,{signal});}
+      catch(error){
+        if(signal?.aborted||!browserAvailable())throw error;
+      }
+    }
+    if(!browserAvailable())throw new Error('DOCUMENT_OCR_UNAVAILABLE');
     const detector=new window.TextDetector(),recognized=[];
     for(const side of ['front','rear']){
       if(signal?.aborted||!photos?.[side])throw new Error('DOCUMENT_OCR_CANCELLED');

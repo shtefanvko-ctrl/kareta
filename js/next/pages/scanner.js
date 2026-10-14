@@ -146,7 +146,11 @@
     const observer=typeof MutationObserver==='function'?new MutationObserver(draw):null;
     observer?.observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
     const cleanup=()=>{if(disposed)return;disposed=true;revision++;recognized=null;root.removeEventListener('click',onClick);root.removeEventListener('input',onReviewInput);camera.removeEventListener('change',onFile);gallery.removeEventListener('change',onFile);observer?.disconnect();release('front');release('rear');};
-    life.addCleanup?.(cleanup);draw();return cleanup;
+    life.addCleanup?.(cleanup);draw();
+    if(window.KaretaMobile?.available?.()&&typeof window.KaretaMobile.ready==='function'){
+      window.KaretaMobile.ready().then(()=>{if(alive()&&step==='ready')draw();}).catch(()=>{});
+    }
+    return cleanup;
   }
 
   function render() {
