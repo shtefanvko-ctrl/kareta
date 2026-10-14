@@ -17,13 +17,14 @@ def run(repo, commit, webroot):
     if kind != "commit":
         raise ValueError("expected commit object")
     tree = subprocess.check_output(["git", "-C", str(repo), "ls-tree", "-rz", commit])
-    counts = {"matched": 0, "different": 0, "missing": 0, "symlink": 0}
+    counts = {"matched": 0, "different": 0, "missing": 0, "symlink": 0, "unsupported": 0}
     for item in tree.split(b"\0"):
         if not item:
             continue
         meta, name = item.split(b"\t", 1)
         mode, kind, expected = meta.decode().split(" ")
         if kind != "blob":
+            counts["unsupported"] += 1
             continue
         relative = name.decode("utf-8", "surrogateescape")
         path = webroot / relative
@@ -46,7 +47,7 @@ def run(repo, commit, webroot):
                 for block in iter(lambda: stream.read(1024 * 1024), b""):
                     h.update(block)
             counts["matched" if h.hexdigest() == expected else "different"] += 1
-    status = "PASS" if counts["different"] + counts["missing"] + counts["symlink"] == 0 else "FAIL"
+    status = "PASS" if counts["different"] + counts["missing"] + counts["symlink"] + counts["unsupported"] == 0 else "FAIL"
     print(json.dumps({"result": status, "commit": commit, "counts": counts}, sort_keys=True))
     return 0 if status == "PASS" else 1
 

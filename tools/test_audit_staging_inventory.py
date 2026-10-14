@@ -53,7 +53,33 @@ def run():
         rc, result = audit(repo, 'bad', stage)
         assert rc == 2 and result['result'] == 'ERROR'
         print('[PASS] invalid SHA rejected')
-    print('STAGING_INVENTORY_TESTS: PASS 5/5')
+        # Restore matching files so only the unverified gitlink can cause FAIL.
+        (stage / 'landing/index.html').write_text('landing/index.html')
+        (stage / 'docs/spec.md').unlink()
+        (stage / 'docs/spec.md').write_text('docs/spec.md')
+        # Inject a synthetic gitlink entry into ls-tree without touching a submodule.
+        import contextlib
+        import importlib.util
+        import io
+        from unittest.mock import patch
+        spec = importlib.util.spec_from_file_location('inventory_under_test', AUDIT)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        original = subprocess.check_output
+        def fake_tree(args, **kwargs):
+            data = original(args, **kwargs)
+            if 'ls-tree' in args:
+                data += b'160000 commit ' + sha.encode() + b'\tvendor/external\0'
+            return data
+        with patch.object(module.subprocess, 'check_output', side_effect=fake_tree):
+            with contextlib.redirect_stdout(io.StringIO()) as output:
+                rc = module.run(repo, sha, stage)
+        result = json.loads(output.getvalue())
+        assert rc == 1 and result['counts']['matched'] == 3
+        assert result['counts']['different'] == 0 and result['counts']['missing'] == 0
+        assert result['counts']['symlink'] == 0 and result['counts']['unsupported'] == 1
+        print('[PASS] gitlink is not silently skipped')
+    print('STAGING_INVENTORY_TESTS: PASS 6/6')
 
 
 if __name__ == '__main__':
