@@ -405,3 +405,9 @@
   .k-master-onboarding-active .k-shell-main{padding-top:0!important}
   .k-master-onboarding-route{min-height:100dvh!important}
 }
+
+/* P1-A: searchable two-column specialization chooser; preserve all catalog IDs and draft state. */
+.k-master-onboarding .kmo-specialization-search{margin:0 0 12px}
+.k-master-onboarding .kmo-modal[data-kmo-modal-kind="specialization"] .kmo-modal-list>button[hidden]{display:none!important}
+.k-master-onboarding .kmo-specialization-empty{margin:10px 0;color:var(--km-muted);font-size:14px;line-height:1.4;text-align:center}
+.k-master-onboarding .kmo-specialization-empty[hidden]{display:none!important}
