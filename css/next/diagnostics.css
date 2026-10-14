@@ -18,3 +18,15 @@
 .k-obd-step-count{display:grid;place-items:center;flex:none;width:22px;height:22px;border-radius:50%;background:#fff;font-size:11px;font-weight:800}
 .k-obd-transport-status{margin:0;font-size:12px;line-height:1.5;color:#525d6b}
 @media(max-width:560px){.k-obd-transport-guide{padding:10px}.k-obd-transport-choices{gap:5px}.k-obd-transport-choice{min-height:68px;padding:8px 6px}.k-obd-transport-choice b{font-size:11px}.k-obd-transport-choice small{font-size:9px}}
+
+/* Regression: 320px device viewport must not expand due to grid min-content or long headings. */
+.k-diagnostics-page{grid-template-columns:minmax(0,1fr);min-width:0;max-width:100%}
+.k-diagnostics-page>.k-obd-panel,.k-diagnostics-page .k-obd-panel,.k-diagnostics-page .k-obd-card,.k-diagnostics-page .k-obd-layout,.k-diagnostics-page .k-obd-status-grid,.k-diagnostics-page .k-obd-live-grid{min-width:0;max-width:100%}
+.k-diagnostics-page .k-obd-panel-head>div{min-width:0}
+.k-diagnostics-page .k-obd-panel-head h2,.k-diagnostics-page .k-obd-result,.k-diagnostics-page .k-obd-transport-choice,.k-diagnostics-page .k-obd-selected-vehicle{overflow-wrap:anywhere}
+@media(max-width:560px){
+  .k-diagnostics-page .k-obd-panel-head{flex-wrap:wrap;align-items:flex-start}
+  .k-diagnostics-page .k-obd-panel-head>.k-btn{max-width:100%;white-space:normal}
+  .k-diagnostics-page .k-obd-command input{width:100%;min-width:0}
+  .k-diagnostics-page .k-obd-live-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
