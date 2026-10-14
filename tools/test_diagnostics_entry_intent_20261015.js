@@ -15,6 +15,7 @@ async function setup(startVehicleId) {
   const newNode=()=>({
     textContent:'',innerHTML:'',hidden:false,disabled:false,value:'',dataset:{},
     classList:{add(){},remove(){},toggle(){}},
+    setAttribute(name,value){this.attributes=this.attributes||{};this.attributes[name]=String(value)},
     querySelector(){return {disabled:false};}
   });
   const q=selector=>{
