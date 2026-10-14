@@ -33,6 +33,34 @@
     if(plate)fields.plateNumber=plate;
     return fields;
   }
+
+  // Review is a separate trust boundary: only supported vehicle fields may pass to garage.
+  function validateCandidate(input={}){
+    const fields={},errors={};
+    for(const key of ['brandName','modelName','year','vin','plateNumber']){
+      const value=String(input?.[key]??'').trim();
+      if(!value)continue;
+      if(key==='brandName'||key==='modelName'){
+        if(value.length>80||/[\u0000-\u001f\u007f<>]/u.test(value)){errors[key]='INVALID_NAME';continue;}
+        fields[key]=value.replace(/\s+/g,' ');
+      }else if(key==='year'){
+        if(!/^\d{4}$/.test(value)||Number(value)<1950||Number(value)>new Date().getFullYear()+1){errors[key]='INVALID_YEAR';continue;}
+        fields.year=value;
+      }else if(key==='vin'){
+        const vin=value.toUpperCase().replace(/\s+/g,'');
+        if(!validVin(vin)){errors[key]='INVALID_VIN';continue;}
+        fields.vin=vin;
+      }else if(key==='plateNumber'){
+        const plate=value.toUpperCase().replace(/\s+/g,' ');
+        if(plate.length>24||!/^[A-ZА-ЯЁӘҒҚҢӨҰҮҺІ0-9 -]{4,24}$/u.test(plate)){errors[key]='INVALID_PLATE';continue;}
+        fields.plateNumber=plate;
+      }
+    }
+    if(fields.modelName&&!fields.brandName)errors.brandName='BRAND_REQUIRED';
+    if(!Object.keys(fields).length&&!Object.keys(errors).length)errors._form='NO_FIELDS';
+    return {ok:Object.keys(errors).length===0,fields,errors};
+  }
+
   const available=()=>typeof window.TextDetector==='function'&&typeof createImageBitmap==='function';
   async function recognize(photos,{signal}={}){
     if(!available())throw new Error('DOCUMENT_OCR_UNAVAILABLE');
@@ -49,5 +77,5 @@
     // Only supported vehicle fields leave this module. Raw document text is discarded.
     return {engine:'browser-text-detector',fields:parseText(recognized,window.KaretaFirstVehicleFlow?.CATALOG||[])};
   }
-  window.KaretaDocumentOCR=Object.freeze({available,parseText,recognize});
+  window.KaretaDocumentOCR=Object.freeze({available,parseText,recognize,validateCandidate});
 })();
