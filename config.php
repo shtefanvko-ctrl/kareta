@@ -300,7 +300,7 @@ if (!defined('KARETA_CONFIG_LOADED')) {
     $kareta_otp_temp_static_deadline = $kareta_otp_temp_static_until !== '' ? strtotime($kareta_otp_temp_static_until) : false;
     $kareta_otp_temp_static_within_window = $kareta_otp_temp_static_until === ''
         || ($kareta_otp_temp_static_deadline !== false && time() < (int)$kareta_otp_temp_static_deadline);
-    $kareta_otp_temp_static_active = $kareta_is_production
+    $kareta_otp_temp_static_active = in_array(KARETA_ENVIRONMENT, ['production','staging'], true)
         && $kareta_otp_temp_static_enabled
         && $kareta_otp_temp_static_within_window;
 
@@ -314,6 +314,13 @@ if (!defined('KARETA_CONFIG_LOADED')) {
             $kareta_otp_transport = 'webhook';
             $kareta_otp_test_code = '';
         }
+    }
+    if (KARETA_ENVIRONMENT === 'staging') {
+        // The staging commissioning mode issues a real DB challenge without sending SMS.
+        // Disable the private flag to restore webhook delivery (fail closed).
+        $kareta_otp_transport = $kareta_otp_temp_static_active ? 'test_static' : 'webhook';
+        $kareta_otp_test_code = $kareta_otp_temp_static_active ? '0000' : '';
+        $kareta_otp_allow_test_fallback = false;
     }
     define('KARETA_OTP', [
         'transport' => $kareta_otp_transport,
