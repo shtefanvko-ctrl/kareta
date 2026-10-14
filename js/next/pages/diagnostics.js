@@ -160,6 +160,8 @@
     let liveTimer=0;
     let liveBusy=false;
     let liveFailures=0;
+    let clearBusy=false;
+    let disposed=false;
 
     const setResult=value=>{
       result.textContent=typeof value==='string'?value:JSON.stringify(value,null,2);
@@ -476,7 +478,10 @@
     }
 
     async function clearDtcWithConsent(){
-      if(!ready||!mobile?.available?.())return;
+      if(!ready||!mobile?.available?.()||clearBusy||disposed)return;
+      clearBusy=true;
+      clearBtn.disabled=true;
+      try{
       const confirmAction=typeof window.confirm==='function'
         ? message=>window.confirm(message)
         : ()=>false; // Fail closed if this WebView cannot request user consent.
@@ -501,14 +506,16 @@
         evidenceProblem='Не удалось получить и сохранить снимок до сброса: '+String(error?.message||error);
       }
       if(!evidencePreserved&&!confirmAction(evidenceProblem+'\nПосле сброса часть диагностической информации может стать недоступной. Выполнить сброс без сохранённой истории?'))return;
-      clearBtn.disabled=true;
+      if(disposed||!ready)return;
       try{
         const response=await mobile.elmCommand('04',5000);
         setResult({command:'04',adapterResponse:response,warning:'Команда сброса отправлена. Повторно прочитайте DTC и готовность систем для подтверждения результата.'});
       }catch(error){
         setResult('Сброс не подтверждён: '+String(error?.message||error));
+      }
       }finally{
-        clearBtn.disabled=!ready;
+        clearBusy=false;
+        clearBtn.disabled=!ready||disposed;
       }
     }
 
@@ -657,6 +664,7 @@
     if(navigator.onLine)syncOffline();
 
     const cleanup=()=>{
+      disposed=true;
       stopLive();
       root.removeEventListener('click',click);
       window.removeEventListener('online',online);
