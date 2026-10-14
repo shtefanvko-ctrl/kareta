@@ -27,14 +27,25 @@ def run(repo, commit, webroot):
             continue
         relative = name.decode("utf-8", "surrogateescape")
         path = webroot / relative
-        if mode == "120000" or any(p.is_symlink() for p in [path, *path.parents] if p != webroot.parent):
+        cursor = webroot
+        unsafe = False
+        for part in Path(relative).parts:
+            cursor = cursor / part
+            if cursor.is_symlink():
+                unsafe = True
+                break
+        if mode == "120000" or unsafe:
             counts["symlink"] += 1
         elif not path.is_file():
             counts["missing"] += 1
         else:
-            data = path.read_bytes()
-            actual = hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest()
-            counts["matched" if actual == expected else "different"] += 1
+            size = path.stat().st_size
+            h = hashlib.sha1()
+            h.update(b"blob " + str(size).encode() + b"\0")
+            with path.open("rb") as stream:
+                for block in iter(lambda: stream.read(1024 * 1024), b""):
+                    h.update(block)
+            counts["matched" if h.hexdigest() == expected else "different"] += 1
     status = "PASS" if counts["different"] + counts["missing"] + counts["symlink"] == 0 else "FAIL"
     print(json.dumps({"result": status, "commit": commit, "counts": counts}, sort_keys=True))
     return 0 if status == "PASS" else 1
