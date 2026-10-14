@@ -54,6 +54,24 @@ def verify_files(names):
         require(candidate.is_file(), "Missing critical feature entry point: " + name)
 
 
+
+def verify_translation_tree(reference, candidate, path):
+    """Fail closed on blank values or missing nested translation keys."""
+    if isinstance(reference, dict):
+        require(isinstance(candidate, dict), f"Translation section missing: {path}")
+        missing = sorted(set(reference) - set(candidate))
+        extra = sorted(set(candidate) - set(reference))
+        require(not missing and not extra,
+                f"Nested translation keys differ at {path}: missing={missing}, extra={extra}")
+        for key, value in reference.items():
+            verify_translation_tree(value, candidate[key], f"{path}.{key}")
+        return
+    require(isinstance(reference, str) and bool(reference.strip()),
+            f"Empty or invalid RU translation value: {path}")
+    require(isinstance(candidate, str) and bool(candidate.strip()),
+            f"Empty or invalid translation value: {path}")
+
+
 def verify_i18n(data, languages):
     require(languages == list(LANGUAGES), "Protected language inventory changed")
     require(all(isinstance(data.get(lang), dict) for lang in LANGUAGES),
@@ -65,6 +83,8 @@ def verify_i18n(data, languages):
         extra = sorted(set(data[lang]) - keys)
         require(not missing and not extra,
                 f"{lang} translation keys differ: missing={missing}, extra={extra}")
+    for lang in LANGUAGES:
+        verify_translation_tree(data["ru"], data[lang], lang)
 
 
 def assert_rejects(fn, label):
@@ -99,6 +119,13 @@ def main():
         first_key = next(iter(broken_locale["kk"]))
         del broken_locale["kk"][first_key]
         assert_rejects(lambda: verify_i18n(broken_locale, languages), "missing KK translation")
+        blank_locale = {key: dict(value) for key, value in translations.items()}
+        blank_locale["kk"]["navProduct"] = " "
+        assert_rejects(lambda: verify_i18n(blank_locale, languages), "blank KK translation")
+        nested_locale = {key: dict(value) for key, value in translations.items()}
+        nested_locale["en"]["_meta"] = dict(nested_locale["en"]["_meta"])
+        del nested_locale["en"]["_meta"]["description"]
+        assert_rejects(lambda: verify_i18n(nested_locale, languages), "missing nested EN metadata")
     print(f"FEATURE_PRESERVATION: PASS ({len(found)} routes, "
           f"{len(baseline['critical_files'])} files, 3 languages; "
           f"negative self-test={'PASS' if args.self_test else 'NOT RUN'})")
