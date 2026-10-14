@@ -14,6 +14,104 @@ ROUTE_RE = re.compile(r"(?m)^\s*([A-Za-z]\w*):Object\.freeze\(\{\s*path:'([^']+)
 LANGUAGES = ("ru", "kk", "en")
 MIN_ROUTE_COUNT = 72
 
+# Historical floor: the original 72 route URLs and 19 critical entry points.
+# Reviewed additions may extend the JSON baseline, but must not replace this floor.
+HISTORICAL_ROUTES = dict(line.split("=", 1) for line in """\
+home=#/home
+masterQr=#/master/qr
+scanner=#/scan
+scannerQr=#/scan/qr
+scannerDocument=#/scan/document
+platform=#/platform
+corePlatform=#/core
+calendarBooking=#/calendar
+finance=#/finance
+market=#/market
+crm=#/crm
+identityMigration=#/admin/identity-migration
+adminUsers=#/admin/users
+adminOrganizations=#/admin/organizations
+adminMonitoring=#/admin/monitoring
+adminManagement=#/admin/management
+services=#/services
+news=#/news
+masterNews=#/master/news
+masterNewsCreate=#/master/news/create
+masterNewsEdit=#/master/news/edit
+works=#/works
+profile=#/profile
+following=#/following
+realWorks=#/real-works
+workDetail=#/works/item
+serviceManagement=#/services/manage
+masters=#/masters
+masterOnboarding=#/onboarding/master
+masterDashboard=#/master
+masterSchedule=#/master/schedule
+masterProfileOwner=#/master/profile
+masterWallOwner=#/master/wall
+masterWorks=#/master/works
+masterReviews=#/master/reviews
+masterExchange=#/master/exchange
+community=#/community
+stoDashboard=#/sto
+parts=#/parts
+usedParts=#/parts/used
+seller=#/seller
+sellerProducts=#/seller/products
+sellerOrders=#/seller/orders
+orders=#/orders
+workflow=#/workflow
+requestNew=#/orders/new
+workOrder=#/orders/item
+vehicle=#/garage/car
+chats=#/chats
+notifications=#/notifications
+cabinet=#/cabinet
+cabinetGarage=#/cabinet/garage
+cabinetData=#/cabinet/data
+cabinetHistory=#/cabinet/history
+cabinetDocuments=#/cabinet/documents
+cabinetPromos=#/cabinet/promotions
+cabinetTariff=#/cabinet/tariff
+cabinetSettings=#/cabinet/settings
+about=#/about
+rules=#/rules
+help=#/help
+assistant=#/assistant
+diagnostics=#/diagnostics
+privacy=#/privacy
+contacts=#/contacts
+lawyer=#/lawyer
+towTruck=#/tow-truck
+productDetail=#/parts/item
+serviceDetail=#/services/item
+providerDetail=#/masters/profile
+providerBooking=#/masters/book
+providerReviews=#/masters/reviews
+""".splitlines())
+HISTORICAL_FILES = set("""\
+js/next/route_registry.js
+js/next/route_asset_loader.js
+js/next/pages/core.js
+js/next/pages/masters.js
+js/next/pages/cabinet.js
+js/next/pages/master_schedule.js
+js/next/pages/master_onboarding.js
+js/next/pages/work_feed.js
+js/next/pages/parts.js
+js/next/pages/notifications.js
+js/next/pages/scanner.js
+js/next/pages/diagnostics.js
+js/next/onboarding/onboarding_api.js
+js/mobile_native_bridge.js
+api/geo.php
+api/obd.php
+sw.js
+landing/index.html
+landing/i18n.json
+""".splitlines())
+
 
 def require(condition, message):
     if not condition:
@@ -26,6 +124,25 @@ def parse_routes(source):
         require(key not in routes, f"Duplicate route key: {key}")
         routes[key] = path
     return routes
+
+
+def verify_historical_baseline(baseline):
+    """Detect baseline substitution even when the route/file counts stay unchanged."""
+    routes = baseline.get("routes")
+    files = baseline.get("critical_files")
+    require(len(HISTORICAL_ROUTES) == MIN_ROUTE_COUNT and len(HISTORICAL_FILES) == 19,
+            "Historical feature anchor is incomplete")
+    require(isinstance(routes, dict), "Baseline routes missing")
+    require(isinstance(files, list) and all(isinstance(f, str) for f in files),
+            "Baseline critical files missing or invalid")
+    missing = sorted(set(HISTORICAL_ROUTES) - set(routes))
+    changed = sorted(k for k in HISTORICAL_ROUTES.keys() & routes.keys()
+                     if HISTORICAL_ROUTES[k] != routes[k])
+    missing_files = sorted(HISTORICAL_FILES - set(files))
+    require(not missing and not changed and not missing_files,
+            "Historical feature floor weakened: missing_routes=" + repr(missing)
+            + ", changed_routes=" + repr(changed)
+            + ", missing_files=" + repr(missing_files))
 
 
 def verify_route_contract(expected, found):
@@ -101,6 +218,7 @@ def main():
     args = parser.parse_args()
     baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
     require(baseline.get("schema_version") == 1, "Unknown feature baseline schema")
+    verify_historical_baseline(baseline)
     expected = baseline.get("routes")
     found = parse_routes(ROUTE_FILE.read_text(encoding="utf-8"))
     verify_route_contract(expected, found)
@@ -109,6 +227,25 @@ def main():
     translations = json.loads(LANDING_I18N.read_text(encoding="utf-8"))
     verify_i18n(translations, languages)
     if args.self_test:
+        # A weakened JSON baseline previously let matching route/file removals pass.
+        swapped_route = json.loads(json.dumps(baseline))
+        swapped_route["routes"].pop("home")
+        swapped_route["routes"]["replacement"] = "#/replacement"
+        assert_rejects(lambda: verify_historical_baseline(swapped_route),
+                       "historical home route substituted in baseline")
+        changed_route = json.loads(json.dumps(baseline))
+        changed_route["routes"]["parts"] = "#/unapproved-parts"
+        assert_rejects(lambda: verify_historical_baseline(changed_route),
+                       "historical parts URL changed in baseline")
+        swapped_file = json.loads(json.dumps(baseline))
+        swapped_file["critical_files"].remove("js/mobile_native_bridge.js")
+        swapped_file["critical_files"].append("tools/test_feature_preservation.py")
+        assert_rejects(lambda: verify_historical_baseline(swapped_file),
+                       "historical native bridge substituted in baseline")
+        extended = json.loads(json.dumps(baseline))
+        extended["routes"]["futureApprovedRoute"] = "#/future-approved-route"
+        extended["critical_files"].append("tools/test_feature_preservation.py")
+        verify_historical_baseline(extended)
         reduced = dict(found)
         reduced.pop("home")
         assert_rejects(lambda: verify_route_contract(expected, reduced), "deleted home route")
