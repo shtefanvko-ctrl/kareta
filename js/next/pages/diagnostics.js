@@ -739,13 +739,22 @@
         });
         const payload=await response.json();
         if(!response.ok||!payload.ok)throw new Error(payload.code||'SYNC_FAILED');
-        await mobile.offlineAcknowledge(eligible);
+        // Confirm only IDs explicitly accepted by the authenticated OBD sync API.
+        // A successful HTTP response may still represent partial acceptance.
+        if(!Array.isArray(payload.accepted))throw new Error('SYNC_ACK_INVALID');
+        const accepted=new Set(payload.accepted.filter(id=>typeof id==='string'&&id.trim()!==''));
+        const confirmed=eligible.filter(item=>{
+          const id=String(item?.id??'').trim();
+          return id!==''&&accepted.has(id);
+        });
+        if(confirmed.length)await mobile.offlineAcknowledge(confirmed);
         await updateOffline();
         await loadHistory();
-        if(blocked){
-          setResult('Синхронизировано '+eligible.length+' сессий. '+blocked+' старых локальных записей без vehicleId оставлены на устройстве.');
+        const pending=eligible.length-confirmed.length;
+        if(pending||blocked){
+          setResult('Сервер подтвердил '+confirmed.length+' из '+eligible.length+' сессий. '+pending+' неподтверждённых записей остаются на устройстве.'+(blocked?' '+blocked+' записей без vehicleId также сохранены локально.':''));
         }
-        return blocked===0;
+        return pending===0&&blocked===0;
       }catch(error){
         await updateOffline();
         setResult('Сессия сохранена офлайн. Синхронизация будет повторена: '+(error.message||String(error)));
