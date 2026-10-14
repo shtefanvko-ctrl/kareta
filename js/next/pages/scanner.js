@@ -27,6 +27,14 @@
     en:['Back to garage','Registration document scan','Add a car to your garage','Automatic document OCR is not yet available. Photos stay on the device and are released when you leave this screen.','Photograph both sides or enter the details manually.','Scan document','Enter manually','Choose an option','Front side','Back side','Step','Take photo','From gallery','Continue','Retake','Photos captured','No photos were uploaded. Enter and confirm vehicle details using the garage form to save the car.','Enter details','Start again','Select an image up to 10 MB.','Could not open the image.','Only clients can add a car to the garage.']
   };
   const docCopy=()=>DOC_COPY[String(document.documentElement?.lang||'ru').slice(0,2).toLowerCase()]||DOC_COPY.ru;
+
+  const DOC_OCR_COPY=Object.freeze({
+    ru:{review:'Проверка данных',check:'Проверьте значения перед сохранением в гараж.',run:'Распознать данные на устройстве',progress:'Распознаём документ…',apply:'Заполнить форму',error:'Не удалось распознать документ. Переснимите его или введите данные вручную.',empty:'Ни одно поле автомобиля не определено. Заполните данные вручную.',unavailable:'Распознавание на устройстве недоступно в этом браузере. Ручной ввод работает.',handoff:'Не удалось передать данные в форму гаража.',local:'Распознавание выполняется на устройстве, фотографии не передаются на сервер.',back:'Вернуться к фото'},
+    kk:{review:'Деректерді тексеру',check:'Гаражға сақтамас бұрын мәндерді тексеріңіз.',run:'Құрылғыда тану',progress:'Құжат танылуда…',apply:'Нысанды толтыру',error:'Құжат танылмады. Қайта түсіріңіз немесе қолмен енгізіңіз.',empty:'Автокөлік өрістері анықталмады. Қолмен енгізіңіз.',unavailable:'Бұл браузерде тану қолжетімсіз. Қолмен енгізуге болады.',handoff:'Деректерді гаражға жіберу мүмкін емес.',local:'Деректер құрылғыда танылады, фото серверге жіберілмейді.',back:'Фотоға оралу'},
+    en:{review:'Review recognized details',check:'Check each field before saving it in your garage.',run:'Recognize on device',progress:'Recognizing document…',apply:'Fill vehicle form',error:'Recognition failed. Retake the photo or enter details manually.',empty:'No vehicle fields were identified. Please enter details manually.',unavailable:'On-device recognition is unavailable in this browser. Manual entry is available.',handoff:'Could not transfer the details into the garage form.',local:'Recognition runs on your device. Photos are not uploaded.',back:'Back to photos'}
+  });
+  const docOcrCopy=()=>DOC_OCR_COPY[String(document.documentElement?.lang||'ru').slice(0,2).toLowerCase()]||DOC_OCR_COPY.ru;
+
   function renderDocument(){
     const t=docCopy(),client=role()==='client';
     return '<section class="k-page k-scan-page k-document-capture" data-page="scanner">'
@@ -37,14 +45,15 @@
   function mountDocument(root,context={}){
     const target=root.querySelector('[data-doc-stage]');if(!target)return ()=>{};
     const camera=root.querySelector('[data-doc-camera]'),gallery=root.querySelector('[data-doc-gallery]'),status=root.querySelector('[data-doc-status]');
-    const life=context.lifecycle||{},photo={front:'',rear:''};let step='intro',disposed=false;
+    const life=context.lifecycle||{},photo={front:'',rear:''},files={front:null,rear:null};let step='intro',disposed=false,revision=0,recognized=null,busy=false;
     const alive=()=>!disposed&&life.isActive?.()!==false&&root.isConnected;
-    const release=k=>{if(photo[k]){URL.revokeObjectURL(photo[k]);photo[k]='';}};
+    const release=k=>{if(photo[k]){URL.revokeObjectURL(photo[k]);photo[k]='';}files[k]=null;};
     const button=(key,title,primary=false)=>'<button type="button" class="k-btn '+(primary?'k-btn-primary':'k-btn-secondary')+'" data-doc-next="'+key+'">'+title+'</button>';
     const manual=title=>'<a class="k-btn k-btn-secondary" href="#/cabinet/garage?firstVehicle=1">'+title+'</a>';
     const block=(title,text)=>'<h2>'+title+'</h2><p>'+text+'</p>';
+    const escape=v=>String(v||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
     function draw(){
-      if(!alive())return;const t=docCopy();let out='';
+      if(!alive())return;const t=docCopy(),ocr=docOcrCopy();let out='';
       root.querySelector('[data-doc-title]').textContent=t[1];root.querySelector('[data-doc-back-link]').textContent=t[0];
       if(step==='intro')out=block(t[1],t[4])+button('choose',t[5],true)+manual(t[6]);
       if(step==='choose')out=block(t[7],t[4])+button('front',t[5],true)+manual(t[6])+button('intro',t[0]);
@@ -53,14 +62,48 @@
           +'<div class="k-document-preview">'+(src?'<img src="'+src+'" alt="'+(first?t[8]:t[9])+'">':'<span aria-hidden="true">▣</span>')+'</div>'
           +button('camera',src?t[14]+' · '+t[11]:t[11],true)+button('gallery',t[12])+(src?button(first?'rear':'ready',t[13],true):'')+button(first?'choose':'front',t[0]);
       }
-      if(step==='ready')out=block(t[15],t[16])+'<div class="k-document-review"><img src="'+photo.front+'" alt="'+t[8]+'"><img src="'+photo.rear+'" alt="'+t[9]+'"></div>'+manual(t[17])+button('rear',t[14])+button('reset',t[18]);
-      target.innerHTML='<div class="k-document-card">'+out+'</div><p class="k-document-notice">'+t[3]+'</p>';
+      if(step==='ready')out=block(t[15],t[16])+'<div class="k-document-review"><img src="'+photo.front+'" alt="'+t[8]+'"><img src="'+photo.rear+'" alt="'+t[9]+'"></div>'
+        +(window.KaretaDocumentOCR?.available?.()?button('recognize',ocr.run,true):'<p>'+ocr.unavailable+'</p>')
+        +manual(t[17])+button('rear',t[14])+button('reset',t[18]);
+      if(step==='review'){
+        const labels={brandName:'Марка / Brand',modelName:'Модель / Model',year:'Год / Year',vin:'VIN',plateNumber:'Госномер / Plate'};
+        out=block(ocr.review,ocr.check)+'<dl class="k-document-fields">'+Object.entries(recognized||{}).map(([k,v])=>
+          '<div><dt>'+labels[k]+'</dt><dd>'+escape(v)+'</dd></div>').join('')+'</dl>'
+          +button('apply',ocr.apply,true)+manual(t[6])+button('ready',ocr.back);
+      }
+      target.innerHTML='<div class="k-document-card">'+out+'</div><p class="k-document-notice">'+(window.KaretaDocumentOCR?.available?.()?ocr.local:t[3])+'</p>';
     }
-    const onClick=e=>{
+    const onClick=async e=>{
       const b=e.target.closest?.('[data-doc-next]');if(!b||!alive())return;
       const action=b.dataset.docNext;
       if(action==='camera'||action==='gallery'){status.textContent='';(action==='camera'?camera:gallery).click();return;}
-      if(action==='reset'){release('front');release('rear');step='intro';}
+      if(action==='recognize'){
+        if(busy||!files.front||!files.rear||!window.KaretaDocumentOCR?.available?.())return;
+        busy=true;
+        const seq=++revision;
+        status.textContent=docOcrCopy().progress;
+        const trigger=target.querySelector('[data-doc-next="recognize"]');
+        if(trigger)trigger.disabled=true;
+        try{
+          const result=await window.KaretaDocumentOCR.recognize(files);
+          if(!alive()||seq!==revision)return;
+          if(!result?.fields||!Object.keys(result.fields).length){status.textContent=docOcrCopy().empty;return;}
+          recognized=result.fields;
+          step='review';
+          status.textContent='';
+          draw();
+        }catch(_error){if(alive()&&seq===revision)status.textContent=docOcrCopy().error;}
+        finally{busy=false;if(trigger&&trigger.isConnected)trigger.disabled=false;}
+        return;
+      }
+      if(action==='apply'){
+        if(!recognized||!window.KaretaFirstVehicleFlow?.offerDocumentPrefill?.(recognized)){
+          status.textContent=docOcrCopy().handoff;return;
+        }
+        location.hash='#/cabinet/garage?firstVehicle=1';
+        return;
+      }
+      if(action==='reset'){revision++;recognized=null;release('front');release('rear');step='intro';}
       else if(['intro','choose','front','rear','ready'].includes(action)){if(action==='ready'&&(!photo.front||!photo.rear))return;step=action;}
       status.textContent='';draw();
     };
@@ -69,12 +112,12 @@
       if(!file.type.startsWith('image/')||file.size<=0||file.size>10*1024*1024){status.textContent=docCopy()[19];return;}
       let url='';try{url=URL.createObjectURL(file);}catch(_){status.textContent=docCopy()[20];return;}
       if(!alive()||!['front','rear'].includes(step)){URL.revokeObjectURL(url);return;}
-      release(step);photo[step]=url;status.textContent='';draw();
+      revision++;recognized=null;release(step);photo[step]=url;files[step]=file;status.textContent='';draw();
     };
     root.addEventListener('click',onClick);camera.addEventListener('change',onFile);gallery.addEventListener('change',onFile);
     const observer=typeof MutationObserver==='function'?new MutationObserver(draw):null;
     observer?.observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
-    const cleanup=()=>{if(disposed)return;disposed=true;root.removeEventListener('click',onClick);camera.removeEventListener('change',onFile);gallery.removeEventListener('change',onFile);observer?.disconnect();release('front');release('rear');};
+    const cleanup=()=>{if(disposed)return;disposed=true;revision++;recognized=null;root.removeEventListener('click',onClick);camera.removeEventListener('change',onFile);gallery.removeEventListener('change',onFile);observer?.disconnect();release('front');release('rear');};
     life.addCleanup?.(cleanup);draw();return cleanup;
   }
 

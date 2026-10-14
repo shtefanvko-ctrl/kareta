@@ -34,6 +34,7 @@ assert.match(read('js/next/pages/scanner.js'), /Автоматическое р�
 assert.match(scanner.render(), /data-doc-stage/);
 assert.match(scanner.render(), /data-doc-camera/);
 assert.match(scanner.render(), /data-doc-gallery/);
+assert.ok(read('inc/asset_registry.php').includes("'js/next/document_ocr.js'"));
 assert.doesNotMatch(scanner.render(), /data-scan-value/);
 sandbox.document.documentElement.lang='kk';
 assert.match(scanner.render(), /Техпаспортты сканерлеу/);

@@ -724,7 +724,7 @@ function kareta_route_asset_plan(): array
         'scannerDomain' => [
             'lazy' => true, 'routeKeys' => ['scanner','scannerQr','scannerDocument','masterQr'],
             'routes' => ['#/scan','#/scan/qr','#/scan/document','#/master/qr'],
-            'styles' => ['css/next/scanner.css'], 'scripts' => ['js/next/qr_encoder.js','js/next/pages/scanner.js'],
+            'styles' => ['css/next/scanner.css'], 'scripts' => ['js/next/qr_encoder.js','js/next/document_ocr.js','js/next/pages/scanner.js'],
             'globals' => ['KaretaScannerPages'],
         ],
         'diagnosticsDomain' => [
