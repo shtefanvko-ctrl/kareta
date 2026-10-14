@@ -32,5 +32,5 @@ assert.match(cabinet,/fromRequest\|\|directFirstVehicle\|\|/,'existing garages m
 const scanner=fs.readFileSync('js/next/pages/scanner.js','utf8');
 assert.match(scanner,/KaretaDocumentOCR\.recognize\(files\)/);
 assert.match(scanner,/offerDocumentPrefill/);
-assert.match(scanner,/data-doc-next="recognize"/);
+assert.match(scanner,/button\('recognize',ocr\.run/);
 console.log('PASS OCR handoff: client role, privacy, validation, existing-car garage and scanner integration');
