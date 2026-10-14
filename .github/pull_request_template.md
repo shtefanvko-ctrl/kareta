@@ -39,3 +39,15 @@ Use PASS / FAIL / NOT RUN / BLOCKED only.
 
 ## Risk / rollback
 Describe the smallest restore/recovery path.
+
+## Feature preservation — mandatory before approval
+Refer to `ai/FEATURE_PRESERVATION.md` and the protected route/file baseline.
+- [ ] Compared exact HEAD SHA with base, `main`, and overlapping feature PRs; no lost or overwritten changes.
+- [ ] Listed affected existing client/master/STO/seller flows and confirmed no unintended capability removal.
+- [ ] Reviewed routes/back navigation, booking/garage/orders, catalog/community/notifications, GEO/QR/ELM where affected.
+- [ ] Reviewed RU/KK/EN, three themes, mobile/tablet/desktop and native bridge compatibility where affected.
+- [ ] Reviewed deletions/renames and shared contracts; documented deliberate behavior changes with explicit approval.
+- [ ] Recorded autonomous feature-preservation CI result on the exact candidate SHA, not a prior commit.
+- [ ] Marked unrun runtime/device/server checks NOT RUN (not PASS); DO NOT MERGE if affected functionality remains unverified.
+
+**Server checks are out of scope for the current GitHub-only hourly task.**
