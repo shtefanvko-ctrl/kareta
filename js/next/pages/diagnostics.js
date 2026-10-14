@@ -213,7 +213,7 @@
       if(!list.length){dtcList.hidden=true;dtcList.innerHTML='';return;}
       dtcList.hidden=false;
       dtcList.innerHTML=`<div class="k-obd-dtc-head"><b>Найдены коды неисправностей</b><span>${list.length}</span></div>
-        <div class="k-obd-dtc-grid">${list.map(code=>`<article><strong>${esc(code)}</strong><span>${esc(dtcSystem(code))}</span><a href="#/assistant" data-obd-dtc-help="${esc(code)}">Разобрать ошибку</a></article>`).join('')}</div>`;
+        <div class="k-obd-dtc-grid">${list.map(code=>`<article><strong>${esc(code)}</strong><span>${esc(dtcSystem(code))}</span><a href="#/assistant" data-obd-dtc-help="${esc(code)}">Разобрать ошибку</a><a href="#/community/question/create?mode=help" data-obd-dtc-question="${esc(code)}">Спросить мастеров</a></article>`).join('')}</div>`;
     }
 
     function renderLive(data={}){
@@ -546,6 +546,16 @@
       if(dtcHelp){
         try{sessionStorage.setItem('kareta_assistant_problem','Код OBD-II '+String(dtcHelp.dataset.obdDtcHelp||'')+'. Объясни возможные причины и порядок диагностики.');}catch(_){}
         location.hash='#/assistant';
+        return;
+      }
+      const question=event.target.closest('[data-obd-dtc-question]');
+      if(question){
+        const code=String(question.dataset.obdDtcQuestion||'').trim().toUpperCase();
+        if(!/^[PCBU][0-9A-F]{4}$/.test(code))return;
+        const car=selectedVehicle?[selectedVehicle.brand,selectedVehicle.model,selectedVehicle.year_label||selectedVehicle.year].filter(Boolean).map(v=>String(v).trim()).join(' '):'';
+        const draft=['Считан код OBD-II '+code+'.',car?'Автомобиль: '+car+'.':'','Подскажите, какие проверки выполнить перед заменой деталей?'].filter(Boolean).join('\n');
+        try{sessionStorage.setItem('kareta.obd.communityDraft',draft);}catch(_){}
+        location.hash='#/community/question/create?mode=help';
         return;
       }
       const device=event.target.closest('[data-obd-address]');
