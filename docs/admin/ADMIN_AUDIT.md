@@ -68,3 +68,27 @@ DESIRED: all 24 reference screens integrated into canonical admin.
 IMPLEMENTED: only the above source-confirmed subset, not the complete reference.
 VERIFIED: source inventory/read-only route mapping; no browser E2E or authenticated server-side tests.
 DEPLOYED: **not asserted** for any new admin changes. PR #133 is Draft/DO NOT MERGE.
+
+
+## E2 status update — 2026-10-15
+
+**Implemented source increment (not deployed):** Existing `GET /api/admin_operations.php?action=overview` returns six *named, read-only and nullable* business counts with the following verified SQL ownership:
+
+| API field | SQL meaning | UI label limitation |
+|---|---|---|
+| `businessCounts.accounts` | `accounts` table total | Accounts, not unique human individuals |
+| `businessCounts.orders` | `orders` table total | All order states |
+| `businessCounts.masters` | `person_profiles` master + active | Active profiles, not necessarily visible providers |
+| `businessCounts.sto` | `organizations` type `service_station`, active | Active organization records |
+| `businessCounts.shops` | `organizations` type `parts_store`, active | Active organization records |
+| `businessCounts.sellerProducts` | `seller_products` table total | Store goods, **all** publication states; not full parts catalog |
+
+The optional `activity7d` computes seven daily account creation counts and seven daily `orders` creation counts, on **database-local days** using `created_at`. If a query/table/column is unavailable, its field is `null`; missing values are displayed as unavailable, not zero. A true empty day on a successful query is `0`. There is deliberately **no finance/revenue number** until payment ledger and accounting semantics are audited.
+
+**UI files:** `js/next/dashboard_widgets.js` (six KPIs, chart and audit registry, RU/KK/EN for new metric legends), `js/next/pages/admin_workspaces.js` (one complete monitoring dashboard rather than an empty parallel audit section), `css/next/workspace_admin.css` (responsive 7-day bars), and regenerated `js/boot/runtime_shell_bundle.js` by the repository-owned deterministic bundle template.
+
+**Focused E1/E2 checks:** `tools/test_admin_control_plane_20261015.js` (7) and `tools/test_admin_dashboard_e2_20261015.js` (7) source/render contracts. These are NOT authenticated browser, PHP/MySQL integration, load/performance, security negative-path, language-switch-at-runtime or Android WebView acceptance. CI must be attributed to the current exact HEAD, never copied from older runs.
+
+**Security hold:** The `ao_admin` Identity/`*` plus legacy fallback, migration-admin broad fallback, PII scope/CSRF and dangerous account actions remain unresolved P0 review items. The new GET extends the existing authorized overview but does **not** resolve or bypass those concerns. Before additional administrative mutation features, confirm live allowed/denied matrix and remediate with separate tested server-side changes.
+
+**State:** DESIRED = complete 24-state control plane. IMPLEMENTED = source-confirmed baseline + admin shell + real-data KPI/registration/order 7-day widgets. VERIFIED = focused source contracts only unless exact-head CI and runtime receipts confirm more. DEPLOYED = NOT CLAIMED (staging and production untouched by this increment).
