@@ -4,6 +4,7 @@ import argparse
 import json
 import re
 import sys
+import tempfile
 from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -254,6 +255,27 @@ def verify_files(names):
         require(candidate.resolve().is_relative_to(ROOT.resolve()),
                 "Critical-file path escapes repository: " + name)
         require(candidate.is_file(), "Missing critical feature entry point: " + name)
+        require(bool(candidate.read_bytes().strip()), "Empty critical feature entry point: " + name)
+
+
+def self_test_file_contents():
+    """Exercise real files in isolation; never mutate the repository fixtures."""
+    global ROOT
+    original_root = ROOT
+    try:
+        with tempfile.TemporaryDirectory(prefix="kareta-feature-files-") as directory:
+            ROOT = Path(directory)
+            names = [f"entry-{i}.js" for i in range(19)]
+            for name in names:
+                (ROOT / name).write_bytes(b"// preserved entry\n")
+            verify_files(names)
+            entry = ROOT / names[0]
+            entry.write_bytes(b"")
+            assert_rejects(lambda: verify_files(names), "empty critical entry point")
+            entry.write_bytes(b" \t\r\n")
+            assert_rejects(lambda: verify_files(names), "whitespace-only critical entry point")
+    finally:
+        ROOT = original_root
 
 
 
@@ -317,6 +339,7 @@ def main():
     translations = json.loads(LANDING_I18N.read_text(encoding="utf-8"))
     verify_i18n(translations, languages)
     if args.self_test:
+        self_test_file_contents()
         # A weakened JSON baseline previously let matching route/file removals pass.
         swapped_route = json.loads(json.dumps(baseline))
         swapped_route["routes"].pop("home")
@@ -380,3 +403,4 @@ if __name__ == "__main__":
     except (ValueError, KeyError, OSError, json.JSONDecodeError, AssertionError) as exc:
         print("FEATURE_PRESERVATION: FAIL: " + str(exc), file=sys.stderr)
         sys.exit(1)
+
