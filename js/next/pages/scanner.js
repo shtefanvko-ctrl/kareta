@@ -19,7 +19,67 @@
     if (!key || !window.KaretaRoleAccess.canAccess(key)) throw new Error('Карточка недоступна в текущей роли.');
     return hash;
   }
+
+  // Two-sided local capture only. No document OCR, storage or upload is implied.
+  const DOC_COPY={
+    ru:['Назад в гараж','Сканирование техпаспорта','Добавление авто в гараж','Автоматическое распознавание полей техпаспорта пока недоступно. Фото остаются на устройстве и удаляются при закрытии экрана.','Сфотографируйте обе стороны документа или введите данные вручную.','Сканировать техпаспорт','Ввести вручную','Выбор способа','Лицевая сторона','Обратная сторона','Шаг','Сделать фото','Из галереи','Далее','Переснять','Фотографии сделаны','Фото не отправлены на сервер. Для сохранения автомобиля введите и подтвердите данные в форме гаража.','Перейти к заполнению','Начать заново','Выберите изображение до 10 МБ.','Не удалось открыть фото.','Добавление в гараж доступно только клиенту.'],
+    kk:['Гаражға оралу','Техпаспортты сканерлеу','Автокөлікті гаражға қосу','Техпаспорт деректерін автоматты тану әзірге қолжетімсіз. Суреттер құрылғыда қалады және экран жабылғанда жойылады.','Құжаттың екі жағын түсіріңіз немесе деректерді қолмен енгізіңіз.','Техпаспортты сканерлеу','Қолмен енгізу','Қосу тәсілін таңдау','Алдыңғы беті','Артқы беті','Қадам','Фото түсіру','Галереядан','Келесі','Қайта түсіру','Суреттер дайын','Суреттер серверге жіберілген жоқ. Көлікті сақтау үшін гараж нысанында деректерді енгізіп, растаңыз.','Толтыруға өту','Қайта бастау','10 МБ дейінгі суретті таңдаңыз.','Суретті ашу мүмкін болмады.','Гаражға тек клиент автокөлік қоса алады.'],
+    en:['Back to garage','Registration document scan','Add a car to your garage','Automatic document OCR is not yet available. Photos stay on the device and are released when you leave this screen.','Photograph both sides or enter the details manually.','Scan document','Enter manually','Choose an option','Front side','Back side','Step','Take photo','From gallery','Continue','Retake','Photos captured','No photos were uploaded. Enter and confirm vehicle details using the garage form to save the car.','Enter details','Start again','Select an image up to 10 MB.','Could not open the image.','Only clients can add a car to the garage.']
+  };
+  const docCopy=()=>DOC_COPY[String(document.documentElement?.lang||'ru').slice(0,2).toLowerCase()]||DOC_COPY.ru;
+  function renderDocument(){
+    const t=docCopy(),client=role()==='client';
+    return '<section class="k-page k-scan-page k-document-capture" data-page="scanner">'
+      +'<header class="k-document-head"><a data-doc-back-link class="k-btn k-btn-secondary" href="'+(client?'#/cabinet/garage':'#/scan')+'">'+t[0]+'</a><small>'+t[2]+'</small><h1 data-doc-title>'+t[1]+'</h1></header>'
+      +(client?'<div data-doc-stage aria-live="polite"></div><input hidden type="file" data-doc-camera accept="image/*" capture="environment"><input hidden type="file" data-doc-gallery accept="image/*"><p data-doc-status role="status" aria-live="polite"></p>':'<p>'+t[21]+'</p>')
+      +'</section>';
+  }
+  function mountDocument(root,context={}){
+    const target=root.querySelector('[data-doc-stage]');if(!target)return ()=>{};
+    const camera=root.querySelector('[data-doc-camera]'),gallery=root.querySelector('[data-doc-gallery]'),status=root.querySelector('[data-doc-status]');
+    const life=context.lifecycle||{},photo={front:'',rear:''};let step='intro',disposed=false;
+    const alive=()=>!disposed&&life.isActive?.()!==false&&root.isConnected;
+    const release=k=>{if(photo[k]){URL.revokeObjectURL(photo[k]);photo[k]='';}};
+    const button=(key,title,primary=false)=>'<button type="button" class="k-btn '+(primary?'k-btn-primary':'k-btn-secondary')+'" data-doc-next="'+key+'">'+title+'</button>';
+    const manual=title=>'<a class="k-btn k-btn-secondary" href="#/cabinet/garage?firstVehicle=1">'+title+'</a>';
+    const block=(title,text)=>'<h2>'+title+'</h2><p>'+text+'</p>';
+    function draw(){
+      if(!alive())return;const t=docCopy();let out='';
+      root.querySelector('[data-doc-title]').textContent=t[1];root.querySelector('[data-doc-back-link]').textContent=t[0];
+      if(step==='intro')out=block(t[1],t[4])+button('choose',t[5],true)+manual(t[6]);
+      if(step==='choose')out=block(t[7],t[4])+button('front',t[5],true)+manual(t[6])+button('intro',t[0]);
+      if(step==='front'||step==='rear'){
+        const first=step==='front',src=photo[step];out='<div class="k-document-step">'+t[10]+' '+(first?'1':'2')+' / 2</div>'+block(first?t[8]:t[9],first?t[8]:t[9])
+          +'<div class="k-document-preview">'+(src?'<img src="'+src+'" alt="'+(first?t[8]:t[9])+'">':'<span aria-hidden="true">▣</span>')+'</div>'
+          +button('camera',src?t[14]+' · '+t[11]:t[11],true)+button('gallery',t[12])+(src?button(first?'rear':'ready',t[13],true):'')+button(first?'choose':'front',t[0]);
+      }
+      if(step==='ready')out=block(t[15],t[16])+'<div class="k-document-review"><img src="'+photo.front+'" alt="'+t[8]+'"><img src="'+photo.rear+'" alt="'+t[9]+'"></div>'+manual(t[17])+button('rear',t[14])+button('reset',t[18]);
+      target.innerHTML='<div class="k-document-card">'+out+'</div><p class="k-document-notice">'+t[3]+'</p>';
+    }
+    const onClick=e=>{
+      const b=e.target.closest?.('[data-doc-next]');if(!b||!alive())return;
+      const action=b.dataset.docNext;
+      if(action==='camera'||action==='gallery'){status.textContent='';(action==='camera'?camera:gallery).click();return;}
+      if(action==='reset'){release('front');release('rear');step='intro';}
+      else if(['intro','choose','front','rear','ready'].includes(action)){if(action==='ready'&&(!photo.front||!photo.rear))return;step=action;}
+      status.textContent='';draw();
+    };
+    const onFile=e=>{
+      if(!alive())return;const file=e.target.files?.[0];e.target.value='';if(!file)return;
+      if(!file.type.startsWith('image/')||file.size<=0||file.size>10*1024*1024){status.textContent=docCopy()[19];return;}
+      let url='';try{url=URL.createObjectURL(file);}catch(_){status.textContent=docCopy()[20];return;}
+      if(!alive()||!['front','rear'].includes(step)){URL.revokeObjectURL(url);return;}
+      release(step);photo[step]=url;status.textContent='';draw();
+    };
+    root.addEventListener('click',onClick);camera.addEventListener('change',onFile);gallery.addEventListener('change',onFile);
+    const observer=typeof MutationObserver==='function'?new MutationObserver(draw):null;
+    observer?.observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+    const cleanup=()=>{if(disposed)return;disposed=true;root.removeEventListener('click',onClick);camera.removeEventListener('change',onFile);gallery.removeEventListener('change',onFile);observer?.disconnect();release('front');release('rear');};
+    life.addCleanup?.(cleanup);draw();return cleanup;
+  }
+
   function render() {
+    if (mode() === 'scannerDocument') return renderDocument();
     if (mode() === 'masterQr') return '<section class="k-page k-scan-page" data-page="scanner"><a class="k-btn k-btn-secondary" href="#/master">Назад</a><h1>Мой QR</h1><p>Клиент или мастер сканирует код, открывает ваш профиль и переходит к записи.</p><div class="k-master-qr-identity" hidden data-master-qr-identity><h2 data-master-qr-name></h2><p data-master-qr-detail></p></div><div data-master-qr-code></div><p data-master-qr-status role="status" aria-live="polite">Загружаем ваш профиль…</p><a class="k-btn k-btn-secondary" data-master-qr-link hidden>Открыть мой профиль</a><button class="k-btn k-btn-secondary" type="button" data-master-qr-copy hidden>Скопировать ссылку</button><a class="k-btn k-btn-secondary" data-master-qr-save hidden>Сохранить QR</a><button class="k-btn k-btn-secondary" type="button" data-master-qr-share hidden>Поделиться</button></section>';
     const key = mode(), documentMode = key === 'scannerDocument';
     const back = key === 'scanner' ? home() : '#/scan';
@@ -33,6 +93,7 @@
     const root = document.querySelector('[data-page="scanner"]');
     if (!root || mode() === 'scanner') return;
     if (mode() === 'masterQr') return mountMasterQr(root, context);
+    if (mode() === 'scannerDocument') return mountDocument(root, context);
     const documentMode = mode() === 'scannerDocument';
     const lifecycle = context.lifecycle;
     let disposed = false, stream = null, cameraRun = 0, fileRun = 0, timer = null;
