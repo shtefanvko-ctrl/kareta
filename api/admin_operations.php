@@ -18,6 +18,19 @@ function ao_audit(PDO $pdo,array $actor,string $action,string $type,string $id,$
  $pdo->prepare("INSERT INTO admin_operation_audit(actor_account_id,actor_user_id,action_key,target_type,target_id,before_json,after_json,reason,request_id) VALUES(?,?,?,?,?,?,?,?,?)")
  ->execute([$actor['account']?:null,$actor['user']?:null,$action,$type,$id,json_encode($before,JSON_UNESCAPED_UNICODE),json_encode($after,JSON_UNESCAPED_UNICODE),$reason,$request]);
 }
+// Admin dashboard sources are fixed, read-only SQL. Failed sources are null, never a fake zero.
+function ao_metric(PDO $pdo,string $sql):?int{
+ try{return (int)$pdo->query($sql)->fetchColumn();}catch(Throwable $_e){return null;}
+}
+function ao_week_counts(PDO $pdo,string $table,array $days):?array{
+ if(!in_array($table,['accounts','orders'],true))throw new InvalidArgumentException('admin_metric_table_invalid');
+ try{
+  $stmt=$pdo->query("SELECT DATE(created_at) AS day, COUNT(*) AS total FROM `$table` WHERE created_at >= CURDATE() - INTERVAL 6 DAY GROUP BY DATE(created_at) ORDER BY day");
+  $values=array_fill_keys($days,0);
+  foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $item){$day=(string)($item['day']??'');if(array_key_exists($day,$values))$values[$day]=(int)$item['total'];}
+  return array_values($values);
+ }catch(Throwable $_e){return null;}
+}
 function ao_enum(string $value,array $allowed,string $error):string{if(!in_array($value,$allowed,true))ao_out(['ok'=>false,'error'=>$error],422);return $value;}
 function ao_reason(string $reason):string{$reason=mb_substr(trim($reason),0,500);if(mb_strlen($reason)<3)ao_out(['ok'=>false,'error'=>'admin_reason_required'],422);return $reason;}
 try{
@@ -25,11 +38,25 @@ try{
  $method=$_SERVER['REQUEST_METHOD']??'GET';$action=(string)($_GET['action']??'overview');
  if($method==='GET'&&$action==='overview'){
   $counts=[];
-  foreach(['accounts','persons','person_profiles','contexts','organizations','auth_sessions','moderation_cases'] as $table){try{$counts[$table]=(int)$pdo->query("SELECT COUNT(*) FROM `$table`")->fetchColumn();}catch(Throwable $e){$counts[$table]=0;}}
-  $counts['activeSessions']=(int)$pdo->query("SELECT COUNT(*) FROM auth_sessions WHERE revoked_at IS NULL AND expires_at>NOW()")->fetchColumn();
-  $counts['openModeration']=(int)$pdo->query("SELECT COUNT(*) FROM moderation_cases WHERE status IN('open','escalated')")->fetchColumn();
+  foreach(['accounts','persons','person_profiles','contexts','organizations','auth_sessions','moderation_cases'] as $table){
+   $counts[$table]=ao_metric($pdo,"SELECT COUNT(*) FROM `$table`");
+  }
+  $counts['activeSessions']=ao_metric($pdo,"SELECT COUNT(*) FROM auth_sessions WHERE revoked_at IS NULL AND expires_at>NOW()");
+  $counts['openModeration']=ao_metric($pdo,"SELECT COUNT(*) FROM moderation_cases WHERE status IN('open','escalated')");
+  $business=[
+   'accounts'=>$counts['accounts'],
+   'orders'=>ao_metric($pdo,"SELECT COUNT(*) FROM orders"),
+   'masters'=>ao_metric($pdo,"SELECT COUNT(*) FROM person_profiles WHERE profile_type='master' AND status='active'"),
+   'sto'=>ao_metric($pdo,"SELECT COUNT(*) FROM organizations WHERE type='service_station' AND status='active'"),
+   'shops'=>ao_metric($pdo,"SELECT COUNT(*) FROM organizations WHERE type='parts_store' AND status='active'"),
+   'sellerProducts'=>ao_metric($pdo,"SELECT COUNT(*) FROM seller_products")
+  ];
+  $today=(string)$pdo->query("SELECT DATE_FORMAT(CURDATE(),'%Y-%m-%d')")->fetchColumn();
+  $days=[];$date=new DateTimeImmutable($today);
+  for($offset=6;$offset>=0;$offset--)$days[]=$date->modify('-'.$offset.' days')->format('Y-m-d');
+  $activity=['days'=>$days,'accounts'=>ao_week_counts($pdo,'accounts',$days),'orders'=>ao_week_counts($pdo,'orders',$days),'basis'=>'database_date'];
   $audit=$pdo->query("SELECT id,action_key actionKey,target_type targetType,target_id targetId,reason,created_at createdAt FROM admin_operation_audit ORDER BY id DESC LIMIT 30")->fetchAll(PDO::FETCH_ASSOC);
-  ao_out(['ok'=>true,'counts'=>$counts,'audit'=>$audit]);
+  ao_out(['ok'=>true,'counts'=>$counts,'businessCounts'=>$business,'activity7d'=>$activity,'audit'=>$audit]);
  }
  if($method==='GET'&&$action==='users'){
   $q=trim((string)($_GET['q']??''));$like='%'.$q.'%';
