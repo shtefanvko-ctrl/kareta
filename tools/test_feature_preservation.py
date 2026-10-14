@@ -112,6 +112,91 @@ landing/index.html
 landing/i18n.json
 """.splitlines())
 
+# Immutable 70-key landing translation floor from PR #133 HEAD b01b8981fdc4ce273dfa063a3131d6ccd2cf0483.
+# Equal language dictionaries alone cannot detect deleting the same key in all locales.
+HISTORICAL_LANDING_TRANSLATION_KEYS = frozenset("""\
+_meta.description
+_meta.title
+available
+comingSoon
+downloadApp
+downloadBrandText
+downloadKicker
+downloadLead
+downloadTitle
+eyebrow
+f1Text
+f1Title
+f2Text
+f2Title
+f3Text
+f3Title
+f4Text
+f4Title
+f5Text
+f5Title
+f6Text
+f6Title
+featuresKicker
+featuresLead
+featuresTitle
+footerText
+heroA
+heroB
+heroLead
+howKicker
+howTitle
+navDownload
+navFeatures
+navHow
+navProduct
+openBrowser
+openWeb
+openWebVersion
+productKicker
+productLead
+productTitle
+proof1
+proof2
+proof3
+realUi
+roleClientText
+roleClientTitle
+roleMasterText
+roleMasterTitle
+roleStoText
+roleStoTitle
+rolesKicker
+rolesLead
+rolesTitle
+showcaseText
+showcaseTitle
+skip
+step1Text
+step1Title
+step2Text
+step2Title
+step3Text
+step3Title
+step4Text
+step4Title
+strip1
+strip2
+strip3
+strip4
+webVersion
+""".splitlines())
+
+
+def translation_leaf_paths(node, prefix=""):
+    if isinstance(node, dict):
+        paths = set()
+        for key, value in node.items():
+            paths.update(translation_leaf_paths(value, f"{prefix}.{key}" if prefix else key))
+        return paths
+    return {prefix}
+
+
 
 def require(condition, message):
     if not condition:
@@ -202,6 +287,11 @@ def verify_i18n(data, languages):
                 f"{lang} translation keys differ: missing={missing}, extra={extra}")
     for lang in LANGUAGES:
         verify_translation_tree(data["ru"], data[lang], lang)
+    require(len(HISTORICAL_LANDING_TRANSLATION_KEYS) == 70,
+            "Historical landing translation anchor is incomplete")
+    for lang in LANGUAGES:
+        missing = sorted(HISTORICAL_LANDING_TRANSLATION_KEYS - translation_leaf_paths(data[lang]))
+        require(not missing, f"Removed historical {lang} translation keys: {missing}")
 
 
 def assert_rejects(fn, label):
@@ -263,6 +353,21 @@ def main():
         nested_locale["en"]["_meta"] = dict(nested_locale["en"]["_meta"])
         del nested_locale["en"]["_meta"]["description"]
         assert_rejects(lambda: verify_i18n(nested_locale, languages), "missing nested EN metadata")
+        # Removing a key in ALL locales used to bypass language parity checks.
+        deleted_all = json.loads(json.dumps(translations))
+        for lang in LANGUAGES:
+            del deleted_all[lang]["navProduct"]
+        assert_rejects(lambda: verify_i18n(deleted_all, languages),
+                       "coordinated removal of historical navigation translation")
+        deleted_nested_all = json.loads(json.dumps(translations))
+        for lang in LANGUAGES:
+            del deleted_nested_all[lang]["_meta"]["description"]
+        assert_rejects(lambda: verify_i18n(deleted_nested_all, languages),
+                       "coordinated removal of historical nested translation")
+        added_all = json.loads(json.dumps(translations))
+        for lang in LANGUAGES:
+            added_all[lang]["futureApprovedTranslation"] = "New translation"
+        verify_i18n(added_all, languages)
     print(f"FEATURE_PRESERVATION: PASS ({len(found)} routes, "
           f"{len(baseline['critical_files'])} files, 3 languages; "
           f"negative self-test={'PASS' if args.self_test else 'NOT RUN'})")
