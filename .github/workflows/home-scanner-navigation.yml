@@ -18,6 +18,7 @@ jobs:
           php-version: '8.1'
       - run: php -l inc/asset_registry.php
       - run: node tools/test_home_scanner_navigation.js
+      - run: node tools/test_document_ocr_parser.js
       - run: node tools/test_master_personal_qr.js
       - run: |
           node --check js/next/pages/scanner.js
