@@ -30,7 +30,8 @@ assert.equal(scanner.qrTarget('#/masters/profile/master/ms_001'), '#/masters/pro
 for (const code of ['javascript:alert(1)','https://evil.example/#/services/item/oil','https://kareta.kz.evil.example/#/services/item/oil','https://u:p@kareta.kz/#/services/item/oil','http://kareta.kz/#/services/item/oil','https://kareta.kz:444/#/services/item/oil','#/admin/users','#/services/item/oil?x=1','#/services/item/%3Cimg%3E','<img onerror=alert(1)>']) assert.throws(()=>scanner.qrTarget(code));
 location.hash = '#/scan/document';
 role='client';
-assert.match(scanner.render(), /Автоматическое распознавание полей техпаспорта пока недоступно/);
+assert.match(read('js/next/pages/scanner.js'), /Автоматическое распознавание полей техпаспорта пока недоступно/);
+assert.match(scanner.render(), /data-doc-stage/);
 assert.match(scanner.render(), /data-doc-camera/);
 assert.match(scanner.render(), /data-doc-gallery/);
 assert.doesNotMatch(scanner.render(), /data-scan-value/);
