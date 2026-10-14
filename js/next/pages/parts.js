@@ -130,6 +130,7 @@
   function storeDirectory(snapshot){
     const map=new Map();
     (snapshot.products||[]).forEach(product=>{
+      if(!cityMatch(product,'store'))return;
       const id=String(product.seller_user_id??'').trim();if(!id)return;
       const current=map.get(id)||{id,name:String(product.store_name||'Магазин'),city:String(product.city||''),address:String(product.warehouse_address||''),products:0,rating:0,reviews:0};
       current.products+=1;
