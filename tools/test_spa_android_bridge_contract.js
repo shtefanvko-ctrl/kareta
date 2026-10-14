@@ -49,8 +49,11 @@ must(cabinet, '/^[A-HJ-NPR-Z0-9]{17}$/.test(vin)', 'garage');
 
 must(diagnostics, "return {skipped:true,code:'VEHICLE_ID_REQUIRED'};", 'diagnostics');
 must(diagnostics, "const eligible=items.filter(item=>queuedVehicleId(item)!=='');", 'diagnostics');
-must(diagnostics, 'await mobile.offlineAcknowledge(eligible);', 'diagnostics');
-must(diagnostics, 'старых локальных записей без vehicleId оставлены на устройстве', 'diagnostics');
+must(diagnostics, "if(!Array.isArray(payload.accepted))throw new Error('SYNC_ACK_INVALID');", 'diagnostics');
+must(diagnostics, 'if(confirmed.length)await mobile.offlineAcknowledge(confirmed);', 'diagnostics');
+must(diagnostics, 'const pending=eligible.length-confirmed.length;', 'diagnostics');
+must(diagnostics, 'записей без vehicleId также сохранены локально', 'diagnostics');
+mustNot(diagnostics, 'await mobile.offlineAcknowledge(eligible);', 'diagnostics');
 mustNot(diagnostics, 'Диагностику можно выполнить без привязки.</p>', 'diagnostics');
 
 console.log('SPA_ANDROID_BRIDGE_CONTRACT: PASS');
