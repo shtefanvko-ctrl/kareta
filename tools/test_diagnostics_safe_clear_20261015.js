@@ -17,6 +17,7 @@ async function setup({responses=[],handoff='',snapshot=null,delaySnapshot=false}
   const makeNode=()=>({
     textContent:'',innerHTML:'',hidden:false,disabled:false,value:'',dataset:{},
     classList:{add(){},remove(){},toggle(){}},
+    setAttribute(name,value){this.attributes=this.attributes||{};this.attributes[name]=String(value)},
     querySelector:()=>({disabled:false})
   });
   const q=s=>{if(!nodes.has(s))nodes.set(s,makeNode());return nodes.get(s)};
