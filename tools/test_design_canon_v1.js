@@ -25,9 +25,13 @@ for(const token of [
 
 if(!registry.includes("'css/next/design_contract.css'")) fail('shared design contract must be eager');
 if(!registry.includes("'css/next/master_responsive_shell.css'")) fail('master responsive shell must be eager');
-if(!master.includes('MASTER / CLIENT VISUAL CANON')) fail('master geometry owner is missing responsive canon');
+const geometryMarker='MASTER PAGE VISUAL CONTRACT';
+const geometryStart=master.indexOf('/* 2026-10-04 — '+geometryMarker+'.');
+const geometryEnd=master.indexOf('/* KARETA MASTER PAGE VIEWPORT STABILITY.',geometryStart);
+if(geometryStart<0||geometryEnd<=geometryStart) fail('master geometry owner is missing responsive canon');
+const geometry=master.slice(geometryStart,geometryEnd);
 if(!master.includes('KARETA MASTER PAGE VIEWPORT STABILITY')) fail('master geometry owner is missing viewport stability rules');
-if(postlude.includes('MASTER / CLIENT VISUAL CANON')) fail('r84 postlude still duplicates responsive canon');
+if(postlude.includes('MASTER / CLIENT VISUAL CANON')||postlude.includes(geometryMarker)) fail('r84 postlude still duplicates responsive canon');
 if(postlude.includes('MASTER LAYOUT STABILITY GUARD')) fail('legacy stability guard still lives in postlude');
 if(postlude.includes('k-master-services-toolbar')) fail('dead service toolbar selector remains in postlude');
 if(postlude.includes('k-master-workplace-page')||postlude.includes('k-master-dashboard-page')) fail('dead master page selector remains in postlude');
@@ -50,7 +54,7 @@ if(sourceLines.includes('css/next/master_responsive_shell.css')) fail('eager mas
 if(sourceLines.includes('css/next/master_client_r84_postlude.css')) fail('legacy master postlude must be retired from runtime builder');
 
 for(const bp of ['@media(max-width:767px)','@media(min-width:768px) and (max-width:1199px)','@media(min-width:1200px)']){
-  if(!master.includes(bp)) fail('missing page responsive contract '+bp);
+  if(!geometry.includes(bp)) fail('missing page responsive contract '+bp);
   if(!shell.includes(bp)) fail('missing shell responsive contract '+bp);
 }
 
@@ -64,7 +68,7 @@ for(const legacy of [
 if(runtime.includes('SOURCE: css/next/design_contract.css')) fail('generated master runtime duplicates design contract');
 if(runtime.includes('SOURCE: css/next/master_responsive_shell.css')) fail('generated master runtime duplicates responsive shell');
 if(runtime.includes('SOURCE: css/next/master_client_r84_postlude.css')) fail('generated master runtime still contains legacy postlude');
-if(!runtime.includes('MASTER / CLIENT VISUAL CANON')) fail('generated master runtime misses canonical responsive geometry');
+if(!runtime.includes(geometryMarker)) fail('generated master runtime misses canonical responsive geometry');
 if(!runtime.trimEnd().endsWith(master.trimEnd())) fail('master_surfaces.css must be final generated CSS owner');
 
 console.log('DESIGN_CANON_V1: PASS');
