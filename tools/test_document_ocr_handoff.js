@@ -31,6 +31,11 @@ const cabinet=fs.readFileSync('js/next/pages/cabinet.js','utf8');
 assert.match(cabinet,/fromRequest\|\|directFirstVehicle\|\|/,'existing garages must support scanner handoff');
 const scanner=fs.readFileSync('js/next/pages/scanner.js','utf8');
 assert.match(scanner,/KaretaDocumentOCR\.recognize\(files\)/);
+assert.match(scanner,/data-doc-review-field/,'OCR review fields must be editable');
+assert.match(scanner,/validateCandidate/,'review must validate before handoff');
+assert.match(scanner,/revision\+\+;step=action/,'leave/retry must invalidate in-flight OCR');
+assert.match(scanner,/root\.removeEventListener\('input',onReviewInput\)/,'destroy must remove review listener');
+
 assert.match(scanner,/offerDocumentPrefill/);
 assert.match(scanner,/button\('recognize',ocr\.run/);
 console.log('PASS OCR handoff: client role, privacy, validation, existing-car garage and scanner integration');

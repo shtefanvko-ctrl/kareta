@@ -31,3 +31,13 @@
 .k-document-fields{display:grid;gap:9px;margin:0}
 .k-document-fields>div{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid var(--k-border,#e3e7ec);border-radius:10px}
 .k-document-fields dt{font-size:.85rem;opacity:.8}.k-document-fields dd{margin:0;font-weight:700;text-align:right;overflow-wrap:anywhere}
+
+/* Canonical registration-document review: editable, accessible, mobile responsive. */
+.k-document-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.k-document-field{display:grid;gap:6px;min-width:0}.k-document-field:nth-child(4){grid-column:1/-1}
+.k-document-field span{font-size:.85rem;color:var(--k-text-muted,#667085)}
+.k-document-field input{min-width:0;width:100%;box-sizing:border-box;min-height:44px;padding:10px 12px;background:var(--k-surface,#fff);color:var(--k-text,#181b20);border:1px solid var(--k-border,#d7dbe1);border-radius:10px;font:inherit}
+.k-document-field input.is-invalid{border-color:var(--k-danger,#cf332a);outline:1px solid var(--k-danger,#cf332a)}
+.k-document-field input:focus-visible{outline:2px solid var(--k-accent,#ff5425);outline-offset:1px}
+.k-document-note{font-size:.84rem;color:var(--k-text-muted,#667085)}
+@media(max-width:380px){.k-document-fields{grid-template-columns:minmax(0,1fr)}.k-document-field:nth-child(4){grid-column:auto}}

@@ -35,6 +35,14 @@
   });
   const docOcrCopy=()=>DOC_OCR_COPY[String(document.documentElement?.lang||'ru').slice(0,2).toLowerCase()]||DOC_OCR_COPY.ru;
 
+
+  const DOC_REVIEW_COPY=Object.freeze({
+    ru:{invalid:'Проверьте выделенные поля: VIN — 17 символов без I, O, Q; год от 1950; госномер до 24 символов.',empty:'Введите хотя бы одно поле или воспользуйтесь ручным вводом.',note:'Неопределённые марку и модель можно выбрать в гараже.'},
+    kk:{invalid:'Белгіленген өрістерді тексеріңіз: VIN — I, O, Q жоқ 17 таңба; жыл 1950 жылдан; нөмір 24 таңбаға дейін.',empty:'Кемінде бір өрісті енгізіңіз немесе қолмен толтырыңыз.',note:'Анықталмаған марка мен модельді гаражда таңдауға болады.'},
+    en:{invalid:'Check highlighted fields: VIN requires 17 characters excluding I, O, Q; year 1950 onward; plate up to 24 characters.',empty:'Enter at least one field or use manual entry.',note:'You can choose an unidentified make or model later in the garage.'}
+  });
+  const reviewCopy=()=>DOC_REVIEW_COPY[String(document.documentElement?.lang||'ru').slice(0,2).toLowerCase()]||DOC_REVIEW_COPY.ru;
+
   function renderDocument(){
     const t=docCopy(),client=role()==='client';
     return '<section class="k-page k-scan-page k-document-capture" data-page="scanner">'
@@ -66,12 +74,20 @@
         +(window.KaretaDocumentOCR?.available?.()?button('recognize',ocr.run,true):'<p>'+ocr.unavailable+'</p>')
         +manual(t[17])+button('rear',t[14])+button('reset',t[18]);
       if(step==='review'){
-        const labels={brandName:'Марка / Brand',modelName:'Модель / Model',year:'Год / Year',vin:'VIN',plateNumber:'Госномер / Plate'};
-        out=block(ocr.review,ocr.check)+'<dl class="k-document-fields">'+Object.entries(recognized||{}).map(([k,v])=>
-          '<div><dt>'+labels[k]+'</dt><dd>'+escape(v)+'</dd></div>').join('')+'</dl>'
+        const labels={
+          ru:{brandName:'Марка',modelName:'Модель',year:'Год выпуска',vin:'VIN',plateNumber:'Госномер'},
+          kk:{brandName:'Марка',modelName:'Модель',year:'Шығарылған жылы',vin:'VIN',plateNumber:'Мемлекеттік нөмір'},
+          en:{brandName:'Make',modelName:'Model',year:'Year',vin:'VIN',plateNumber:'Plate'}
+        };
+        const lang=String(document.documentElement?.lang||'ru').slice(0,2).toLowerCase();
+        const names=labels[lang]||labels.ru;
+        const limits={brandName:80,modelName:80,year:4,vin:17,plateNumber:24};
+        out=block(ocr.review,ocr.check)+'<div class="k-document-fields">'+Object.keys(names).map(key=>
+          '<label class="k-document-field"><span>'+names[key]+'</span><input data-doc-review-field="'+key+'" type="text" autocomplete="off" spellcheck="false" maxlength="'+limits[key]+'" value="'+escape(recognized?.[key]||'')+'"></label>'
+        ).join('')+'</div><p class="k-document-note">'+reviewCopy().note+'</p>'
           +button('apply',ocr.apply,true)+manual(t[6])+button('ready',ocr.back);
       }
-      target.innerHTML='<div class="k-document-card">'+out+'</div><p class="k-document-notice">'+(window.KaretaDocumentOCR?.available?.()?ocr.local:t[3])+'</p>';
+            target.innerHTML='<div class="k-document-card">'+out+'</div><p class="k-document-notice">'+(window.KaretaDocumentOCR?.available?.()?ocr.local:t[3])+'</p>';
     }
     const onClick=async e=>{
       const b=e.target.closest?.('[data-doc-next]');if(!b||!alive())return;
@@ -97,14 +113,25 @@
         return;
       }
       if(action==='apply'){
-        if(!recognized||!window.KaretaFirstVehicleFlow?.offerDocumentPrefill?.(recognized)){
+        if(!recognized)return;
+        const inputs=Array.from(target.querySelectorAll('[data-doc-review-field]'));
+        const values=Object.fromEntries(inputs.map(el=>[el.dataset.docReviewField,el.value]));
+        const checked=window.KaretaDocumentOCR?.validateCandidate?.(values);
+        for(const el of inputs)el.classList.toggle('is-invalid',Boolean(checked?.errors?.[el.dataset.docReviewField]));
+        if(!checked?.ok){
+          status.textContent=checked?.errors?._form?reviewCopy().empty:reviewCopy().invalid;
+          inputs.find(el=>checked?.errors?.[el.dataset.docReviewField])?.focus?.();
+          return;
+        }
+        if(!window.KaretaFirstVehicleFlow?.offerDocumentPrefill?.(checked.fields)){
           status.textContent=docOcrCopy().handoff;return;
         }
+        recognized=null;revision++;
         location.hash='#/cabinet/garage?firstVehicle=1';
         return;
       }
       if(action==='reset'){revision++;recognized=null;release('front');release('rear');step='intro';}
-      else if(['intro','choose','front','rear','ready'].includes(action)){if(action==='ready'&&(!photo.front||!photo.rear))return;step=action;}
+      else if(['intro','choose','front','rear','ready'].includes(action)){if(action==='ready'&&(!photo.front||!photo.rear))return;revision++;step=action;}
       status.textContent='';draw();
     };
     const onFile=e=>{
@@ -114,10 +141,11 @@
       if(!alive()||!['front','rear'].includes(step)){URL.revokeObjectURL(url);return;}
       revision++;recognized=null;release(step);photo[step]=url;files[step]=file;status.textContent='';draw();
     };
-    root.addEventListener('click',onClick);camera.addEventListener('change',onFile);gallery.addEventListener('change',onFile);
+    const onReviewInput=e=>{const el=e.target.closest?.('[data-doc-review-field]');if(el&&recognized)recognized[el.dataset.docReviewField]=el.value;};
+    root.addEventListener('click',onClick);root.addEventListener('input',onReviewInput);camera.addEventListener('change',onFile);gallery.addEventListener('change',onFile);
     const observer=typeof MutationObserver==='function'?new MutationObserver(draw):null;
     observer?.observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
-    const cleanup=()=>{if(disposed)return;disposed=true;revision++;recognized=null;root.removeEventListener('click',onClick);camera.removeEventListener('change',onFile);gallery.removeEventListener('change',onFile);observer?.disconnect();release('front');release('rear');};
+    const cleanup=()=>{if(disposed)return;disposed=true;revision++;recognized=null;root.removeEventListener('click',onClick);root.removeEventListener('input',onReviewInput);camera.removeEventListener('change',onFile);gallery.removeEventListener('change',onFile);observer?.disconnect();release('front');release('rear');};
     life.addCleanup?.(cleanup);draw();return cleanup;
   }
 
