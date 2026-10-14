@@ -29,6 +29,14 @@ check('2-column specialization is isolated from other modals',()=>{
   assert.ok(css.includes('.kmo-modal[data-kmo-modal-kind="specialization"] .kmo-modal-list'));
   assert.ok(css.includes('grid-template-columns:repeat(2,minmax(0,1fr))'));
 });
+check('localized search filters existing specialization buttons without changing draft',()=>{
+  assert.ok(js.includes('data-kmo-specialization-search'));
+  assert.ok(js.includes("root.querySelector('[data-kmo-specialization-search]')?.addEventListener('input'"));
+  assert.ok(js.includes('button.hidden=!matches'));
+  assert.ok(js.includes('data-kmo-specialization-empty'));
+  for(const label of ['Поиск специализации','Мамандандыруды іздеу','Search specialties'])assert.ok(js.includes(label),label);
+  assert.ok(css.includes('.kmo-specialization-empty[hidden]'));
+});
 check('accent resolves to shared token',()=>{
   assert.ok(css.includes('--km-orange:var(--k-accent,#ff4b0a)'));
 });
