@@ -399,6 +399,7 @@
     let liveTimer=0;
     let liveBusy=false;
     let liveFailures=0;
+    let liveRevision=0;
     let clearBusy=false;
     let disposed=false;
 
@@ -489,22 +490,28 @@
     }
 
     async function pollLive(){
-      if(!ready||!mobile?.available?.()||liveBusy)return;
+      if(!ready||!mobile?.available?.()||liveBusy||disposed)return;
+      const revision=liveRevision;
       liveBusy=true;
       try{
         const data=await mobile.elmLiveSnapshot();
+        if(revision!==liveRevision||!ready||disposed)return;
         liveFailures=0;
         renderLive(data||{});
       }catch(error){
+        if(revision!==liveRevision||!ready||disposed)return;
         liveFailures+=1;
         liveState.textContent='Live: '+(error.message||String(error));
         if(liveFailures>=3)stopLive();
-      }finally{liveBusy=false;}
+      }finally{
+        if(revision===liveRevision)liveBusy=false;
+      }
     }
 
     function startLive(){
       if(!ready||liveTimer)return;
       liveFailures=0;
+      liveRevision++;
       liveStart.disabled=true;
       liveStop.disabled=false;
       liveState.textContent='Live-режим запущен…';
@@ -513,8 +520,10 @@
     }
 
     function stopLive(){
+      liveRevision++; // Invalidates unresolved Native Bridge reads after Stop/disconnect/unmount.
       if(liveTimer){window.clearInterval(liveTimer);liveTimer=0;}
       liveBusy=false;
+      [liveRpm,liveSpeed,liveCoolant,liveVoltage].forEach(node=>{if(node)node.textContent='—';});
       liveStart.disabled=!ready;
       liveStop.disabled=true;
       liveState.textContent='Live-режим остановлен.';
