@@ -79,6 +79,7 @@
             <button type="button" class="k-obd-action" data-obd-command="03" disabled><b>Ошибки DTC</b><small>Mode 03 · сохранённые коды</small></button>
             <button type="button" class="k-obd-action" data-obd-command="0902" disabled><b>VIN</b><small>Mode 09 PID 02</small></button>
             <button type="button" class="k-obd-action" data-obd-command="ATRV" disabled><b>Напряжение</b><small>Напряжение питания адаптера</small></button>
+            <button type="button" class="k-obd-action" data-obd-clear disabled><b>Сбросить ошибки</b><small>Только с подтверждением; может обнулить мониторы готовности</small></button>
           </div>
 
           <div class="k-obd-command">
@@ -94,6 +95,12 @@
           <button type="button" class="k-btn" data-obd-sync>Синхронизировать</button>
         </div>
         <div class="k-obd-dtc-list" data-obd-dtc-list hidden></div>
+        <nav class="k-obd-actions k-obd-repair-actions" aria-label="Дальнейшие действия по результатам диагностики" data-obd-repair-actions hidden>
+          <a class="k-btn" href="#/parts" data-obd-repair-parts>Найти запчасти</a>
+          <a class="k-btn" href="#/masters" data-obd-repair-master>Найти мастера</a>
+          <a class="k-btn" href="#/masters?type=sto" data-obd-repair-sto>Найти СТО</a>
+          <p class="k-obd-muted">Код ошибки не доказывает необходимость замены детали. Сначала проверьте возможные причины и совместимость.</p>
+        </nav>
         <div class="k-obd-pending-save" data-obd-pending-save hidden>
           <p class="k-obd-muted">Диагностика выполнена без автомобиля. Результат доступен в текущем сеансе, но пока не сохранён в историю гаража.</p>
           <button type="button" class="k-btn k-btn-primary" data-obd-save-current disabled>Сохранить для выбранного автомобиля</button>
@@ -132,6 +139,8 @@
     const vehicleCurrent=q('[data-obd-vehicle-current]');
     const vehicleList=q('[data-obd-vehicle-list]');
     const dtcList=q('[data-obd-dtc-list]');
+    const repairActions=q('[data-obd-repair-actions]');
+    const clearBtn=q('[data-obd-clear]');
     const pendingSave=q('[data-obd-pending-save]');
     const liveStart=q('[data-obd-live-start]');
     const liveStop=q('[data-obd-live-stop]');
@@ -209,7 +218,8 @@
       return c==='P'?'Силовой агрегат':c==='C'?'Шасси':c==='B'?'Кузов':c==='U'?'Сеть/связь':'OBD-II';
     };
     function renderDtc(codes){
-      const list=Array.isArray(codes)?codes.filter(Boolean):[];
+      const list=Array.isArray(codes)?Array.from(new Set(codes.map(c=>String(c||'').trim().toUpperCase()).filter(c=>/^[PCBU][0-9A-F]{4}$/.test(c)))):[];
+      repairActions.hidden=!list.length;
       if(!list.length){dtcList.hidden=true;dtcList.innerHTML='';return;}
       dtcList.hidden=false;
       dtcList.innerHTML=`<div class="k-obd-dtc-head"><b>Найдены коды неисправностей</b><span>${list.length}</span></div>
@@ -264,6 +274,7 @@
       sendBtn.disabled=!ready;
       liveStart.disabled=!ready||!!liveTimer;
       qa('[data-obd-command]').forEach(button=>button.disabled=!ready);
+      clearBtn.disabled=!ready;
       if(!ready)stopLive();
     };
     const setConnected=value=>{
@@ -464,8 +475,57 @@
       finally{snapshotBtn.disabled=!ready;}
     }
 
+    async function clearDtcWithConsent(){
+      if(!ready||!mobile?.available?.())return;
+      const confirmAction=typeof window.confirm==='function'
+        ? message=>window.confirm(message)
+        : ()=>false; // Fail closed if this WebView cannot request user consent.
+      if(!confirmAction('Сброс DTC может удалить сохранённые ошибки и стоп-кадры, а также обнулить мониторы готовности. Сначала нужно сохранить результаты. Продолжить?'))return;
+      stopLive();
+      let evidencePreserved=false;
+      let evidenceProblem='';
+      try{
+        const snapshot=await mobile.elmSnapshot();
+        if(!snapshot||typeof snapshot!=='object')throw new Error('EMPTY_SNAPSHOT');
+        const capturedAt=Date.now();
+        const saved=await saveOffline(snapshot,capturedAt);
+        if(saved?.skipped){
+          pendingSnapshot=snapshot;
+          pendingCapturedAt=capturedAt;
+          refreshPendingSave();
+          evidenceProblem='Снимок показаний доступен только в текущем сеансе, не сохранён в гараж.';
+        }else{
+          evidencePreserved=true; // Queued locally; server synchronization is a separate operation.
+        }
+      }catch(error){
+        evidenceProblem='Не удалось получить и сохранить снимок до сброса: '+String(error?.message||error);
+      }
+      if(!evidencePreserved&&!confirmAction(evidenceProblem+'\nПосле сброса часть диагностической информации может стать недоступной. Выполнить сброс без сохранённой истории?'))return;
+      clearBtn.disabled=true;
+      try{
+        const response=await mobile.elmCommand('04',5000);
+        setResult({command:'04',adapterResponse:response,warning:'Команда сброса отправлена. Повторно прочитайте DTC и готовность систем для подтверждения результата.'});
+      }catch(error){
+        setResult('Сброс не подтверждён: '+String(error?.message||error));
+      }finally{
+        clearBtn.disabled=!ready;
+      }
+    }
+
     async function runCommand(command){
       if(!ready||!command)return;
+      const normalized=String(command).trim().replace(/\s+/g,'').toUpperCase();
+      // Never let the raw command field silently bypass confirmation for service 04.
+      if(normalized==='04'){await clearDtcWithConsent();return;}
+      if(/^04[0-9A-F]+$/.test(normalized)){
+        setResult('Для сброса DTC используйте только отдельную кнопку с подтверждением.');
+        return;
+      }
+      // UDS/OBD actuator, write, reset and security-access services do not belong in this basic UI.
+      if(/^(?:08|10|11|14|27|28|2E|2F|31|34|35|36|37|3D|85)[0-9A-F]*$/.test(normalized)){
+        setResult('Команда управления или изменения ЭБУ не разрешена в обычной диагностике.');
+        return;
+      }
       setResult('Команда '+command+'…');
       try{setResult(await mobile.elmCommand(command,3500));}
       catch(error){setResult(error.message||String(error));}
@@ -573,6 +633,7 @@
       }
       if(event.target.closest('[data-obd-disconnect]')){try{await mobile.elmDisconnect();}catch(_){}setConnected(false);deviceText.textContent='Адаптер отключён.';return;}
       if(event.target.closest('[data-obd-snapshot]')){await runSnapshot();return;}
+      if(event.target.closest('[data-obd-clear]')){await clearDtcWithConsent();return;}
       const command=event.target.closest('[data-obd-command]');
       if(command){await runCommand(command.dataset.obdCommand||'');return;}
       if(event.target.closest('[data-obd-send]')){await runCommand((custom.value||'').trim());return;}
