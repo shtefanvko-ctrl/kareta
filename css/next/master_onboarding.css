@@ -1,7 +1,7 @@
 .k-master-onboarding-active #k-shell-header,.k-master-onboarding-active #k-mobile-nav,.k-master-onboarding-active #k-desktop-nav,.k-master-onboarding-active #k-menu-toggle,.k-master-onboarding-active .k-desktop-sidebar{display:none!important}
 .k-master-onboarding-active .k-shell-main{padding:0!important;min-height:100dvh!important}
 .k-master-onboarding-route{padding:0!important;margin:0!important;max-width:none!important;width:100%!important;min-height:100dvh;background:#fff}
-.k-master-onboarding{--km-orange:#ff4b14;--km-orange-soft:#fff0ea;--km-text:#181a1d;--km-muted:#747a84;--km-border:#e0e3e8;--km-soft:#f8f8f9;--km-disabled:#eceef1;--km-error:#d92d20;position:fixed;z-index:500;inset:0;background:#fff;color:var(--km-text);font-family:Manrope,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+.k-master-onboarding{--km-orange:var(--k-accent,#ff4b0a);--km-orange-soft:#fff0ea;--km-text:#181a1d;--km-muted:#747a84;--km-border:#e0e3e8;--km-soft:#f8f8f9;--km-disabled:#eceef1;--km-error:#d92d20;position:fixed;z-index:500;inset:0;background:#fff;color:var(--km-text);font-family:Manrope,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;display:flex;flex-direction:column;overflow:hidden}
 .kmo-header{height:calc(64px + env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px);display:grid;grid-template-columns:44px 1fr 44px;align-items:center;width:min(100% - 32px,1180px);margin:auto;flex:0 0 auto}
 .kmo-header>img{display:block;justify-self:center;width:clamp(150px,42vw,210px);height:auto;max-height:52px;object-fit:contain}
 .kmo-back,.kmo-icon-button,.kmo-modal-x{width:44px;height:44px;border:0;background:transparent;border-radius:12px;display:grid;place-items:center;color:var(--km-text);padding:0;cursor:pointer}.kmo-back svg,.kmo-icon-button svg,.kmo-modal-x svg,.kmo-select-row svg,.kmo-service-card svg,.kmo-mode-card svg,.kmo-geo svg,.kmo-search svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.kmo-back:hover,.kmo-icon-button:hover,.kmo-modal-x:hover{background:#f5f5f5}
@@ -334,4 +334,74 @@
   .k-master-onboarding .kmo-action .kmo-primary{height:46px!important}
   .k-master-onboarding .kmo-action--skippable{grid-template-columns:minmax(260px,420px) auto!important}
   .k-master-onboarding .kmo-modal{width:min(100%,460px)!important;max-height:min(76dvh,620px)!important;padding:20px!important}
+}
+
+
+/* KARETA Visual Canon P0-A: inner-page header and category selection.
+   Scoped to existing master onboarding; no router, API or persisted-state changes. */
+.k-master-onboarding .kmo-header{
+  border-bottom:1px solid var(--km-border);
+}
+.k-master-onboarding .kmo-header__title{
+  justify-self:center;
+  min-width:0;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--km-text);
+  font-size:clamp(15px,4.2vw,19px);
+  font-weight:800;
+  line-height:1.2;
+  text-align:center;
+}
+.k-master-onboarding .kmo-modal[data-kmo-modal-kind="specialization"] .kmo-modal-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.k-master-onboarding .kmo-modal[data-kmo-modal-kind="specialization"] .kmo-modal-list>button{
+  position:relative;
+  min-width:0;
+  min-height:96px;
+  padding:13px 10px;
+  flex-direction:column;
+  justify-content:center;
+  text-align:center;
+  border-radius:var(--k-radius-card,18px);
+}
+.k-master-onboarding .kmo-modal[data-kmo-modal-kind="specialization"] .kmo-modal-item-main{
+  display:flex;
+  width:100%;
+  min-width:0;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+}
+.k-master-onboarding .kmo-modal[data-kmo-modal-kind="specialization"] .kmo-modal-item-main i{
+  max-width:100%;
+  font-style:normal;
+  font-size:13px;
+  line-height:1.35;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+.k-master-onboarding .kmo-modal[data-kmo-modal-kind="specialization"] .kmo-modal-item-main svg{
+  width:26px;
+  height:26px;
+  color:var(--km-orange);
+}
+.k-master-onboarding .kmo-modal[data-kmo-modal-kind="specialization"] .kmo-modal-list>button>svg{
+  position:absolute;
+  right:7px;
+  top:7px;
+  width:18px;
+  height:18px;
+}
+@media (min-width:1100px){
+  /* Inner onboarding is a standalone workspace: the shell brand stays home-only. */
+  .k-master-onboarding-active #k-shell-header{display:none!important}
+  .k-master-onboarding-active #k-menu-toggle{display:none!important}
+  .k-master-onboarding-active .k-shell-main{padding-top:0!important}
+  .k-master-onboarding-route{min-height:100dvh!important}
 }
