@@ -282,3 +282,22 @@ html[data-user-role="master"] body{max-width:100%!important;overflow-x:clip!impo
     padding-bottom:0!important;
   }
 }
+
+/* FIX-PROMPT v3: internal page has only existing Back + title.
+   Scoped !important only counters earlier global shell overrides. */
+#k-shell-header[data-kareta-header-mode="inner"]{
+  grid-template-columns:44px minmax(0,1fr)!important;column-gap:10px;justify-content:start;
+}
+#k-shell-header[data-kareta-header-mode="inner"] > .k-brand,
+#k-shell-header[data-kareta-header-mode="inner"] > #k-desktop-nav,
+#k-shell-header[data-kareta-header-mode="inner"] > .k-shell-actions{display:none!important}
+#k-shell-header[data-kareta-header-mode="inner"] > #k-mobile-back:not([hidden]){
+  display:grid!important;position:relative;grid-column:1;grid-row:1;
+  width:42px;height:42px;place-items:center;margin:0;
+}
+#k-shell-header[data-kareta-header-mode="inner"] > #k-shell-page-title{
+  display:block!important;position:relative;grid-column:2;grid-row:1;
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-size:clamp(16px,3.8vw,20px);line-height:1.3;color:var(--k-text,#111827);
+}
+#k-shell-header:not([data-kareta-header-mode="inner"]) > #k-shell-page-title{display:none!important}

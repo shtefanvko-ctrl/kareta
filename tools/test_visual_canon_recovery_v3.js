@@ -11,7 +11,7 @@ assert(read('js/next/pages/vehicle.js').includes("location.hash='#/diagnostics'"
 const nav=read('js/next/mobile_back.js');
 assert(nav.includes('header.dataset.karetaHeaderMode = mode'));
 assert(nav.includes('cleanHash !== HOME'));
-for(const name of ['css/next/mobile_back.css','css/runtime_boot_bundle.css']){
+for(const name of ['css/next/master_responsive_shell.css','css/runtime_boot_bundle.css']){
   const css=read(name);
   for(const key of ['#k-shell-header[data-kareta-header-mode="inner"] > .k-brand',
   '#k-shell-header[data-kareta-header-mode="inner"] > #k-shell-page-title',
