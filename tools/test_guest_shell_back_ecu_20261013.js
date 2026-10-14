@@ -49,10 +49,23 @@ assert(fs.existsSync(path.join(root,'api/obd.php')),'OBD API missing');
 const wnd={};
 const doc={readyState:'loading',addEventListener(){}};
 const loc={hash:'#/diagnostics'};
-vm.runInNewContext(back,{window:wnd,document:doc,location:loc},{filename:'mobile_back.js'});
+const routingContext={window:wnd,document:doc,location:loc};
+vm.runInNewContext(read('js/next/route_registry.js'),routingContext,{filename:'route_registry.js'});
+vm.runInNewContext(back,routingContext,{filename:'mobile_back.js'});
 assert.equal(wnd.KaretaMobileBack.fallbackFor('#/diagnostics'),'#/services');
 assert.equal(wnd.KaretaMobileBack.fallbackFor('#/parts/item/42'),'#/parts');
 assert.equal(wnd.KaretaMobileBack.fallbackFor('#/services/category/diagnostics'),'#/services');
 assert.equal(wnd.KaretaMobileBack.routeTitle('#/diagnostics'),'Диагностика ЭБУ');
 assert.equal(wnd.KaretaMobileBack.routeTitle('#/parts/item/42'),'Карточка товара');
+// Regression: nested sections must display their existing route-specific labels.
+assert.equal(wnd.KaretaMobileBack.routeTitle('#/master/schedule'),'Мой график');
+assert.equal(wnd.KaretaMobileBack.routeTitle('#/cabinet/garage'),'Мой гараж');
+assert.equal(wnd.KaretaMobileBack.routeTitle('#/seller/products'),'Товары');
+assert.equal(wnd.KaretaMobileBack.routeTitle('#/masters/book/master/42'),'Запись к мастеру');
+assert.equal(wnd.KaretaMobileBack.routeTitle('#/master/exchange'),'Биржа');
+assert.equal(wnd.KaretaMobileBack.routeTitle('#/services'),'Услуги');
+assert.equal(wnd.KaretaMobileBack.routeTitle('#/services/item/99'),'Услуга');
+assert.equal(wnd.KaretaMobileBack.routeTitle('#/unknown/subroute'),'Раздел');
+assert(read('js/boot/runtime_shell_bundle.js').includes("const key = registry?.keyFromHash?.(route);"),
+  'runtime boot bundle must preserve nested route titles');
 console.log('PASS guest shell / single back / ECU entry static+route contract 2026-10-13');
