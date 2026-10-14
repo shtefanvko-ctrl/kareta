@@ -34,33 +34,178 @@
     </section>`;
   }
 
+  const OBD_SCREEN_COPY=Object.freeze({
+  "ru": {
+    "eyebrow": "ДИАГНОСТИКА АВТОМОБИЛЯ",
+    "titleMain": "Диагностика ЭБУ · ELM327",
+    "description": "Подключение адаптера, чтение основных параметров и кодов неисправностей. Сессии сохраняются офлайн и синхронизируются с KARETA.KZ после появления сети.",
+    "app": "Приложение",
+    "bluetooth": "Bluetooth",
+    "offline": "Офлайн",
+    "offlineDesc": "Несинхронизированные диагностические сессии.",
+    "vehicle": "Автомобиль",
+    "garage": "Мой гараж",
+    "liveTitle": "Параметры двигателя",
+    "reconnect": "Переподключить",
+    "start": "Старт",
+    "stop": "Стоп",
+    "rpm": "ОБОРОТЫ",
+    "speed": "СКОРОСТЬ",
+    "coolant": "ОЖ",
+    "voltageUpper": "НАПРЯЖЕНИЕ",
+    "rpmUnit": "об/мин",
+    "speedUnit": "км/ч",
+    "pairHint": "Сначала выполните сопряжение ELM327 в настройках Android. KARETA показывает уже сопряжённые Bluetooth-устройства.",
+    "chooseElm": "Выбрать ELM327",
+    "initialize": "Инициализировать",
+    "disconnect": "Отключить",
+    "diagnostics": "Диагностика",
+    "network": "Сеть",
+    "quickScan": "Быстрая диагностика",
+    "quickDetail": "RPM · скорость · температура · напряжение · DTC · VIN",
+    "errors": "Ошибки DTC",
+    "savedCodes": "Mode 03 · сохранённые коды",
+    "voltage": "Напряжение",
+    "adapterVoltage": "Напряжение питания адаптера",
+    "clearDtc": "Сбросить ошибки",
+    "clearNote": "Только с подтверждением; может обнулить мониторы готовности",
+    "send": "Отправить",
+    "result": "Результат",
+    "sync": "Синхронизировать",
+    "findParts": "Найти запчасти",
+    "findMaster": "Найти мастера",
+    "findSto": "Найти СТО",
+    "partCaution": "Код ошибки не доказывает необходимость замены детали. Сначала проверьте возможные причины и совместимость.",
+    "noCarResult": "Диагностика выполнена без автомобиля. Результат доступен в текущем сеансе, но пока не сохранён в историю гаража.",
+    "saveCar": "Сохранить для выбранного автомобиля",
+    "history": "История",
+    "refresh": "Обновить",
+    "commandPlaceholder": "OBD / AT команда, например 010C"
+  },
+  "kk": {
+    "eyebrow": "АВТОКӨЛІК ДИАГНОСТИКАСЫ",
+    "titleMain": "ЭБУ диагностикасы · ELM327",
+    "description": "Адаптерді қосу, негізгі параметрлер мен ақау кодтарын оқу. Сеанстар офлайн сақталады және желі қосылғанда KARETA.KZ-пен синхрондалады.",
+    "app": "Қолданба",
+    "bluetooth": "Bluetooth",
+    "offline": "Офлайн",
+    "offlineDesc": "Синхрондалмаған диагностикалық сеанстар.",
+    "vehicle": "Автокөлік",
+    "garage": "Менің гаражым",
+    "liveTitle": "Қозғалтқыш параметрлері",
+    "reconnect": "Қайта қосылу",
+    "start": "Бастау",
+    "stop": "Тоқтату",
+    "rpm": "АЙНАЛЫМ",
+    "speed": "ЖЫЛДАМДЫҚ",
+    "coolant": "САЛҚЫНДАТҚЫШ",
+    "voltageUpper": "КЕРНЕУ",
+    "rpmUnit": "айн/мин",
+    "speedUnit": "км/сағ",
+    "pairHint": "Алдымен Android баптауларында ELM327 құрылғысын жұптастырыңыз. KARETA жұптастырылған Bluetooth құрылғыларын көрсетеді.",
+    "chooseElm": "ELM327 таңдау",
+    "initialize": "Іске қосу",
+    "disconnect": "Ажырату",
+    "diagnostics": "Диагностика",
+    "network": "Желі",
+    "quickScan": "Жедел диагностика",
+    "quickDetail": "RPM · жылдамдық · температура · кернеу · DTC · VIN",
+    "errors": "DTC қателері",
+    "savedCodes": "Mode 03 · сақталған кодтар",
+    "voltage": "Кернеу",
+    "adapterVoltage": "Адаптер қорегінің кернеуі",
+    "clearDtc": "Қателерді өшіру",
+    "clearNote": "Тек растаумен; дайындық мониторлары нөлденуі мүмкін",
+    "send": "Жіберу",
+    "result": "Нәтиже",
+    "sync": "Синхрондау",
+    "findParts": "Қосалқы бөлшектерді табу",
+    "findMaster": "Шеберді табу",
+    "findSto": "Автосервисті табу",
+    "partCaution": "Қате коды бөлшекті ауыстыру қажеттігін дәлелдемейді. Алдымен ықтимал себептер мен үйлесімділікті тексеріңіз.",
+    "noCarResult": "Диагностика автокөліксіз орындалды. Нәтиже ағымдағы сеанста қолжетімді, бірақ гараж тарихына сақталмады.",
+    "saveCar": "Таңдалған автокөлікке сақтау",
+    "history": "Тарих",
+    "refresh": "Жаңарту",
+    "commandPlaceholder": "OBD / AT командасы, мысалы 010C"
+  },
+  "en": {
+    "eyebrow": "VEHICLE DIAGNOSTICS",
+    "titleMain": "ECU diagnostics · ELM327",
+    "description": "Connect the adapter and read key values and trouble codes. Sessions are saved offline and synchronized with KARETA.KZ when online.",
+    "app": "App",
+    "bluetooth": "Bluetooth",
+    "offline": "Offline",
+    "offlineDesc": "Unsynchronized diagnostic sessions.",
+    "vehicle": "Vehicle",
+    "garage": "My garage",
+    "liveTitle": "Engine live data",
+    "reconnect": "Reconnect",
+    "start": "Start",
+    "stop": "Stop",
+    "rpm": "RPM",
+    "speed": "SPEED",
+    "coolant": "COOLANT",
+    "voltageUpper": "VOLTAGE",
+    "rpmUnit": "rpm",
+    "speedUnit": "km/h",
+    "pairHint": "First pair ELM327 in Android settings. KARETA lists already paired Bluetooth devices.",
+    "chooseElm": "Choose ELM327",
+    "initialize": "Initialize",
+    "disconnect": "Disconnect",
+    "diagnostics": "Diagnostics",
+    "network": "Network",
+    "quickScan": "Quick scan",
+    "quickDetail": "RPM · speed · temperature · voltage · DTC · VIN",
+    "errors": "DTC codes",
+    "savedCodes": "Mode 03 · stored codes",
+    "voltage": "Voltage",
+    "adapterVoltage": "Adapter supply voltage",
+    "clearDtc": "Clear trouble codes",
+    "clearNote": "Confirmation required; may reset readiness monitors",
+    "send": "Send",
+    "result": "Result",
+    "sync": "Synchronize",
+    "findParts": "Find parts",
+    "findMaster": "Find a mechanic",
+    "findSto": "Find a service center",
+    "partCaution": "A trouble code does not prove a part needs replacing. Check possible causes and compatibility first.",
+    "noCarResult": "Scan completed without a selected vehicle. Results are available in this session but have not been saved to garage history.",
+    "saveCar": "Save for selected vehicle",
+    "history": "History",
+    "refresh": "Refresh",
+    "commandPlaceholder": "OBD / AT command, e.g. 010C"
+  }
+});
+  const obdScreenCopy=()=>OBD_SCREEN_COPY[String(document.documentElement?.lang||'ru').slice(0,2).toLowerCase()]||OBD_SCREEN_COPY.ru;
+
   function renderDiagnostics(){
     return `<section class="k-page k-diagnostics-page" data-page="diagnostics">
       <header class="k-r84-workspace-head k-diagnostics-head">
-        <span>ДИАГНОСТИКА АВТОМОБИЛЯ</span>
-        <h1>Диагностика ЭБУ · ELM327</h1>
-        <p>Подключение адаптера, чтение основных параметров и кодов неисправностей. Сессии сохраняются офлайн и синхронизируются с KARETA.KZ после появления сети.</p>
+        <span data-obd-i18n="eyebrow">ДИАГНОСТИКА АВТОМОБИЛЯ</span>
+        <h1 data-obd-i18n="titleMain">Диагностика ЭБУ · ELM327</h1>
+        <p data-obd-i18n="description">Подключение адаптера, чтение основных параметров и кодов неисправностей. Сессии сохраняются офлайн и синхронизируются с KARETA.KZ после появления сети.</p>
       </header>
 
       <div class="k-obd-status-grid">
         <article class="k-obd-card">
-          <div class="k-obd-card-head"><strong>Приложение</strong><span data-obd-native class="k-obd-chip">Проверка…</span></div>
+          <div class="k-obd-card-head"><strong data-obd-i18n="app">Приложение</strong><span data-obd-native class="k-obd-chip">Проверка…</span></div>
           <p data-obd-native-text>Проверяем Native API.</p>
         </article>
         <article class="k-obd-card">
-          <div class="k-obd-card-head"><strong>Bluetooth</strong><span data-obd-bt class="k-obd-chip">—</span></div>
+          <div class="k-obd-card-head"><strong data-obd-i18n="bluetooth">Bluetooth</strong><span data-obd-bt class="k-obd-chip">—</span></div>
           <p data-obd-device>Адаптер не выбран.</p>
         </article>
         <article class="k-obd-card">
-          <div class="k-obd-card-head"><strong>Офлайн</strong><span data-obd-offline class="k-obd-chip">0</span></div>
-          <p>Несинхронизированные диагностические сессии.</p>
+          <div class="k-obd-card-head"><strong data-obd-i18n="offline">Офлайн</strong><span data-obd-offline class="k-obd-chip">0</span></div>
+          <p data-obd-i18n="offlineDesc">Несинхронизированные диагностические сессии.</p>
         </article>
       </div>
 
       <article class="k-obd-panel k-obd-vehicle-panel">
         <div class="k-obd-panel-head">
-          <div><span>0</span><h2>Автомобиль</h2></div>
-          <a class="k-btn" href="#/cabinet/garage">Мой гараж</a>
+          <div><span>0</span><h2 data-obd-i18n="vehicle">Автомобиль</h2></div>
+          <a class="k-btn" href="#/cabinet/garage" data-obd-i18n="garage">Мой гараж</a>
         </div>
         <div class="k-obd-vehicle-current" data-obd-vehicle-current>
           <p class="k-obd-muted">Загружаем автомобили…</p>
@@ -70,18 +215,18 @@
 
       <article class="k-obd-panel k-obd-live-panel">
         <div class="k-obd-panel-head">
-          <div><span>LIVE</span><h2>Параметры двигателя</h2></div>
+          <div><span>LIVE</span><h2 data-obd-i18n="liveTitle">Параметры двигателя</h2></div>
           <div class="k-obd-actions">
-            <button type="button" class="k-btn" data-obd-reconnect>Переподключить</button>
-            <button type="button" class="k-btn k-btn-primary" data-obd-live-start disabled>Старт</button>
-            <button type="button" class="k-btn" data-obd-live-stop disabled>Стоп</button>
+            <button type="button" class="k-btn" data-obd-reconnect data-obd-i18n="reconnect">Переподключить</button>
+            <button type="button" class="k-btn k-btn-primary" data-obd-live-start data-obd-i18n="start" disabled>Старт</button>
+            <button type="button" class="k-btn" data-obd-live-stop data-obd-i18n="stop" disabled>Стоп</button>
           </div>
         </div>
         <div class="k-obd-live-grid">
-          <article><small>ОБОРОТЫ</small><strong data-obd-live-rpm>—</strong><span>об/мин</span></article>
-          <article><small>СКОРОСТЬ</small><strong data-obd-live-speed>—</strong><span>км/ч</span></article>
-          <article><small>ОЖ</small><strong data-obd-live-coolant>—</strong><span>°C</span></article>
-          <article><small>НАПРЯЖЕНИЕ</small><strong data-obd-live-voltage>—</strong><span>V</span></article>
+          <article><small data-obd-i18n="rpm">ОБОРОТЫ</small><strong data-obd-live-rpm>—</strong><span data-obd-i18n="rpmUnit">об/мин</span></article>
+          <article><small data-obd-i18n="speed">СКОРОСТЬ</small><strong data-obd-live-speed>—</strong><span data-obd-i18n="speedUnit">км/ч</span></article>
+          <article><small data-obd-i18n="coolant">ОЖ</small><strong data-obd-live-coolant>—</strong><span>°C</span></article>
+          <article><small data-obd-i18n="voltageUpper">НАПРЯЖЕНИЕ</small><strong data-obd-live-voltage>—</strong><span>V</span></article>
         </div>
         <p class="k-obd-live-state" data-obd-live-state>Live-режим остановлен.</p>
       </article>
@@ -93,54 +238,54 @@
             <button type="button" class="k-btn" data-obd-settings>Bluetooth</button>
           </div>
           ${obdTransportGuide()}
-          <p class="k-obd-muted">Сначала выполните сопряжение ELM327 в настройках Android. KARETA показывает уже сопряжённые Bluetooth-устройства.</p>
+          <p class="k-obd-muted" data-obd-i18n="pairHint">Сначала выполните сопряжение ELM327 в настройках Android. KARETA показывает уже сопряжённые Bluetooth-устройства.</p>
           <div class="k-obd-actions">
-            <button type="button" class="k-btn k-btn-primary" data-obd-devices>Выбрать ELM327</button>
-            <button type="button" class="k-btn" data-obd-init disabled>Инициализировать</button>
-            <button type="button" class="k-btn" data-obd-disconnect disabled>Отключить</button>
+            <button type="button" class="k-btn k-btn-primary" data-obd-devices data-obd-i18n="chooseElm">Выбрать ELM327</button>
+            <button type="button" class="k-btn" data-obd-init data-obd-i18n="initialize" disabled>Инициализировать</button>
+            <button type="button" class="k-btn" data-obd-disconnect data-obd-i18n="disconnect" disabled>Отключить</button>
           </div>
           <div class="k-obd-devices" data-obd-device-list hidden></div>
         </article>
 
         <article class="k-obd-panel">
-          <div class="k-obd-panel-head"><div><span>2</span><h2>Диагностика</h2></div><span data-obd-online class="k-obd-chip">Сеть</span></div>
+          <div class="k-obd-panel-head"><div><span>2</span><h2 data-obd-i18n="diagnostics">Диагностика</h2></div><span data-obd-online class="k-obd-chip">Сеть</span></div>
           <div class="k-obd-diagnostic-grid">
-            <button type="button" class="k-obd-action" data-obd-snapshot disabled><b>Быстрая диагностика</b><small>RPM · скорость · температура · напряжение · DTC · VIN</small></button>
-            <button type="button" class="k-obd-action" data-obd-command="03" disabled><b>Ошибки DTC</b><small>Mode 03 · сохранённые коды</small></button>
+            <button type="button" class="k-obd-action" data-obd-snapshot disabled><b data-obd-i18n="quickScan">Быстрая диагностика</b><small data-obd-i18n="quickDetail">RPM · скорость · температура · напряжение · DTC · VIN</small></button>
+            <button type="button" class="k-obd-action" data-obd-command="03" disabled><b data-obd-i18n="errors">Ошибки DTC</b><small data-obd-i18n="savedCodes">Mode 03 · сохранённые коды</small></button>
             <button type="button" class="k-obd-action" data-obd-command="0902" disabled><b>VIN</b><small>Mode 09 PID 02</small></button>
-            <button type="button" class="k-obd-action" data-obd-command="ATRV" disabled><b>Напряжение</b><small>Напряжение питания адаптера</small></button>
-            <button type="button" class="k-obd-action" data-obd-clear disabled><b>Сбросить ошибки</b><small>Только с подтверждением; может обнулить мониторы готовности</small></button>
+            <button type="button" class="k-obd-action" data-obd-command="ATRV" disabled><b data-obd-i18n="voltage">Напряжение</b><small data-obd-i18n="adapterVoltage">Напряжение питания адаптера</small></button>
+            <button type="button" class="k-obd-action" data-obd-clear disabled><b data-obd-i18n="clearDtc">Сбросить ошибки</b><small data-obd-i18n="clearNote">Только с подтверждением; может обнулить мониторы готовности</small></button>
           </div>
 
           <div class="k-obd-command">
-            <input type="text" maxlength="32" placeholder="OBD / AT команда, например 010C" data-obd-custom>
-            <button type="button" class="k-btn" data-obd-send disabled>Отправить</button>
+            <input type="text" maxlength="32" placeholder="OBD / AT команда, например 010C" data-obd-i18n-placeholder="commandPlaceholder" data-obd-custom>
+            <button type="button" class="k-btn" data-obd-send data-obd-i18n="send" disabled>Отправить</button>
           </div>
         </article>
       </div>
 
       <article class="k-obd-panel k-obd-result-panel">
         <div class="k-obd-panel-head">
-          <div><span>3</span><h2>Результат</h2></div>
-          <button type="button" class="k-btn" data-obd-sync>Синхронизировать</button>
+          <div><span>3</span><h2 data-obd-i18n="result">Результат</h2></div>
+          <button type="button" class="k-btn" data-obd-sync data-obd-i18n="sync">Синхронизировать</button>
         </div>
         <div class="k-obd-dtc-list" data-obd-dtc-list hidden></div>
         <nav class="k-obd-actions k-obd-repair-actions" aria-label="Дальнейшие действия по результатам диагностики" data-obd-repair-actions hidden>
-          <a class="k-btn" href="#/parts" data-obd-repair-parts>Найти запчасти</a>
-          <a class="k-btn" href="#/masters" data-obd-repair-master>Найти мастера</a>
-          <a class="k-btn" href="#/masters?type=sto" data-obd-repair-sto>Найти СТО</a>
-          <p class="k-obd-muted">Код ошибки не доказывает необходимость замены детали. Сначала проверьте возможные причины и совместимость.</p>
+          <a class="k-btn" href="#/parts" data-obd-repair-parts data-obd-i18n="findParts">Найти запчасти</a>
+          <a class="k-btn" href="#/masters" data-obd-repair-master data-obd-i18n="findMaster">Найти мастера</a>
+          <a class="k-btn" href="#/masters?type=sto" data-obd-repair-sto data-obd-i18n="findSto">Найти СТО</a>
+          <p class="k-obd-muted" data-obd-i18n="partCaution">Код ошибки не доказывает необходимость замены детали. Сначала проверьте возможные причины и совместимость.</p>
         </nav>
         <div class="k-obd-pending-save" data-obd-pending-save hidden>
-          <p class="k-obd-muted">Диагностика выполнена без автомобиля. Результат доступен в текущем сеансе, но пока не сохранён в историю гаража.</p>
-          <button type="button" class="k-btn k-btn-primary" data-obd-save-current disabled>Сохранить для выбранного автомобиля</button>
-          <a class="k-btn" href="#/cabinet/garage">Мой гараж</a>
+          <p class="k-obd-muted" data-obd-i18n="noCarResult">Диагностика выполнена без автомобиля. Результат доступен в текущем сеансе, но пока не сохранён в историю гаража.</p>
+          <button type="button" class="k-btn k-btn-primary" data-obd-save-current data-obd-i18n="saveCar" disabled>Сохранить для выбранного автомобиля</button>
+          <a class="k-btn" href="#/cabinet/garage" data-obd-i18n="garage">Мой гараж</a>
         </div>
         <pre class="k-obd-result" data-obd-result>Подключите ELM327 и запустите диагностику.</pre>
       </article>
 
       <article class="k-obd-panel">
-        <div class="k-obd-panel-head"><div><span>4</span><h2>История</h2></div><button type="button" class="k-btn" data-obd-history-refresh>Обновить</button></div>
+        <div class="k-obd-panel-head"><div><span>4</span><h2 data-obd-i18n="history">История</h2></div><button type="button" class="k-btn" data-obd-history-refresh data-obd-i18n="refresh">Обновить</button></div>
         <div class="k-obd-history" data-obd-history><p class="k-obd-muted">История загружается…</p></div>
       </article>
     </section>`;
@@ -301,7 +446,18 @@
     }
 
 
+    function updateScreenCopy(){
+      const t=obdScreenCopy();
+      qa('[data-obd-i18n]').forEach(node=>{
+        const translated=t[node.dataset.obdI18n];
+        if(typeof translated==='string')node.textContent=translated;
+      });
+      const placeholder=q('[data-obd-i18n-placeholder]');
+      if(placeholder&&t.commandPlaceholder)placeholder.setAttribute('placeholder',t.commandPlaceholder);
+    }
+
     function updateTransportGuide(){
+      updateScreenCopy();
       const t=obdTransportCopy();
       const labelPairs=[
         ['[data-obd-transport-title]',t.title],['[data-obd-transport-intro]',t.intro],
