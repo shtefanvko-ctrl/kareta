@@ -68,3 +68,16 @@ Both launch paths, vehicle intent/no default, native capability accuracy, author
 1. Implement and test no-car vs vehicle-scoped entry on canonical `js/next/pages/diagnostics.js` with explicit optional save.
 2. Audit and implement opt-in community question draft and three-role authorization through existing contracts.
 3. Prove Android Classic, investigate BLE/Wi-Fi native support, run exact-head gates and deploy only eligible staging candidate.
+
+
+## Increment log — 2026-10-15 / DTC safety and ecosystem entry points
+**Current scope:** the existing diagnostics SPA page, not a new ELM transport or a full PR deploy.
+
+- Added a dedicated `Сбросить ошибки` action, gated on initialized diagnostic readiness and explicit confirmation. Attempts `elmSnapshot` before OBD service 04, queues evidence for a selected authorized garage vehicle when native offline storage supports it. If evidence is not persisted, requires an additional warning/confirmation. Never claims successful DTC erasure simply from a dispatched command; requires another DTC/readiness scan.
+- Manual `04` command now goes through the exact same consent path. Direct `04...` variants and selected mutation/security/actuation diagnostic services are rejected in the basic console (front-end UX guard only; not a Native Bridge/API security boundary).
+- Serializes DTC clear requests and blocks sending service 04 after page lifecycle disposal.
+- Validates/deduplicates actual DTC codes before displaying help/question actions; renders repair links to existing `#/parts`, `#/masters` and `#/masters?type=sto` only when verified-format codes were supplied by the scan. No unverified part fitment, diagnosis or booking is inferred.
+- New test `tools/test_diagnostics_safe_clear_20261015.js` covers cancellation, no-car warning, queued evidence, manual-command bypass, two simultaneous attempts, unmount during a pending snapshot, and DTC link display.
+- **Test evidence for implementation candidate**: JavaScript syntax PASS; `test_diagnostics_entry_intent_20261015.js` PASS; `test_diagnostics_question_handoff_20261015.js` PASS; `test_diagnostics_safe_clear_20261015.js` PASS; `test_spa_android_bridge_contract.js` PASS; `test_route_binding_contract.js` PASS (72/72); `test_feature_preservation.py` PASS (72 routes, 19 files, three baseline language catalogs). These do not validate new RU/KK/EN strings, actual hardware, role E2E, Android or full release.
+- **Scoped origin staging install**: `js/next/pages/diagnostics.js` Git blob `e8c61975e74dd598f1a0a8692d21438791d3cfe5` installed on staging with rollback backup `/home/karetakz/diag-staging-backups/diagnostics-pre-7cf9f5d.js`. Fresh HTTP query-key fetch returns matching file. Existing CDN release-scoped `?v=188.5.5.6.84.178.4` **still returns a stale older blob** `50cbbc212f44ae2871b3ad0e0c40086d3a6a6f22`; user-visible release approval is BLOCKED until authorized cache invalidation/version handling and browser verification. No assertion of full PR #133 staging release.
+- **Remaining work**: RU/KK/EN translations for new controls and inherited diagnostic surface; actual full-screen visual canon, role/ownership integration, native BLE/Wi-Fi support, real ECU DTC decoding and part fitment, Cloudflare cache invalidation, current exact-head full CI, physical ELM and Android tests, protected staging tester endpoints.
