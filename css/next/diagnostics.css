@@ -30,3 +30,6 @@
   .k-diagnostics-page .k-obd-command input{width:100%;min-width:0}
   .k-diagnostics-page .k-obd-live-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* LIVE status is a pill, not a numeric counter: prevent black circle/text collision. */
+.k-diagnostics-page .k-obd-live-panel .k-obd-panel-head>div>span{width:auto;min-width:42px;height:30px;padding:0 8px;border-radius:9px;font-size:11px;line-height:1}
