@@ -345,6 +345,13 @@
     const vehicleTitle=v=>String(v?.title||[v?.brand,v?.model,v?.year_label||v?.year].filter(Boolean).join(' ')||'Автомобиль');
     const vehicleMeta=v=>[v?.vin,v?.plate||v?.plate_number,v?.mileage_km?String(v.mileage_km)+' км':''].filter(Boolean).join(' · ');
 
+    function updateRepairLinks(){
+      // Parts already accepts vehicleId; never pass a DTC as OEM or a privately guessed car.
+      const authorized=selectedVehicle&&vehicles.some(v=>String(v.id)===String(selectedVehicle.id));
+      const parts=q('[data-obd-repair-parts]');
+      if(parts)parts.href=authorized?'#/parts?vehicleId='+encodeURIComponent(String(selectedVehicle.id)):'#/parts';
+    }
+
     function refreshPendingSave(){
       pendingSave.hidden=!pendingSnapshot;
       const saveButton=pendingSave.querySelector('[data-obd-save-current]');
@@ -352,6 +359,7 @@
     }
 
     function renderVehicleChoice(){
+      updateRepairLinks();
       if(!vehicles.length){
         vehicleCurrent.innerHTML='<p class="k-obd-muted">Диагностика доступна без автомобиля. Для сохранения результата в гараже сначала добавьте автомобиль.</p><a class="k-btn" href="#/cabinet/garage">Открыть мой гараж</a>';
         vehicleList.hidden=true;
