@@ -319,12 +319,34 @@
     root.addEventListener('click',click);root.addEventListener('input',input);root.addEventListener('change',input);
   }
 
-  function start({root,startStep=2,data={},onReturn=null,mode='manual',vehicle=null}={}){state.sourceRoot=root||null;state.root=ensureSurfaceRoot();if(!state.root)return false;state.data=data||{};state.onReturn=typeof onReturn==='function'?onReturn:null;state.mode=mode;state.success=null;state.saving=false;state.editVehicleId=mode==='edit'?String(vehicle?.id||''):'';const flowRoot=state.root;if(!state.editVehicleId&&!state.serverLoaded)loadServerFirstEntry().then(()=>{if(state.root===flowRoot&&state.step>=2)render();});state.editLegacyBrandName=state.editVehicleId&&!brandByName(vehicle?.brand||'')?normalizeText(vehicle?.brand):'';state.step=startStep===1&&!state.editVehicleId?1:2;if(state.editVehicleId){const stored=readJson(draftKey());if(!stored)writeDraft({...vehicleToDraft(vehicle),step:state.step});else writeDraft({step:state.step});}else writeDraft({step:state.step});render();return true;}
+
+  // In-memory, account-scoped OCR candidate. The photo and raw document text are never stored.
+  let documentOffer=null;
+  function offerDocumentPrefill(fields={}){
+    if(currentRole()!=='client'||!fields||typeof fields!=='object')return false;
+    const patch={},brand=brandByName(fields.brandName);
+    if(brand){
+      patch.brandId=brand.id;patch.brandName=brand.name;
+      const model=modelByName(brand,fields.modelName);
+      if(model){patch.modelId=model.id;patch.modelName=model.name;}
+    }
+    const year=String(fields.year||'').trim();
+    if(/^\d{4}$/.test(year)&&Number(year)>=1950&&Number(year)<=currentYear()+1)patch.year=year;
+    const vin=String(fields.vin||'').toUpperCase().replace(/\s+/g,'');
+    if(/^[A-HJ-NPR-Z0-9]{17}$/.test(vin))patch.vin=vin;
+    const plate=normalizePlate(fields.plateNumber||'');
+    if(/^[A-Z0-9 \-]{4,24}$/.test(plate))patch.plateNumber=plate;
+    if(!Object.keys(patch).length)return false;
+    documentOffer={patch,scope:scopeKey(),time:Date.now()};
+    return true;
+  }
+
+  function start({root,startStep=2,data={},onReturn=null,mode='manual',vehicle=null}={}){state.sourceRoot=root||null;state.root=ensureSurfaceRoot();if(!state.root)return false;state.data=data||{};state.onReturn=typeof onReturn==='function'?onReturn:null;state.mode=mode;state.success=null;state.saving=false;state.editVehicleId=mode==='edit'?String(vehicle?.id||''):'';const flowRoot=state.root;const offered=mode==='manual'&&documentOffer?.scope===scopeKey()&&Date.now()-documentOffer.time<120000?documentOffer:null;documentOffer=null;if(!state.editVehicleId&&!state.serverLoaded)loadServerFirstEntry().then(()=>{if(state.root===flowRoot&&state.step>=2){if(offered)writeDraft({...defaultDraft(),...offered.patch,step:2});render();}});state.editLegacyBrandName=state.editVehicleId&&!brandByName(vehicle?.brand||'')?normalizeText(vehicle?.brand):'';state.step=startStep===1&&!state.editVehicleId?1:2;if(state.editVehicleId){const stored=readJson(draftKey());if(!stored)writeDraft({...vehicleToDraft(vehicle),step:state.step});else writeDraft({step:state.step});}else writeDraft(offered?{...defaultDraft(),...offered.patch,step:state.step}:{step:state.step});render();return true;}
 
   window.addEventListener('kareta:session-confirmed',event=>{window.setTimeout(()=>maybeScheduleFirstEntry(event.detail||{}),0);});
 
   window.addEventListener('hashchange',()=>{if(!String(location.hash||'').startsWith('#/cabinet/garage'))deactivateSurface();});
-  window.addEventListener('kareta:context-changed',event=>{if(currentRole(event.detail||{})!=='client')deactivateSurface();window.setTimeout(()=>maybeScheduleFirstEntry(event.detail||{}),80);});
+  window.addEventListener('kareta:context-changed',event=>{documentOffer=null;if(currentRole(event.detail||{})!=='client')deactivateSurface();window.setTimeout(()=>maybeScheduleFirstEntry(event.detail||{}),80);});
 
-  window.KaretaFirstVehicleFlow=Object.freeze({CATALOG,emptyGarage,start,consumePendingIntro,maybeScheduleFirstEntry,readDraft,clearDraft,scopeKey,loadServerFirstEntry,flushServerDraft,deactivateSurface});
+  window.KaretaFirstVehicleFlow=Object.freeze({CATALOG,emptyGarage,start,offerDocumentPrefill,consumePendingIntro,maybeScheduleFirstEntry,readDraft,clearDraft,scopeKey,loadServerFirstEntry,flushServerDraft,deactivateSurface});
 })();
