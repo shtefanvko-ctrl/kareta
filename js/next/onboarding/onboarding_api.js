@@ -310,7 +310,8 @@
     if (!normalized) throw Object.assign(new Error('Проверьте номер телефона.'), { code:'invalid_phone' });
     if (cleanCode.length !== codeLength) throw Object.assign(new Error(`Введите ${codeLength} цифр кода.`), { code:'verification_invalid' });
 
-    const selectedRole = String(entryRole || 'client').toLowerCase() === 'master' ? 'master' : 'client';
+    const requestedRole = String(entryRole || 'client').trim().toLowerCase();
+    const selectedRole = ['client','master','sto','seller'].includes(requestedRole) ? requestedRole : 'client';
     const flightKey = `${normalized}:${cleanCode}:${selectedRole}`;
     if (verifyCodeFlight?.key === flightKey) return verifyCodeFlight.promise;
     const promise = (async () => {

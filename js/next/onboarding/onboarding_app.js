@@ -75,14 +75,18 @@
   function confirmedUser(result, flow){
     const source = result && typeof result.user === 'object' ? result.user : {};
     const legacyRole=state.role(source.role||'client');
-    const role = state.role(window.KaretaPostAuthFirstEntryResolver?.role?.(result,flow,source) || result?.selectedRole || result?.entryRole || flow.entryRole || flow.role || source.entry_role || legacyRole);
+    const requestedRole = state.role(window.KaretaPostAuthFirstEntryResolver?.role?.(result,flow,source) || result?.selectedRole || result?.entryRole || flow.entryRole || flow.role || source.entry_role || legacyRole);
+    // The selected storefront/service role is an application, not a privilege grant.
+    // Only a server-owned active identity context (or the moderated legacy role) may set effective access.
+    const identityRole = result?.identity?.authenticated ? identityContextRole({currentContext:result.identity.currentContext || result.identity.context}) : '';
+    const role = state.role(identityRole || legacyRole);
     return {
       ...source,
       name:String(source.name || flow.accountName || flow.name || (role === 'seller' ? 'Магазин запчастей' : role === 'sto' ? 'Автосервис' : role === 'master' ? 'Мастер' : 'Клиент')),
       phone:String(source.phone || flow.phone || flow.contactPhone || ''),
       role,
       legacy_role:legacyRole,
-      entry_role:role,
+      entry_role:requestedRole,
       city:String(source.city || flow.city || flow.cityName || ''),
       onboarded:true,
       onboarding_stage:'done'

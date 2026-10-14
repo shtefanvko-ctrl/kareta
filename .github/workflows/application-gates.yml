@@ -113,6 +113,9 @@ jobs:
       - name: Welcome city geo contract
         run: node tools/test_welcome_city_geo_contract.js
 
+      - name: Four-role onboarding and moderated OTP contract
+        run: node tools/test_onboarding_role_otp_moderation_20261015.js
+
       - name: Design harness policy
         run: |
           test -s docs/harness/DESIGN_SYSTEM_POLICY_V1.md

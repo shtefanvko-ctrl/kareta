@@ -732,7 +732,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     if (!normalized) throw Object.assign(new Error('Проверьте номер телефона.'), { code:'invalid_phone' });
     if (cleanCode.length !== codeLength) throw Object.assign(new Error(`Введите ${codeLength} цифр кода.`), { code:'verification_invalid' });
 
-    const selectedRole = String(entryRole || 'client').toLowerCase() === 'master' ? 'master' : 'client';
+    const requestedRole = String(entryRole || 'client').trim().toLowerCase();
+    const selectedRole = ['client','master','sto','seller'].includes(requestedRole) ? requestedRole : 'client';
     const flightKey = `${normalized}:${cleanCode}:${selectedRole}`;
     if (verifyCodeFlight?.key === flightKey) return verifyCodeFlight.promise;
     const promise = (async () => {
@@ -873,6 +874,12 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
       // session-confirmed event, because it must inspect the real Garage state.
       target='#/home';
     }
+    if(['sto','seller'].includes(selectedRole) && activeContextRole!==selectedRole){
+      // A pending business-role application never opens a privileged workspace.
+      // Business access requires the server to activate a matching Identity context.
+      target='#/home';
+      firstEntryRequired=false;
+    }
     return {ok:true,role:selectedRole,contextRole:activeContextRole,target,firstEntryRequired:firstEntryRequired??null,postAuth:server};
   }
 
@@ -958,14 +965,18 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   function confirmedUser(result, flow){
     const source = result && typeof result.user === 'object' ? result.user : {};
     const legacyRole=state.role(source.role||'client');
-    const role = state.role(window.KaretaPostAuthFirstEntryResolver?.role?.(result,flow,source) || result?.selectedRole || result?.entryRole || flow.entryRole || flow.role || source.entry_role || legacyRole);
+    const requestedRole = state.role(window.KaretaPostAuthFirstEntryResolver?.role?.(result,flow,source) || result?.selectedRole || result?.entryRole || flow.entryRole || flow.role || source.entry_role || legacyRole);
+    // The selected storefront/service role is an application, not a privilege grant.
+    // Only a server-owned active identity context (or the moderated legacy role) may set effective access.
+    const identityRole = result?.identity?.authenticated ? identityContextRole({currentContext:result.identity.currentContext || result.identity.context}) : '';
+    const role = state.role(identityRole || legacyRole);
     return {
       ...source,
       name:String(source.name || flow.accountName || flow.name || (role === 'seller' ? 'Магазин запчастей' : role === 'sto' ? 'Автосервис' : role === 'master' ? 'Мастер' : 'Клиент')),
       phone:String(source.phone || flow.phone || flow.contactPhone || ''),
       role,
       legacy_role:legacyRole,
-      entry_role:role,
+      entry_role:requestedRole,
       city:String(source.city || flow.city || flow.cityName || ''),
       onboarded:true,
       onboarding_stage:'done'

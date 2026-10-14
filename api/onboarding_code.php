@@ -76,7 +76,7 @@ if($action==='onboarding.verifyCode'){
     if($profile){
         if((int)($profile['active']??1)!==1){unset($_SESSION['kareta_onboarding_verification']);kareta_json(['ok'=>false,'error'=>'account_blocked','requestId'=>KARETA_REQUEST_ID],403);}
         $selectedRole=strtolower(trim((string)($body['entryRole']??$body['role']??$profile['entry_role']??$profile['role']??'client')));
-        if(!in_array($selectedRole,['client','master'],true))$selectedRole='client';
+        if(!in_array($selectedRole,['client','master','sto','seller'],true))$selectedRole='client';
         $profile['entry_role']=$selectedRole;
         $_SESSION['kareta_user']=$profile;
         unset($_SESSION['kareta_onboarding_verification']);

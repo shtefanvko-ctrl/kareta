@@ -70,6 +70,12 @@
       // session-confirmed event, because it must inspect the real Garage state.
       target='#/home';
     }
+    if(['sto','seller'].includes(selectedRole) && activeContextRole!==selectedRole){
+      // A pending business-role application never opens a privileged workspace.
+      // Business access requires the server to activate a matching Identity context.
+      target='#/home';
+      firstEntryRequired=false;
+    }
     return {ok:true,role:selectedRole,contextRole:activeContextRole,target,firstEntryRequired:firstEntryRequired??null,postAuth:server};
   }
 
