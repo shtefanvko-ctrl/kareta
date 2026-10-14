@@ -9,7 +9,7 @@ const src=fs.readFileSync(path.resolve(__dirname,'../js/next/pages/diagnostics.j
 const html=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const wait=()=>new Promise(r=>setTimeout(r,25));
 
-async function setup({responses=[],handoff='',snapshot=null,delaySnapshot=false}={}){
+async function setup({responses=[],handoff='',snapshot=null,delaySnapshot=false,delayLive=false}={}){
   const log={commands:[],confirm:[],enqueued:[],snapshots:0};
   const answers=responses.slice();
   const store=new Map(handoff?[['kareta.obd.vehicleId',handoff]]:[]);
@@ -26,7 +26,7 @@ async function setup({responses=[],handoff='',snapshot=null,delaySnapshot=false}
     addEventListener:(k,fn)=>events.set(k,fn),
     removeEventListener:()=>{}
   };
-  let resolveSnapshot=null;
+  let resolveSnapshot=null,resolveLive=null;
   const snap=snapshot||{dtcCodes:['P0110','p0110','INVALID','P0113'],rpm:850,voltageV:12.8};
   const native={
     available:()=>true,
@@ -41,7 +41,10 @@ async function setup({responses=[],handoff='',snapshot=null,delaySnapshot=false}
     elmCommand:async (cmd,ms)=>{log.commands.push({cmd,ms});return {raw:'44'};},
     offlineDrain:async()=>({items:[]}),
     offlineAcknowledge:async()=>({}),
-    elmLiveSnapshot:async()=>({})
+    elmLiveSnapshot:async()=>{
+      if(delayLive)return new Promise(resolve=>{resolveLive=()=>resolve({rpm:2400,speedKph:12,coolantC:88,voltageV:13.8})});
+      return {rpm:900,speedKph:0,coolantC:81,voltageV:12.9};
+    }
   };
   const sessionStorage={
     getItem:k=>store.get(k)||null,
@@ -73,7 +76,7 @@ async function setup({responses=[],handoff='',snapshot=null,delaySnapshot=false}
   assert.equal(q('[data-obd-clear]').disabled,false,'button should enable only when ready');
   const click=async name=>events.get('click')({target:{closest:sel=>sel===name?{}:null}});
   const sendRaw=async raw=>{q('[data-obd-custom]').value=raw;await click('[data-obd-send]')};
-  return {log,native,store,root,q,click,sendRaw,dispose,resolve:()=>{if(!resolveSnapshot)throw Error('Snapshot not pending');resolveSnapshot();}};
+  return {log,native,store,root,q,click,sendRaw,dispose,resolve:()=>{if(!resolveSnapshot)throw Error('Snapshot not pending');resolveSnapshot();},resolveLive:()=>{if(!resolveLive)throw Error('Live read not pending');resolveLive();}};
 }
 
 (async()=>{
@@ -133,5 +136,18 @@ async function setup({responses=[],handoff='',snapshot=null,delaySnapshot=false}
   assert.match(src,/#\/masters\?type=sto/);
   assert.match(src,/#\/parts/);
 
-  console.log('DIAGNOSTICS_SAFE_CLEAR: PASS — consent, queued evidence, raw command guard, lifecycle, DTC actions');
+  const stale=await setup({delayLive:true});
+  await stale.click('[data-obd-live-start]');
+  await stale.click('[data-obd-live-stop]');
+  stale.resolveLive();
+  await wait();
+  assert.equal(stale.q('[data-obd-live-rpm]').textContent,'—','late native result must not repaint after Stop');
+  assert.equal(stale.q('[data-obd-live-voltage]').textContent,'—');
+  const stopped=await setup();
+  await stopped.click('[data-obd-live-start]');
+  await wait();
+  assert.equal(stopped.q('[data-obd-live-rpm]').textContent,'900','active live data must paint');
+  stopped.dispose();
+  assert.equal(stopped.q('[data-obd-live-rpm]').textContent,'—','unmount must clear stale values');
+  console.log('DIAGNOSTICS_SAFE_CLEAR: PASS — consent, queued evidence, command guards, lifecycle, DTC + stale-live cancellation');
 })().catch(e=>{console.error(e);process.exitCode=1});
