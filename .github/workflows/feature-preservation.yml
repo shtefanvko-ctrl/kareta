@@ -15,3 +15,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify protected routes, entry points and RU/KK/EN keys
         run: python3 tools/test_feature_preservation.py --self-test
+      - name: Verify generated mobile Back shell and negative regression
+        run: python3 tools/test_mobile_back_bundle_sync.py --self-test
