@@ -1,0 +1,36 @@
+name: DEVIL staging access contract
+
+on:
+  push:
+    paths:
+      - 'api/identity/devil_staging_access.php'
+      - 'tools/test_devil_staging_access.php'
+      - '.github/workflows/devil-staging-access-contract.yml'
+  pull_request:
+    paths:
+      - 'api/identity/devil_staging_access.php'
+      - 'tools/test_devil_staging_access.php'
+      - '.github/workflows/devil-staging-access-contract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  deny-by-default:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - name: PHP syntax
+        run: |
+          php -l api/identity/devil_staging_access.php
+          php -l tools/test_devil_staging_access.php
+      - name: Eligibility contract including negative paths
+        run: php tools/test_devil_staging_access.php
