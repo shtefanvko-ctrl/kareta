@@ -28,6 +28,7 @@ async function exercise({android=true}={}){
     elmDevices:async()=>({devices:[{address:'00:11',name:'ELM327',likelyElm:true}]}),
     elmConnect:async()=>({connected:true}),
     elmInit:async()=>({vehicleConnected:true}),
+    elmSnapshot:async()=>({dtcCodes:['P0110'],rpm:850,voltageV:12.6}),
     requestPermission:async()=>({granted:true}),
     offlineState:async()=>({count:0}),
     offlineDrain:async()=>({items:[]})
@@ -68,17 +69,26 @@ async function exercise({android=true}={}){
   assert.equal(q('[data-obd-ble-hint]').textContent,'Әзірге қолжетімсіз');
   assert.equal(staticNodes[0].textContent,'ELM327 таңдау');
   assert.equal(staticNodes[1].textContent,'Таңдалған автокөлікке сақтау');
+  assert.match(q('[data-obd-vehicle-current]').innerHTML,/Автокөліксіз диагностика/);
   assert.match(q('[data-obd-transport-title]').textContent,/Автокөлікке/);
   doc.documentElement.lang='en';callback();
   assert.equal(q('[data-obd-wifi-hint]').textContent,'Not available yet');
   assert.equal(staticNodes[0].textContent,'Choose ELM327');
   assert.equal(staticNodes[1].textContent,'Save for selected vehicle');
+  assert.match(q('[data-obd-vehicle-current]').innerHTML,/You can scan without a vehicle/);
   if(android){
     await handlers.get('click')({target:{closest:selector=>selector==='[data-obd-address]'?{dataset:{obdAddress:'00:11',obdName:'ELM327'}}:null}});
     assert.equal(state('permission'),'done');
     assert.equal(state('adapter'),'done');
     assert.equal(state('ecu'),'done');
     assert.match(q('[data-obd-transport-status]').textContent,/ECU responding/);
+    await handlers.get('click')({target:{closest:selector=>selector==='[data-obd-snapshot]'?{}:null}});
+    assert.match(q('[data-obd-dtc-list]').innerHTML,/Trouble codes found/);
+    assert.match(q('[data-obd-dtc-list]').innerHTML,/Ask mechanics/);
+    doc.documentElement.lang='kk';callback();
+    assert.match(q('[data-obd-dtc-list]').innerHTML,/Табылған ақау кодтары/);
+    assert.match(q('[data-obd-dtc-list]').innerHTML,/Шеберлерден сұрау/);
+    assert.equal(q('[data-obd-live-rpm]').textContent,'850');
   }
   cleanup();
   assert.equal(observerDisconnected,true);
