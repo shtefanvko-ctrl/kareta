@@ -1,0 +1,21 @@
+{
+  "schema": "kareta.agent-skills.v1",
+  "skills": [
+    "kareta-continue-pr",
+    "kareta-devil-review",
+    "kareta-domain-owner-audit",
+    "kareta-external-research",
+    "kareta-handoff",
+    "kareta-pr-convergence",
+    "kareta-regression-debug",
+    "kareta-safe-db-change",
+    "kareta-security-review",
+    "kareta-spa-contract",
+    "kareta-verification-audit"
+  ],
+  "policy": {
+    "router": "AGENTS.md + ai/CONTEXT_ROUTER.md",
+    "devilRequiredForHighRisk": true,
+    "noDuplicateSkills": true
+  }
+}
