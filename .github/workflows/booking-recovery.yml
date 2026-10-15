@@ -1,0 +1,50 @@
+name: Guarded booking recovery
+
+on:
+  pull_request:
+    paths:
+      - 'api/booking_product_interactions.php'
+      - 'api/db.php'
+      - 'js/next/pages/details.js'
+      - 'js/next/pages/client_request_final.js'
+      - 'css/next/details.css'
+      - 'tools/test_booking_slot_intervals_20261015.php'
+      - 'tools/test_booking_flow_recovery_20261015.js'
+      - '.github/workflows/booking-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  booking-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prove exact PR head
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          echo "BOOKING_EXACT_HEAD: $EXPECTED_SHA"
+      - name: Booking PHP syntax and negative interval cases
+        run: |
+          php -l api/booking_product_interactions.php
+          php -l api/db.php
+          php -l tools/test_booking_slot_intervals_20261015.php
+          php tools/test_booking_slot_intervals_20261015.php
+      - name: Booking browser handoff, service selection and recheck
+        run: |
+          node --check js/next/pages/details.js
+          node --check tools/test_booking_flow_recovery_20261015.js
+          node tools/test_booking_flow_recovery_20261015.js
