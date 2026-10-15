@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "purpose": "Navigation-only area-to-owner and route-key index; not proof of authorization, runtime functionality, or deployment.",
+  "routes_reference": "ai/FEATURE_PRESERVATION_BASELINE.json",
+  "surface_reference": "ai/SURFACE_MAP.json",
+  "roles": [
+    "client",
+    "master",
+    "sto",
+    "seller",
+    "admin"
+  ],
+  "areas": [
+    {
+      "id": "home",
+      "owner": "web_spa",
+      "role_views": [
+        "client"
+      ],
+      "routes": [
+        "home",
+        "services",
+        "masters"
+      ]
+    },
+    {
+      "id": "garage",
+      "owner": "web_spa",
+      "role_views": [
+        "client"
+      ],
+      "routes": [
+        "cabinetGarage",
+        "vehicle"
+      ]
+    },
+    {
+      "id": "work_orders",
+      "owner": "backend_api",
+      "role_views": [
+        "client",
+        "master",
+        "sto"
+      ],
+      "routes": [
+        "orders",
+        "requestNew",
+        "workOrder",
+        "workflow"
+      ]
+    },
+    {
+      "id": "master_market",
+      "owner": "web_spa",
+      "role_views": [
+        "master"
+      ],
+      "routes": [
+        "masterExchange",
+        "masterSchedule",
+        "masterOnboarding"
+      ]
+    },
+    {
+      "id": "sto_workspace",
+      "owner": "web_spa",
+      "role_views": [
+        "sto"
+      ],
+      "routes": [
+        "stoDashboard",
+        "calendarBooking"
+      ]
+    },
+    {
+      "id": "parts",
+      "owner": "marketplace_catalog",
+      "role_views": [
+        "client",
+        "master",
+        "sto",
+        "seller"
+      ],
+      "routes": [
+        "parts",
+        "usedParts",
+        "productDetail",
+        "seller",
+        "sellerProducts",
+        "sellerOrders"
+      ]
+    },
+    {
+      "id": "community",
+      "owner": "web_spa",
+      "role_views": [
+        "client",
+        "master",
+        "sto"
+      ],
+      "routes": [
+        "community",
+        "chats",
+        "notifications"
+      ]
+    },
+    {
+      "id": "diagnostics",
+      "owner": "android_webview_bridge",
+      "role_views": [
+        "client",
+        "master",
+        "sto"
+      ],
+      "routes": [
+        "diagnostics",
+        "scanner",
+        "scannerDocument"
+      ]
+    },
+    {
+      "id": "admin",
+      "owner": "admin",
+      "role_views": [
+        "admin"
+      ],
+      "routes": [
+        "adminUsers",
+        "adminOrganizations",
+        "adminMonitoring",
+        "adminManagement",
+        "identityMigration"
+      ]
+    },
+    {
+      "id": "account",
+      "owner": "identity",
+      "role_views": [
+        "client",
+        "master",
+        "sto",
+        "seller"
+      ],
+      "routes": [
+        "cabinet",
+        "profile",
+        "cabinetSettings"
+      ]
+    },
+    {
+      "id": "finance",
+      "owner": "backend_api",
+      "role_views": [
+        "client",
+        "master",
+        "sto",
+        "seller"
+      ],
+      "routes": [
+        "finance"
+      ]
+    },
+    {
+      "id": "geo",
+      "owner": "web_spa",
+      "role_views": [
+        "client",
+        "master",
+        "sto"
+      ],
+      "routes": [
+        "masters",
+        "providerDetail",
+        "providerBooking"
+      ]
+    }
+  ]
+}
