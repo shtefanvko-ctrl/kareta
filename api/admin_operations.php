@@ -4,14 +4,20 @@ ini_set('display_errors','0');
 header('Content-Type: application/json; charset=utf-8');
 require __DIR__.'/bootstrap.php';
 require_once __DIR__.'/identity/authorization_pipeline.php';
+require_once __DIR__.'/identity/admin_actor_gate.php';
 function ao_out(array $v,int $s=200):never{http_response_code($s);echo json_encode($v,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);exit;}
 function ao_body():array{$raw=file_get_contents('php://input');$v=json_decode($raw?:'{}',true);return is_array($v)?$v:[];}
 function ao_admin(PDO $pdo):array{
  $legacy=function_exists('kareta_current_user')?kareta_current_user():null;
- try{$decision=kareta_authorize($pdo,'*',[],is_array($legacy)?$legacy:null);return ['account'=>(int)($decision->accountId??0),'user'=>(int)($legacy['id']??0)];}
- catch(DomainException $e){if(!in_array($e->getMessage(),['session_required','identity_account_unavailable'],true))ao_out(['ok'=>false,'error'=>$e->getMessage()],403);}
+ $accountId=0;
+ try{$decision=kareta_authorize($pdo,'*',[],is_array($legacy)?$legacy:null);$accountId=(int)$decision->accountId;}
+ catch(DomainException $e){
+  if(!in_array($e->getMessage(),['session_required','identity_account_unavailable'],true))ao_out(['ok'=>false,'error'=>'admin_required'],403);
+ }
  catch(Throwable $e){ao_out(['ok'=>false,'error'=>'admin_identity_resolution_failed'],500);}
- $role=strtolower((string)($legacy['role']??''));if(!in_array($role,['admin','owner'],true))ao_out(['ok'=>false,'error'=>'admin_required'],403);return ['account'=>0,'user'=>(int)($legacy['id']??0)];
+ // DB authority is independent of a wildcard capability. Organization owner != platform owner.
+ try{return kareta_admin_actor_guard($pdo,$accountId,is_array($legacy)?$legacy:null);}
+ catch(DomainException $e){ao_out(['ok'=>false,'error'=>'admin_required'],403);}
 }
 function ao_audit(PDO $pdo,array $actor,string $action,string $type,string $id,$before,$after,string $reason=''):void{
  $request=(string)($_SERVER['HTTP_X_REQUEST_ID']??'');
