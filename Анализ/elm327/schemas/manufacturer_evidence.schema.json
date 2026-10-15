@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KARETA manufacturer-specific evidence",
+  "type": "object",
+  "required": [
+    "id",
+    "make",
+    "model",
+    "market",
+    "applicability",
+    "source_id",
+    "evidence_type",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_:-]+$"
+    },
+    "make": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_year": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1980,
+      "maximum": 2100
+    },
+    "market": {
+      "type": "string",
+      "minLength": 2
+    },
+    "generation": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "platform": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "engine": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ecu": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "vin_pattern": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "applicability": {
+      "enum": [
+        "EXACT_VIN",
+        "EXACT_PLATFORM",
+        "MODEL_YEAR_MARKET",
+        "NAME_ONLY",
+        "UNKNOWN"
+      ]
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_type": {
+      "enum": [
+        "TSB",
+        "RECALL",
+        "SERVICE_CAMPAIGN",
+        "OEM_DIAGNOSTIC",
+        "OEM_MANUAL",
+        "COMPLAINT",
+        "INVESTIGATION",
+        "MODEL_IDENTITY"
+      ]
+    },
+    "status": {
+      "enum": [
+        "REFERENCE_ONLY",
+        "SUPPORTED",
+        "VERIFIED",
+        "CONFLICT",
+        "UNKNOWN"
+      ]
+    },
+    "title": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "summary": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "source_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "published_on": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

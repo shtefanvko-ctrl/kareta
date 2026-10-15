@@ -1,7 +1,8 @@
 (() => {
   'use strict';
   function post(api, action, payload){
-    return api.request('api/db.php', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action,...payload}), cacheTtlMs:0, dedupe:false });
+    const body=window.KaretaFormContract?.prepare?.('workOrder',payload||{})?.compatPayload||payload||{};
+    return api.request('api/db.php', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action,...body}), cacheTtlMs:0, dedupe:false });
   }
   async function detail(api,id,options={}){ return api.request(`api/db.php?action=workOrders.detail&id=${encodeURIComponent(id)}`, {cacheTtlMs:5000,force:true,...options}); }
   const checklistToggle=(api,payload)=>post(api,'workOrders.checklist.toggle',payload);

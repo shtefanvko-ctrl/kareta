@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "command": "ATZ",
+      "layer": "adapter",
+      "name": {
+        "ru": "Сброс адаптера",
+        "en": "Reset adapter"
+      },
+      "source_ids": [
+        "elm_electronics_elm327_v23"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "ATI",
+      "layer": "adapter",
+      "name": {
+        "ru": "Идентификация адаптера",
+        "en": "Adapter identification"
+      },
+      "source_ids": [
+        "elm_electronics_elm327_v23"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "ATE0",
+      "layer": "adapter",
+      "name": {
+        "ru": "Отключить эхо",
+        "en": "Echo off"
+      },
+      "source_ids": [
+        "elm_electronics_elm327_v23"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "ATL0",
+      "layer": "adapter",
+      "name": {
+        "ru": "Отключить переводы строк",
+        "en": "Linefeeds off"
+      },
+      "source_ids": [
+        "elm_electronics_elm327_v23"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "ATS0",
+      "layer": "adapter",
+      "name": {
+        "ru": "Отключить пробелы",
+        "en": "Spaces off"
+      },
+      "source_ids": [
+        "elm_electronics_elm327_v23"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "ATH0",
+      "layer": "adapter",
+      "name": {
+        "ru": "Отключить заголовки",
+        "en": "Headers off"
+      },
+      "source_ids": [
+        "elm_electronics_elm327_v23"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "ATSP0",
+      "layer": "adapter",
+      "name": {
+        "ru": "Автовыбор OBD-протокола",
+        "en": "Automatic OBD protocol search"
+      },
+      "source_ids": [
+        "elm_electronics_elm327_v23"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "ATDP",
+      "layer": "adapter",
+      "name": {
+        "ru": "Показать текущий протокол",
+        "en": "Describe current protocol"
+      },
+      "source_ids": [
+        "elm_electronics_elm327_v23"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "ATRV",
+      "layer": "adapter",
+      "name": {
+        "ru": "Прочитать входное напряжение адаптера",
+        "en": "Read adapter input voltage"
+      },
+      "source_ids": [
+        "elm_electronics_elm327_v23"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "0100",
+      "layer": "obd",
+      "name": {
+        "ru": "Поддерживаемые PID Mode 01, диапазон 01–20",
+        "en": "Mode 01 supported PIDs 01–20"
+      },
+      "source_ids": [
+        "sae_j1979_202505"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "0105",
+      "layer": "obd",
+      "name": {
+        "ru": "Температура охлаждающей жидкости",
+        "en": "Engine coolant temperature"
+      },
+      "source_ids": [
+        "sae_j1979_202505"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "010C",
+      "layer": "obd",
+      "name": {
+        "ru": "Обороты двигателя",
+        "en": "Engine RPM"
+      },
+      "source_ids": [
+        "sae_j1979_202505"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "010D",
+      "layer": "obd",
+      "name": {
+        "ru": "Скорость автомобиля",
+        "en": "Vehicle speed"
+      },
+      "source_ids": [
+        "sae_j1979_202505"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "03",
+      "layer": "obd",
+      "name": {
+        "ru": "Считать сохранённые emission-related DTC",
+        "en": "Read stored emission-related DTCs"
+      },
+      "source_ids": [
+        "sae_j1979_202505"
+      ],
+      "status": "SUPPORTED"
+    },
+    {
+      "command": "0902",
+      "layer": "obd",
+      "name": {
+        "ru": "Считать VIN, если поддерживается",
+        "en": "Read VIN when supported"
+      },
+      "source_ids": [
+        "sae_j1979_202505"
+      ],
+      "status": "SUPPORTED"
+    }
+  ]
+}

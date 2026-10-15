@@ -1,0 +1,50 @@
+name: SPA Android bridge
+
+on:
+  pull_request:
+    paths:
+      - 'js/mobile_native_bridge.js'
+      - 'js/next/pages/scanner.js'
+      - 'js/next/pages/diagnostics.js'
+      - 'js/next/pages/cabinet.js'
+      - 'tools/test_spa_android_bridge_contract.js'
+      - '.github/workflows/spa-android-bridge.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Prove exact checkout
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$EXPECTED_SHA"
+          echo "EXACT_HEAD: $actual"
+
+      - name: JavaScript syntax
+        run: |
+          node --check js/mobile_native_bridge.js
+          node --check js/next/pages/scanner.js
+          node --check js/next/pages/diagnostics.js
+          node --check js/next/pages/cabinet.js
+          node --check tools/test_spa_android_bridge_contract.js
+
+      - name: SPA Android bridge contract
+        run: node tools/test_spa_android_bridge_contract.js
