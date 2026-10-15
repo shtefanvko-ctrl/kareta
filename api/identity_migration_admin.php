@@ -5,15 +5,20 @@ header('Content-Type: application/json; charset=utf-8');
 require __DIR__.'/bootstrap.php';
 require __DIR__.'/identity/identity_migration_service.php';
 require_once __DIR__.'/identity/authorization_pipeline.php';
+require_once __DIR__.'/identity/admin_actor_gate.php';
 function out(array $v,int $s=200):never{http_response_code($s);echo json_encode($v,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);exit;}
 function body():array{$raw=file_get_contents('php://input');$v=json_decode($raw?:'{}',true);return is_array($v)?$v:[];}
 try{
  $pdo=kareta_pdo(); if(!$pdo) out(['ok'=>false,'error'=>'database_unavailable'],503);
  $legacy=function_exists('kareta_current_user')?kareta_current_user():null;
- try{$decision=kareta_authorize($pdo,'*',[],is_array($legacy)?$legacy:null);}catch(Throwable $e){
-  $role=strtolower((string)($legacy['role']??'')); if(!in_array($role,['admin','owner'],true)) out(['ok'=>false,'error'=>'migration_admin_required'],403);
-  $decision=null;
+ $accountId=0;
+ try{$decision=kareta_authorize($pdo,'*',[],is_array($legacy)?$legacy:null);$accountId=(int)$decision->accountId;}
+ catch(DomainException $e){
+  if(!in_array($e->getMessage(),['session_required','identity_account_unavailable'],true))out(['ok'=>false,'error'=>'migration_admin_required'],403);
  }
+ catch(Throwable $e){out(['ok'=>false,'error'=>'migration_identity_resolution_failed'],500);}
+ try{$adminActor=kareta_admin_actor_guard($pdo,$accountId,is_array($legacy)?$legacy:null);}
+ catch(DomainException $e){out(['ok'=>false,'error'=>'migration_admin_required'],403);}
  $svc=new KaretaIdentityMigrationService($pdo); $method=$_SERVER['REQUEST_METHOD']??'GET'; $action=(string)($_GET['action']??'overview');
  if($method==='GET' && $action==='overview'){
   $status=$svc->status();
@@ -23,7 +28,7 @@ try{
   out(['ok'=>true,'status'=>$status,'runs'=>$runs,'conflicts'=>$conflicts]);
  }
  if($method==='POST'){
-  $d=body(); $action=(string)($d['action']??$action); $actor=(int)($legacy['id']??0); $account=(int)($decision->accountId??0);
+  $d=body(); $action=(string)($d['action']??$action); $actor=(int)$adminActor['user']; $account=(int)$adminActor['account'];
   if($action==='runBatch'){
    $apply=($d['mode']??'dry_run')==='apply'; if($apply && ($d['confirm']??'')!=='APPLY') out(['ok'=>false,'error'=>'apply_confirmation_required'],422);
    $r=$svc->runBatch((int)($d['after']??0),(int)($d['limit']??100),!$apply,$actor?:null);
@@ -38,4 +43,4 @@ try{
   }
  }
  out(['ok'=>false,'error'=>'unsupported_action'],400);
-}catch(Throwable $e){out(['ok'=>false,'error'=>'migration_control_error','message'=>$e->getMessage()],500);}
+}catch(Throwable $e){out(['ok'=>false,'error'=>'migration_control_error','requestId'=>defined('KARETA_REQUEST_ID')?KARETA_REQUEST_ID:''],500);}
