@@ -82,7 +82,8 @@ try{
   if($beforeRaw!==''&&(!ctype_digit($beforeRaw)||(int)$beforeRaw<=0))ao_out(['ok'=>false,'error'=>'invalid_cursor'],422);
   $where=['1=1'];$params=[];
   if($q!==''){$where[]='(a.phone LIKE ? OR p.fullname LIKE ?)';$like='%'.$q.'%';array_push($params,$like,$like);}
-  if($role!==''){$where[]='EXISTS (SELECT 1 FROM person_profiles pp2 WHERE pp2.person_id=p.id AND pp2.profile_type=?)';$params[]=$role;}
+  if($role==='client'){$where[]="NOT EXISTS (SELECT 1 FROM person_profiles pp2 WHERE pp2.person_id=p.id AND pp2.profile_type IN ('master','seller'))";}
+  elseif($role!==''){$where[]='EXISTS (SELECT 1 FROM person_profiles pp2 WHERE pp2.person_id=p.id AND pp2.profile_type=?)';$params[]=$role;}
   if($status!==''){$where[]='a.status=?';$params[]=$status;}
   if($beforeRaw!==''){$where[]='a.id<?';$params[]=(int)$beforeRaw;}
   $sql="SELECT a.id accountId,a.phone,a.status accountStatus,a.created_at createdAt,p.id personId,p.fullname,p.locale,p.timezone,
