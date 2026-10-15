@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "kind": "repository-only-design-regression-plan",
+  "runtime_status": "NOT_VERIFIED",
+  "contract": "ai/rules/design-system-v4.md",
+  "predecessors": [
+    "ai/rules/visual-canon-v3.md",
+    "docs/harness/DESIGN_SYSTEM_POLICY_V1.md"
+  ],
+  "token_owner": "css/next/design_contract.css",
+  "logo_asset": "assets/logo/main/kareta_logo_full.png",
+  "roles": [
+    "client",
+    "master",
+    "sto",
+    "seller",
+    "admin"
+  ],
+  "languages": [
+    "ru",
+    "kk",
+    "en"
+  ],
+  "theme_count": 3,
+  "widths_px": [
+    320,
+    360,
+    375,
+    390,
+    412,
+    430
+  ],
+  "breakpoint_edges_px": [
+    767,
+    768,
+    1199,
+    1200
+  ],
+  "protected_entry_points": [
+    "js/next/mobile_back.js",
+    "js/next/pages/core.js",
+    "js/next/pages/diagnostics.js",
+    "js/next/pages/scanner.js",
+    "js/next/pages/vehicle.js",
+    "css/next/master_responsive_shell.css",
+    "css/runtime_boot_bundle.css"
+  ],
+  "required_repository_checks": [
+    "tools/test_design_system_v4_contract.js",
+    "tools/test_design_canon_v1.js",
+    "tools/test_master_css_ownership.js",
+    "tools/test_visual_canon_recovery_v3.js",
+    "tools/test_home_scanner_navigation.js",
+    "tools/test_mobile_back_bundle_sync.py"
+  ],
+  "not_proved": [
+    "real screenshots",
+    "browser role and theme states",
+    "device accessibility",
+    "authenticated server authorization",
+    "real native ELM hardware",
+    "staging or production deployed SHA"
+  ]
+}
