@@ -1,0 +1,75 @@
+name: Design System v4 repository gate
+
+on:
+  pull_request:
+    paths:
+      - 'ai/DESIGN_CANON_V4.json'
+      - 'ai/rules/design-system-v4.md'
+      - 'ai/rules/visual-canon-v3.md'
+      - 'ai/CONTEXT_ROUTER.md'
+      - 'docs/harness/**'
+      - 'tools/test_design_system_v4_contract.js'
+      - 'tools/test_design_canon_v1.js'
+      - 'tools/test_master_css_ownership.js'
+      - 'tools/test_visual_canon_recovery_v3.js'
+      - 'tools/test_home_scanner_navigation.js'
+      - 'tools/test_mobile_back_bundle_sync.py'
+      - 'css/**'
+      - 'js/next/**'
+      - 'js/boot/**'
+      - 'inc/asset_registry.php'
+      - 'index.php'
+      - 'assets/logo/**'
+      - '.github/workflows/design-system-v4.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'ai/DESIGN_CANON_V4.json'
+      - 'ai/rules/design-system-v4.md'
+      - 'ai/rules/visual-canon-v3.md'
+      - 'ai/CONTEXT_ROUTER.md'
+      - 'docs/harness/**'
+      - 'tools/test_design_system_v4_contract.js'
+      - 'css/**'
+      - 'js/next/**'
+      - 'js/boot/**'
+      - 'assets/logo/**'
+      - '.github/workflows/design-system-v4.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  design-repository-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Require exact candidate ref
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          echo "DESIGN_EXACT_HEAD: PASS $EXPECTED_SHA"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate Design System v4 source, invariants and negative cases
+        run: node tools/test_design_system_v4_contract.js
+      - name: Validate existing v2 token ownership and master generated parity
+        run: |
+          node tools/test_design_canon_v1.js
+          node tools/test_master_css_ownership.js
+          node tools/build_master_runtime_css.js --check
+      - name: Protect existing v3 logo, header, scanner and diagnostics entry
+        run: |
+          node tools/test_visual_canon_recovery_v3.js
+          node tools/test_home_scanner_navigation.js
+      - name: Verify Back source is synchronized with generated shell
+        run: python3 tools/test_mobile_back_bundle_sync.py --self-test
+
+# These checks inspect a Git checkout, not physical Android, live staging,
+# authenticated role journeys or screenshot pixels. Never report visual
+# acceptance, deployment or native hardware success from this workflow.
