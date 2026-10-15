@@ -137,7 +137,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     return result;
   }
 
-  function mobileLimit(kind=contextKind()){ return ['personal','master','seller','admin','organization_store','anonymous'].includes(kind) ? 6 : 5; }
+  function mobileLimit(kind=contextKind()){ return kind==='anonymous' ? 6 : ['personal','master','seller','admin','organization_store'].includes(kind) ? 6 : 5; }
 
   function mobileItems(){
     const preferred = template();

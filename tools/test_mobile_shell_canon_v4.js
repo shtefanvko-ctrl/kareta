@@ -12,7 +12,7 @@ const shell=read('js/boot/runtime_shell_bundle.js');
 assert(index.includes('k-brand-text-fallback')&&index.includes("assets/onboarding/kareta_logo_icon.png"));
 assert(index.includes("asset_ver('assets/logo/main/kareta_logo_full.png')"));
 assert(nav.includes("anonymous: Object.freeze(['home','services','works','masters','parts','__more__'])"));
-assert(nav.includes("'organization_store','anonymous'].includes(kind) ? 6 : 5"));
+assert(nav.includes("kind==='anonymous' ? 6 : ['personal','master','seller','admin','organization_store'].includes(kind) ? 6 : 5"));
 assert(mb.includes("window.matchMedia?.('(max-width: 599px)')?.matches === true"));
 assert(mb.includes("cleanHash !== HOME || phoneNav"));
 assert(mb.includes("window.addEventListener('resize', sync"));
