@@ -26,7 +26,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     organization_service: Object.freeze(['stoDashboard','orders','masters','parts','__more__']),
     organization_store: Object.freeze(['seller','sellerProducts','sellerOrders','parts','chats','__more__']),
     organization: Object.freeze(['orders','calendarBooking','finance','chats','__more__']),
-    anonymous: Object.freeze(['home','works','masters','parts','__more__']),
+    anonymous: Object.freeze(['home','services','works','masters','parts','__more__']),
   });
 
   // Desktop navigation is context-owned just like the mobile shell. Public routes may
@@ -137,7 +137,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     return result;
   }
 
-  function mobileLimit(kind=contextKind()){ return ['personal','master','seller','admin','organization_store'].includes(kind) ? 6 : 5; }
+  function mobileLimit(kind=contextKind()){ return ['personal','master','seller','admin','organization_store','anonymous'].includes(kind) ? 6 : 5; }
 
   function mobileItems(){
     const preferred = template();
@@ -1965,8 +1965,10 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     }
     hideZeroBadge('k-mobile-chat-badge');
     hideZeroBadge('k-mobile-orders-badge');
-    // Fixed shortcuts obscure forms and product cards; keep them on home only.
-    if (stack) stack.hidden = isOnboarding(hash) || protectContent || cleanHash !== HOME;
+    // Phone navigation already provides More, chat and orders: never stack duplicate FABs above cards.
+    // Tablet and desktop affordances are preserved for their different navigation geometry.
+    const phoneNav = window.matchMedia?.('(max-width: 599px)')?.matches === true;
+    if (stack) stack.hidden = isOnboarding(hash) || protectContent || cleanHash !== HOME || phoneNav;
   }
 
   function sync() {
@@ -2046,6 +2048,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
       window.addEventListener('hashchange', sync);
       window.addEventListener('popstate', sync);
       window.addEventListener('pageshow', sync);
+      window.addEventListener('resize', sync, { passive:true });
       window.addEventListener('kareta:routechange', sync);
       window.addEventListener('kareta:chat-unread', event => setChatBadge(event.detail?.count));
       window.addEventListener('kareta:primary-action-changed', sync);

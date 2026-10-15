@@ -291,7 +291,8 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5 8.5 12l7 7"></path><path d="M9 12h11"></path></svg>
       </button>
       <a class="k-brand" href="#/home" data-route-link="home" aria-label="KARETA.KZ главная">
-        <img class="k-brand-logo k-brand-logo--full" src="<?= asset_ver('assets/logo/main/kareta_logo_full.png') ?>" alt="KARETA.KZ">
+        <img class="k-brand-logo k-brand-logo--full" src="<?= asset_ver('assets/logo/main/kareta_logo_full.png') ?>" alt="KARETA.KZ" onerror="this.onerror=function(){this.hidden=true;this.nextElementSibling.hidden=false;};this.src='<?= asset_ver('assets/onboarding/kareta_logo_icon.png') ?>'">
+        <span class="k-brand-text-fallback" hidden>KARETA.KZ</span>
         <img class="k-brand-logo k-brand-logo--icon" src="<?= asset_ver('assets/onboarding/kareta_logo_icon.png') ?>" alt="" aria-hidden="true">
       </a>
 

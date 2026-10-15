@@ -143,8 +143,10 @@
     }
     hideZeroBadge('k-mobile-chat-badge');
     hideZeroBadge('k-mobile-orders-badge');
-    // Fixed shortcuts obscure forms and product cards; keep them on home only.
-    if (stack) stack.hidden = isOnboarding(hash) || protectContent || cleanHash !== HOME;
+    // Phone navigation already provides More, chat and orders: never stack duplicate FABs above cards.
+    // Tablet and desktop affordances are preserved for their different navigation geometry.
+    const phoneNav = window.matchMedia?.('(max-width: 599px)')?.matches === true;
+    if (stack) stack.hidden = isOnboarding(hash) || protectContent || cleanHash !== HOME || phoneNav;
   }
 
   function sync() {
@@ -224,6 +226,7 @@
       window.addEventListener('hashchange', sync);
       window.addEventListener('popstate', sync);
       window.addEventListener('pageshow', sync);
+      window.addEventListener('resize', sync, { passive:true });
       window.addEventListener('kareta:routechange', sync);
       window.addEventListener('kareta:chat-unread', event => setChatBadge(event.detail?.count));
       window.addEventListener('kareta:primary-action-changed', sync);
