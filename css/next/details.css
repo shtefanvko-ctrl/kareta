@@ -1192,3 +1192,12 @@ html.k-detail-view .k-product-detail{
   .k-r84-provider-actions .k-btn:last-child::before{content:none!important}
   .k-garage-card-r84__actions{grid-template-columns:1fr!important}
 }
+
+/* Booking v2: explicit service selection, scoped to booking screen. */
+.k-master-ref-booking .k-master-ref-booking-service-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px}
+.k-master-ref-booking .k-master-ref-booking-service-options button{min-height:62px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:5px;padding:12px 14px;border:1px solid var(--kmrp-line);border-radius:12px;background:transparent;text-align:left;color:inherit;font:inherit;cursor:pointer}
+.k-master-ref-booking .k-master-ref-booking-service-options button b{font-size:15px;line-height:20px}
+.k-master-ref-booking .k-master-ref-booking-service-options button small{font-size:12px;line-height:17px;color:var(--kmrp-muted)}
+.k-master-ref-booking .k-master-ref-booking-service-options button.is-active{border-color:var(--kmrp-orange);box-shadow:0 0 0 1px var(--kmrp-orange)}
+.k-master-ref-booking .k-master-ref-booking-service-options button:focus-visible{outline:2px solid var(--kmrp-orange);outline-offset:2px}
+@media(max-width:400px){.k-master-ref-booking .k-master-ref-booking-service-options{grid-template-columns:1fr}}
