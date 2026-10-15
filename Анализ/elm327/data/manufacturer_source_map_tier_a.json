@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-05",
+  "market": "KZ",
+  "rule": "source presence is not applicability; market identity must be resolved before manufacturer-specific promotion",
+  "tier_a": [
+    {
+      "make": "Chevrolet",
+      "priority_models": [
+        "Cobalt"
+      ],
+      "sources": [
+        "gm_service_information",
+        "gm_official_support",
+        "nhtsa_datasets",
+        "nhtsa_vpic",
+        "chevrolet_kz_cobalt_2026",
+        "chevrolet_kz_cobalt_owner_manual_uzauto",
+        "uzauto_allur_kz_partnership_20260713"
+      ],
+      "critical_boundary": "Kazakhstan Cobalt is supported as a current KZ UzAuto/Allur product line, but platform/ECU/VIN equivalence to US-market Cobalt remains unproven. Never join US TSBs by name alone.",
+      "current_state": "KZ_MODEL_LINEAGE_SUPPORTED_PLATFORM_VIN_REQUIRED_FOR_TSB"
+    },
+    {
+      "make": "Hyundai",
+      "priority_models": [
+        "Tucson",
+        "Mufasa"
+      ],
+      "sources": [
+        "hyundai_techinfo_us",
+        "nhtsa_datasets",
+        "nhtsa_vpic"
+      ],
+      "critical_boundary": "Hyundaitechinfo is explicitly US-market service information. Kazakhstan applicability requires platform/year/engine/VIN evidence.",
+      "current_state": "SOURCE_MAP_READY_IDENTITY_REQUIRED"
+    },
+    {
+      "make": "Kia",
+      "priority_models": [
+        "Sportage"
+      ],
+      "sources": [
+        "kia_official_recalls",
+        "kia_korea_repair_campaigns",
+        "nhtsa_datasets",
+        "nhtsa_vpic"
+      ],
+      "critical_boundary": "US and Korea campaign data are separate market evidence. Do not promote across markets without identity/applicability proof.",
+      "current_state": "SOURCE_MAP_READY_IDENTITY_REQUIRED"
+    },
+    {
+      "make": "Changan",
+      "priority_models": [
+        "CS55 Plus",
+        "CS35 Max"
+      ],
+      "sources": [
+        "changan_global_recall_process"
+      ],
+      "critical_boundary": "Current official source confirms recall-management process but is not a model-specific repair/TSB feed. Need Kazakhstan/China applicable campaign or service source.",
+      "current_state": "OEM_MODEL_SPECIFIC_SOURCE_GAP"
+    },
+    {
+      "make": "Chery",
+      "priority_models": [
+        "Tiggo 2",
+        "Tiggo 7"
+      ],
+      "sources": [
+        "chery_official_service",
+        "chery_global_models"
+      ],
+      "critical_boundary": "Official service/catalog sources establish model/service context, not specific TSB repair instructions. Need applicable campaign/technical source.",
+      "current_state": "OEM_MODEL_SPECIFIC_SOURCE_GAP"
+    }
+  ]
+}

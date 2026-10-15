@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-05",
+  "official_source": "https://www.nhtsa.gov/nhtsa-datasets-and-apis",
+  "endpoints": [
+    "/recalls/recallsByVehicle?make={MAKE}&model={MODEL}&modelYear={MODEL_YR}",
+    "/complaints/complaintsByVehicle?make={MAKE}&model={MODEL}&modelYear={MODEL_YR}"
+  ],
+  "importer": "tools/elm327/fetch_nhtsa_vehicle.mjs",
+  "status": "IMPLEMENTED_NOT_RUN",
+  "interpretation": "External failure evidence only. Recalls/complaints do not prove successful repair.",
+  "manufacturer_communications": {
+    "ingestion": "BULK_DATASET_PLANNED",
+    "reason": "NHTSA publishes manufacturer communications/TSB as public bulk datasets; separate exact-applicability ingestion is required."
+  }
+}

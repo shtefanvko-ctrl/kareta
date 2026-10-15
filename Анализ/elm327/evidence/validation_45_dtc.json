@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-05",
+  "validated_sha": "dc4e38b950d5c8da4086aa89cddd6e9fe2d12517",
+  "result": "PASS",
+  "errors": 0,
+  "counts": {
+    "dtc": 45,
+    "symptoms": 12,
+    "causes": 27,
+    "checks": 22,
+    "repairs": 18,
+    "sources": 15
+  },
+  "checks": [
+    "unique IDs",
+    "DTC format",
+    "RU/EN required fields",
+    "DTC→symptom references",
+    "DTC→cause references",
+    "DTC→check references",
+    "DTC→repair references",
+    "DTC→source references",
+    "check→equipment references",
+    "profession→DTC and profession IDs",
+    "service→DTC and service IDs"
+  ]
+}
