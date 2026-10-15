@@ -31,6 +31,22 @@ function ao_week_counts(PDO $pdo,string $table,array $days):?array{
   return array_values($values);
  }catch(Throwable $_e){return null;}
 }
+// Bounded keyset inventories: no unfiltered client-side export or mutable sort fields.
+function ao_page_limit():int{
+ $raw=(string)($_GET['limit']??'24');
+ if(!preg_match('/^[0-9]{1,3}$/',$raw))ao_out(['ok'=>false,'error'=>'invalid_page_limit'],422);
+ return max(1,min(50,(int)$raw));
+}
+function ao_search_query():string{
+ $q=trim((string)($_GET['q']??''));
+ if(mb_strlen($q)>120)ao_out(['ok'=>false,'error'=>'search_too_long'],422);
+ return $q;
+}
+function ao_filter(string $key,array $allowed):string{
+ $value=trim((string)($_GET[$key]??''));
+ if($value!==''&&!in_array($value,$allowed,true))ao_out(['ok'=>false,'error'=>'invalid_'.$key],422);
+ return $value;
+}
 function ao_enum(string $value,array $allowed,string $error):string{if(!in_array($value,$allowed,true))ao_out(['ok'=>false,'error'=>$error],422);return $value;}
 function ao_reason(string $reason):string{$reason=mb_substr(trim($reason),0,500);if(mb_strlen($reason)<3)ao_out(['ok'=>false,'error'=>'admin_reason_required'],422);return $reason;}
 try{
@@ -59,12 +75,24 @@ try{
   ao_out(['ok'=>true,'counts'=>$counts,'businessCounts'=>$business,'activity7d'=>$activity,'audit'=>$audit]);
  }
  if($method==='GET'&&$action==='users'){
-  $q=trim((string)($_GET['q']??''));$like='%'.$q.'%';
-  $st=$pdo->prepare("SELECT a.id accountId,a.phone,a.status accountStatus,a.created_at createdAt,p.id personId,p.fullname,p.locale,p.timezone,
+  $q=ao_search_query();$limit=ao_page_limit();
+  $role=ao_filter('role',['client','master','seller']);
+  $status=ao_filter('status',['active','blocked','deleted']);
+  $beforeRaw=trim((string)($_GET['before']??''));
+  if($beforeRaw!==''&&(!ctype_digit($beforeRaw)||(int)$beforeRaw<=0))ao_out(['ok'=>false,'error'=>'invalid_cursor'],422);
+  $where=['1=1'];$params=[];
+  if($q!==''){$where[]='(a.phone LIKE ? OR p.fullname LIKE ?)';$like='%'.$q.'%';array_push($params,$like,$like);}
+  if($role!==''){$where[]='EXISTS (SELECT 1 FROM person_profiles pp2 WHERE pp2.person_id=p.id AND pp2.profile_type=?)';$params[]=$role;}
+  if($status!==''){$where[]='a.status=?';$params[]=$status;}
+  if($beforeRaw!==''){$where[]='a.id<?';$params[]=(int)$beforeRaw;}
+  $sql="SELECT a.id accountId,a.phone,a.status accountStatus,a.created_at createdAt,p.id personId,p.fullname,p.locale,p.timezone,
    (SELECT GROUP_CONCAT(CONCAT(pp.profile_type,':',pp.status) ORDER BY pp.profile_type SEPARATOR ',') FROM person_profiles pp WHERE pp.person_id=p.id) profiles,
    (SELECT COUNT(*) FROM auth_sessions s WHERE s.account_id=a.id AND s.revoked_at IS NULL AND s.expires_at>NOW()) activeSessions
-   FROM accounts a LEFT JOIN persons p ON p.account_id=a.id
-   WHERE ?='' OR a.phone LIKE ? OR p.fullname LIKE ? ORDER BY a.id DESC LIMIT 100");$st->execute([$q,$like,$like]);ao_out(['ok'=>true,'items'=>$st->fetchAll(PDO::FETCH_ASSOC)]);
+   FROM accounts a LEFT JOIN persons p ON p.account_id=a.id WHERE ".implode(' AND ',$where)." ORDER BY a.id DESC LIMIT ".($limit+1);
+  $st=$pdo->prepare($sql);$st->execute($params);$items=$st->fetchAll(PDO::FETCH_ASSOC);
+  $hasMore=count($items)>$limit;if($hasMore)array_pop($items);
+  $next=$hasMore&&$items?(string)end($items)['accountId']:null;
+  ao_out(['ok'=>true,'items'=>$items,'page'=>['limit'=>$limit,'hasMore'=>$hasMore,'nextCursor'=>$next]]);
  }
  if($method==='GET'&&$action==='accountDetail'){
   $accountId=(int)($_GET['accountId']??0);if($accountId<=0)ao_out(['ok'=>false,'error'=>'account_id_required'],422);
@@ -75,11 +103,27 @@ try{
   ao_out(['ok'=>true,'account'=>$account,'profiles'=>$profiles,'contexts'=>$contexts,'sessions'=>$sessions]);
  }
  if($method==='GET'&&$action==='organizations'){
-  $q=trim((string)($_GET['q']??''));$like='%'.$q.'%';
-  $st=$pdo->prepare("SELECT o.id,o.type,o.name,o.status,o.city,o.phone,
+  $q=ao_search_query();$limit=ao_page_limit();
+  $type=ao_filter('type',['service_station','parts_store']);
+  $status=ao_filter('status',['active','inactive','blocked','archived']);
+  $city=trim((string)($_GET['city']??''));
+  if(mb_strlen($city)>120)ao_out(['ok'=>false,'error'=>'city_too_long'],422);
+  $before=trim((string)($_GET['before']??''));
+  if($before!==''&&!preg_match('/^[a-zA-Z0-9_:.\\-]{1,128}$/',$before))ao_out(['ok'=>false,'error'=>'invalid_cursor'],422);
+  $where=['1=1'];$params=[];
+  if($q!==''){$where[]='(o.name LIKE ? OR o.id LIKE ?)';$like='%'.$q.'%';array_push($params,$like,$like);}
+  if($type!==''){$where[]='o.type=?';$params[]=$type;}
+  if($status!==''){$where[]='o.status=?';$params[]=$status;}
+  if($city!==''){$where[]='o.city=?';$params[]=$city;}
+  if($before!==''){$where[]='o.id<?';$params[]=$before;}
+  $sql="SELECT o.id,o.type,o.name,o.status,o.city,o.phone,
    (SELECT COUNT(*) FROM organization_members om WHERE om.organization_id=o.id AND om.status='active') members,
    (SELECT COUNT(*) FROM contexts c WHERE c.organization_key=o.id AND c.status='active') contexts
-   FROM organizations o WHERE ?='' OR o.name LIKE ? OR o.id LIKE ? ORDER BY o.updated_at DESC LIMIT 100");$st->execute([$q,$like,$like]);ao_out(['ok'=>true,'items'=>$st->fetchAll(PDO::FETCH_ASSOC)]);
+   FROM organizations o WHERE ".implode(' AND ',$where)." ORDER BY o.id DESC LIMIT ".($limit+1);
+  $st=$pdo->prepare($sql);$st->execute($params);$items=$st->fetchAll(PDO::FETCH_ASSOC);
+  $hasMore=count($items)>$limit;if($hasMore)array_pop($items);
+  $next=$hasMore&&$items?(string)end($items)['id']:null;
+  ao_out(['ok'=>true,'items'=>$items,'page'=>['limit'=>$limit,'hasMore'=>$hasMore,'nextCursor'=>$next]]);
  }
  if($method==='GET'&&$action==='moderation'){
   $items=$pdo->query("SELECT id,case_key caseKey,entity_type entityType,entity_id entityId,status,priority,reason,created_at createdAt,updated_at updatedAt FROM moderation_cases ORDER BY FIELD(status,'open','escalated','hidden','rejected','approved','closed'),FIELD(priority,'critical','high','normal','low'),updated_at DESC LIMIT 100")->fetchAll(PDO::FETCH_ASSOC);
