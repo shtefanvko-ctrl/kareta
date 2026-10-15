@@ -1,0 +1,31 @@
+name: Experimental VFS agent lab
+
+on:
+  pull_request:
+    paths:
+      - 'tools/experiments/vfs-agent-lab/**'
+      - '.github/workflows/vfs-agent-lab.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  vfs-fixture-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+      - name: Runtime and syntax
+        run: |
+          node --version
+          node --check tools/experiments/vfs-agent-lab/workspace.cjs
+          node --check tools/experiments/vfs-agent-lab/workspace.test.cjs
+          node --check tools/experiments/vfs-agent-lab/demo.cjs
+      - name: VFS negative-path and workspace tests
+        run: node --experimental-vfs --test tools/experiments/vfs-agent-lab/workspace.test.cjs
+      - name: Fixture-only demonstration
+        run: node --experimental-vfs tools/experiments/vfs-agent-lab/demo.cjs
