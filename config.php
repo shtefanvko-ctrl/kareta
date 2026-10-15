@@ -282,11 +282,9 @@ if (!defined('KARETA_CONFIG_LOADED')) {
         !$kareta_is_production
     ), FILTER_VALIDATE_BOOLEAN);
 
-    // R188.5.5.6.84.79 commissioning bridge.
-    // The owner explicitly requested code 0000 until the SMS provider is connected.
-    // It is now manual-off instead of date-based: set KARETA_OTP_TEMP_STATIC_ENABLED=0
-    // (or otp_temp_static_enabled=false in private config) when the provider is ready.
-    // An optional deadline can still be supplied through KARETA_OTP_TEMP_STATIC_UNTIL.
+    // Temporary no-SMS commissioning is permitted only on staging.
+    // Staging can disable it with KARETA_OTP_TEMP_STATIC_ENABLED=0 or set a deadline.
+    // Production ignores private test/static overrides.
     $kareta_otp_temp_static_until = trim((string) kareta_config_value(
         'KARETA_OTP_TEMP_STATIC_UNTIL',
         'otp_temp_static_until',
@@ -295,25 +293,20 @@ if (!defined('KARETA_CONFIG_LOADED')) {
     $kareta_otp_temp_static_enabled = filter_var(kareta_config_value(
         'KARETA_OTP_TEMP_STATIC_ENABLED',
         'otp_temp_static_enabled',
-        true
+        KARETA_ENVIRONMENT === 'staging'
     ), FILTER_VALIDATE_BOOLEAN);
     $kareta_otp_temp_static_deadline = $kareta_otp_temp_static_until !== '' ? strtotime($kareta_otp_temp_static_until) : false;
     $kareta_otp_temp_static_within_window = $kareta_otp_temp_static_until === ''
         || ($kareta_otp_temp_static_deadline !== false && time() < (int)$kareta_otp_temp_static_deadline);
-    $kareta_otp_temp_static_active = in_array(KARETA_ENVIRONMENT, ['production','staging'], true)
+    $kareta_otp_temp_static_active = KARETA_ENVIRONMENT === 'staging'
         && $kareta_otp_temp_static_enabled
         && $kareta_otp_temp_static_within_window;
 
     if ($kareta_is_production) {
+        // Never permit test/static OTP in production, even with stale private flags.
         $kareta_otp_allow_test_fallback = false;
-        if ($kareta_otp_temp_static_active) {
-            $kareta_otp_transport = 'test_static';
-            $kareta_otp_test_code = '0000';
-        } else {
-            // Production is fail-closed when the commissioning override is disabled.
-            $kareta_otp_transport = 'webhook';
-            $kareta_otp_test_code = '';
-        }
+        $kareta_otp_transport = 'webhook';
+        $kareta_otp_test_code = '';
     }
     if (KARETA_ENVIRONMENT === 'staging') {
         // The staging commissioning mode issues a real DB challenge without sending SMS.

@@ -15,7 +15,10 @@ const flow=read('js/next/client/first_vehicle_flow.js');
 const alternative=read('js/next/pages/client_request_final.js');
 
 // Staging test flag selects no-SMS challenge mode; turning it off requires webhook.
-assert(config.includes("in_array(KARETA_ENVIRONMENT, ['production','staging'], true)"));
+assert(config.includes("$kareta_otp_temp_static_active = KARETA_ENVIRONMENT === 'staging'"));
+assert(config.includes("if ($kareta_is_production) {"));
+assert(config.includes("$kareta_otp_transport = 'webhook';"));
+assert(config.includes("$kareta_otp_test_code = '';"));
 assert(config.includes("if (KARETA_ENVIRONMENT === 'staging')"));
 assert(config.includes("$kareta_otp_transport = $kareta_otp_temp_static_active ? 'test_static' : 'webhook'"));
 assert(config.includes("$kareta_otp_test_code = $kareta_otp_temp_static_active ? '0000' : ''"));

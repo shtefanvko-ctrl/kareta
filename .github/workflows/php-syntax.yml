@@ -51,3 +51,6 @@ jobs:
 
           test "$failed" -eq 0
           echo 'PHP syntax gate PASS.'
+
+      - name: OTP environment boundary (PHP 8.1)
+        run: php tools/test_otp_environment_boundary_20261015.php
