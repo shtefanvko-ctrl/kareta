@@ -1255,10 +1255,12 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     return ['master','sto','seller'].includes(role) ? role : 'client';
   }
 
+  const officialLogoUrl = () => '/assets/logo/main/kareta_logo_full.png?v=' + encodeURIComponent(String(window.KARETA_NEXT_ASSET_VERSION || 'dev'));
+
   function modalHeader(options = {}) {
     const roleIcon = options.roleIcon ? `<div class="onb2-modal-role-ico">${esc(options.roleIcon)}</div>` : '';
     return `<div class="onb2-modal-head onb2-modal-head--compact">
-      <div class="onb2-headbar"><div class="onb2-brandbox onb2-brandbox--official"><img class="onb2-brand-logo onb2-brand-logo--full" src="/assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ Автосервис"></div></div>
+      <div class="onb2-headbar"><div class="onb2-brandbox onb2-brandbox--official"><img class="onb2-brand-logo onb2-brand-logo--full" src="${officialLogoUrl()}" alt="KARETA.KZ Автосервис"></div></div>
       ${roleIcon}
       <div class="onb2-modal-title">${esc(options.title || '')}</div>
       <div class="onb2-modal-sub">${esc(options.sub || '')}</div>
@@ -2020,11 +2022,13 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     return window.KaretaKFlow?.renderSteps?.({total:4,current:map[step]||1,label:'Окно'}) || '';
   }
 
+  const officialLogoUrl = () => '/assets/logo/main/kareta_logo_full.png?v=' + encodeURIComponent(String(window.KARETA_NEXT_ASSET_VERSION || 'dev'));
+
   function flowHeader(step){
     const action=step==='role'?'back-welcome':step==='profile'?'back-role':'back-profile';
     return `<header class="k-flow-header">
       <button type="button" class="k-flow-back" data-action="${action}" aria-label="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6"/></svg></button>
-      <img class="k-flow-logo" src="/assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ">
+      <img class="k-flow-logo" src="${officialLogoUrl()}" alt="KARETA.KZ">
       <span class="k-flow-header-spacer" aria-hidden="true"></span>
     </header>`;
   }
@@ -2042,7 +2046,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   function welcomeStepHtml(){
     return `<section id="onb2-step-welcome" class="onb2-step active" data-step="welcome">
       <div class="onb2-welcome-card onb2-flow-shell">
-        <div class="onb2-flow-brand"><img class="onb2-welcome-logo" src="/assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ Автосервис"></div>
+        <div class="onb2-flow-brand"><img class="onb2-welcome-logo" src="${officialLogoUrl()}" alt="KARETA.KZ Автосервис"></div>
         ${progressHtml('welcome')}
         <div class="onb2-welcome-copy">
           <h1>Добро пожаловать!</h1>

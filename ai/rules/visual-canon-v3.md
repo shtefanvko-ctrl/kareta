@@ -12,3 +12,5 @@ User-approved P0/P1 UX invariants based on real Android screenshots. Screenshots
 8. Verify Android widths 320/360/375/390/412/430, roles client/master/STO/seller, i18n RU/KK/EN, themes and missing images.
 
 Record issue, owner, verified cause, files, tests, bundle and exact Git/staging SHA. A file change, URL 200 or screenshot mockup alone is not a visual PASS. P0: logo/header/diagnostics. P1: scanner/parts/social/overlays. Do not merge or touch production without separate permission. Follow iterative verification with rollback.
+
+9. Onboarding/full-logo HTML from JavaScript MUST append the current window.KARETA_NEXT_ASSET_VERSION query to the real PNG URL; bare CDN logo paths can remain cached as invalid historical base64. Verify actual PNG magic through the versioned URL on staging.
