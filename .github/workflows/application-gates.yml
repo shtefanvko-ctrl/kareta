@@ -110,6 +110,11 @@ jobs:
       - name: Client three-step booking handoff contract
         run: node tools/test_client_request_three_steps_84_23.js
 
+      - name: Guarded master booking recovery from PR126
+        run: |
+          php tools/test_booking_slot_intervals_20261015.php
+          node tools/test_booking_flow_recovery_20261015.js
+
       - name: Route binding contract
         run: node tools/test_route_binding_contract.js
 
