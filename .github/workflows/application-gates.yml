@@ -119,6 +119,9 @@ jobs:
       - name: Provenance contract
         run: php tools/test_deployment_provenance.php
 
+      - name: Staging inventory fail-closed regression
+        run: python3 tools/test_audit_staging_inventory.py
+
       - name: Generate exact-candidate provenance artifact
         env:
           KARETA_DEPLOY_GIT_SHA: ${{ github.sha }}

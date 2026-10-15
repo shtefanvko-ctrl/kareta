@@ -39,6 +39,17 @@ run_check "node:project_audit" node --check tools/test_project_audit_r188558410.
 section "MIGRATIONS"
 run_check "migration manifest/checksums" php tools/test_release_migration_manifest.php
 
+section "DEPLOYMENT PROVENANCE"
+run_check "deployment provenance schema contract" php tools/test_deployment_preflight_contract.php
+run_check "deployment provenance CLI negative cases" php tools/test_deployment_preflight_cli.php
+# Normal source-level CI is not a deployment and must not claim live provenance.
+# Real deployment checks are fail-closed when KARETA_REQUIRE_PROVENANCE=1.
+if [ "${KARETA_REQUIRE_PROVENANCE:-0}" = "1" ] || [ -n "${KARETA_DEPLOY_GIT_SHA:-}" ]; then
+  run_check "deployment provenance exact SHA and release" php tools/check_deployment_provenance.php
+else
+  printf '[NOT RUN] deployment provenance (set KARETA_REQUIRE_PROVENANCE=1 for release)\n'
+fi
+
 section "AUTH"
 run_check "master workplace auth guard" node tools/test_r1885568427_master_workplace_auth_guard.js
 run_check "legacy role capability budget" node tools/test_legacy_role_budget_84_109.js
