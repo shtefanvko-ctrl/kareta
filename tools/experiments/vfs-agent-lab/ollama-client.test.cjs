@@ -90,12 +90,13 @@ test('limits HTTP bytes, output bytes and declared content length', async () => 
 test('concurrency is 1; lock clears after response completion', async () => {
   let resolveFetch;
   const gate = new Promise(resolve => { resolveFetch = resolve; });
-  const adapter = client(async () => gate);
+  let requests = 0;
+  const adapter = client(async () => (++requests === 1 ? gate : new Response(body())));
   const first = adapter.generate(task);
   await rejectsCode(adapter.generate(task), 'CONCURRENT_REQUEST');
   resolveFetch(new Response(body()));
   assert.equal((await first).text, 'Synthetic response');
-  // Gate is already resolved, so a sequential request is permitted.
+  // A new Response body is needed per request; HTTP response bodies are one-shot.
   assert.equal((await adapter.generate(task)).text, 'Synthetic response');
 });
 
