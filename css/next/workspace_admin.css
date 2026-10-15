@@ -62,3 +62,32 @@ html[data-navigation-context="organization_service"] .k-sto-quick-nav svg{width:
 @media(min-width:1200px){.k-admin-business-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:860px){.k-admin-business-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:380px){.k-admin-business-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.k-admin-week-chart__bars{height:90px;gap:2px}.k-admin-week-chart__legend{gap:10px}}
+
+
+/* E3 inventory lists: bounded server filters with touch-sized controls. */
+.k-admin-inventory-toolbar{display:flex;align-items:end;gap:10px;flex-wrap:wrap;min-width:0}
+.k-admin-inventory-toolbar .k-admin-query-field{flex:1 1 220px;min-width:min(220px,100%);min-height:48px}
+.k-admin-inventory-toolbar .k-admin-query-field input{min-width:0;width:100%}
+.k-admin-inventory-toolbar .k-admin-filter-field{min-width:130px;flex:0 1 180px;display:grid;align-content:center;gap:3px;padding:5px 10px}
+.k-admin-inventory-toolbar .k-admin-filter-field span{font-size:11px;color:var(--k-muted,#667085)}
+.k-admin-inventory-toolbar .k-admin-filter-field select,
+.k-admin-inventory-toolbar .k-admin-filter-field input{display:block;min-height:27px;width:100%;padding:0;border:0;outline:0;background:transparent;color:inherit}
+.k-admin-inventory-toolbar .k-admin-filter-actions{display:flex;flex:1 1 auto;gap:8px;flex-wrap:wrap;align-items:center}
+.k-admin-inventory-toolbar .k-admin-filter-actions button{min-height:44px;white-space:nowrap}
+.k-admin-inventory-toolbar .k-admin-query-field:focus-within,
+.k-admin-inventory-toolbar .k-admin-filter-field:focus-within{outline:2px solid var(--k-accent,#ff4b0a);outline-offset:2px}
+.k-admin-pager{display:flex;gap:10px;justify-content:center;align-items:center;padding:8px 0;min-height:52px}
+.k-admin-pager button{min-width:104px;min-height:44px}
+.k-admin-pager button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:700px){
+ .k-admin-inventory-toolbar{gap:8px}
+ .k-admin-inventory-toolbar .k-admin-query-field{flex-basis:100%}
+ .k-admin-inventory-toolbar .k-admin-filter-field{min-width:0;flex:1 1 calc(50% - 8px);width:auto}
+ .k-admin-inventory-toolbar .k-admin-filter-actions{width:100%}
+ .k-admin-inventory-toolbar .k-admin-filter-actions button{flex:1 1 30%;min-width:0;padding-inline:8px}
+}
+@media(max-width:360px){
+ .k-admin-inventory-toolbar .k-admin-filter-field{flex-basis:100%}
+ .k-admin-inventory-toolbar .k-admin-filter-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .k-admin-inventory-toolbar .k-admin-filter-actions button:first-child{grid-column:span 2}
+}
