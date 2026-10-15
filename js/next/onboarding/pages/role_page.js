@@ -298,6 +298,8 @@
   }
 
   function branchIcon(role){
+    if(role==='sto') return `<svg viewBox="0 0 36 36" aria-hidden="true"><path d="M4 31V14l14-9 14 9v17H4Z"/><path d="M11 31V20h14v11M12 14h12M17 20v11"/></svg>`;
+    if(role==='seller') return `<svg viewBox="0 0 36 36" aria-hidden="true"><path d="M5 14 8 5h20l3 9v17H5V14Z"/><path d="M5 14h26M12 14v6a4 4 0 0 0 8 0v-6M20 14v6a4 4 0 0 0 8 0v-6M11 31V23h10v8"/></svg>`;
     if(role==='master') return `<svg viewBox="0 0 36 36" aria-hidden="true"><path d="M22.5 7.2a8.2 8.2 0 0 0-9.7 10.7L6.7 24a3.1 3.1 0 0 0 4.4 4.4l6.1-6.1A8.2 8.2 0 0 0 28 12.6l-4.2 4.2-4.6-1.1-1.1-4.6 4.4-3.9Z"/></svg>`;
     return `<svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="12" cy="10" r="4"/><path d="M5.5 23c.8-4.5 3-7 6.5-7 3.1 0 5.2 2 6.2 5.4"/><path d="M18 24.5h11.5l-1.3-5.1a2.5 2.5 0 0 0-2.4-1.9h-4.9a2.5 2.5 0 0 0-2.3 1.5L16 24.5Z"/><circle cx="20.5" cy="26.5" r="2"/><circle cx="27.2" cy="26.5" r="2"/></svg>`;
   }
@@ -308,9 +310,8 @@
   }
 
   function roleBranch(role){
-    const master=role==='master';
-    const title=master?'Мастер':'Клиент';
-    const desc=master?'Оказываю услуги':'Ищу услуги';
+    const labels={client:['Клиент','Ищу услуги'],master:['Мастер','Оказываю услуги'],sto:['СТО','Управляю автосервисом'],seller:['Магазин','Продаю запчасти']};
+    const [title,desc]=labels[role]||labels.client;
     return `<div class="k-flow-role-column">
       <button type="button" class="k-flow-role-card" data-role-branch="${role}" data-role="${role}" aria-label="${title}: ${desc}">
         <span class="k-flow-role-icon">${branchIcon(role)}</span>
@@ -325,11 +326,13 @@
     return window.KaretaKFlow?.renderSteps?.({total:4,current:map[step]||1,label:'Окно'}) || '';
   }
 
+  const officialLogoUrl = () => '/assets/logo/main/kareta_logo_full.png?v=' + encodeURIComponent(String(window.KARETA_NEXT_ASSET_VERSION || 'dev'));
+
   function flowHeader(step){
     const action=step==='role'?'back-welcome':step==='profile'?'back-role':'back-profile';
     return `<header class="k-flow-header">
       <button type="button" class="k-flow-back" data-action="${action}" aria-label="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6"/></svg></button>
-      <img class="k-flow-logo" src="/assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ">
+      <img class="k-flow-logo" src="${officialLogoUrl()}" alt="KARETA.KZ">
       <span class="k-flow-header-spacer" aria-hidden="true"></span>
     </header>`;
   }
@@ -347,7 +350,7 @@
   function welcomeStepHtml(){
     return `<section id="onb2-step-welcome" class="onb2-step active" data-step="welcome">
       <div class="onb2-welcome-card onb2-flow-shell">
-        <div class="onb2-flow-brand"><img class="onb2-welcome-logo" src="/assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ Автосервис"></div>
+        <div class="onb2-flow-brand"><img class="onb2-welcome-logo" src="${officialLogoUrl()}" alt="KARETA.KZ Автосервис"></div>
         ${progressHtml('welcome')}
         <div class="onb2-welcome-copy">
           <h1>Добро пожаловать!</h1>
@@ -359,14 +362,14 @@
             <div><b>Запчасти и сообщество</b><span>Подбор деталей, реальные работы, вопросы и помощь других участников.</span></div>
           </div>
         </div>
-        <div class="onb2-flow-actions onb2-flow-actions--single"><button type="button" class="onb2-btn onb2-btn--primary onb2-welcome-next" data-action="welcome-next">Начать</button></div>
+        <div class="onb2-flow-actions onb2-flow-actions--single"><button type="button" class="onb2-btn onb2-btn--primary onb2-welcome-next" data-action="welcome-next">Начать</button><button type="button" class="k-flow-guest-preview" data-action="guest-preview" data-ru="Просто посмотреть" data-kk="Тек қарап шығу" data-en="Browse without registration">Просто посмотреть</button></div>
       </div>
     </section>`;
   }
 
   function roleStepHtml(){
     return `<section id="onb2-step-role" class="onb2-step active" data-step="role">
-      ${sharedModal('Кто вы?','Выберите, как будете пользоваться приложением',`<div class="k-flow-role-grid" role="list" aria-label="Выбор ветки KARETA.KZ">${roleBranch('master')}${roleBranch('client')}</div>`,'','role',`<div class="k-flow-desktop-context"><div><b>Для клиента</b><span>Гараж, заявки на ремонт, выбор мастера, чат, история и запчасти.</span></div><div><b>Для мастера</b><span>Биржа заявок, рабочий график, услуги, клиенты, запчасти и сообщество.</span></div></div>`)}
+      ${sharedModal('Кто вы?','Выберите, как будете пользоваться приложением',`<div class="k-flow-role-grid" role="list" aria-label="Выбор ветки KARETA.KZ">${roleBranch('client')}${roleBranch('master')}${roleBranch('sto')}${roleBranch('seller')}</div><div class="k-flow-guest-action"><button type="button" class="k-flow-guest-preview" data-action="guest-preview" data-ru="Просто посмотреть" data-kk="Тек қарап шығу" data-en="Browse without registration">Просто посмотреть</button><small>Без регистрации — только открытые страницы. Для заказа, чата и покупки потребуется вход.</small></div>`,'','role',`<div class="k-flow-desktop-context"><div><b>Для клиента</b><span>Гараж, заявки на ремонт, выбор мастера, чат, история и запчасти.</span></div><div><b>Для мастера</b><span>Биржа заявок, рабочий график, услуги, клиенты, запчасти и сообщество.</span></div></div>`)}
     </section>`;
   }
 
@@ -670,6 +673,7 @@
       if (branch) { const role = selectRole(branch.dataset.roleBranch); navigateFlow('profile',role,{source:'registration-role-branch'}); return; }
       const control = event.target.closest('[data-action]');
       const action = control?.dataset.action;
+      if (action === 'guest-preview') { window.KaretaOnboardingLifecycle?.enterGuestPreview?.(); return; }
       if (action === 'welcome-find-me') { locateWelcomeCity(true).catch(() => setWelcomeCityStatus('Не удалось определить — выберите город', 'error')); return; }
       if (action === 'welcome-next') { state.pendingEnter='neutral'; navigation.to('role', { role:draft.currentRole(), source:'registration-welcome-next' }); }
       if (action === 'back-welcome') { state.pendingEnter='neutral'; navigation.to('welcome', { role:draft.currentRole(), source:'registration-back-welcome' }); }

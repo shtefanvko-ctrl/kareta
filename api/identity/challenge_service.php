@@ -129,9 +129,8 @@ final class KaretaChallengeService {
     $transport=strtolower(trim((string)(KARETA_OTP['transport']??'webhook')));
     $allowFallback=(bool)(KARETA_OTP['allow_test_fallback']??false);
     if($this->productionMode()){
-      if($this->temporaryStaticMode())return 'test_static';
-      // Outside the explicit commissioning window production is fail-closed:
-      // only an HTTPS webhook may deliver OTP.
+      // Production cannot use test/static OTP, even with stale private flags.
+      // Only a configured HTTPS webhook may deliver OTP.
       $url=trim((string)(KARETA_OTP['webhook_url']??''));
       $host=strtolower((string)(parse_url($url,PHP_URL_HOST)?:''));
       $placeholder=$host==='' || str_ends_with($host,'.example') || in_array($host,['example.com','www.example.com'],true);
@@ -150,20 +149,20 @@ final class KaretaChallengeService {
   }
 
   private function configuredTestCode(): string {
-    if($this->productionMode() && !$this->temporaryStaticMode())throw new DomainException('otp_test_mode_forbidden');
+    if($this->productionMode())throw new DomainException('otp_test_mode_forbidden');
     $code=preg_replace('/\D+/','',(string)(KARETA_OTP['test_code']??''))?:'';
     return preg_match('/^\d{4,8}$/',$code)===1?$code:'0000';
   }
 
   private function validCodeFormat(string $code): bool {
-    // Real webhook OTP remains six digits; temporary configured test OTP may
-    // use four to eight digits. Keeping both formats avoids coupling verify to
-    // a transport value that may be changed between request and confirmation.
-    if(preg_match('/^\d{6}$/',$code)===1)return true;
+    // Production refuses legacy 4-digit static challenges, even if one remains
+    // unconsumed after deployment; staging retains the approved 0000 flow.
+    if($this->productionMode())return preg_match('/^\d{6}$/',$code)===1;
     return preg_match('/^\d{4,8}$/',$code)===1;
   }
 
   private function deliver(string $phone,string $code,string $purpose,string $transport): void {
+    if($this->productionMode() && $transport==='test_static')throw new DomainException('otp_test_mode_forbidden');
     if($transport==='test_static' || $this->developmentMode())return;
     $url=trim((string)(KARETA_OTP['webhook_url']??''));
     $host=strtolower((string)(parse_url($url,PHP_URL_HOST)?:''));
@@ -258,6 +257,7 @@ final class KaretaChallengeService {
   }
 
   private function temporaryStaticMode(): bool {
+    if($this->productionMode())return false;
     if(!(bool)(KARETA_OTP['temporary_static']??false))return false;
     // Manual-off commissioning mode intentionally uses an empty deadline.
     // config.php has already resolved the enabled flag and any optional deadline

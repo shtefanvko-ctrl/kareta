@@ -13029,6 +13029,170 @@ html.k-request-window-open #k-mobile-nav{visibility:hidden!important;pointer-eve
 }
 
 
+/* R188.5.5.6.84.119 — balanced desktop onboarding.
+   Mobile geometry stays unchanged; desktop behaves as an application window, not a full-width landing page. */
+.onb2-desktop-benefits,.k-flow-desktop-context{display:none!important}
+@media (min-width:900px){
+  #onb2-step-welcome,#onb2-step-role,#onb2-step-profile,#onb2-step-code{
+    padding:24px 32px!important;
+    align-items:center!important;
+    background:#f6f7f9!important;
+  }
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{
+    width:min(calc(100vw - 64px),1040px)!important;
+  }
+  #onb2-step-profile .onb2-modal.onb2-modal--registration.k-flow-onboarding-window,
+  #onb2-step-code .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{
+    width:min(calc(100vw - 64px),900px)!important;
+  }
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    min-height:min(680px,calc(100dvh - 48px))!important;
+    height:min(780px,calc(100dvh - 48px))!important;
+    max-height:calc(100dvh - 48px)!important;
+    margin:auto!important;
+    border:1px solid #e7e9ed!important;
+    border-radius:24px!important;
+    box-shadow:0 20px 60px rgba(15,23,42,.10)!important;
+    overflow:auto!important;
+  }
+  #onb2-step-role .k-flow-onboarding-window{
+    grid-template-columns:minmax(280px,.86fr) minmax(360px,1.14fr)!important;
+    column-gap:32px!important;
+    padding-inline:36px!important;
+  }
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    grid-template-columns:minmax(260px,.82fr) minmax(350px,1.18fr)!important;
+    column-gap:32px!important;
+    padding-inline:36px!important;
+  }
+  #onb2-step-role .k-flow-body{max-width:520px!important;justify-self:end!important}
+  #onb2-step-profile .k-flow-body,#onb2-step-code .k-flow-body{max-width:440px!important;justify-self:end!important}
+  #onb2-step-role .k-flow-role-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    width:100%!important;
+    max-width:460px!important;
+    gap:16px!important;
+  }
+  #onb2-step-role .k-flow-role-card{width:100%!important;min-width:0!important;height:242px!important;min-height:242px!important}
+
+  #onb2-step-welcome .onb2-welcome-card{
+    grid-template-columns:minmax(340px,400px) minmax(0,1fr)!important;
+    column-gap:40px!important;
+    padding-inline:36px!important;
+  }
+  #onb2-step-welcome .onb2-welcome-copy{max-width:420px!important;padding-top:46px!important}
+  #onb2-step-welcome .onb2-welcome-copy h1{max-width:400px!important}
+  #onb2-step-welcome .onb2-welcome-copy p{max-width:340px!important}
+  #onb2-step-welcome .onb2-flow-actions{max-width:360px!important;padding-bottom:46px!important}
+
+  .onb2-desktop-benefits,.k-flow-desktop-context{display:grid!important}
+  .onb2-desktop-benefits{gap:10px;margin-top:28px}
+  .onb2-desktop-benefits>div,.k-flow-desktop-context>div{
+    display:grid;gap:3px;padding:11px 13px;border:1px solid #e5e7eb;border-radius:12px;
+    background:rgba(255,255,255,.88);backdrop-filter:blur(8px)
+  }
+  .onb2-desktop-benefits b,.k-flow-desktop-context b{font-size:13px;line-height:18px;color:#111}
+  .onb2-desktop-benefits span,.k-flow-desktop-context span{font-size:12px;line-height:17px;color:#666}
+  .k-flow-desktop-context{gap:10px;margin-top:28px;max-width:360px}
+}
+@media (min-width:1200px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{width:1080px!important}
+  #onb2-step-profile .onb2-modal.onb2-modal--registration.k-flow-onboarding-window,
+  #onb2-step-code .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{width:940px!important}
+}
+@media (min-width:1600px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{width:1120px!important}
+  #onb2-step-profile .onb2-modal.onb2-modal--registration.k-flow-onboarding-window,
+  #onb2-step-code .onb2-modal.onb2-modal--registration.k-flow-onboarding-window{width:980px!important}
+}
+
+/* R188.5.5.6.84.177 — canonical compact desktop entry flow. */
+@media(min-width:900px){
+  #onb2-step-welcome .onb2-welcome-card,
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    min-height:0!important;
+    height:auto!important;
+    max-height:calc(100dvh - 48px)!important;
+    overflow:auto!important;
+    align-content:start!important;
+  }
+  #onb2-step-role .k-flow-onboarding-window,
+  #onb2-step-profile .k-flow-onboarding-window,
+  #onb2-step-code .k-flow-onboarding-window{
+    grid-template-rows:auto auto auto!important;
+    padding-bottom:34px!important;
+  }
+  #onb2-step-role .k-flow-header,
+  #onb2-step-profile .k-flow-header,
+  #onb2-step-code .k-flow-header{
+    min-height:62px!important;
+    padding-top:18px!important;
+  }
+  #onb2-step-welcome .k-flow-steps,
+  #onb2-step-role .k-flow-steps,
+  #onb2-step-profile .k-flow-steps,
+  #onb2-step-code .k-flow-steps{
+    width:300px!important;
+    margin:10px auto 0!important;
+  }
+  #onb2-step-role .k-flow-copy,
+  #onb2-step-profile .k-flow-copy,
+  #onb2-step-code .k-flow-copy,
+  #onb2-step-role .k-flow-body,
+  #onb2-step-profile .k-flow-body,
+  #onb2-step-code .k-flow-body{
+    align-self:start!important;
+    margin-top:44px!important;
+  }
+  #onb2-step-role .k-flow-role-grid{
+    max-width:430px!important;
+    gap:14px!important;
+  }
+  #onb2-step-role .k-flow-role-card{
+    height:210px!important;
+    min-height:210px!important;
+    padding:16px 14px!important;
+  }
+  #onb2-step-role .k-flow-role-icon{
+    width:72px!important;
+    height:72px!important;
+    flex-basis:72px!important;
+    margin-bottom:12px!important;
+  }
+  #onb2-step-role .k-flow-role-card-direction-wide{
+    width:46px!important;
+    height:46px!important;
+  }
+  #onb2-step-profile .k-flow-field input{
+    height:50px!important;
+    min-height:50px!important;
+  }
+  #onb2-step-profile .k-flow-primary,
+  #onb2-step-code .k-flow-primary{
+    height:52px!important;
+    min-height:52px!important;
+  }
+  #onb2-step-code .k-flow-actions{margin-top:18px!important}
+  #onb2-step-code .k-flow-code-meta{margin-top:12px!important}
+}
+
+/* KARETA 2026-10-15 — all four registered roles and anonymous preview. */
+#onb2-step-role .k-flow-guest-action{display:grid;justify-items:center;gap:7px;margin:16px auto 0;width:min(100%,330px);text-align:center}
+#onb2-step-role .k-flow-guest-action small{color:#656b73;font-size:12px;line-height:1.4}
+.k-flow-guest-preview{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 18px;border:1px solid #ff5416;border-radius:12px;color:#dd420d;background:#fff;font-size:15px;font-weight:700;cursor:pointer}
+.k-flow-guest-preview:hover{background:#fff4ec}.k-flow-guest-preview:focus-visible{outline:3px solid #ff8a45;outline-offset:2px}
+#onb2-step-welcome .onb2-flow-actions:has(.k-flow-guest-preview){display:grid!important;gap:10px!important;justify-items:stretch!important}
+@media(max-width:479px){#onb2-step-role .k-flow-body{margin-top:12px!important}#onb2-step-role .k-flow-role-grid{gap:10px!important}#onb2-step-role .k-flow-role-card{height:162px!important;min-height:162px!important;padding:10px 8px!important}#onb2-step-role .k-flow-role-icon{width:52px!important;height:52px!important;flex-basis:52px!important;margin-bottom:8px!important}#onb2-step-role .k-flow-role-icon svg{width:30px!important;height:30px!important}#onb2-step-role .k-flow-role-card b{font-size:17px!important;line-height:21px!important}#onb2-step-role .k-flow-role-card small{font-size:12px!important;line-height:15px!important}#onb2-step-role .k-flow-guest-action{margin-top:10px}}
+
 /* ===== SOURCE: css/next/error_403_background.css ===== */
 [data-kareta-403]{
   position:relative;
@@ -14617,6 +14781,42 @@ html[data-user-role="client"] :is(.k-client-orders-empty,.k-client-account-empty
 
 @media (min-width:861px) and (max-width:900px){
   #k-shell-header:has(> #k-mobile-back:not([hidden])) > .k-brand{margin-left:54px!important}
+}
+
+/* FIX-PROMPT v4 — mobile home owns the logo/location row; the bottom More owns navigation.
+   This is deliberately scoped to the home header and phone viewport, not a new global cascade. */
+@media(max-width:599px){
+  html:is([data-user-role="client"],[data-user-role="guest"]) #k-shell-header[data-kareta-header-mode="home"]{
+    height:68px!important;min-height:68px!important;max-height:68px!important;
+  }
+  html:is([data-user-role="client"],[data-user-role="guest"]) #k-shell-header[data-kareta-header-mode="home"] > .k-brand{
+    position:absolute!important;left:50%!important;top:50%!important;
+    transform:translate(-50%,-50%)!important;margin:0!important;
+    max-width:calc(100vw - 116px)!important;z-index:2!important;
+  }
+  html:is([data-user-role="client"],[data-user-role="guest"]) #k-shell-header[data-kareta-header-mode="home"] > .k-shell-actions{
+    position:absolute!important;right:max(12px,env(safe-area-inset-right,0px))!important;
+    left:auto!important;top:50%!important;bottom:auto!important;
+    transform:translateY(-50%)!important;margin:0!important;
+    width:auto!important;max-width:44px!important;
+    overflow:visible!important;z-index:3!important;
+  }
+  html:is([data-user-role="client"],[data-user-role="guest"]) #k-shell-header[data-kareta-header-mode="home"] > .k-shell-actions > :not([data-shell-location-icon]){
+    display:none!important;
+  }
+  html:is([data-user-role="client"],[data-user-role="guest"]) #k-shell-header[data-kareta-header-mode="home"] > .k-shell-actions > [data-shell-location-icon]{
+    position:static!important;flex:0 0 40px!important;
+    width:40px!important;min-width:40px!important;height:40px!important;
+  }
+}
+#k-shell-header .k-brand-logo[hidden],#k-shell-header .k-brand-text-fallback[hidden]{display:none!important}
+#k-shell-header .k-brand-text-fallback{color:#111827;font-weight:900;white-space:nowrap;font-size:19px;letter-spacing:-.025em}
+
+/* Six public guest routes use the same bounded phone labels as the client shell. */
+@media(max-width:599px){
+  html[data-user-role="guest"] #k-mobile-nav{grid-template-columns:repeat(6,minmax(0,1fr));gap:0}
+  html[data-user-role="guest"] #k-mobile-nav .k-nav-link{min-width:0;padding:5px 1px;overflow:hidden}
+  html[data-user-role="guest"] #k-mobile-nav .k-nav-label{min-width:0;max-width:100%;font-size:clamp(8px,2.2vw,10px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 }
 
 /* ===== SOURCE PATCH: R188.5.5.6.84.76 home actions + request header/action dock ===== */
@@ -20308,3 +20508,22 @@ html[data-user-role="master"] body{max-width:100%!important;overflow-x:clip!impo
     padding-bottom:0!important;
   }
 }
+
+/* FIX-PROMPT v3: internal page has only existing Back + title.
+   Scoped !important only counters earlier global shell overrides. */
+#k-shell-header[data-kareta-header-mode="inner"]{
+  grid-template-columns:44px minmax(0,1fr)!important;column-gap:10px;justify-content:start;
+}
+#k-shell-header[data-kareta-header-mode="inner"] > .k-brand,
+#k-shell-header[data-kareta-header-mode="inner"] > #k-desktop-nav,
+#k-shell-header[data-kareta-header-mode="inner"] > .k-shell-actions{display:none!important}
+#k-shell-header[data-kareta-header-mode="inner"] > #k-mobile-back:not([hidden]){
+  display:grid!important;position:relative;grid-column:1;grid-row:1;
+  width:42px;height:42px;place-items:center;margin:0;
+}
+#k-shell-header[data-kareta-header-mode="inner"] > #k-shell-page-title{
+  display:block!important;position:relative;grid-column:2;grid-row:1;
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-size:clamp(16px,3.8vw,20px);line-height:1.3;color:var(--k-text,#111827);
+}
+#k-shell-header:not([data-kareta-header-mode="inner"]) > #k-shell-page-title{display:none!important}

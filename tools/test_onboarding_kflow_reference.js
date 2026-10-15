@@ -15,8 +15,8 @@ expect(reg.includes("'css/next/onboarding_kflow_reference.css'"),'reference CSS 
 expect(role.includes('<h1>Добро пожаловать!</h1>'),'welcome title mismatch');
 expect(role.includes('Всё для автомобиля<br>в одном месте'),'welcome subtitle mismatch');
 expect(role.includes('>Начать</button>'),'welcome CTA mismatch');
-expect(role.includes("${roleBranch('master')}${roleBranch('client')}"),'role scene must contain only Master and Client branches');
-expect(role.includes("master?'Оказываю услуги':'Ищу услуги'"),'role captions mismatch');
+for(const key of ['client','master','sto','seller']) expect(role.includes("roleBranch('"+key+"')"), 'Missing role '+key);
+expect(role.includes("labels={client:"),'role captions missing');
 expect(role.includes('k-flow-otp--${codeLength}'),'dynamic OTP layout class missing');
 expect(form.includes('placeholder="Ваше имя"'),'name placeholder mismatch');
 expect(form.includes('placeholder="+7 (___) ___-__-__"'),'phone placeholder mismatch');

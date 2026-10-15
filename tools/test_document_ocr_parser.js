@@ -1,0 +1,34 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const w={};const c={window:w,Date};
+vm.runInNewContext(fs.readFileSync('js/next/document_ocr.js','utf8'),c);
+const a=w.KaretaDocumentOCR;
+const catalog=[{name:'Peugeot',models:[{name:'308'},{name:'408'}]},{name:'Toyota',models:[{name:'Camry'}]}];
+const fields=a.parseText('МАРКА / МОДЕЛЬ PEUGEOT 308\nГОД ВЫПУСКА 2018\nVIN VF3LRHNYWJS123456\nГОСНОМЕР KZ 777AAA01\nВЛАДЕЛЕЦ ИВАНОВ И.И.',catalog);
+assert.equal(fields.brandName,'Peugeot');assert.equal(fields.modelName,'308');assert.equal(fields.year,'2018');
+assert.equal(fields.vin,'VF3LRHNYWJS123456');assert.equal(fields.plateNumber,'777AAA01');
+assert.ok(!JSON.stringify(fields).includes('ИВАНОВ'));
+assert.equal(a.parseText('VIN ABCDEFGHIJKLMNOPQ',catalog).vin,undefined);
+assert.equal(a.parseText('VIN VF3LRHNYWJS123456\nVIN VF3LRHNYWJS654321',catalog).vin,undefined);
+assert.equal(a.parseText('ГОД ВЫПУСКА 1940',catalog).year,undefined);
+assert.equal(a.parseText('TOYOTA',catalog).modelName,undefined);
+assert.equal(a.available(),false);
+assert.equal(a.validateCandidate({brandName:'Peugeot',modelName:'308',year:'2018',vin:'VF3LRHNYWJS123456',plateNumber:'777AAA01',ownerName:'Private'}).fields.ownerName,undefined);
+assert.equal(a.validateCandidate({year:'1940'}).errors.year,'INVALID_YEAR');
+assert.equal(a.validateCandidate({vin:'VF3LRHNYWJS12345Q'}).errors.vin,'INVALID_VIN');
+assert.equal(a.validateCandidate({brandName:'<script>'}).ok,false);
+assert.equal(a.validateCandidate({modelName:'308'}).errors.brandName,'BRAND_REQUIRED');
+assert.equal(a.validateCandidate({vin:''}).errors._form,'NO_FIELDS');
+
+(async()=>{
+  let closed=0;
+  w.TextDetector=class{async detect(b){return [{rawValue:b.side==='front'?'МАРКА / МОДЕЛЬ PEUGEOT 308\nГОД ВЫПУСКА 2018':'VIN VF3LRHNYWJS123456\nГОСНОМЕР KZ 777AAA01'}]}};
+  c.createImageBitmap=async file=>({side:file.side,close(){closed++;}});
+  w.KaretaFirstVehicleFlow={CATALOG:catalog};
+  assert.equal(a.available(),true);
+  const result=await a.recognize({front:{side:'front'},rear:{side:'rear'}});
+  assert.equal(result.fields.vin,'VF3LRHNYWJS123456');assert.equal(result.fields.modelName,'308');
+  assert.equal(result.rawText,undefined);assert.equal(closed,2);
+  assert.equal(await a.recognize({front:{},rear:{}},{signal:{aborted:true}}).then(()=>false,e=>e.message==='DOCUMENT_OCR_CANCELLED'),true);
+  console.log('PASS document OCR parser, privacy, fallback, lifecycle');
+})().catch(e=>{console.error(e);process.exitCode=1;});

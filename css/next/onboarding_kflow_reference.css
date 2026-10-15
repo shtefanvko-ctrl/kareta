@@ -619,3 +619,11 @@
   #onb2-step-code .k-flow-actions{margin-top:18px!important}
   #onb2-step-code .k-flow-code-meta{margin-top:12px!important}
 }
+
+/* KARETA 2026-10-15 — all four registered roles and anonymous preview. */
+#onb2-step-role .k-flow-guest-action{display:grid;justify-items:center;gap:7px;margin:16px auto 0;width:min(100%,330px);text-align:center}
+#onb2-step-role .k-flow-guest-action small{color:#656b73;font-size:12px;line-height:1.4}
+.k-flow-guest-preview{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 18px;border:1px solid #ff5416;border-radius:12px;color:#dd420d;background:#fff;font-size:15px;font-weight:700;cursor:pointer}
+.k-flow-guest-preview:hover{background:#fff4ec}.k-flow-guest-preview:focus-visible{outline:3px solid #ff8a45;outline-offset:2px}
+#onb2-step-welcome .onb2-flow-actions:has(.k-flow-guest-preview){display:grid!important;gap:10px!important;justify-items:stretch!important}
+@media(max-width:479px){#onb2-step-role .k-flow-body{margin-top:12px!important}#onb2-step-role .k-flow-role-grid{gap:10px!important}#onb2-step-role .k-flow-role-card{height:162px!important;min-height:162px!important;padding:10px 8px!important}#onb2-step-role .k-flow-role-icon{width:52px!important;height:52px!important;flex-basis:52px!important;margin-bottom:8px!important}#onb2-step-role .k-flow-role-icon svg{width:30px!important;height:30px!important}#onb2-step-role .k-flow-role-card b{font-size:17px!important;line-height:21px!important}#onb2-step-role .k-flow-role-card small{font-size:12px!important;line-height:15px!important}#onb2-step-role .k-flow-guest-action{margin-top:10px}}

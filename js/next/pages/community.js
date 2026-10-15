@@ -296,6 +296,17 @@
   function mountCommunity(ctx={}){
     const page=document.querySelector('[data-community-page]');if(!page)return()=>{};
     disposed=false;visibleCount=window.matchMedia?.('(max-width: 767px)')?.matches?6:12;const route=parseRoute();const routeKey=routeHash();const groupWasMissing=route.name==='group'&&!api.getGroup?.(route.id);const onVisibility=()=>{if(document.hidden)setCommunityVideoSuspended(true);else setCommunityVideoSuspended(false);};document.addEventListener('visibilitychange',onVisibility);
+    // A DTC question is always an editable, user-published draft. Never autofill VIN, phone or full report.
+    if(route.name==='question-create'){
+      try{
+        const draft=sessionStorage.getItem('kareta.obd.communityDraft');
+        const field=page.querySelector('form[data-community-create="QUESTION"] textarea[name="text"]');
+        if(draft&&field&&!field.value){
+          field.value=String(draft).slice(0,3000);
+          sessionStorage.removeItem('kareta.obd.communityDraft');
+        }
+      }catch(_){}
+    }
     const onClick=async e=>{
       if(!e.target.closest('[data-community-more],.k-community-more-menu'))closeCommunityMoreMenu(page);
       const desktopView=e.target.closest('[data-community-desktop-view]');

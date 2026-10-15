@@ -74,7 +74,9 @@
     const row=(Array.isArray(categories)?categories:[]).find(x=>String(x?.key||'')===id)||{};
     const fallback=fallbackCategories[id]||{name:id,icon:'parts'};
     const name=String(row.name||fallback.name),groupName=String(row.groupName||'');
-    return {key:id,name,icon:categoryIcon(name+' '+groupName,fallback.icon),count:Number(row.count||0),groupName};
+    // The product key owns the icon; the group label must not turn audio products into padlocks.
+    const glyph=Object.hasOwn(fallbackCategories,id)?fallback.icon:categoryIcon(name,fallback.icon);
+    return {key:id,name,icon:glyph,count:Number(row.count||0),groupName};
   }
   function uniqueCategories(snapshot){
     const map=new Map();
@@ -130,6 +132,7 @@
   function storeDirectory(snapshot){
     const map=new Map();
     (snapshot.products||[]).forEach(product=>{
+      if(!cityMatch(product,'store'))return;
       const id=String(product.seller_user_id??'').trim();if(!id)return;
       const current=map.get(id)||{id,name:String(product.store_name||'Магазин'),city:String(product.city||''),address:String(product.warehouse_address||''),products:0,rating:0,reviews:0};
       current.products+=1;

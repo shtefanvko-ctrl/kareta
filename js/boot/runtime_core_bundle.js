@@ -12,7 +12,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
     { title:'Запись', route:'#/orders/new', icon:'calendar' },
     { title:'Чаты', route:'#/chats', icon:'chats' },
     { title:'Мастера', route:'#/masters', icon:'master' },
-    { title:'Сканировать', route:'#/scan', icon:'camera' }
+    { title:'Сканировать', route:'#/scan', icon:'camera' },
+    { title:'Диагностика ЭБУ', route:'#/diagnostics', icon:'diagnostics' }
   ]);
 
 
@@ -447,7 +448,14 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
     const pages=window.KaretaRequestPages;
     if(!pages?.renderRequestWindow||!pages?.mountRequest)throw new Error('request_pages_unavailable_after_lazy_load');
     state.body.innerHTML=pages.renderRequestWindow({state:window.KaretaNext?.state||{},windowMode:true})||'';
-    const ctx=context(state.body);const result=pages.mountRequest(ctx);if(typeof result==='function')state.cleanups.push(result);
+    const ctx=context(state.body),result=pages.mountRequest(ctx);
+    if(result&&typeof result.then==='function'){
+      result.then(cleanupFn=>{
+        if(typeof cleanupFn!=='function')return;
+        if(ctx.lifecycle.isActive()&&token===state.loadToken)state.cleanups.push(cleanupFn);
+        else cleanupFn();
+      }).catch(error=>{if(ctx.lifecycle.isActive())console.error('[KARETA request async mount]',error);});
+    }else if(typeof result==='function')state.cleanups.push(result);
     requestAnimationFrame(()=>state.body.querySelector('button,input,[tabindex]')?.focus?.({preventScroll:true}));
     window.dispatchEvent(new CustomEvent('kareta:request-window-open',{detail:{targetHash:state.targetHash,baseHash:state.baseHash,lazy:true}}));
     return true;
@@ -766,7 +774,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
   function confirm(draft){const editing=Boolean(state.editVehicleId);return `${flowHeader(3)}<div class="k-first-vehicle-copy"><h1>Подтвердите автомобиль</h1><p>Проверьте минимальную карточку перед сохранением в гараж.</p></div><section class="k-first-vehicle-card k-first-vehicle-review">${reviewCard(draft)}</section><div class="k-first-vehicle-actions"><button class="k-first-vehicle-primary" type="button" data-first-vehicle-save ${state.saving?'disabled aria-busy="true"':''}>${state.saving?'Сохраняем…':(editing?'Подтвердить изменения':'Подтвердить и добавить')}</button><button class="k-first-vehicle-secondary is-bordered" type="button" data-first-vehicle-edit-basic>Изменить данные</button><small class="k-first-vehicle-submit-error" data-fv-submit-error aria-live="polite"></small></div>`;}
   function success(draft){const editing=Boolean(state.editVehicleId);return `${flowHeader(3)}<section class="k-first-vehicle-success"><div class="k-first-vehicle-success-icon">${successIcon()}</div><h1>${editing?'Автомобиль обновлён':'Автомобиль добавлен'}</h1><p>${editing?`Данные ${esc(vehicleTitle(draft))} сохранены`:`${esc(vehicleTitle(draft))} теперь находится в вашем гараже`}</p>${reviewCard(draft,{success:true})}</section><div class="k-first-vehicle-actions k-first-vehicle-success-actions">${editing?'':`<button class="k-first-vehicle-primary" type="button" data-first-vehicle-create-request>Создать заявку</button>`}<button class="k-first-vehicle-secondary is-bordered" type="button" data-first-vehicle-to-garage>Перейти в гараж</button>${editing?'':`<button class="k-first-vehicle-secondary" type="button" data-first-vehicle-home>На главную</button>`}</div>`;}
 
-  function emptyGarage(){const draft=readDraft(),hasDraft=Boolean(draft.brandName||draft.modelName||draft.year||draft.vin||draft.plateNumber);return `<section class="k-first-vehicle-empty" data-first-vehicle-empty><div class="k-first-vehicle-empty-visual">${carIcon()}</div><span>МОЙ ГАРАЖ</span><h2>В гараже пока нет автомобилей</h2><p>Добавьте автомобиль, чтобы быстрее оформлять заявки и хранить историю обслуживания.</p><button class="k-btn k-btn-primary" type="button" data-garage-add-vehicle>${hasDraft?'Продолжить добавление':'Добавить автомобиль'}</button></section>`;}
+  function emptyGarage(){const draft=readDraft(),hasDraft=Boolean(draft.brandName||draft.modelName||draft.year||draft.vin||draft.plateNumber);return `<section class="k-first-vehicle-empty" data-first-vehicle-empty><div class="k-first-vehicle-empty-visual">${carIcon()}</div><span>МОЙ ГАРАЖ</span><h2>В гараже пока нет автомобилей</h2><p>Добавьте автомобиль, чтобы быстрее оформлять заявки и хранить историю обслуживания.</p><a class="k-btn k-btn-primary" href="#/scan/document">Сканировать техпаспорт</a><button class="k-btn k-btn-secondary" type="button" data-garage-add-vehicle>${hasDraft?'Продолжить добавление':'Ввести вручную'}</button></section>`;}
 
   function ensureSurfaceRoot(){
     let root=document.getElementById('k-first-vehicle-layer');
@@ -835,14 +843,36 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
     root.addEventListener('click',click);root.addEventListener('input',input);root.addEventListener('change',input);
   }
 
-  function start({root,startStep=2,data={},onReturn=null,mode='manual',vehicle=null}={}){state.sourceRoot=root||null;state.root=ensureSurfaceRoot();if(!state.root)return false;state.data=data||{};state.onReturn=typeof onReturn==='function'?onReturn:null;state.mode=mode;state.success=null;state.saving=false;state.editVehicleId=mode==='edit'?String(vehicle?.id||''):'';const flowRoot=state.root;if(!state.editVehicleId&&!state.serverLoaded)loadServerFirstEntry().then(()=>{if(state.root===flowRoot&&state.step>=2)render();});state.editLegacyBrandName=state.editVehicleId&&!brandByName(vehicle?.brand||'')?normalizeText(vehicle?.brand):'';state.step=startStep===1&&!state.editVehicleId?1:2;if(state.editVehicleId){const stored=readJson(draftKey());if(!stored)writeDraft({...vehicleToDraft(vehicle),step:state.step});else writeDraft({step:state.step});}else writeDraft({step:state.step});render();return true;}
+
+  // In-memory, account-scoped OCR candidate. The photo and raw document text are never stored.
+  let documentOffer=null;
+  function offerDocumentPrefill(fields={}){
+    if(currentRole()!=='client'||!fields||typeof fields!=='object')return false;
+    const patch={},brand=brandByName(fields.brandName);
+    if(brand){
+      patch.brandId=brand.id;patch.brandName=brand.name;
+      const model=modelByName(brand,fields.modelName);
+      if(model){patch.modelId=model.id;patch.modelName=model.name;}
+    }
+    const year=String(fields.year||'').trim();
+    if(/^\d{4}$/.test(year)&&Number(year)>=1950&&Number(year)<=currentYear()+1)patch.year=year;
+    const vin=String(fields.vin||'').toUpperCase().replace(/\s+/g,'');
+    if(/^[A-HJ-NPR-Z0-9]{17}$/.test(vin))patch.vin=vin;
+    const plate=normalizePlate(fields.plateNumber||'');
+    if(/^[A-Z0-9 \-]{4,24}$/.test(plate))patch.plateNumber=plate;
+    if(!Object.keys(patch).length)return false;
+    documentOffer={patch,scope:scopeKey(),time:Date.now()};
+    return true;
+  }
+
+  function start({root,startStep=2,data={},onReturn=null,mode='manual',vehicle=null}={}){state.sourceRoot=root||null;state.root=ensureSurfaceRoot();if(!state.root)return false;state.data=data||{};state.onReturn=typeof onReturn==='function'?onReturn:null;state.mode=mode;state.success=null;state.saving=false;state.editVehicleId=mode==='edit'?String(vehicle?.id||''):'';const flowRoot=state.root;const offered=mode==='manual'&&documentOffer?.scope===scopeKey()&&Date.now()-documentOffer.time<120000?documentOffer:null;documentOffer=null;if(!state.editVehicleId&&!state.serverLoaded)loadServerFirstEntry().then(()=>{if(state.root===flowRoot&&state.step>=2){if(offered)writeDraft({...defaultDraft(),...offered.patch,step:2});render();}});state.editLegacyBrandName=state.editVehicleId&&!brandByName(vehicle?.brand||'')?normalizeText(vehicle?.brand):'';state.step=startStep===1&&!state.editVehicleId?1:2;if(state.editVehicleId){const stored=readJson(draftKey());if(!stored)writeDraft({...vehicleToDraft(vehicle),step:state.step});else writeDraft({step:state.step});}else writeDraft(offered?{...defaultDraft(),...offered.patch,step:state.step}:{step:state.step});render();return true;}
 
   window.addEventListener('kareta:session-confirmed',event=>{window.setTimeout(()=>maybeScheduleFirstEntry(event.detail||{}),0);});
 
   window.addEventListener('hashchange',()=>{if(!String(location.hash||'').startsWith('#/cabinet/garage'))deactivateSurface();});
-  window.addEventListener('kareta:context-changed',event=>{if(currentRole(event.detail||{})!=='client')deactivateSurface();window.setTimeout(()=>maybeScheduleFirstEntry(event.detail||{}),80);});
+  window.addEventListener('kareta:context-changed',event=>{documentOffer=null;if(currentRole(event.detail||{})!=='client')deactivateSurface();window.setTimeout(()=>maybeScheduleFirstEntry(event.detail||{}),80);});
 
-  window.KaretaFirstVehicleFlow=Object.freeze({CATALOG,emptyGarage,start,consumePendingIntro,maybeScheduleFirstEntry,readDraft,clearDraft,scopeKey,loadServerFirstEntry,flushServerDraft,deactivateSurface});
+  window.KaretaFirstVehicleFlow=Object.freeze({CATALOG,emptyGarage,start,offerDocumentPrefill,consumePendingIntro,maybeScheduleFirstEntry,readDraft,clearDraft,scopeKey,loadServerFirstEntry,flushServerDraft,deactivateSurface});
 })();
 ;
 
@@ -908,7 +938,35 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
   function tariffMetric(title,used,limit,note=''){const u=Math.max(0,Number(used||0)),l=Math.max(0,Number(limit||0)),pct=l>0?Math.min(100,Math.round(u*100/l)):0;return `<div class="k-account-tariff-metric"><span><small>${esc(title)}</small><b>${u} / ${l||'∞'}</b></span><i><em style="width:${pct}%"></em></i>${note?`<small>${esc(note)}</small>`:''}</div>`;}
   async function renderTariff(){const role=String(window.KaretaRoleAccess?.currentRole?.()||'client').toLowerCase();const r=await window.KaretaApiClient.request('api/db.php?action=tariffs.getMine',{method:'GET',cacheTtlMs:0});if(!r.ok)throw new Error(r.payload?.message||r.payload?.error||'Не удалось загрузить тариф');const d=r.payload?.data||{},limits=d.limits||{},usage=d.usage||{},current=d.current||{},plans=Array.isArray(d.plans)?d.plans:[];const metrics=role==='master'?[tariffMetric('Принято сегодня',usage.acceptedRequestsToday,limits.acceptedRequestsPerDay),tariffMetric('Приёмы на дату',usage.activeIntakesOnDate,limits.activeIntakesPerDay),tariffMetric('Открытые ремонты',usage.openRepairs,limits.openRepairs)]:[tariffMetric('Активные заявки',usage.activeRequests,limits.activeRequests),tariffMetric('Автомобили',usage.vehicles,limits.vehicles)];state.body.innerHTML=`<section class="k-account-tariff-current"><header><div><small>ТЕКУЩИЙ ТАРИФ</small><h3>${esc(current.name||'—')}</h3><p>${esc(current.description||'')}</p></div><strong>${current.isPaid?(Number(current.monthlyPrice||0)>0?money(current.monthlyPrice)+'/мес.':'Платный тариф'):'Бесплатно'}</strong></header><div class="k-account-tariff-metrics">${metrics.join('')}</div></section><section class="k-account-plan-list">${plans.map(p=>`<article class="${String(p.code)===String(current.code)?'is-current':''}"><div><small>${p.isPaid?'KARETA PRO':'ОБЫЧНЫЙ'}</small><b>${esc(p.name||'Тариф')}</b><p>${esc(p.description||'')}</p></div><strong>${p.isPaid?(Number(p.monthlyPrice||0)>0?money(p.monthlyPrice)+'/мес.':'Платный'):'Бесплатно'}</strong></article>`).join('')}</section>`;}
 
-  async function renderNotifications(){const d=await cabinet();const p=d.preferences||{};state.body.innerHTML=`<form class="k-account-window-form" data-account-notify-form><div class="k-account-setting-list"><label><span><b>Статусы заказов</b><small>Этапы, стоимость и готовность.</small></span><input type="checkbox" name="notify_orders" ${Number(p.notify_orders)!==0?'checked':''}><i></i></label><label><span><b>Напоминания по автомобилю</b><small>ТО, документы и сервисные сроки.</small></span><input type="checkbox" name="notify_service" ${Number(p.notify_service)!==0?'checked':''}><i></i></label><label><span><b>Акции</b><small>Персональные предложения KARETA.</small></span><input type="checkbox" name="notify_promotions" ${Number(p.notify_promotions)!==0?'checked':''}><i></i></label></div><footer><output data-account-status></output><button class="k-btn k-btn-primary" type="submit">Сохранить уведомления</button></footer></form><section class="k-account-events"><header><div><small>ПОСЛЕДНИЕ СОБЫТИЯ</small><h3>Центр уведомлений</h3></div><button class="k-btn k-btn-secondary" type="button" data-account-notify-refresh>Обновить</button></header><div data-account-notify-list><div class="k-account-window-r79__loading">Загрузка…</div></div></section>`;const form=state.body.querySelector('[data-account-notify-form]');listen(form,'submit',async e=>{e.preventDefault();const payload={notify_orders:form.notify_orders.checked,notify_service:form.notify_service.checked,notify_promotions:form.notify_promotions.checked};const out=form.querySelector('[data-account-status]');out.textContent='Сохранение…';const r=await api.savePreferences(payload);if(!r.ok){out.textContent=r.payload?.message||'Ошибка сохранения';return;}invalidate();out.textContent='Сохранено';window.KaretaToast?.success?.('Уведомления сохранены');});const list=state.body.querySelector('[data-account-notify-list]');const loadEvents=async()=>{const r=await window.KaretaApiClient.request('api/domain.php?action=notifications.list',{cacheTtlMs:0,force:true,dedupe:false});const rows=Array.isArray(r.payload?.notifications)?r.payload.notifications:[];list.innerHTML=rows.slice(0,12).map(n=>`<article class="k-account-event-row ${!(n.isRead??Number(n.is_read||0)===1)?'is-unread':''}"><div><b>${esc(n.title||'Уведомление')}</b><small>${esc(n.body||'')}</small></div>${(n.actionUrl||n.action_url)?`<a class="k-btn k-btn-secondary" href="${esc(n.actionUrl||n.action_url)}">Открыть</a>`:''}</article>`).join('')||'<p>Новых событий нет.</p>';};state.body.querySelector('[data-account-notify-refresh]')?.addEventListener('click',loadEvents);loadEvents();}
+
+  // A failed or malformed notification response is never an empty inbox.
+  function notificationEventsHtml(response){
+    const failure=(title,detail)=>'<section class="k-account-event-state is-error" role="alert"><h4>'+esc(title)+'</h4><p>'+esc(detail)+'</p><button type="button" class="k-btn k-btn-secondary" data-account-notify-retry>Повторить</button></section>';
+    if(!response?.ok){
+      const status=Number(response?.status||response?.payload?.status||response?.payload?.error?.status||0);
+      if(status===401)return failure('Сессия завершена','Войдите снова, чтобы посмотреть уведомления.');
+      if(status===403)return failure('Нет доступа к уведомлениям','Проверьте права аккаунта или повторите позже.');
+      return failure('Не удалось загрузить уведомления','Проверьте соединение и повторите.');
+    }
+    const payload=response.payload?.data||response.payload||{};
+    if(!Array.isArray(payload.notifications))return failure('Не удалось загрузить уведомления','Сервер вернул неподдерживаемый формат данных.');
+    return payload.notifications.slice(0,12).map(n=>'<article class="k-account-event-row '+(!(n.isRead??Number(n.is_read||0)===1)?'is-unread':'')+'"><div><b>'+esc(n.title||'Уведомление')+'</b><small>'+esc(n.body||'')+'</small></div>'+(n.actionUrl||n.action_url?'<a class="k-btn k-btn-secondary" href="'+esc(n.actionUrl||n.action_url)+'">Открыть</a>':'')+'</article>').join('')||'<p>Новых событий нет.</p>';
+  }
+  async function renderNotifications(){const d=await cabinet();const p=d.preferences||{};state.body.innerHTML=`<form class="k-account-window-form" data-account-notify-form><div class="k-account-setting-list"><label><span><b>Статусы заказов</b><small>Этапы, стоимость и готовность.</small></span><input type="checkbox" name="notify_orders" ${Number(p.notify_orders)!==0?'checked':''}><i></i></label><label><span><b>Напоминания по автомобилю</b><small>ТО, документы и сервисные сроки.</small></span><input type="checkbox" name="notify_service" ${Number(p.notify_service)!==0?'checked':''}><i></i></label><label><span><b>Акции</b><small>Персональные предложения KARETA.</small></span><input type="checkbox" name="notify_promotions" ${Number(p.notify_promotions)!==0?'checked':''}><i></i></label></div><footer><output data-account-status></output><button class="k-btn k-btn-primary" type="submit">Сохранить уведомления</button></footer></form><section class="k-account-events"><header><div><small>ПОСЛЕДНИЕ СОБЫТИЯ</small><h3>Центр уведомлений</h3></div><button class="k-btn k-btn-secondary" type="button" data-account-notify-refresh>Обновить</button></header><div data-account-notify-list><div class="k-account-window-r79__loading">Загрузка…</div></div></section>`;const form=state.body.querySelector('[data-account-notify-form]');listen(form,'submit',async e=>{e.preventDefault();const payload={notify_orders:form.notify_orders.checked,notify_service:form.notify_service.checked,notify_promotions:form.notify_promotions.checked};const out=form.querySelector('[data-account-status]');out.textContent='Сохранение…';const r=await api.savePreferences(payload);if(!r.ok){out.textContent=r.payload?.message||'Ошибка сохранения';return;}invalidate();out.textContent='Сохранено';window.KaretaToast?.success?.('Уведомления сохранены');});const list=state.body.querySelector('[data-account-notify-list]');let requestSeq=0;
+    const loadEvents=async()=>{
+      const seq=++requestSeq;
+      list.innerHTML='<p role="status">Загружаем события…</p>';
+      let markup;
+      try{
+        const result=await window.KaretaApiClient.request('api/domain.php?action=notifications.list',{cacheTtlMs:0,force:true,dedupe:false});
+        markup=notificationEventsHtml(result);
+      }catch(_error){markup=notificationEventsHtml({ok:false});}
+      if(seq===requestSeq&&list.isConnected)list.innerHTML=markup;
+    };
+    listen(state.body.querySelector('[data-account-notify-refresh]'),'click',loadEvents);
+    listen(list,'click',e=>{if(e.target.closest('[data-account-notify-retry]'))loadEvents();});
+    state.cleanup.push(()=>{requestSeq++;});
+    loadEvents();}
 
   async function renderSecurity(){const d=await cabinet();const id=window.KaretaIdentity?.snapshot?.()||{};const account=id.account||{},session=id.session||{},context=id.context||{};state.body.innerHTML=`<section class="k-account-security"><div class="k-account-security-status">${icon(id.authenticated?'lock':'warning')}<div><small>СОСТОЯНИЕ ДОСТУПА</small><h3>${id.authenticated?'Сессия подтверждена':'Требуется проверка сессии'}</h3><p>${esc(d.user?.phone||account.phone||'Телефон не определён')}</p></div></div><div class="k-account-security-rows"><span><small>Контекст</small><b>${esc(context.key||context.contextKey||id.compatibilityRole||'client')}</b></span><span><small>Режим Identity</small><b>${esc(id.mode||'—')}</b></span><span><small>Сессия</small><b>${esc(session.id||session.sessionId||'Активная')}</b></span><span><small>Статус аккаунта</small><b>${esc(account.status||'active')}</b></span></div><div class="k-account-security-actions"><button class="k-btn k-btn-primary" type="button" data-account-session-check>${icon('refresh')}<span>Перепроверить сессию</span></button><a class="k-btn k-btn-secondary" href="#/privacy">Конфиденциальность</a>${window.App?.logout?'<button class="k-btn k-btn-danger" type="button" data-account-logout>Выйти из аккаунта</button>':''}</div><output data-account-security-status></output></section>`;state.body.querySelector('[data-account-session-check]')?.addEventListener('click',async()=>{const out=state.body.querySelector('[data-account-security-status]');out.textContent='Проверка…';try{await window.KaretaIdentity?.load?.({force:true,allowLegacyBridge:true,legacyUser:window.KaretaNext?.state?.user});out.textContent='Сессия подтверждена';window.KaretaToast?.success?.('Сессия проверена');renderSecurity();}catch(e){out.textContent=e.message||'Не удалось проверить сессию';window.KaretaToast?.error?.(out.textContent);}});state.body.querySelector('[data-account-logout]')?.addEventListener('click',()=>{close({restore:false});window.App?.logout?.();},{once:true});}
 

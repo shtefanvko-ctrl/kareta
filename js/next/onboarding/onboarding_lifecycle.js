@@ -12,6 +12,23 @@
   }
 
   const OVERLAY_STEPS = Object.freeze(['welcome','role','profile','code']);
+  const GUEST_PREVIEW_KEY = 'kareta.entry.guestPreview.v1';
+  function guestPreviewActive(){
+    if (window.KaretaIdentity?.snapshot?.()?.authenticated === true) return false;
+    try { return sessionStorage.getItem(GUEST_PREVIEW_KEY)==='1'; } catch (_error) { return false; }
+  }
+  function clearGuestPreview(){ try { sessionStorage.removeItem(GUEST_PREVIEW_KEY); } catch (_error) {} }
+  function enterGuestPreview(){
+    if (window.KaretaIdentity?.snapshot?.()?.authenticated === true) return false;
+    try { sessionStorage.setItem(GUEST_PREVIEW_KEY,'1'); } catch (_error) { return false; }
+    removeSurfaces();
+    app.setActive(false);
+    try { history.replaceState(null,'','#/home'); } catch (_error) { location.hash='#/home'; }
+    window.KaretaNavigationCore?.refreshAll?.({source:'onboarding-guest-preview'});
+    window.KaretaRouteRuntime?.transition?.('home',{source:'onboarding-guest-preview',force:true});
+    lastAction='guest-preview-anonymous';
+    return true;
+  }
   let booted = false;
   let listenersBound = false;
   let dispatching = false;
@@ -24,7 +41,7 @@
     // A previously authenticated MASTER/PERSONAL context must never overwrite
     // CLIENT/MASTER while the general onboarding flow is still pending.
     const pendingRole = state.role(flow?.entryRole || flow?.role || 'client');
-    if (flow?.pending === true && ['client','master'].includes(pendingRole)) return pendingRole;
+    if (flow?.pending === true && ['client','master','sto','seller'].includes(pendingRole)) return pendingRole;
     try {
       const identity = window.KaretaIdentity?.snapshot?.() || null;
       if (identity?.authenticated && identity?.compatibilityRole) return state.role(identity.compatibilityRole);
@@ -98,6 +115,7 @@
   }
 
   function openOverlay(parsed, context = {}){
+    clearGuestPreview();
     const currentFlow = draft.read();
     if (parsed.step === 'code' && !hasActiveCodeContext(currentFlow)) {
       clearTransientVerification();
@@ -144,6 +162,7 @@
   function resume(options = {}){
     const flow = draft.read();
     if (state.isDone()) return transitionToApp(flow, { source:options.source || 'resume-done', forceRoute:router.isOnboarding() });
+    if (guestPreviewActive() && !router.isOnboarding()) { removeSurfaces(); app.setActive(false); lastAction='guest-resume'; return '#/home'; }
     app.setActive(true);
     const parsed = router.parse();
     if (parsed) return dispatch(parsed, { source:options.source || 'resume-route', replace:true });
@@ -169,6 +188,7 @@
   }
 
   function reconcile(source, options = {}){
+    if (guestPreviewActive() && !router.isOnboarding()) { removeSurfaces(); app.setActive(false); lastAction='guest-reconcile'; return false; }
     if (state.isDone()) {
       if (router.isOnboarding()) return transitionToApp(draft.read(), { source, forceRoute:true });
       removeSurfaces();
@@ -208,6 +228,7 @@
       dispatch(target,{source:'session-anonymous-relogin',replace:true,detail:event?.detail||{}});
     });
     window.addEventListener('kareta:session-confirmed', event => {
+      clearGuestPreview();
       const detail=event.detail || {};
       const identity=detail.identity || window.KaretaIdentity?.snapshot?.() || {};
       const user=detail.user || window.KaretaNext?.state?.user || null;
@@ -282,5 +303,5 @@
     };
   }
 
-  window.KaretaOnboardingLifecycle = Object.freeze({ boot, start, resume, dispatch, reconcile, transitionToApp, audit });
+  window.KaretaOnboardingLifecycle = Object.freeze({ boot, start, resume, dispatch, reconcile, transitionToApp, enterGuestPreview, guestPreviewActive, audit });
 })();

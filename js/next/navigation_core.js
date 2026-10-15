@@ -22,7 +22,7 @@
     organization_service: Object.freeze(['stoDashboard','orders','masters','parts','__more__']),
     organization_store: Object.freeze(['seller','sellerProducts','sellerOrders','parts','chats','__more__']),
     organization: Object.freeze(['orders','calendarBooking','finance','chats','__more__']),
-    anonymous: Object.freeze(['home','works','masters','parts','__more__']),
+    anonymous: Object.freeze(['home','services','works','masters','parts','__more__']),
   });
 
   // Desktop navigation is context-owned just like the mobile shell. Public routes may
@@ -133,7 +133,7 @@
     return result;
   }
 
-  function mobileLimit(kind=contextKind()){ return ['personal','master','seller','admin','organization_store'].includes(kind) ? 6 : 5; }
+  function mobileLimit(kind=contextKind()){ return kind==='anonymous' ? 6 : ['personal','master','seller','admin','organization_store'].includes(kind) ? 6 : 5; }
 
   function mobileItems(){
     const preferred = template();

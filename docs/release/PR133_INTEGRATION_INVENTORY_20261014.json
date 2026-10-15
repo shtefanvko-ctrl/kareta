@@ -1,0 +1,1560 @@
+{
+  "schema_version": 1,
+  "repository": "shtefanvko-ctrl/kareta",
+  "candidate_pr": 133,
+  "candidate_branch": "integrate/all-features-staging-20261014",
+  "candidate_sha": "d9abd323ebb2dabdcdc09eec581470f0d787b6b7",
+  "audit_date": "2026-10-14",
+  "scope": "repository-only integration inventory; not functional or deployment acceptance",
+  "method": [
+    "Exact PR base-to-head compare for net files",
+    "Full recursive Git trees; all responses not truncated",
+    "Git blob identity per net file",
+    "Target source inspection of meaningful added blocks; no automatic semantic equivalence claim",
+    "Ancestor checks for #125 and #130"
+  ],
+  "checks": {
+    "prior_head_ci": "9/9 completed/success for d9abd323",
+    "feature_preservation": "PASS: 72 routes, 19 critical files, RU/KK/EN including negative self-test; exact Git blob inputs",
+    "pr131_source_regression": "PASS: SW 5/5, parts city 2/2; async marker checks only",
+    "php_local": "NOT RUN: PHP binary absent",
+    "browser_ui": "NOT RUN",
+    "hardware": "NOT RUN",
+    "servers": "NOT RUN/out of scope"
+  },
+  "pull_requests": [
+    {
+      "n": 124,
+      "head": "386331ef8c738f9f9b333c5a43c9cb15d67f6e2b",
+      "base": "f4edfbb11a6aed7d0f4d72c1963c601db12671c2",
+      "files": [
+        {
+          "path": ".github/workflows/pr37-recovery-contract.yml",
+          "sourceBlob": "73ca8c6b6bb68f4da23fcf94a2b52c2e1a39bbfd",
+          "targetBlob": null,
+          "status": "absent"
+        },
+        {
+          "path": "api/bootstrap.php",
+          "sourceBlob": "427ce56671eb25e684718d15b93ef6fb5cfe9771",
+          "targetBlob": "d0149651ea52c9ddac5c8bfb7503ef4e3b565c52",
+          "status": "different"
+        },
+        {
+          "path": "api/db.php",
+          "sourceBlob": "1675862eb53d4a0d1da494f476f06460caab42cc",
+          "targetBlob": "e76f49348340c4ce52aded8c337a56fcb5b1fe31",
+          "status": "different"
+        },
+        {
+          "path": "api/domain.php",
+          "sourceBlob": "9e3e9d009949b2c51d5f8909de6cfb6b68e8cef5",
+          "targetBlob": "1dcd522b58e716e017fc55846337805cd3acb82c",
+          "status": "different"
+        },
+        {
+          "path": "api/identity_health.php",
+          "sourceBlob": "38c0fc80ae7dce67b120f3b5c8e2e0b7a386e848",
+          "targetBlob": "56f04a796255dbf98211518f62253a747ab18a14",
+          "status": "different"
+        },
+        {
+          "path": "api/master_day_operations.php",
+          "sourceBlob": "11c1b18154ceab600c84ff2ec53e5d19e18cc662",
+          "targetBlob": "c794a90340369a4d1a144a75b822e4557bfc2067",
+          "status": "different"
+        },
+        {
+          "path": "api/master_recovery_control.php",
+          "sourceBlob": "499eac8679eca7909821e77b5572e368de668142",
+          "targetBlob": "0949a21900a9448d61cb58d2ef00dfc8cb2c566f",
+          "status": "different"
+        },
+        {
+          "path": "api/master_workplace.php",
+          "sourceBlob": "64da0840c7e823db6c3d89da749cb1ef56b678d7",
+          "targetBlob": "1c27f93780c8641b067f49aecd87a23a958bb308",
+          "status": "different"
+        },
+        {
+          "path": "api/runtime_health.php",
+          "sourceBlob": "b0c389a3e25f995eab8ede644697f8dabcc3cf79",
+          "targetBlob": "a83d43c8b5c7729104a0ea88394360718e3f5df2",
+          "status": "different"
+        },
+        {
+          "path": "api/schema_health.php",
+          "sourceBlob": "abb8d9dd68271f1b021a156821b558ed5f5b3e37",
+          "targetBlob": "30974e51f8c632f6a327114cf2115ca4b0dedcf8",
+          "status": "different"
+        },
+        {
+          "path": "api/work_orders.php",
+          "sourceBlob": "1c52b38ed8adabfad6d78a8e26f25de8a24c0fc6",
+          "targetBlob": "8697594d52b833a63eb264da8113d0c4d47e6900",
+          "status": "different"
+        },
+        {
+          "path": "tools/backfill_notification_center_from_legacy.php",
+          "sourceBlob": "4e829b25fc762fb175380e37d09b891eabbe35d2",
+          "targetBlob": null,
+          "status": "absent"
+        },
+        {
+          "path": "tools/test_booking_service_boundary_84_153.js",
+          "sourceBlob": "71235c0e5170f82aaa019cec4c5d355f0c57d350",
+          "targetBlob": null,
+          "status": "absent"
+        },
+        {
+          "path": "tools/test_health_readonly_boundary_84_154.js",
+          "sourceBlob": "0104e48572639bdca3fcd4097a4fc0f2c15286cd",
+          "targetBlob": null,
+          "status": "absent"
+        },
+        {
+          "path": "tools/test_idempotency_scope_84_154.js",
+          "sourceBlob": "815137046f21d6e962b89b8312088b9dfae86116",
+          "targetBlob": null,
+          "status": "absent"
+        },
+        {
+          "path": "tools/test_notification_center_bridge_84_152.js",
+          "sourceBlob": "bcb77edb3aa52fccd3007951e39c5b5eada9d595",
+          "targetBlob": null,
+          "status": "absent"
+        },
+        {
+          "path": "tools/test_runtime_maintenance_boundary_84_154.js",
+          "sourceBlob": "e866df35092eaffb866a5bf844992dab2bc7b9f6",
+          "targetBlob": null,
+          "status": "absent"
+        }
+      ],
+      "purpose": "Recovery: notification bridge, idempotency, health and booking service boundaries",
+      "source_branch": "recovery/pr37-contract-gate-on-123-20261008",
+      "base_branch": "integrate/landing-v3-on-121-20261008",
+      "integration_status": "требует проверки",
+      "reason": "Seven source-added files are absent, including five contract tests and backfill tool; all ten modified source files differ. Recovery additions are not matched verbatim. Require contract-by-contract reconciliation; do not infer semantic absence from blob inequality.",
+      "addition_block_observations": [
+        {
+          "path": "api/bootstrap.php",
+          "blocks": 5,
+          "present": 0,
+          "missing": [
+            "function kareta_idempotency_legacy_actor_hash(string $action): string",
+            "    $phone = preg_replace('~\\\\D+~', '', (string)($user['phone'] ?? '')) ?: '';",
+            "function kareta_idempotency_actor_hash(string $action, ?PDO $pdo = null): string\n{\n    $user = function_exists('kareta_session_user') ? (kareta_session_user() ?: []) : []",
+            "    $actorHash = kareta_idempotency_actor_hash($action, $pdo);\n    $legacyActorHash = kareta_idempotency_legacy_actor_hash($action);",
+            "        $foundLegacyScope = false;\n        if (!$row && $legacyActorHash !== $actorHash) {\n            $st->execute([$action, $legacyActorHash, $keyHash]);\n            $r"
+          ]
+        },
+        {
+          "path": "api/db.php",
+          "blocks": 3,
+          "present": 0,
+          "missing": [
+            "\n    $eventType = kareta_clean_text($row['eventType'] ?? '', 64);\n    $entityType = kareta_clean_text($row['entityType'] ?? '', 32);\n    $entityId = kareta_clean_text($ro",
+            "        $recipientUserId,$recipientPhone,$recipientRole,$eventType,$entityType,$entityId,$title,$body,$actionUrl,\n        $meta ? json_encode($meta, JSON_UNESCAPED_UNICOD",
+            "\n    // Capture the legacy id before any compatibility INSERT can change lastInsertId().\n    $notificationId=(int)$pdo->lastInsertId();\n\n    // notification_center is the"
+          ]
+        },
+        {
+          "path": "api/domain.php",
+          "blocks": 2,
+          "present": 0,
+          "missing": [
+            "        $id=(int)($body['id']??0);\n        if($id<=0)kareta_json(['ok'=>false,'error'=>'invalid_notification'],422);\n        $find=$pdo->prepare(\"SELECT payload_json FROM",
+            "        $stmt=$pdo->prepare(\"UPDATE notification_center SET status='read',read_at=COALESCE(read_at,NOW()) WHERE user_id=? AND status<>'read'\");\n        $stmt->execute([$u"
+          ]
+        },
+        {
+          "path": "api/identity_health.php",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "ini_set('html_errors','0');\nheader('Content-Type: application/json; charset=utf-8');\nheader('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');\nheader('X-Co"
+          ]
+        },
+        {
+          "path": "api/master_day_operations.php",
+          "blocks": 2,
+          "present": 0,
+          "missing": [
+            "        $duration=max(15,(int)($plan['estimated_repair_min']??$choice['workMinutes']??120));$buffer=max(0,(int)($plan['buffer_min']??$choice['bufferMin']??0));try{$pdo->b",
+            "            kareta_service_order_schedule_projection_update($pdo,$orderId,$newStart,$duration,'auto_recovery');"
+          ]
+        },
+        {
+          "path": "api/master_recovery_control.php",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "      $pdo->prepare(\"UPDATE master_order_plans SET planned_start=?,planned_end=?,estimated_repair_min=?,buffer_min=?,status=IF(status IN ('done','completed'),status,'plan"
+          ]
+        },
+        {
+          "path": "api/master_workplace.php",
+          "blocks": 2,
+          "present": 0,
+          "missing": [
+            "        $start=new DateTimeImmutable((string)$proposal['proposed_start']);$end=new DateTimeImmutable((string)$proposal['proposed_end']);if(function_exists('kareta_tariff_",
+            "    kareta_service_order_schedule_projection_update($pdo,$orderId,$start,$duration,$source);"
+          ]
+        },
+        {
+          "path": "api/runtime_health.php",
+          "blocks": 2,
+          "present": 0,
+          "missing": [
+            "    $socket = trim((string)($db['socket'] ?? ''));",
+            "    $dsn = $socket !== ''\n        ? 'mysql:unix_socket=' . $socket . ';dbname=' . $name . ';charset=' . $charset\n        : sprintf('mysql:host=%s;port=%d;dbname=%s;charse"
+          ]
+        },
+        {
+          "path": "api/schema_health.php",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "ini_set('html_errors','0');\nheader('Content-Type: application/json; charset=utf-8');\nheader('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');\nheader('X-Co"
+          ]
+        },
+        {
+          "path": "api/work_orders.php",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "/**\n * Service-owned compatibility contract for scheduling fields kept on legacy orders.\n *\n * Booking/Master scheduling code may own planning state such as master_order_"
+          ]
+        }
+      ],
+      "ancestor": null
+    },
+    {
+      "n": 125,
+      "head": "0d5f62aff257b466233f93c74e403ca11d7ba23f",
+      "base": "f4edfbb11a6aed7d0f4d72c1963c601db12671c2",
+      "files": [
+        {
+          "path": ".github/workflows/obd-runtime-acceptance.yml",
+          "sourceBlob": "589f80f87ea6e40b5084ed56a7b95b5e31f94437",
+          "targetBlob": "589f80f87ea6e40b5084ed56a7b95b5e31f94437",
+          "status": "identical"
+        },
+        {
+          "path": ".github/workflows/runtime-acceptance.yml",
+          "sourceBlob": "e493408331c10e78b9b3a300391daf2a23a7e14e",
+          "targetBlob": "e493408331c10e78b9b3a300391daf2a23a7e14e",
+          "status": "identical"
+        },
+        {
+          "path": "api/migration_manifest.json",
+          "sourceBlob": "4ac99234c2b3adca448362cbb5dc5737e30e77c6",
+          "targetBlob": "31ce0fe91b6d863d044bd6b0f2d9e09d0241bddb",
+          "status": "different"
+        },
+        {
+          "path": "api/migration_manifest.php",
+          "sourceBlob": "c931ad6d5247c62b5e17f9179f26692566629232",
+          "targetBlob": "5d2ad41bc2fbd1e21ca294e767e80e4712352d56",
+          "status": "different"
+        },
+        {
+          "path": "api/migrations/145_order_assignments_readiness.php",
+          "sourceBlob": "8d4a46321a7cfff86a43be8e8b611fd35ad7c1dc",
+          "targetBlob": "8d4a46321a7cfff86a43be8e8b611fd35ad7c1dc",
+          "status": "identical"
+        },
+        {
+          "path": "config.php",
+          "sourceBlob": "83462112d9ce9017926fdeac436f30745acc38e1",
+          "targetBlob": "8c0314b7c37f963f3d1cdebad45a34a5ce26afe9",
+          "status": "different"
+        },
+        {
+          "path": "tools/runtime_acceptance_db.php",
+          "sourceBlob": "29ffba93d51b1985824a656b7972e77799c03c68",
+          "targetBlob": "e427dce18691f6627e0e4e94c6d176aae5434399",
+          "status": "different"
+        },
+        {
+          "path": "tools/test_geo_platform_core.js",
+          "sourceBlob": "744c3b90227a0e5305775202720ba6f22565cd45",
+          "targetBlob": "744c3b90227a0e5305775202720ba6f22565cd45",
+          "status": "identical"
+        }
+      ],
+      "purpose": "Migration 145: STO order_assignments readiness",
+      "source_branch": "fix/pr123-order-assignments-readiness-20261010",
+      "base_branch": "integrate/landing-v3-on-121-20261008",
+      "integration_status": "уже перенесено",
+      "reason": "Source head is an ancestor of candidate; migration 145 and its tests/workflows remain. Manifest/config advance to 146 through #130, so whole-file inequality versus #125 is expected.",
+      "addition_block_observations": [],
+      "ancestor": {
+        "repository_full_name": "shtefanvko-ctrl/kareta",
+        "base": "0d5f62aff257b466233f93c74e403ca11d7ba23f",
+        "head": "d9abd323ebb2dabdcdc09eec581470f0d787b6b7",
+        "status": "ahead",
+        "ahead_by": 24,
+        "behind_by": 0,
+        "total_commits": 24,
+        "too_large": null,
+        "base_commit": {
+          "sha": "0d5f62aff257b466233f93c74e403ca11d7ba23f",
+          "url": "https://api.github.com/repos/shtefanvko-ctrl/kareta/commits/0d5f62aff257b466233f93c74e403ca11d7ba23f",
+          "html_url": "https://github.com/shtefanvko-ctrl/kareta/commit/0d5f62aff257b466233f93c74e403ca11d7ba23f"
+        },
+        "merge_base_commit": {
+          "sha": "0d5f62aff257b466233f93c74e403ca11d7ba23f",
+          "url": "https://api.github.com/repos/shtefanvko-ctrl/kareta/commits/0d5f62aff257b466233f93c74e403ca11d7ba23f",
+          "html_url": "https://github.com/shtefanvko-ctrl/kareta/commit/0d5f62aff257b466233f93c74e403ca11d7ba23f"
+        },
+        "files": [
+          {
+            "filename": ".github/pull_request_template.md",
+            "status": "modified",
+            "additions": 12,
+            "deletions": 0,
+            "changes": 12,
+            "previous_filename": null
+          },
+          {
+            "filename": ".github/workflows/ai-governance.yml",
+            "status": "modified",
+            "additions": 4,
+            "deletions": 0,
+            "changes": 4,
+            "previous_filename": null
+          },
+          {
+            "filename": ".github/workflows/devil-staging-access-contract.yml",
+            "status": "added",
+            "additions": 36,
+            "deletions": 0,
+            "changes": 36,
+            "previous_filename": null
+          },
+          {
+            "filename": ".github/workflows/feature-preservation.yml",
+            "status": "added",
+            "additions": 29,
+            "deletions": 0,
+            "changes": 29,
+            "previous_filename": null
+          },
+          {
+            "filename": "ai/FEATURE_PRESERVATION.md",
+            "status": "added",
+            "additions": 34,
+            "deletions": 0,
+            "changes": 34,
+            "previous_filename": null
+          },
+          {
+            "filename": "ai/FEATURE_PRESERVATION_BASELINE.json",
+            "status": "added",
+            "additions": 106,
+            "deletions": 0,
+            "changes": 106,
+            "previous_filename": null
+          },
+          {
+            "filename": "ai/tests/test_feature_preservation_checkout.py",
+            "status": "added",
+            "additions": 60,
+            "deletions": 0,
+            "changes": 60,
+            "previous_filename": null
+          },
+          {
+            "filename": "api/identity/devil_staging_access.php",
+            "status": "added",
+            "additions": 67,
+            "deletions": 0,
+            "changes": 67,
+            "previous_filename": null
+          },
+          {
+            "filename": "api/migration_manifest.json",
+            "status": "modified",
+            "additions": 6,
+            "deletions": 1,
+            "changes": 7,
+            "previous_filename": null
+          },
+          {
+            "filename": "api/migration_manifest.php",
+            "status": "modified",
+            "additions": 2,
+            "deletions": 1,
+            "changes": 3,
+            "previous_filename": null
+          },
+          {
+            "filename": "api/migrations/146_parts_request_offers_readiness.php",
+            "status": "added",
+            "additions": 60,
+            "deletions": 0,
+            "changes": 60,
+            "previous_filename": null
+          },
+          {
+            "filename": "config.php",
+            "status": "modified",
+            "additions": 1,
+            "deletions": 1,
+            "changes": 2,
+            "previous_filename": null
+          },
+          {
+            "filename": "docs/recovery/pr133_critical_entry_contents_20261014.md",
+            "status": "added",
+            "additions": 21,
+            "deletions": 0,
+            "changes": 21,
+            "previous_filename": null
+          },
+          {
+            "filename": "docs/release/DEVIL_PR133_BOOT_BUNDLE_SYNC_20261014.md",
+            "status": "added",
+            "additions": 11,
+            "deletions": 0,
+            "changes": 11,
+            "previous_filename": null
+          },
+          {
+            "filename": "docs/release/DEVIL_PR133_FEATURE_EXACT_HEAD_20261014.md",
+            "status": "added",
+            "additions": 15,
+            "deletions": 0,
+            "changes": 15,
+            "previous_filename": null
+          },
+          {
+            "filename": "docs/release/DEVIL_PR133_FEATURE_FLOOR_20261014.md",
+            "status": "added",
+            "additions": 13,
+            "deletions": 0,
+            "changes": 13,
+            "previous_filename": null
+          },
+          {
+            "filename": "docs/release/DEVIL_STAGING_EXPERIMENTAL_ACCESS_20261014.md",
+            "status": "added",
+            "additions": 36,
+            "deletions": 0,
+            "changes": 36,
+            "previous_filename": null
+          },
+          {
+            "filename": "docs/staging/STAGING_HOTFIX_2026_10_13.md",
+            "status": "added",
+            "additions": 17,
+            "deletions": 0,
+            "changes": 17,
+            "previous_filename": null
+          },
+          {
+            "filename": "js/boot/runtime_shell_bundle.js",
+            "status": "modified",
+            "additions": 62,
+            "deletions": 5,
+            "changes": 67,
+            "previous_filename": null
+          },
+          {
+            "filename": "js/next/mobile_back.js",
+            "status": "modified",
+            "additions": 62,
+            "deletions": 5,
+            "changes": 67,
+            "previous_filename": null
+          },
+          {
+            "filename": "js/next/pages/master_schedule.js",
+            "status": "modified",
+            "additions": 2,
+            "deletions": 2,
+            "changes": 4,
+            "previous_filename": null
+          },
+          {
+            "filename": "js/next/pages/notifications.js",
+            "status": "modified",
+            "additions": 15,
+            "deletions": 3,
+            "changes": 18,
+            "previous_filename": null
+          },
+          {
+            "filename": "js/next/pages/parts.js",
+            "status": "modified",
+            "additions": 1,
+            "deletions": 0,
+            "changes": 1,
+            "previous_filename": null
+          },
+          {
+            "filename": "js/next/pages/work_feed.js",
+            "status": "modified",
+            "additions": 4,
+            "deletions": 3,
+            "changes": 7,
+            "previous_filename": null
+          },
+          {
+            "filename": "sw.js",
+            "status": "modified",
+            "additions": 17,
+            "deletions": 2,
+            "changes": 19,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/audit_staging_inventory.py",
+            "status": "added",
+            "additions": 63,
+            "deletions": 0,
+            "changes": 63,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/check_deployment_provenance.php",
+            "status": "added",
+            "additions": 35,
+            "deletions": 0,
+            "changes": 35,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/release_checklist.sh",
+            "status": "modified",
+            "additions": 11,
+            "deletions": 0,
+            "changes": 11,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/runtime_acceptance_db.php",
+            "status": "modified",
+            "additions": 1,
+            "deletions": 0,
+            "changes": 1,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_ai_surface_map.py",
+            "status": "added",
+            "additions": 47,
+            "deletions": 0,
+            "changes": 47,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_audit_staging_inventory.py",
+            "status": "added",
+            "additions": 60,
+            "deletions": 0,
+            "changes": 60,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_deployment_preflight_cli.php",
+            "status": "added",
+            "additions": 73,
+            "deletions": 0,
+            "changes": 73,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_deployment_preflight_contract.php",
+            "status": "added",
+            "additions": 32,
+            "deletions": 0,
+            "changes": 32,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_devil_staging_access.php",
+            "status": "added",
+            "additions": 35,
+            "deletions": 0,
+            "changes": 35,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_feature_preservation.py",
+            "status": "added",
+            "additions": 406,
+            "deletions": 0,
+            "changes": 406,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_mobile_back_bundle_sync.py",
+            "status": "added",
+            "additions": 40,
+            "deletions": 0,
+            "changes": 40,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_staging_guard_hotfix_20261013.js",
+            "status": "added",
+            "additions": 30,
+            "deletions": 0,
+            "changes": 30,
+            "previous_filename": null
+          }
+        ]
+      }
+    },
+    {
+      "n": 126,
+      "head": "d86796725a86193fce2fa9c8fd91c37aebb32fa0",
+      "base": "673826b9c4559b5f1dda22d1e79a6a7a19b302e0",
+      "files": [
+        {
+          "path": ".github/workflows/application-gates.yml",
+          "sourceBlob": "21e441a60e07cd5aadad32ae98ce9954674b421b",
+          "targetBlob": "6680faf4e2228540586c2c4582798b4750d5ec41",
+          "status": "different"
+        },
+        {
+          "path": "api/booking_product_interactions.php",
+          "sourceBlob": "1b139b8c820898673052fb7a142fda171add8f82",
+          "targetBlob": "a025351e1d053cebbffc5d00ce4eebd309bbc5d2",
+          "status": "different"
+        },
+        {
+          "path": "api/db.php",
+          "sourceBlob": "bc7c4ec6cd3b75629eb985c837043c27cedfd2e2",
+          "targetBlob": "e76f49348340c4ce52aded8c337a56fcb5b1fe31",
+          "status": "different"
+        },
+        {
+          "path": "css/next/details.css",
+          "sourceBlob": "aeb69ae64afa4719ae20de9087a8e14aadb0c425",
+          "targetBlob": "53aa9c72e91097bf36f5451f9dd18291d615d6c6",
+          "status": "different"
+        },
+        {
+          "path": "docs/recovery/booking_flow_20261010.md",
+          "sourceBlob": "14d46c11a9a72bd809ea701ee0da9a7c667abd09",
+          "targetBlob": null,
+          "status": "absent"
+        },
+        {
+          "path": "inc/asset_registry.php",
+          "sourceBlob": "97846bbf75586f3109a1d32376d7ae448173a76e",
+          "targetBlob": "5c1d23f2491709d905f8ac14be7ad0c8425372c0",
+          "status": "different"
+        },
+        {
+          "path": "js/boot/runtime_core_bundle.js",
+          "sourceBlob": "2c4a84deb7e8607e57e71b4249ec0750634f8886",
+          "targetBlob": "79b4d6cf7d4003e55b7b56c91c315f70b3f8e664",
+          "status": "different"
+        },
+        {
+          "path": "js/next/pages/client_request_final.js",
+          "sourceBlob": "35fa7c874eab32b5f9d20582d996871d4461943a",
+          "targetBlob": "0850371e55cea378f172a76a573833d14680fc3c",
+          "status": "different"
+        },
+        {
+          "path": "js/next/pages/details.js",
+          "sourceBlob": "ef1481e2b7c3ec2e54badd6ed407a23ab218808c",
+          "targetBlob": "5802b661dba74ba02258ed212aa700817003d0e4",
+          "status": "different"
+        },
+        {
+          "path": "js/next/pages/request.js",
+          "sourceBlob": "9415e2353ffd0f89e28183e254377e6127387384",
+          "targetBlob": "7b829465777be4c267fd06c5bb8e755b0f54b3c8",
+          "status": "different"
+        },
+        {
+          "path": "js/next/request_window.js",
+          "sourceBlob": "371a4eb67017f0a7d7769249256b0aa1d76e995a",
+          "targetBlob": "6bf22e67d312ed21f180a3a54652f0434e000e30",
+          "status": "different"
+        },
+        {
+          "path": "tools/test_booking_flow_recovery_20261010.js",
+          "sourceBlob": "988df8da065f4d529d47557eb44c9a916cc19908",
+          "targetBlob": null,
+          "status": "absent"
+        },
+        {
+          "path": "tools/test_client_request_three_steps_84_23.js",
+          "sourceBlob": "8f2e370f85227059b004cafee507f3633cdc262e",
+          "targetBlob": "83409a7e5ed0c7095c2cb17f0c0101f38bdd7c88",
+          "status": "different"
+        }
+      ],
+      "purpose": "Client booking handoff, explicit service and guarded slots",
+      "source_branch": "fix/booking-unified-client-flow-20261010",
+      "base_branch": "main",
+      "integration_status": "отсутствует",
+      "reason": "Recovery test and report are absent. Client request delegation and modal cleanup source additions are not present; slot/transaction changes also do not match. Delta is absent as an integration, not a claim that existing booking has no functionality.",
+      "addition_block_observations": [
+        {
+          "path": ".github/workflows/application-gates.yml",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "      - name: Booking context and client request regression\n        run: |\n          node tools/test_client_request_three_steps_84_23.js\n          node tools/test_booking"
+          ]
+        },
+        {
+          "path": "api/booking_product_interactions.php",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            " $tz=new DateTimeZone('Asia/Almaty');\n $now=new DateTimeImmutable('now',$tz);\n $date=trim((string)($in['date']??''));\n if(!preg_match('/^\\d{4}-\\d{2}-\\d{2}$/',$date))$date"
+          ]
+        },
+        {
+          "path": "api/db.php",
+          "blocks": 4,
+          "present": 0,
+          "missing": [
+            "    if (!empty($o['bookingRequired']) && !empty($o['masterId'])) {\n        $dupWhere .= \" AND master_id=? AND date=? AND time=?\";\n        array_push($dupParams,(string)$o",
+            "            in_array((string)($o['source'] ?? ''), ['booking_wizard','master_booking'], true)",
+            "        if ($actorRole === 'client' && $requiresSchedule && $masterId !== '0') {\n            // Serialize bookings on the master row, within the same transaction as INSER",
+            "        if (isset($bookingSlotDuration) && kareta_column_exists($pdo,'orders','estimated_duration_min')) {\n            $pdo->prepare(\"UPDATE orders SET estimated_duration"
+          ]
+        },
+        {
+          "path": "css/next/details.css",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "\n/* Booking v2: explicit service selection, scoped to booking screen. */\n.k-master-ref-booking .k-master-ref-booking-service-options{display:grid;grid-template-columns:re"
+          ]
+        },
+        {
+          "path": "inc/asset_registry.php",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "            'styles' => ['css/next/request_5_steps.css', 'css/next/client_request_final.css'],\n            'scripts' => ['js/next/pages/client_request_final.js', 'js/next"
+          ]
+        },
+        {
+          "path": "js/boot/runtime_core_bundle.js",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "    const ctx=context(state.body),result=pages.mountRequest(ctx);\n    if(result&&typeof result.then==='function'){\n      result.then(cleanupFn=>{\n        if(typeof cleanu"
+          ]
+        },
+        {
+          "path": "js/next/pages/client_request_final.js",
+          "blocks": 8,
+          "present": 0,
+          "missing": [
+            "  function baseDraft(){return {flowVersion:FLOW_VERSION,step:0,vehicleId:'',vehicleTitle:'',services:[],problem:'',attachments:[],offerMode:'',budget:0,budgetNegotiable:t",
+            "    const current=safeJson(DRAFT_KEY),legacy=safeJson(LEGACY_KEY)||{},prefill=safeJson(PREFILL_KEY);\n    let d=current?.flowVersion===FLOW_VERSION\n      ? {...baseDraft()",
+            "    if(d.step===0)return `${sourceSummary(d)}<div class=\"k-client-choice-list\">${offerCard('market','Предложения мастеров','Мастера предложат цену и срок','masters',d)}${",
+            "  function timeLabel(t={}){if(t.mode==='morning')return'Утро';if(t.mode==='day')return'День';if(t.mode==='evening')return'Вечер';if((t.mode==='range'||t.mode==='exact')&&",
+            "  function reviewRows(d){const rows=[['car',d.vehicleTitle||'Автомобиль не выбран'],['services',d.services.length?d.services.map(x=>x.name).join(', '):'Услуги не выбраны'",
+            "  function valid(d){if(d.step===0)return !!d.offerMode&&(d.offerMode!=='budget'||Number(d.budget)>0)&&(d.offerMode!=='direct'||!!(d.masterId||d.stoId));if(d.step===1)retu",
+            "    const click=async e=>{const offer=e.target.closest('[data-cr-offer]');if(offer){if(d.offerMode!==offer.dataset.crOffer){d.masterId='';d.masterName='';d.stoId='';d.sto",
+            "    root.addEventListener('click',click);root.addEventListener('input',input);root.addEventListener('change',input);dlg?.addEventListener('cancel',e=>{e.preventDefault();"
+          ]
+        },
+        {
+          "path": "js/next/pages/details.js",
+          "blocks": 3,
+          "present": 0,
+          "missing": [
+            "    let selectedDate=days[Math.min(3,days.length-1)].iso,selectedTime='',selectedService=null,slots=[],slotError='',loadToken=0;\n    const selectableOffers=offers.filter(",
+            "      <section class=\"k-master-ref-booking-block k-master-ref-booking-services\"><h2>Выберите услугу</h2>\n      <div class=\"k-master-ref-booking-service-options\" data-book",
+            "    const paintSlots=()=>{\n      const available=slots.filter(slot=>slotAllowed(slot)&&slotTime(slot));\n      timeBox.innerHTML=selectedService\n        ? (slotError?'<spa"
+          ]
+        },
+        {
+          "path": "js/next/pages/request.js",
+          "blocks": 3,
+          "present": 0,
+          "missing": [
+            "    if(role==='client'){if(!window.KaretaClientRequestFinalPages?.renderClientRequest)throw new Error('client_request_v6_missing');return window.KaretaClientRequestFinalP",
+            "  const renderRequestWindow=context=>roleOf(context)==='client'\n    ? window.KaretaClientRequestFinalPages.renderClientRequest({...context,windowMode:true})\n    : request",
+            "    if(roleOf(context)==='client')return window.KaretaClientRequestFinalPages.mountClientRequest(context);"
+          ]
+        },
+        {
+          "path": "js/next/request_window.js",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "    const ctx=context(state.body),result=pages.mountRequest(ctx);\n    if(result&&typeof result.then==='function'){\n      result.then(cleanupFn=>{\n        if(typeof cleanu"
+          ]
+        },
+        {
+          "path": "tools/test_client_request_three_steps_84_23.js",
+          "blocks": 2,
+          "present": 0,
+          "missing": [
+            "expect(page.includes(\"market','Предложения мастеров\")&&page.includes(\"budget','Своя цена\")&&page.includes(\"offerCard('direct',\"),'offer modes missing');",
+            "expect(request.includes(\"role==='client'\")&&request.includes(\"client_request_v6_missing\"),'request.js must role-scope CLIENT 3-step branch');"
+          ]
+        }
+      ],
+      "ancestor": null
+    },
+    {
+      "n": 127,
+      "head": "defe6040c874d56f38fb4b9c9e9f1a83a3d446c8",
+      "base": "f4edfbb11a6aed7d0f4d72c1963c601db12671c2",
+      "files": [
+        {
+          "path": ".github/workflows/ai-governance.yml",
+          "sourceBlob": "ab73cf16cb56040fb27afd6fcd31b9130264d28a",
+          "targetBlob": "ab73cf16cb56040fb27afd6fcd31b9130264d28a",
+          "status": "identical"
+        },
+        {
+          "path": "tools/test_ai_surface_map.py",
+          "sourceBlob": "e0fc4e5edeb6fb9f74ccbbc4389f351ee1b9751e",
+          "targetBlob": "e0fc4e5edeb6fb9f74ccbbc4389f351ee1b9751e",
+          "status": "identical"
+        }
+      ],
+      "purpose": "AI surface-map path gate",
+      "source_branch": "chore/ai-governance-map-integrity-20261012",
+      "base_branch": "integrate/landing-v3-on-121-20261008",
+      "integration_status": "уже перенесено",
+      "reason": "Both net changed files have identical Git blob SHAs.",
+      "addition_block_observations": [],
+      "ancestor": null
+    },
+    {
+      "n": 128,
+      "head": "7cbfbb3a80d8f9944e713d897db8cdd69d63e56b",
+      "base": "5862c845c6262f22844fc13fcdb998aae2d1058f",
+      "files": [
+        {
+          "path": ".github/workflows/elm-universal-contract.yml",
+          "sourceBlob": "7785e8f7778338443226bf65ca1666f62a8bd4b7",
+          "targetBlob": null,
+          "status": "absent"
+        },
+        {
+          "path": "api/obd.php",
+          "sourceBlob": "5119621549c995075f7c3c57814c441a8146b406",
+          "targetBlob": "812b33e3a2d5e5aa805e0a19c6b90216d406a1f7",
+          "status": "different"
+        },
+        {
+          "path": "css/next/diagnostics.css",
+          "sourceBlob": "c656c207c122b7f24f28e951fd734740ed6672f8",
+          "targetBlob": "8e1960211e6c77d67549cfc79de38c5c88acbcd5",
+          "status": "different"
+        },
+        {
+          "path": "js/mobile_native_bridge.js",
+          "sourceBlob": "117a46962a56f5ecced9f043069089f753229100",
+          "targetBlob": "97fba363ab2e6e718f240c0006406a794ddc4985",
+          "status": "different"
+        },
+        {
+          "path": "js/next/pages/diagnostics.js",
+          "sourceBlob": "dcfc310f8d27bf60a0a939047503ca2b2ed52396",
+          "targetBlob": "50cbbc212f44ae2871b3ad0e0c40086d3a6a6f22",
+          "status": "different"
+        },
+        {
+          "path": "tools/test_obd_universal_transport.js",
+          "sourceBlob": "0d0e74ab956be487bab43a6397b5a3fceb80c567",
+          "targetBlob": null,
+          "status": "absent"
+        }
+      ],
+      "purpose": "Universal ELM transports and accepted-only offline acknowledgment",
+      "source_branch": "feature/staging-elm-universal-ui-20261013",
+      "base_branch": "main",
+      "integration_status": "отсутствует",
+      "reason": "New workflow/test are absent; BLE/Wi-Fi bridge methods, capability controls and accepted-only acknowledgment additions are absent. Existing OBD functionality remains.",
+      "addition_block_observations": [
+        {
+          "path": "api/obd.php",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "        'transport'=>'multi',\n        'transports'=>['bluetooth_classic_spp','ble_gatt','wifi_tcp'],\n        'usbSupported'=>false,\n        'minimumStagingAndroid'=>'1.5."
+          ]
+        },
+        {
+          "path": "css/next/diagnostics.css",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            ".k-diagnostics-page{display:grid;gap:18px;padding-bottom:80px}.k-obd-status-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.k-obd-card,.k-obd-pa"
+          ]
+        },
+        {
+          "path": "js/mobile_native_bridge.js",
+          "blocks": 2,
+          "present": 0,
+          "missing": [
+            "    elmScanBle: () => call(\"elmScanBle\", {}, 15000),\n    elmConnectBle: address => call(\"elmConnectBle\", { address }, 30000),\n    elmConnectWifi: (host, port = 35000) => ",
+            "    elmInit: () => call(\"elmInit\", {}, 45000),"
+          ]
+        },
+        {
+          "path": "js/next/pages/diagnostics.js",
+          "blocks": 20,
+          "present": 0,
+          "missing": [
+            "        <h1>ELM327 · Универсальная диагностика OBD-II</h1>",
+            "          <div class=\"k-obd-card-head\"><strong>Адаптер OBD-II</strong><span data-obd-bt class=\"k-obd-chip\">—</span></div>",
+            "          <p class=\"k-obd-muted\">Поддержка: Bluetooth Classic (сопряжённые устройства), BLE UART (сканирование) и Wi-Fi TCP (локальная сеть адаптера). Выберите транспорт ",
+            "            <button type=\"button\" class=\"k-btn k-btn-primary\" data-obd-devices>Bluetooth Classic</button>\n            <button type=\"button\" class=\"k-btn\" data-obd-scan-bl",
+            "          <div class=\"k-obd-wifi-connect\">\n            <label>Wi-Fi ELM327 — IP<input type=\"text\" inputmode=\"decimal\" maxlength=\"15\" value=\"192.168.0.10\" placeholder=\"192",
+            "        nativeText.textContent='ELM327 доступен только в Android KARETA. В браузере можно просматривать историю.';",
+            "      nativeText.textContent='Bluetooth Classic, BLE, Wi-Fi и офлайн-хранилище доступны в APK 1.5.3.';",
+            "        const transports=Array.isArray(status?.supportedTransports)\n          ? status.supportedTransports : [status?.transport||'classic_spp'];\n        const bleEnabled=",
+            "          currentAdapter={name:status.name||'ELM327',address:status.address,transport:status.transport||'classic_spp'};",
+            "    async function listDevices(transport='classic_spp'){",
+            "      const isBle=transport==='ble_gatt';\n      deviceList.hidden=false;\n      deviceList.innerHTML='<p class=\"k-obd-muted\">'+(isBle?'Поиск BLE-устройств (до 7 секунд)…':",
+            "        const permission=await mobile.requestPermission(isBle?'bluetooth_scan':'bluetooth');\n        if(permission?.granted===false){\n          setResult('Разрешите '+(is",
+            "          deviceList.innerHTML='<p class=\"k-obd-muted\">'+(isBle?'BLE-устройства не найдены. Проверьте питание и расстояние.':'Нет сопряжённых устройств. Сначала выполните",
+            "        deviceList.innerHTML=devices.map(d=>`<button type=\"button\" class=\"k-obd-device-row\" data-obd-address=\"${esc(d.address||'')}\" data-obd-name=\"${esc(d.name||'ELM327'",
+            "    async function connect(address,name,transport='classic_spp'){\n      setResult('Подключение к '+name+' ('+transport+')…');",
+            "        if(transport==='ble_gatt'){\n          if(!mobile?.elmConnectBle)throw new Error('Для BLE требуется новая APK.');\n          await mobile.elmConnectBle(address);\n  ",
+            "        const accepted=new Set(Array.isArray(payload.accepted)?payload.accepted.map(String):[]);\n        const confirmed=items.filter(item=>accepted.has(String(item?.id||",
+            "        const pending=items.length-confirmed.length;\n        if(pending)setResult('Синхронизировано '+confirmed.length+' сессий; '+pending+' остаются офлайн.');\n        r",
+            "          currentAdapter={name:status?.name||'ELM327',address:status?.address||'',transport:status?.transport||'classic_spp'};",
+            "      if(device){await connect(device.dataset.obdAddress||'',device.dataset.obdName||'ELM327',device.dataset.obdTransport||'classic_spp');return;}\n      if(event.target.c"
+          ]
+        }
+      ],
+      "ancestor": null
+    },
+    {
+      "n": 129,
+      "head": "9cbb2207a1ad43d6439e4f7eacff6ab71c478326",
+      "base": "5862c845c6262f22844fc13fcdb998aae2d1058f",
+      "files": [
+        {
+          "path": ".github/workflows/application-gates.yml",
+          "sourceBlob": "464beeb1c4b1e0bd26c2f57b8b254f974fb671ea",
+          "targetBlob": "6680faf4e2228540586c2c4582798b4750d5ec41",
+          "status": "different"
+        },
+        {
+          "path": "css/next/mobile_brand_center.css",
+          "sourceBlob": "c258df9791d16f83dec7ef60f6d83b039f44a193",
+          "targetBlob": "bb50d51d41e368e0582a224210292c6fbc4f870f",
+          "status": "different"
+        },
+        {
+          "path": "css/next/reference_client_pages.css",
+          "sourceBlob": "d0c5c72be993638c454709c59ec468f1e75a3ce1",
+          "targetBlob": "bf3b2597145bbe512b60597e907b6ff658e9f057",
+          "status": "different"
+        },
+        {
+          "path": "css/routes/client_guard_postlude.css",
+          "sourceBlob": "a3fdbf4550a300e131ca7f99ae8adcbcc98de4dc",
+          "targetBlob": "d3a633ffd39fd9d6d7c2e7b637ffd77cd2534398",
+          "status": "different"
+        },
+        {
+          "path": "css/runtime_boot_bundle.css",
+          "sourceBlob": "6d63b6b88970a593e579b51716318f14bc935102",
+          "targetBlob": "dd1a1652cd4b413b24f40c36e3534f4d5af44c37",
+          "status": "different"
+        },
+        {
+          "path": "js/boot/runtime_core_bundle.js",
+          "sourceBlob": "3a480b3610bb425dd52fab5c80b277ac029e2b33",
+          "targetBlob": "79b4d6cf7d4003e55b7b56c91c315f70b3f8e664",
+          "status": "different"
+        },
+        {
+          "path": "js/boot/runtime_shell_bundle.js",
+          "sourceBlob": "79966743dd433aabeecacb891497f54f17f2d856",
+          "targetBlob": "6c82b650d7ace5772321209b03efe44ed6cc9e39",
+          "status": "different"
+        },
+        {
+          "path": "js/next/mobile_back.js",
+          "sourceBlob": "52bb9d9b51042cd531eeaa0d7fd112b71b5709b1",
+          "targetBlob": "52bb9d9b51042cd531eeaa0d7fd112b71b5709b1",
+          "status": "identical"
+        },
+        {
+          "path": "js/next/pages/core.js",
+          "sourceBlob": "63018e6830b961ca6bb61d7d08c299502abb8e60",
+          "targetBlob": "971717f00643d2ae4e5798dc5bfe5f8b08e9899b",
+          "status": "different"
+        },
+        {
+          "path": "js/next/pages/services.js",
+          "sourceBlob": "87fc152161457054138ad3a0bb9cfbac32c2538e",
+          "targetBlob": "0687e9787cf3deee52719cb0899283b3e1e9af37",
+          "status": "different"
+        },
+        {
+          "path": "tools/test_guest_shell_back_ecu_20261013.js",
+          "sourceBlob": "7cec8cf949d6ebd4cf5333149b5b120a366f4e5d",
+          "targetBlob": null,
+          "status": "absent"
+        }
+      ],
+      "purpose": "Home-only logo, contextual shell, Back and ECU entries",
+      "source_branch": "feat/guest-shell-back-ecu-20261013",
+      "base_branch": "main",
+      "integration_status": "перенесено частично",
+      "reason": "mobile_back.js is byte-identical; shell bundle contains all six meaningful added blocks. Canonical header/ECU CSS and home/services ECU entries are absent; dedicated regression test/CI step absent. Do not replace the whole older runtime bundles.",
+      "addition_block_observations": [
+        {
+          "path": ".github/workflows/application-gates.yml",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "      - name: Staging shell, single Back and ECU runtime CSS\n        run: node tools/test_guest_shell_back_ecu_20261013.js\n"
+          ]
+        },
+        {
+          "path": "css/next/mobile_brand_center.css",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "\n/* Guest shell canon 2026-10-13: the branded masthead belongs to Home only.\n   Inner routes reuse the existing #k-mobile-back DOM node with a contextual title. */\n#k-she"
+          ]
+        },
+        {
+          "path": "css/next/reference_client_pages.css",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "\n/* 2026-10-13 — integrated ECU diagnosis entry; routes to existing #/diagnostics.\n   Explicitly separate self-diagnostics from paid station diagnostic services. */\n.k-se"
+          ]
+        },
+        {
+          "path": "css/routes/client_guard_postlude.css",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "\n\n/* ===== SOURCE: PR129 synchronized canonical CSS deltas ===== */\n/* ===== RUNTIME SYNCHRONIZATION: PR #129 inner header and ECU CTA ===== */\n/* Guest shell canon 2026-"
+          ]
+        },
+        {
+          "path": "css/runtime_boot_bundle.css",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "\n\n/* ===== SOURCE: PR129 synchronized canonical CSS deltas ===== */\n/* ===== RUNTIME SYNCHRONIZATION: PR #129 inner header and ECU CTA ===== */\n/* Guest shell canon 2026-"
+          ]
+        },
+        {
+          "path": "js/boot/runtime_core_bundle.js",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "      <a class=\"k-home-ref-ecu-cta\" href=\"#/diagnostics\" data-ecu-entry=\"home\" aria-label=\"Перейти к диагностике ЭБУ через ELM327\"><span class=\"k-home-ref-ecu-cta__icon\" "
+          ]
+        },
+        {
+          "path": "js/boot/runtime_shell_bundle.js",
+          "blocks": 6,
+          "present": 6,
+          "missing": []
+        },
+        {
+          "path": "js/next/pages/core.js",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "      <a class=\"k-home-ref-ecu-cta\" href=\"#/diagnostics\" data-ecu-entry=\"home\" aria-label=\"Перейти к диагностике ЭБУ через ELM327\"><span class=\"k-home-ref-ecu-cta__icon\" "
+          ]
+        },
+        {
+          "path": "js/next/pages/services.js",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "      <a class=\"k-services-ecu-cta\" href=\"#/diagnostics\" data-ecu-entry=\"services\" aria-label=\"Диагностика ЭБУ, подключение ELM327 через OBD-II\">\n        <span class=\"k-s"
+          ]
+        }
+      ],
+      "ancestor": null
+    },
+    {
+      "n": 130,
+      "head": "ffee7891dfb12fa022b351d76eab06be3ab57d6b",
+      "base": "0d5f62aff257b466233f93c74e403ca11d7ba23f",
+      "files": [
+        {
+          "path": "api/migration_manifest.json",
+          "sourceBlob": "31ce0fe91b6d863d044bd6b0f2d9e09d0241bddb",
+          "targetBlob": "31ce0fe91b6d863d044bd6b0f2d9e09d0241bddb",
+          "status": "identical"
+        },
+        {
+          "path": "api/migration_manifest.php",
+          "sourceBlob": "5d2ad41bc2fbd1e21ca294e767e80e4712352d56",
+          "targetBlob": "5d2ad41bc2fbd1e21ca294e767e80e4712352d56",
+          "status": "identical"
+        },
+        {
+          "path": "api/migrations/146_parts_request_offers_readiness.php",
+          "sourceBlob": "f63627f8a54d3411ee2ce5643b4068ecb2be2f8d",
+          "targetBlob": "f63627f8a54d3411ee2ce5643b4068ecb2be2f8d",
+          "status": "identical"
+        },
+        {
+          "path": "config.php",
+          "sourceBlob": "8c0314b7c37f963f3d1cdebad45a34a5ce26afe9",
+          "targetBlob": "8c0314b7c37f963f3d1cdebad45a34a5ce26afe9",
+          "status": "identical"
+        },
+        {
+          "path": "tools/runtime_acceptance_db.php",
+          "sourceBlob": "e427dce18691f6627e0e4e94c6d176aae5434399",
+          "targetBlob": "e427dce18691f6627e0e4e94c6d176aae5434399",
+          "status": "identical"
+        }
+      ],
+      "purpose": "Migration 146: parts_request_offers readiness",
+      "source_branch": "fix/staging-parts-offers-readiness-146-20261013",
+      "base_branch": "fix/pr123-order-assignments-readiness-20261010",
+      "integration_status": "уже перенесено",
+      "reason": "All five net files have identical Git blobs; source head is an ancestor. DB version 146 present in source only; no deployed-state claim.",
+      "addition_block_observations": [],
+      "ancestor": {
+        "repository_full_name": "shtefanvko-ctrl/kareta",
+        "base": "ffee7891dfb12fa022b351d76eab06be3ab57d6b",
+        "head": "d9abd323ebb2dabdcdc09eec581470f0d787b6b7",
+        "status": "ahead",
+        "ahead_by": 19,
+        "behind_by": 0,
+        "total_commits": 19,
+        "too_large": null,
+        "base_commit": {
+          "sha": "ffee7891dfb12fa022b351d76eab06be3ab57d6b",
+          "url": "https://api.github.com/repos/shtefanvko-ctrl/kareta/commits/ffee7891dfb12fa022b351d76eab06be3ab57d6b",
+          "html_url": "https://github.com/shtefanvko-ctrl/kareta/commit/ffee7891dfb12fa022b351d76eab06be3ab57d6b"
+        },
+        "merge_base_commit": {
+          "sha": "ffee7891dfb12fa022b351d76eab06be3ab57d6b",
+          "url": "https://api.github.com/repos/shtefanvko-ctrl/kareta/commits/ffee7891dfb12fa022b351d76eab06be3ab57d6b",
+          "html_url": "https://github.com/shtefanvko-ctrl/kareta/commit/ffee7891dfb12fa022b351d76eab06be3ab57d6b"
+        },
+        "files": [
+          {
+            "filename": ".github/pull_request_template.md",
+            "status": "modified",
+            "additions": 12,
+            "deletions": 0,
+            "changes": 12,
+            "previous_filename": null
+          },
+          {
+            "filename": ".github/workflows/ai-governance.yml",
+            "status": "modified",
+            "additions": 4,
+            "deletions": 0,
+            "changes": 4,
+            "previous_filename": null
+          },
+          {
+            "filename": ".github/workflows/devil-staging-access-contract.yml",
+            "status": "added",
+            "additions": 36,
+            "deletions": 0,
+            "changes": 36,
+            "previous_filename": null
+          },
+          {
+            "filename": ".github/workflows/feature-preservation.yml",
+            "status": "added",
+            "additions": 29,
+            "deletions": 0,
+            "changes": 29,
+            "previous_filename": null
+          },
+          {
+            "filename": "ai/FEATURE_PRESERVATION.md",
+            "status": "added",
+            "additions": 34,
+            "deletions": 0,
+            "changes": 34,
+            "previous_filename": null
+          },
+          {
+            "filename": "ai/FEATURE_PRESERVATION_BASELINE.json",
+            "status": "added",
+            "additions": 106,
+            "deletions": 0,
+            "changes": 106,
+            "previous_filename": null
+          },
+          {
+            "filename": "ai/tests/test_feature_preservation_checkout.py",
+            "status": "added",
+            "additions": 60,
+            "deletions": 0,
+            "changes": 60,
+            "previous_filename": null
+          },
+          {
+            "filename": "api/identity/devil_staging_access.php",
+            "status": "added",
+            "additions": 67,
+            "deletions": 0,
+            "changes": 67,
+            "previous_filename": null
+          },
+          {
+            "filename": "docs/recovery/pr133_critical_entry_contents_20261014.md",
+            "status": "added",
+            "additions": 21,
+            "deletions": 0,
+            "changes": 21,
+            "previous_filename": null
+          },
+          {
+            "filename": "docs/release/DEVIL_PR133_BOOT_BUNDLE_SYNC_20261014.md",
+            "status": "added",
+            "additions": 11,
+            "deletions": 0,
+            "changes": 11,
+            "previous_filename": null
+          },
+          {
+            "filename": "docs/release/DEVIL_PR133_FEATURE_EXACT_HEAD_20261014.md",
+            "status": "added",
+            "additions": 15,
+            "deletions": 0,
+            "changes": 15,
+            "previous_filename": null
+          },
+          {
+            "filename": "docs/release/DEVIL_PR133_FEATURE_FLOOR_20261014.md",
+            "status": "added",
+            "additions": 13,
+            "deletions": 0,
+            "changes": 13,
+            "previous_filename": null
+          },
+          {
+            "filename": "docs/release/DEVIL_STAGING_EXPERIMENTAL_ACCESS_20261014.md",
+            "status": "added",
+            "additions": 36,
+            "deletions": 0,
+            "changes": 36,
+            "previous_filename": null
+          },
+          {
+            "filename": "docs/staging/STAGING_HOTFIX_2026_10_13.md",
+            "status": "added",
+            "additions": 17,
+            "deletions": 0,
+            "changes": 17,
+            "previous_filename": null
+          },
+          {
+            "filename": "js/boot/runtime_shell_bundle.js",
+            "status": "modified",
+            "additions": 62,
+            "deletions": 5,
+            "changes": 67,
+            "previous_filename": null
+          },
+          {
+            "filename": "js/next/mobile_back.js",
+            "status": "modified",
+            "additions": 62,
+            "deletions": 5,
+            "changes": 67,
+            "previous_filename": null
+          },
+          {
+            "filename": "js/next/pages/master_schedule.js",
+            "status": "modified",
+            "additions": 2,
+            "deletions": 2,
+            "changes": 4,
+            "previous_filename": null
+          },
+          {
+            "filename": "js/next/pages/notifications.js",
+            "status": "modified",
+            "additions": 15,
+            "deletions": 3,
+            "changes": 18,
+            "previous_filename": null
+          },
+          {
+            "filename": "js/next/pages/parts.js",
+            "status": "modified",
+            "additions": 1,
+            "deletions": 0,
+            "changes": 1,
+            "previous_filename": null
+          },
+          {
+            "filename": "js/next/pages/work_feed.js",
+            "status": "modified",
+            "additions": 4,
+            "deletions": 3,
+            "changes": 7,
+            "previous_filename": null
+          },
+          {
+            "filename": "sw.js",
+            "status": "modified",
+            "additions": 17,
+            "deletions": 2,
+            "changes": 19,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/audit_staging_inventory.py",
+            "status": "added",
+            "additions": 63,
+            "deletions": 0,
+            "changes": 63,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/check_deployment_provenance.php",
+            "status": "added",
+            "additions": 35,
+            "deletions": 0,
+            "changes": 35,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/release_checklist.sh",
+            "status": "modified",
+            "additions": 11,
+            "deletions": 0,
+            "changes": 11,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_ai_surface_map.py",
+            "status": "added",
+            "additions": 47,
+            "deletions": 0,
+            "changes": 47,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_audit_staging_inventory.py",
+            "status": "added",
+            "additions": 60,
+            "deletions": 0,
+            "changes": 60,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_deployment_preflight_cli.php",
+            "status": "added",
+            "additions": 73,
+            "deletions": 0,
+            "changes": 73,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_deployment_preflight_contract.php",
+            "status": "added",
+            "additions": 32,
+            "deletions": 0,
+            "changes": 32,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_devil_staging_access.php",
+            "status": "added",
+            "additions": 35,
+            "deletions": 0,
+            "changes": 35,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_feature_preservation.py",
+            "status": "added",
+            "additions": 406,
+            "deletions": 0,
+            "changes": 406,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_mobile_back_bundle_sync.py",
+            "status": "added",
+            "additions": 40,
+            "deletions": 0,
+            "changes": 40,
+            "previous_filename": null
+          },
+          {
+            "filename": "tools/test_staging_guard_hotfix_20261013.js",
+            "status": "added",
+            "additions": 30,
+            "deletions": 0,
+            "changes": 30,
+            "previous_filename": null
+          }
+        ]
+      }
+    },
+    {
+      "n": 131,
+      "head": "e15ac20c60c985f63b3667fc9a1dce361df77910",
+      "base": "5862c845c6262f22844fc13fcdb998aae2d1058f",
+      "files": [
+        {
+          "path": "docs/staging/STAGING_HOTFIX_2026_10_13.md",
+          "sourceBlob": "663f30055574575d58df1e9d7ba551f846cd2850",
+          "targetBlob": "663f30055574575d58df1e9d7ba551f846cd2850",
+          "status": "identical"
+        },
+        {
+          "path": "js/next/pages/master_schedule.js",
+          "sourceBlob": "34f9f78de6e29bc2ba66b0249b65b01535f5d26a",
+          "targetBlob": "34f9f78de6e29bc2ba66b0249b65b01535f5d26a",
+          "status": "identical"
+        },
+        {
+          "path": "js/next/pages/notifications.js",
+          "sourceBlob": "fc1622e47bf56fbb264f89dda38a3f91be54b1e1",
+          "targetBlob": "fc1622e47bf56fbb264f89dda38a3f91be54b1e1",
+          "status": "identical"
+        },
+        {
+          "path": "js/next/pages/parts.js",
+          "sourceBlob": "de01eaef7b4082c9ea0d58c7e7c2cb07424da9d5",
+          "targetBlob": "c51d784cde8b3699d5f141a28175c5aab6a799ae",
+          "status": "different"
+        },
+        {
+          "path": "js/next/pages/work_feed.js",
+          "sourceBlob": "49a50c4b5ad0aefa683f26a8d206c43cc430fc9a",
+          "targetBlob": "49a50c4b5ad0aefa683f26a8d206c43cc430fc9a",
+          "status": "identical"
+        },
+        {
+          "path": "sw.js",
+          "sourceBlob": "6716e089e2f19b802f81f71fa388ed4fb2ec6876",
+          "targetBlob": "6716e089e2f19b802f81f71fa388ed4fb2ec6876",
+          "status": "identical"
+        },
+        {
+          "path": "tools/test_staging_guard_hotfix_20261013.js",
+          "sourceBlob": "c7447ccf1a4a9c31eb8c11f7ef86f1d2439d5377",
+          "targetBlob": "c7447ccf1a4a9c31eb8c11f7ef86f1d2439d5377",
+          "status": "identical"
+        }
+      ],
+      "purpose": "SW manifest, city filter, notifications and stale-response guards",
+      "source_branch": "devil/staging-hotfixes-20261013",
+      "base_branch": "main",
+      "integration_status": "уже перенесено",
+      "reason": "Six of seven files are byte-identical. Parts file differs, but the sole source addition if(!cityMatch(product,'store'))return is present in storeDirectory. Autonomous source regression passes. Async guards are checked as source markers only, not runtime race tests.",
+      "addition_block_observations": [
+        {
+          "path": "js/next/pages/parts.js",
+          "blocks": 1,
+          "present": 1,
+          "missing": []
+        }
+      ],
+      "ancestor": null
+    },
+    {
+      "n": 132,
+      "head": "28ed0857d6753946c7305d82d20d2c371aa3ec54",
+      "base": "5862c845c6262f22844fc13fcdb998aae2d1058f",
+      "files": [
+        {
+          "path": ".github/workflows/application-gates.yml",
+          "sourceBlob": "8103318ab8d6607a45f4d97ddbbe35f2dc1b22d4",
+          "targetBlob": "6680faf4e2228540586c2c4582798b4750d5ec41",
+          "status": "different"
+        },
+        {
+          "path": "docs/release/DEVIL_PR132_INVENTORY_20261014.md",
+          "sourceBlob": "dccce1b9239582cb0ed93ebbab6b8e3dcd47fd5d",
+          "targetBlob": null,
+          "status": "absent"
+        },
+        {
+          "path": "tools/audit_staging_inventory.py",
+          "sourceBlob": "0a6e60b209eb41be0b6b731b4a94d83a756a1a93",
+          "targetBlob": "191761acb98fdafcf38a9605d4ddd58c46095922",
+          "status": "different"
+        },
+        {
+          "path": "tools/check_deployment_provenance.php",
+          "sourceBlob": "4cbfe843bf812a312a749426782550a9bd338098",
+          "targetBlob": "4cbfe843bf812a312a749426782550a9bd338098",
+          "status": "identical"
+        },
+        {
+          "path": "tools/release_checklist.sh",
+          "sourceBlob": "060096a014289e9047ba705576022f4fbb8bdca2",
+          "targetBlob": "060096a014289e9047ba705576022f4fbb8bdca2",
+          "status": "identical"
+        },
+        {
+          "path": "tools/test_audit_staging_inventory.py",
+          "sourceBlob": "7962dc8a3c05950ac4f3454b376b285f20a91fca",
+          "targetBlob": "66eb00e66ee01ed4d51338a7302a5f91d4f601cc",
+          "status": "different"
+        },
+        {
+          "path": "tools/test_deployment_preflight_cli.php",
+          "sourceBlob": "5d419ec47170f7f9eee675e1172514f44796d0f6",
+          "targetBlob": "5d419ec47170f7f9eee675e1172514f44796d0f6",
+          "status": "identical"
+        },
+        {
+          "path": "tools/test_deployment_preflight_contract.php",
+          "sourceBlob": "9f5d54e67a03d25147b926afdb69d0a88167f1a9",
+          "targetBlob": "9f5d54e67a03d25147b926afdb69d0a88167f1a9",
+          "status": "identical"
+        }
+      ],
+      "purpose": "Provenance preflight and offline file inventory",
+      "source_branch": "devil/provenance-preflight-20261014-01",
+      "base_branch": "main",
+      "integration_status": "перенесено частично",
+      "reason": "Provenance CLI, both PHP tests and release checklist are byte-identical. Inventory script/tests have evolved and differ; source inventory CI step and report absent. Review replacement semantics before calling full source PR integrated.",
+      "addition_block_observations": [
+        {
+          "path": ".github/workflows/application-gates.yml",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "      - name: Staging inventory fail-closed regression\n        run: python3 tools/test_audit_staging_inventory.py\n"
+          ]
+        },
+        {
+          "path": "tools/audit_staging_inventory.py",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "#!/usr/bin/env python3\n\"\"\"Read-only exact-commit staging inventory; no file contents are printed.\"\"\"\nimport argparse\nimport hashlib\nimport json\nfrom pathlib import Path\ni"
+          ]
+        },
+        {
+          "path": "tools/test_audit_staging_inventory.py",
+          "blocks": 1,
+          "present": 0,
+          "missing": [
+            "#!/usr/bin/env python3\n\"\"\"Synthetic, hermetic checks for read-only staging inventory.\"\"\"\nimport json\nfrom pathlib import Path\nimport subprocess\nimport sys\nimport tempfile"
+          ]
+        }
+      ],
+      "ancestor": null
+    }
+  ]
+}

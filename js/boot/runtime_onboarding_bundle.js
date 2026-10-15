@@ -732,7 +732,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     if (!normalized) throw Object.assign(new Error('Проверьте номер телефона.'), { code:'invalid_phone' });
     if (cleanCode.length !== codeLength) throw Object.assign(new Error(`Введите ${codeLength} цифр кода.`), { code:'verification_invalid' });
 
-    const selectedRole = String(entryRole || 'client').toLowerCase() === 'master' ? 'master' : 'client';
+    const requestedRole = String(entryRole || 'client').trim().toLowerCase();
+    const selectedRole = ['client','master','sto','seller'].includes(requestedRole) ? requestedRole : 'client';
     const flightKey = `${normalized}:${cleanCode}:${selectedRole}`;
     if (verifyCodeFlight?.key === flightKey) return verifyCodeFlight.promise;
     const promise = (async () => {
@@ -873,6 +874,12 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
       // session-confirmed event, because it must inspect the real Garage state.
       target='#/home';
     }
+    if(['sto','seller'].includes(selectedRole) && activeContextRole!==selectedRole){
+      // A pending business-role application never opens a privileged workspace.
+      // Business access requires the server to activate a matching Identity context.
+      target='#/home';
+      firstEntryRequired=false;
+    }
     return {ok:true,role:selectedRole,contextRole:activeContextRole,target,firstEntryRequired:firstEntryRequired??null,postAuth:server};
   }
 
@@ -958,14 +965,18 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   function confirmedUser(result, flow){
     const source = result && typeof result.user === 'object' ? result.user : {};
     const legacyRole=state.role(source.role||'client');
-    const role = state.role(window.KaretaPostAuthFirstEntryResolver?.role?.(result,flow,source) || result?.selectedRole || result?.entryRole || flow.entryRole || flow.role || source.entry_role || legacyRole);
+    const requestedRole = state.role(window.KaretaPostAuthFirstEntryResolver?.role?.(result,flow,source) || result?.selectedRole || result?.entryRole || flow.entryRole || flow.role || source.entry_role || legacyRole);
+    // The selected storefront/service role is an application, not a privilege grant.
+    // Only a server-owned active identity context (or the moderated legacy role) may set effective access.
+    const identityRole = result?.identity?.authenticated ? identityContextRole({currentContext:result.identity.currentContext || result.identity.context}) : '';
+    const role = state.role(identityRole || legacyRole);
     return {
       ...source,
       name:String(source.name || flow.accountName || flow.name || (role === 'seller' ? 'Магазин запчастей' : role === 'sto' ? 'Автосервис' : role === 'master' ? 'Мастер' : 'Клиент')),
       phone:String(source.phone || flow.phone || flow.contactPhone || ''),
       role,
       legacy_role:legacyRole,
-      entry_role:role,
+      entry_role:requestedRole,
       city:String(source.city || flow.city || flow.cityName || ''),
       onboarded:true,
       onboarding_stage:'done'
@@ -1244,10 +1255,12 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     return ['master','sto','seller'].includes(role) ? role : 'client';
   }
 
+  const officialLogoUrl = () => '/assets/logo/main/kareta_logo_full.png?v=' + encodeURIComponent(String(window.KARETA_NEXT_ASSET_VERSION || 'dev'));
+
   function modalHeader(options = {}) {
     const roleIcon = options.roleIcon ? `<div class="onb2-modal-role-ico">${esc(options.roleIcon)}</div>` : '';
     return `<div class="onb2-modal-head onb2-modal-head--compact">
-      <div class="onb2-headbar"><div class="onb2-brandbox onb2-brandbox--official"><img class="onb2-brand-logo onb2-brand-logo--full" src="/assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ Автосервис"></div></div>
+      <div class="onb2-headbar"><div class="onb2-brandbox onb2-brandbox--official"><img class="onb2-brand-logo onb2-brand-logo--full" src="${officialLogoUrl()}" alt="KARETA.KZ Автосервис"></div></div>
       ${roleIcon}
       <div class="onb2-modal-title">${esc(options.title || '')}</div>
       <div class="onb2-modal-sub">${esc(options.sub || '')}</div>
@@ -1981,6 +1994,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function branchIcon(role){
+    if(role==='sto') return `<svg viewBox="0 0 36 36" aria-hidden="true"><path d="M4 31V14l14-9 14 9v17H4Z"/><path d="M11 31V20h14v11M12 14h12M17 20v11"/></svg>`;
+    if(role==='seller') return `<svg viewBox="0 0 36 36" aria-hidden="true"><path d="M5 14 8 5h20l3 9v17H5V14Z"/><path d="M5 14h26M12 14v6a4 4 0 0 0 8 0v-6M20 14v6a4 4 0 0 0 8 0v-6M11 31V23h10v8"/></svg>`;
     if(role==='master') return `<svg viewBox="0 0 36 36" aria-hidden="true"><path d="M22.5 7.2a8.2 8.2 0 0 0-9.7 10.7L6.7 24a3.1 3.1 0 0 0 4.4 4.4l6.1-6.1A8.2 8.2 0 0 0 28 12.6l-4.2 4.2-4.6-1.1-1.1-4.6 4.4-3.9Z"/></svg>`;
     return `<svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="12" cy="10" r="4"/><path d="M5.5 23c.8-4.5 3-7 6.5-7 3.1 0 5.2 2 6.2 5.4"/><path d="M18 24.5h11.5l-1.3-5.1a2.5 2.5 0 0 0-2.4-1.9h-4.9a2.5 2.5 0 0 0-2.3 1.5L16 24.5Z"/><circle cx="20.5" cy="26.5" r="2"/><circle cx="27.2" cy="26.5" r="2"/></svg>`;
   }
@@ -1991,9 +2006,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function roleBranch(role){
-    const master=role==='master';
-    const title=master?'Мастер':'Клиент';
-    const desc=master?'Оказываю услуги':'Ищу услуги';
+    const labels={client:['Клиент','Ищу услуги'],master:['Мастер','Оказываю услуги'],sto:['СТО','Управляю автосервисом'],seller:['Магазин','Продаю запчасти']};
+    const [title,desc]=labels[role]||labels.client;
     return `<div class="k-flow-role-column">
       <button type="button" class="k-flow-role-card" data-role-branch="${role}" data-role="${role}" aria-label="${title}: ${desc}">
         <span class="k-flow-role-icon">${branchIcon(role)}</span>
@@ -2008,11 +2022,13 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     return window.KaretaKFlow?.renderSteps?.({total:4,current:map[step]||1,label:'Окно'}) || '';
   }
 
+  const officialLogoUrl = () => '/assets/logo/main/kareta_logo_full.png?v=' + encodeURIComponent(String(window.KARETA_NEXT_ASSET_VERSION || 'dev'));
+
   function flowHeader(step){
     const action=step==='role'?'back-welcome':step==='profile'?'back-role':'back-profile';
     return `<header class="k-flow-header">
       <button type="button" class="k-flow-back" data-action="${action}" aria-label="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6"/></svg></button>
-      <img class="k-flow-logo" src="/assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ">
+      <img class="k-flow-logo" src="${officialLogoUrl()}" alt="KARETA.KZ">
       <span class="k-flow-header-spacer" aria-hidden="true"></span>
     </header>`;
   }
@@ -2030,7 +2046,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   function welcomeStepHtml(){
     return `<section id="onb2-step-welcome" class="onb2-step active" data-step="welcome">
       <div class="onb2-welcome-card onb2-flow-shell">
-        <div class="onb2-flow-brand"><img class="onb2-welcome-logo" src="/assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ Автосервис"></div>
+        <div class="onb2-flow-brand"><img class="onb2-welcome-logo" src="${officialLogoUrl()}" alt="KARETA.KZ Автосервис"></div>
         ${progressHtml('welcome')}
         <div class="onb2-welcome-copy">
           <h1>Добро пожаловать!</h1>
@@ -2042,14 +2058,14 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
             <div><b>Запчасти и сообщество</b><span>Подбор деталей, реальные работы, вопросы и помощь других участников.</span></div>
           </div>
         </div>
-        <div class="onb2-flow-actions onb2-flow-actions--single"><button type="button" class="onb2-btn onb2-btn--primary onb2-welcome-next" data-action="welcome-next">Начать</button></div>
+        <div class="onb2-flow-actions onb2-flow-actions--single"><button type="button" class="onb2-btn onb2-btn--primary onb2-welcome-next" data-action="welcome-next">Начать</button><button type="button" class="k-flow-guest-preview" data-action="guest-preview" data-ru="Просто посмотреть" data-kk="Тек қарап шығу" data-en="Browse without registration">Просто посмотреть</button></div>
       </div>
     </section>`;
   }
 
   function roleStepHtml(){
     return `<section id="onb2-step-role" class="onb2-step active" data-step="role">
-      ${sharedModal('Кто вы?','Выберите, как будете пользоваться приложением',`<div class="k-flow-role-grid" role="list" aria-label="Выбор ветки KARETA.KZ">${roleBranch('master')}${roleBranch('client')}</div>`,'','role',`<div class="k-flow-desktop-context"><div><b>Для клиента</b><span>Гараж, заявки на ремонт, выбор мастера, чат, история и запчасти.</span></div><div><b>Для мастера</b><span>Биржа заявок, рабочий график, услуги, клиенты, запчасти и сообщество.</span></div></div>`)}
+      ${sharedModal('Кто вы?','Выберите, как будете пользоваться приложением',`<div class="k-flow-role-grid" role="list" aria-label="Выбор ветки KARETA.KZ">${roleBranch('client')}${roleBranch('master')}${roleBranch('sto')}${roleBranch('seller')}</div><div class="k-flow-guest-action"><button type="button" class="k-flow-guest-preview" data-action="guest-preview" data-ru="Просто посмотреть" data-kk="Тек қарап шығу" data-en="Browse without registration">Просто посмотреть</button><small>Без регистрации — только открытые страницы. Для заказа, чата и покупки потребуется вход.</small></div>`,'','role',`<div class="k-flow-desktop-context"><div><b>Для клиента</b><span>Гараж, заявки на ремонт, выбор мастера, чат, история и запчасти.</span></div><div><b>Для мастера</b><span>Биржа заявок, рабочий график, услуги, клиенты, запчасти и сообщество.</span></div></div>`)}
     </section>`;
   }
 
@@ -2353,6 +2369,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
       if (branch) { const role = selectRole(branch.dataset.roleBranch); navigateFlow('profile',role,{source:'registration-role-branch'}); return; }
       const control = event.target.closest('[data-action]');
       const action = control?.dataset.action;
+      if (action === 'guest-preview') { window.KaretaOnboardingLifecycle?.enterGuestPreview?.(); return; }
       if (action === 'welcome-find-me') { locateWelcomeCity(true).catch(() => setWelcomeCityStatus('Не удалось определить — выберите город', 'error')); return; }
       if (action === 'welcome-next') { state.pendingEnter='neutral'; navigation.to('role', { role:draft.currentRole(), source:'registration-welcome-next' }); }
       if (action === 'back-welcome') { state.pendingEnter='neutral'; navigation.to('welcome', { role:draft.currentRole(), source:'registration-back-welcome' }); }
@@ -2580,6 +2597,23 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   const OVERLAY_STEPS = Object.freeze(['welcome','role','profile','code']);
+  const GUEST_PREVIEW_KEY = 'kareta.entry.guestPreview.v1';
+  function guestPreviewActive(){
+    if (window.KaretaIdentity?.snapshot?.()?.authenticated === true) return false;
+    try { return sessionStorage.getItem(GUEST_PREVIEW_KEY)==='1'; } catch (_error) { return false; }
+  }
+  function clearGuestPreview(){ try { sessionStorage.removeItem(GUEST_PREVIEW_KEY); } catch (_error) {} }
+  function enterGuestPreview(){
+    if (window.KaretaIdentity?.snapshot?.()?.authenticated === true) return false;
+    try { sessionStorage.setItem(GUEST_PREVIEW_KEY,'1'); } catch (_error) { return false; }
+    removeSurfaces();
+    app.setActive(false);
+    try { history.replaceState(null,'','#/home'); } catch (_error) { location.hash='#/home'; }
+    window.KaretaNavigationCore?.refreshAll?.({source:'onboarding-guest-preview'});
+    window.KaretaRouteRuntime?.transition?.('home',{source:'onboarding-guest-preview',force:true});
+    lastAction='guest-preview-anonymous';
+    return true;
+  }
   let booted = false;
   let listenersBound = false;
   let dispatching = false;
@@ -2592,7 +2626,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     // A previously authenticated MASTER/PERSONAL context must never overwrite
     // CLIENT/MASTER while the general onboarding flow is still pending.
     const pendingRole = state.role(flow?.entryRole || flow?.role || 'client');
-    if (flow?.pending === true && ['client','master'].includes(pendingRole)) return pendingRole;
+    if (flow?.pending === true && ['client','master','sto','seller'].includes(pendingRole)) return pendingRole;
     try {
       const identity = window.KaretaIdentity?.snapshot?.() || null;
       if (identity?.authenticated && identity?.compatibilityRole) return state.role(identity.compatibilityRole);
@@ -2666,6 +2700,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function openOverlay(parsed, context = {}){
+    clearGuestPreview();
     const currentFlow = draft.read();
     if (parsed.step === 'code' && !hasActiveCodeContext(currentFlow)) {
       clearTransientVerification();
@@ -2712,6 +2747,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   function resume(options = {}){
     const flow = draft.read();
     if (state.isDone()) return transitionToApp(flow, { source:options.source || 'resume-done', forceRoute:router.isOnboarding() });
+    if (guestPreviewActive() && !router.isOnboarding()) { removeSurfaces(); app.setActive(false); lastAction='guest-resume'; return '#/home'; }
     app.setActive(true);
     const parsed = router.parse();
     if (parsed) return dispatch(parsed, { source:options.source || 'resume-route', replace:true });
@@ -2737,6 +2773,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function reconcile(source, options = {}){
+    if (guestPreviewActive() && !router.isOnboarding()) { removeSurfaces(); app.setActive(false); lastAction='guest-reconcile'; return false; }
     if (state.isDone()) {
       if (router.isOnboarding()) return transitionToApp(draft.read(), { source, forceRoute:true });
       removeSurfaces();
@@ -2776,6 +2813,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
       dispatch(target,{source:'session-anonymous-relogin',replace:true,detail:event?.detail||{}});
     });
     window.addEventListener('kareta:session-confirmed', event => {
+      clearGuestPreview();
       const detail=event.detail || {};
       const identity=detail.identity || window.KaretaIdentity?.snapshot?.() || {};
       const user=detail.user || window.KaretaNext?.state?.user || null;
@@ -2850,7 +2888,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     };
   }
 
-  window.KaretaOnboardingLifecycle = Object.freeze({ boot, start, resume, dispatch, reconcile, transitionToApp, audit });
+  window.KaretaOnboardingLifecycle = Object.freeze({ boot, start, resume, dispatch, reconcile, transitionToApp, enterGuestPreview, guestPreviewActive, audit });
 })();
 ;
 

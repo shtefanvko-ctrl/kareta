@@ -85,3 +85,39 @@
 @media (min-width:861px) and (max-width:900px){
   #k-shell-header:has(> #k-mobile-back:not([hidden])) > .k-brand{margin-left:54px!important}
 }
+
+/* FIX-PROMPT v4 — mobile home owns the logo/location row; the bottom More owns navigation.
+   This is deliberately scoped to the home header and phone viewport, not a new global cascade. */
+@media(max-width:599px){
+  html:is([data-user-role="client"],[data-user-role="guest"]) #k-shell-header[data-kareta-header-mode="home"]{
+    height:68px!important;min-height:68px!important;max-height:68px!important;
+  }
+  html:is([data-user-role="client"],[data-user-role="guest"]) #k-shell-header[data-kareta-header-mode="home"] > .k-brand{
+    position:absolute!important;left:50%!important;top:50%!important;
+    transform:translate(-50%,-50%)!important;margin:0!important;
+    max-width:calc(100vw - 116px)!important;z-index:2!important;
+  }
+  html:is([data-user-role="client"],[data-user-role="guest"]) #k-shell-header[data-kareta-header-mode="home"] > .k-shell-actions{
+    position:absolute!important;right:max(12px,env(safe-area-inset-right,0px))!important;
+    left:auto!important;top:50%!important;bottom:auto!important;
+    transform:translateY(-50%)!important;margin:0!important;
+    width:auto!important;max-width:44px!important;
+    overflow:visible!important;z-index:3!important;
+  }
+  html:is([data-user-role="client"],[data-user-role="guest"]) #k-shell-header[data-kareta-header-mode="home"] > .k-shell-actions > :not([data-shell-location-icon]){
+    display:none!important;
+  }
+  html:is([data-user-role="client"],[data-user-role="guest"]) #k-shell-header[data-kareta-header-mode="home"] > .k-shell-actions > [data-shell-location-icon]{
+    position:static!important;flex:0 0 40px!important;
+    width:40px!important;min-width:40px!important;height:40px!important;
+  }
+}
+#k-shell-header .k-brand-logo[hidden],#k-shell-header .k-brand-text-fallback[hidden]{display:none!important}
+#k-shell-header .k-brand-text-fallback{color:#111827;font-weight:900;white-space:nowrap;font-size:19px;letter-spacing:-.025em}
+
+/* Six public guest routes use the same bounded phone labels as the client shell. */
+@media(max-width:599px){
+  html[data-user-role="guest"] #k-mobile-nav{grid-template-columns:repeat(6,minmax(0,1fr));gap:0}
+  html[data-user-role="guest"] #k-mobile-nav .k-nav-link{min-width:0;padding:5px 1px;overflow:hidden}
+  html[data-user-role="guest"] #k-mobile-nav .k-nav-label{min-width:0;max-width:100%;font-size:clamp(8px,2.2vw,10px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}

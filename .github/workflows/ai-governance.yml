@@ -12,6 +12,10 @@ on:
       - '.github/pull_request_template.md'
       - '.github/workflows/ai-governance.yml'
       - '.github/workflows/php-syntax.yml'
+      - 'tools/test_ai_surface_map.py'
+      - 'tools/test_scaling_contract.py'
+      - 'docs/product/FEATURE_REGISTRY.md'
+      - 'docs/architecture/ARCHITECTURE_DECISIONS.md'
   push:
     branches: [main]
     paths:
@@ -24,6 +28,10 @@ on:
       - '.github/pull_request_template.md'
       - '.github/workflows/ai-governance.yml'
       - '.github/workflows/php-syntax.yml'
+      - 'tools/test_ai_surface_map.py'
+      - 'tools/test_scaling_contract.py'
+      - 'docs/product/FEATURE_REGISTRY.md'
+      - 'docs/architecture/ARCHITECTURE_DECISIONS.md'
 
 jobs:
   context-contract:
@@ -54,3 +62,7 @@ jobs:
           grep -q 'MB_MONITORING.md' AGENTS.md
           for file in .github/agents/*.agent.md; do grep -q 'AGENTS.md' "$file" || { echo "$file must route through AGENTS.md"; exit 1; }; done
           echo 'AI governance contract is internally linked.'
+      - name: Validate routed source-map paths
+        run: python3 tools/test_ai_surface_map.py
+      - name: Validate scaling feature-owner governance
+        run: python3 tools/test_scaling_contract.py

@@ -16,11 +16,16 @@ Goal: maximize useful project context while minimizing context pollution. The ag
 | architecture, router, shared state, cross-module refactor, public contracts | `ai/rules/architecture.md` | unrelated historical patch notes |
 | auth, identity, permissions, capabilities, cookies, sessions, secrets, uploads, destructive actions | `ai/rules/security.md` | broad UI/product docs unless affected |
 | tests, regression, release, staging, deploy, DONE/PASS, baseline, evidence | `ai/rules/verification-release.md`, `MB_MONITORING.md` | assuming latest commit == verified release |
+| mobile visual canon, logo, header, diagnostics button, scanner, catalog and overlays | `ai/rules/visual-canon-v3.md`, `ai/rules/design-system-v4.md`, `ai/rules/web-spa.md` | unrelated history; design-v4 governance does not replace CSS v2 implementation |
 | web SPA / routing / lazy assets / cache | `ai/rules/web-spa.md` | backend/catalog history unless required |
 | PHP/API/DB contract | `ai/rules/backend-api.md` | unrelated UI history |
 | seller/store/product catalog | `ai/rules/marketplace-catalog.md` | loading the full catalog into startup context |
 | admin/control plane | `ai/rules/admin.md`, `ai/rules/security.md` | client-only UI assumptions |
 | Android/WebView/native bridge | `ai/rules/android-webview.md` | inferring native source that is not in this repository |
+| scaling, new subsystem, modular monolith, decomposition | `ai/rules/scaling.md`, `ai/rules/architecture.md` | microservices without a measured bottleneck |
+| domain ownership, shared orders/garage/roles | `ai/rules/domain-boundaries.md`, `ai/SURFACE_MAP.json` | adding a parallel business data authority |
+| cache, startup, traffic, JS/JSON payload size, latency | `ai/rules/performance.md`, `ai/rules/web-spa.md` | assuming static tests prove user performance |
+| incidents, audit log, correlation ID, error telemetry | `ai/rules/observability.md`, `ai/rules/security.md` | leaking private data in logs |
 | ordinary implementation task | `ai/WORKFLOW.md`, `ai/SURFACE_MAP.json` plus only the affected module files | all rule modules at once |
 | ambiguous conflict between docs and runtime | `MB_MONITORING.md`, then the smallest relevant rule module | silently choosing the newest text |
 

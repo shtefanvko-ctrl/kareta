@@ -26,7 +26,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     organization_service: Object.freeze(['stoDashboard','orders','masters','parts','__more__']),
     organization_store: Object.freeze(['seller','sellerProducts','sellerOrders','parts','chats','__more__']),
     organization: Object.freeze(['orders','calendarBooking','finance','chats','__more__']),
-    anonymous: Object.freeze(['home','works','masters','parts','__more__']),
+    anonymous: Object.freeze(['home','services','works','masters','parts','__more__']),
   });
 
   // Desktop navigation is context-owned just like the mobile shell. Public routes may
@@ -137,7 +137,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     return result;
   }
 
-  function mobileLimit(kind=contextKind()){ return ['personal','master','seller','admin','organization_store'].includes(kind) ? 6 : 5; }
+  function mobileLimit(kind=contextKind()){ return kind==='anonymous' ? 6 : ['personal','master','seller','admin','organization_store'].includes(kind) ? 6 : 5; }
 
   function mobileItems(){
     const preferred = template();
@@ -1267,7 +1267,29 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
   engine.register({key:'sto.approvals',title:'Согласование',subtitle:'Ответ клиента или СТО',icon:'check',contextKinds:['organization'],span:1,href:'#/workflow',render:data=>orderList(data.alerts?.waitingApproval,'Нет ожидающих согласования')});
   engine.register({key:'sto.parts',title:'Ожидают запчасти',subtitle:'Проверьте снабжение',icon:'parts',contextKinds:['organization'],span:1,href:'#/parts',render:data=>orderList(data.alerts?.waitingParts,'Ожиданий запчастей нет')});
   engine.register({key:'sto.calendar',title:'Календарь',subtitle:'Ближайшие записи',icon:'calendar',contextKinds:['organization'],span:1,href:'#/calendar',render:data=>{const list=Array.isArray(data.calendar)?data.calendar:[];return `<div class="k-dashboard-list">${list.slice(0,6).map(x=>`<a href="${x.orderId?`#/orders/item/${encodeURIComponent(x.orderId)}`:'#/calendar'}"><span>${esc(x.title||x.vehicleTitle||'Запись')}</span><small>${esc(x.startsAt||x.date||'')}</small></a>`).join('')||'<p class="k-empty">Ближайших записей нет</p>'}</div>`;}});
-  engine.register({key:'admin.metrics',title:'Платформа',subtitle:'Ключевые показатели',icon:'monitor',contextKinds:['admin'],span:4,render:data=>{const c=data.counts||{};return `<div class="k-dashboard-kpis">${[['Аккаунты',c.accounts],['Люди',c.persons],['Профили',c.person_profiles],['Контексты',c.contexts],['Организации',c.organizations],['Активные сессии',c.activeSessions],['Открытая модерация',c.openModeration]].map(([a,b])=>`<div class="k-dashboard-kpi"><b>${esc(b||0)}</b><span>${esc(a)}</span></div>`).join('')}</div>`;}});
+  // Real database aggregates only. An unavailable metric is distinct from an actual zero.
+  const adminCopy={
+    ru:{accounts:'Аккаунты',orders:'Заказы',masters:'Мастера (активные профили)',sto:'СТО (активные)',shops:'Магазины (активные)',sellerProducts:'Товары магазинов (все статусы)',unavailable:'Нет данных',users7:'Регистрации',orders7:'Заказы',range:'Последние 7 дней',dbTime:'Период по времени базы данных'},
+    kk:{accounts:'Аккаунттар',orders:'Тапсырыстар',masters:'Шеберлер (белсенді профильдер)',sto:'Автосервистер (белсенді)',shops:'Дүкендер (белсенді)',sellerProducts:'Дүкен тауарлары (барлық күйлер)',unavailable:'Дерек жоқ',users7:'Тіркелулер',orders7:'Тапсырыстар',range:'Соңғы 7 күн',dbTime:'Дерекқор уақыты бойынша кезең'},
+    en:{accounts:'Accounts',orders:'Orders',masters:'Masters (active profiles)',sto:'Service centers (active)',shops:'Stores (active)',sellerProducts:'Store products (all statuses)',unavailable:'Unavailable',users7:'Registrations',orders7:'Orders',range:'Last 7 days',dbTime:'Using database local dates'}
+  };
+  const adminText=()=>adminCopy[String(document.documentElement?.lang||'ru').toLowerCase().slice(0,2)]||adminCopy.ru;
+  const adminValue=v=>v===null||v===undefined||!Number.isFinite(Number(v))?'—':new Intl.NumberFormat('ru-RU').format(Number(v));
+  const adminSafeCount=v=>Number.isFinite(Number(v))&&Number(v)>=0?Number(v):0;
+  engine.register({key:'admin.metrics',title:'Показатели платформы',subtitle:'Только подтверждённые значения',icon:'monitor',contextKinds:['admin'],span:4,render:data=>{
+    const c=data.businessCounts||{},tr=adminText();
+    return `<div class="k-dashboard-kpis k-admin-business-kpis">${['accounts','orders','masters','sto','shops','sellerProducts'].map(key=>{const value=c[key],available=value!==null&&value!==undefined&&Number.isFinite(Number(value));return `<div class="k-dashboard-kpi" data-admin-metric="${key}"><b>${esc(adminValue(value))}</b><span>${esc(tr[key])}</span>${!available?`<small class="k-admin-metric-unavailable">${esc(tr.unavailable)}</small>`:''}</div>`;}).join('')}</div>`;
+  }});
+  engine.register({key:'admin.activity7d',title:'Активность за 7 дней',subtitle:'Регистрации и созданные заказы',icon:'analytics',contextKinds:['admin'],span:4,render:data=>{
+    const tr=adminText(),report=data.activity7d||{},days=Array.isArray(report.days)?report.days:[],users=Array.isArray(report.accounts)&&report.accounts.length===7?report.accounts:null,orders=Array.isArray(report.orders)&&report.orders.length===7?report.orders:null;
+    if(days.length!==7||(!users&&!orders))return `<p class="k-empty" role="status">${esc(tr.unavailable)}</p>`;
+    const range=days.map((day,i)=>({day:String(day),user:users?adminSafeCount(users[i]):null,order:orders?adminSafeCount(orders[i]):null}));
+    const ceiling=Math.max(1,...range.flatMap(item=>[item.user??0,item.order??0]));
+    return `<div class="k-admin-week-chart" role="img" aria-label="${esc(tr.range)}: ${esc(range.map(item=>item.day+' '+tr.users7+' '+(item.user??'—')+' '+tr.orders7+' '+(item.order??'—')).join('; '))}">
+      <div class="k-admin-week-chart__legend">${users?`<span class="is-users">${esc(tr.users7)}</span>`:''}${orders?`<span class="is-orders">${esc(tr.orders7)}</span>`:''}</div>
+      <div class="k-admin-week-chart__days">${range.map(item=>`<div class="k-admin-week-chart__day"><div class="k-admin-week-chart__bars">${users?`<i class="is-users" style="height:${Math.round(100*(item.user||0)/ceiling)}%" title="${esc(tr.users7)}: ${item.user}"></i>`:''}${orders?`<i class="is-orders" style="height:${Math.round(100*(item.order||0)/ceiling)}%" title="${esc(tr.orders7)}: ${item.order}"></i>`:''}</div><small>${esc(item.day.slice(5))}</small></div>`).join('')}</div>
+      <small class="k-admin-week-chart__source">${esc(tr.dbTime)}${users&&orders?'':` · ${esc(tr.unavailable)}`}</small></div>`;
+  }});
   engine.register({key:'admin.audit',title:'Последние действия',subtitle:'Audit trail',icon:'history',contextKinds:['admin'],span:4,render:data=>{const rows=Array.isArray(data.audit)?data.audit:[];return `<div class="k-dashboard-list">${rows.slice(0,10).map(a=>`<div><span>${esc(a.actionKey)} · ${esc(a.targetType)} #${esc(a.targetId)}</span><small>${esc(a.createdAt)}</small></div>`).join('')||'<p class="k-empty">Аудит пуст</p>'}</div>`;}});
 })();
 ;
@@ -1804,10 +1826,51 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
   const HOME = '#/home';
   const ONBOARDING = /^(#(?:\/)?(?:role|profile|entry|onboarding|welcome|benefits|transparency))/i;
   let syncFrame = 0;
+  const routeTrail = [];
+  const ROUTE_TITLES = Object.freeze({home:'Главная',services:'Услуги',parts:'Запчасти',masters:'Мастера и СТО',community:'Сообщество',chats:'Сообщения',messages:'Сообщения',cart:'Корзина',checkout:'Оформление заказа',market:'Маркет',account:'Аккаунт',diagnostics:'Диагностика ЭБУ',orders:'Заказы',cabinet:'Аккаунт',garage:'Гараж',works:'Работы мастеров',scanner:'Сканер',map:'Карта',seller:'Магазин',notifications:'Уведомления',assistant:'Помощник электрика'});
+
+  function routeTitle(hash) {
+    const route = String(hash || HOME).split('?')[0];
+    if (/^#\/parts\/item(?:\/|$)/.test(route)) return 'Карточка товара';
+    if (/^#\/parts\/store(?:\/|$)/.test(route)) return 'Магазин';
+    if (/^#\/services\/item(?:\/|$)/.test(route)) return 'Услуга';
+    if (/^#\/masters\/profile(?:\/|$)/.test(route)) return 'Профиль мастера или СТО';
+    if (/^#\/orders\/new(?:\/|$)/.test(route)) return 'Новая заявка';
+    if (/^#\/orders\/item(?:\/|$)/.test(route)) return 'Детали заказа';
+    // Reuse the canonical registry for nested routes, without changing root labels.
+    // Explicit detail titles above remain authoritative.
+    if (route.slice(2).includes('/')) {
+      const registry = window.KaretaRouteRegistry;
+      const key = registry?.keyFromHash?.(route);
+      const label = key && registry?.has?.(key) ? registry.get(key)?.label : '';
+      if (label) return label;
+    }
+    const segment = route.replace(/^#\//, '').split('/')[0];
+    const registry = window.KaretaRouteRegistry;
+    return ROUTE_TITLES[segment] || (registry?.has?.(segment) ? registry.get(segment)?.label : '') || 'Раздел';
+  }
+
+  function ensurePageTitle(header) {
+    if (!header) return null;
+    let node = document.getElementById('k-shell-page-title');
+    if (!node) {
+      node = document.createElement('strong');
+      node.id = 'k-shell-page-title';
+      node.className = 'k-shell-page-title';
+      const brand = header.querySelector(':scope > .k-brand');
+      header.insertBefore(node, brand || header.firstChild);
+    }
+    return node;
+  }
   const BACK_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5 8.5 12l7 7"></path><path d="M9 12h11"></path></svg>';
 
   function fallbackFor(hashValue) {
     const hash = String(hashValue || location.hash || HOME).split('?')[0];
+    if (hash === '#/diagnostics') return '#/services';
+    if (/^#\/services\/(?:category|group)\//.test(hash)) return '#/services';
+    if (/^#\/parts\/(?:store|used)\//.test(hash)) return '#/parts';
+    if (/^#\/community\//.test(hash)) return '#/community';
+    if (/^#\/(?:chats|messages)\//.test(hash)) return '#/chats';
     if (/^#\/works\/item\//.test(hash)) return '#/works';
     if (/^#\/parts\/item\//.test(hash)) return '#/parts';
     if (/^#\/services\/item\//.test(hash)) return '#/services';
@@ -1873,6 +1936,20 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     const stack = document.getElementById('k-mobile-fab-stack');
     const hash = location.hash || HOME;
     const protectContent = isProtectedContentSurface(hash);
+    const cleanHash = String(hash).split('?')[0];
+    if (!routeTrail.length) routeTrail.push(cleanHash);
+    else if (routeTrail[routeTrail.length - 1] !== cleanHash) {
+      if (routeTrail.length > 1 && routeTrail[routeTrail.length - 2] === cleanHash) routeTrail.pop();
+      else routeTrail.push(cleanHash);
+    }
+    const header = document.getElementById('k-shell-header');
+    if (header) {
+      const mode = isOnboarding(hash) ? 'onboarding' : shouldShowBack(hash) ? 'inner' : 'home';
+      header.dataset.karetaHeaderMode = mode;
+      const title = ensurePageTitle(header);
+      if (title) title.textContent = mode === 'inner' ? routeTitle(hash) : '';
+      header.setAttribute('aria-label', mode === 'inner' ? 'Верхняя панель: ' + routeTitle(hash) : 'Верхняя панель KARETA.KZ');
+    }
 
     if (backButton) {
       backButton.hidden = !shouldShowBack(hash);
@@ -1888,7 +1965,10 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     }
     hideZeroBadge('k-mobile-chat-badge');
     hideZeroBadge('k-mobile-orders-badge');
-    if (stack) stack.hidden = isOnboarding(hash) || protectContent;
+    // Phone navigation already provides More, chat and orders: never stack duplicate FABs above cards.
+    // Tablet and desktop affordances are preserved for their different navigation geometry.
+    const phoneNav = window.matchMedia?.('(max-width: 599px)')?.matches === true;
+    if (stack) stack.hidden = isOnboarding(hash) || protectContent || cleanHash !== HOME || phoneNav;
   }
 
   function sync() {
@@ -1902,12 +1982,14 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
   function back() {
     const button = document.getElementById('k-mobile-back');
     const fallback = button?.dataset.fallback || HOME;
-    if (window.KaretaNavigationState?.back) {
-      window.KaretaNavigationState.back(fallback);
+    // Browser history can contain an external page on a direct deep link.
+    // Go back only when this SPA has observed a prior in-app route.
+    if (routeTrail.length > 1 && history.length > 1) {
+      if (window.KaretaNavigationState?.back) window.KaretaNavigationState.back(fallback);
+      else history.back();
       return;
     }
-    if (history.length > 1) history.back();
-    else location.hash = fallback;
+    if (location.hash !== fallback) location.hash = fallback;
   }
 
   function openOrders() {
@@ -1966,6 +2048,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
       window.addEventListener('hashchange', sync);
       window.addEventListener('popstate', sync);
       window.addEventListener('pageshow', sync);
+      window.addEventListener('resize', sync, { passive:true });
       window.addEventListener('kareta:routechange', sync);
       window.addEventListener('kareta:chat-unread', event => setChatBadge(event.detail?.count));
       window.addEventListener('kareta:primary-action-changed', sync);
@@ -1978,7 +2061,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
   else boot();
 
-  window.KaretaMobileBack = Object.freeze({ sync, fallbackFor });
+  window.KaretaMobileBack = Object.freeze({ sync, back, fallbackFor, routeTitle });
 })();
 ;
 

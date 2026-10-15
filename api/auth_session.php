@@ -92,7 +92,7 @@ function kareta_restore_legacy_profile_from_identity(PDO $pdo, array $snapshot, 
     $role = strtolower((string)($snapshot['role'] ?? 'client'));
     if (!in_array($role, ['client','master','seller'], true)) $role = 'client';
     $entryRole = strtolower(trim($selectedEntryRole));
-    if (!in_array($entryRole, ['client','master'], true)) $entryRole = $role;
+    if (!in_array($entryRole, ['client','master','sto','seller'], true)) $entryRole = $role;
     $name = trim((string)($snapshot['name'] ?? '')) ?: ($role === 'master' ? 'Мастер' : ($role === 'seller' ? 'Магазин' : 'Клиент'));
     $parts = preg_split('/\s+/u', $name, -1, PREG_SPLIT_NO_EMPTY) ?: [];
     $initials = mb_substr($parts[0] ?? '', 0, 1) . mb_substr($parts[1] ?? '', 0, 1);
@@ -318,7 +318,7 @@ if ($method === 'POST') {
         $phone = kareta_normalize_phone((string)($body['phone'] ?? ''));
         $code = preg_replace('~\D+~', '', (string)($body['code'] ?? '')) ?: '';
         $selectedEntryRole = strtolower(trim((string)($body['entryRole'] ?? $body['role'] ?? 'client')));
-        if (!in_array($selectedEntryRole, ['client','master'], true)) $selectedEntryRole = 'client';
+        if (!in_array($selectedEntryRole, ['client','master','sto','seller'], true)) $selectedEntryRole = 'client';
         $verification = is_array($_SESSION['kareta_onboarding_verification'] ?? null)
             ? $_SESSION['kareta_onboarding_verification'] : null;
         if (!$verification || !hash_equals((string)($verification['phone'] ?? ''), $phone)) {

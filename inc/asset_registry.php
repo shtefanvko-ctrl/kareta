@@ -482,9 +482,9 @@ function kareta_route_asset_plan(): array
             'routes' => ['#/orders/new'],
             // These two late override files were formerly inside client_runtime_consolidated.css.
             // Loading them after the global client guard preserves their effective cascade.
-            'styles' => ['css/next/request_5_steps.css'],
-            'scripts' => ['js/next/pages/request.js'],
-            'globals' => ['KaretaRequestPages'],
+            'styles' => ['css/next/request_5_steps.css', 'css/next/client_request_final.css'],
+            'scripts' => ['js/next/pages/client_request_final.js', 'js/next/pages/request.js'],
+            'globals' => ['KaretaClientRequestFinalPages', 'KaretaRequestPages'],
         ],
         'workOrder' => [
             'lazy' => true,
@@ -724,7 +724,7 @@ function kareta_route_asset_plan(): array
         'scannerDomain' => [
             'lazy' => true, 'routeKeys' => ['scanner','scannerQr','scannerDocument','masterQr'],
             'routes' => ['#/scan','#/scan/qr','#/scan/document','#/master/qr'],
-            'styles' => ['css/next/scanner.css'], 'scripts' => ['js/next/qr_encoder.js','js/next/pages/scanner.js'],
+            'styles' => ['css/next/scanner.css'], 'scripts' => ['js/next/qr_encoder.js','js/next/document_ocr.js','js/next/pages/scanner.js'],
             'globals' => ['KaretaScannerPages'],
         ],
         'diagnosticsDomain' => [
