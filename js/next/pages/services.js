@@ -232,6 +232,11 @@
         <button type="button" class="k-services-canon-search__submit" data-services-submit aria-label="Выполнить поиск">${submitIcon}</button>
       </div>
       <div class="k-services-canon-filters" data-services-tabs>${referenceTabs()}</div>
+      <a class="k-services-ecu-cta" href="#/diagnostics" data-ecu-entry="services" aria-label="Диагностика ЭБУ, подключение ELM327 через OBD-II">
+        <span class="k-services-ecu-cta__icon" aria-hidden="true">${referenceServiceIcon("diagnostics")}</span>
+        <span class="k-services-ecu-cta__text"><b>Диагностика ЭБУ</b><small>ELM327 · OBD-II · Проверка автомобиля</small></span>
+        <span class="k-services-ecu-cta__arrow" aria-hidden="true">›</span>
+      </a>
     </section>`;
   }
 

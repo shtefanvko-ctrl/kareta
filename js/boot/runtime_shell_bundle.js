@@ -1771,10 +1771,51 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
   const HOME = '#/home';
   const ONBOARDING = /^(#(?:\/)?(?:role|profile|entry|onboarding|welcome|benefits|transparency))/i;
   let syncFrame = 0;
+  const routeTrail = [];
+  const ROUTE_TITLES = Object.freeze({home:'Главная',services:'Услуги',parts:'Запчасти',masters:'Мастера и СТО',community:'Сообщество',chats:'Сообщения',messages:'Сообщения',cart:'Корзина',checkout:'Оформление заказа',market:'Маркет',account:'Аккаунт',diagnostics:'Диагностика ЭБУ',orders:'Заказы',cabinet:'Аккаунт',garage:'Гараж',works:'Работы мастеров',scanner:'Сканер',map:'Карта',seller:'Магазин',notifications:'Уведомления',assistant:'Помощник электрика'});
+
+  function routeTitle(hash) {
+    const route = String(hash || HOME).split('?')[0];
+    if (/^#\/parts\/item(?:\/|$)/.test(route)) return 'Карточка товара';
+    if (/^#\/parts\/store(?:\/|$)/.test(route)) return 'Магазин';
+    if (/^#\/services\/item(?:\/|$)/.test(route)) return 'Услуга';
+    if (/^#\/masters\/profile(?:\/|$)/.test(route)) return 'Профиль мастера или СТО';
+    if (/^#\/orders\/new(?:\/|$)/.test(route)) return 'Новая заявка';
+    if (/^#\/orders\/item(?:\/|$)/.test(route)) return 'Детали заказа';
+    // Reuse the canonical registry for nested routes, without changing root labels.
+    // Explicit detail titles above remain authoritative.
+    if (route.slice(2).includes('/')) {
+      const registry = window.KaretaRouteRegistry;
+      const key = registry?.keyFromHash?.(route);
+      const label = key && registry?.has?.(key) ? registry.get(key)?.label : '';
+      if (label) return label;
+    }
+    const segment = route.replace(/^#\//, '').split('/')[0];
+    const registry = window.KaretaRouteRegistry;
+    return ROUTE_TITLES[segment] || (registry?.has?.(segment) ? registry.get(segment)?.label : '') || 'Раздел';
+  }
+
+  function ensurePageTitle(header) {
+    if (!header) return null;
+    let node = document.getElementById('k-shell-page-title');
+    if (!node) {
+      node = document.createElement('strong');
+      node.id = 'k-shell-page-title';
+      node.className = 'k-shell-page-title';
+      const brand = header.querySelector(':scope > .k-brand');
+      header.insertBefore(node, brand || header.firstChild);
+    }
+    return node;
+  }
   const BACK_ICON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5 8.5 12l7 7"></path><path d="M9 12h11"></path></svg>';
 
   function fallbackFor(hashValue) {
     const hash = String(hashValue || location.hash || HOME).split('?')[0];
+    if (hash === '#/diagnostics') return '#/services';
+    if (/^#\/services\/(?:category|group)\//.test(hash)) return '#/services';
+    if (/^#\/parts\/(?:store|used)\//.test(hash)) return '#/parts';
+    if (/^#\/community\//.test(hash)) return '#/community';
+    if (/^#\/(?:chats|messages)\//.test(hash)) return '#/chats';
     if (/^#\/works\/item\//.test(hash)) return '#/works';
     if (/^#\/parts\/item\//.test(hash)) return '#/parts';
     if (/^#\/services\/item\//.test(hash)) return '#/services';
@@ -1840,6 +1881,20 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     const stack = document.getElementById('k-mobile-fab-stack');
     const hash = location.hash || HOME;
     const protectContent = isProtectedContentSurface(hash);
+    const cleanHash = String(hash).split('?')[0];
+    if (!routeTrail.length) routeTrail.push(cleanHash);
+    else if (routeTrail[routeTrail.length - 1] !== cleanHash) {
+      if (routeTrail.length > 1 && routeTrail[routeTrail.length - 2] === cleanHash) routeTrail.pop();
+      else routeTrail.push(cleanHash);
+    }
+    const header = document.getElementById('k-shell-header');
+    if (header) {
+      const mode = isOnboarding(hash) ? 'onboarding' : shouldShowBack(hash) ? 'inner' : 'home';
+      header.dataset.karetaHeaderMode = mode;
+      const title = ensurePageTitle(header);
+      if (title) title.textContent = mode === 'inner' ? routeTitle(hash) : '';
+      header.setAttribute('aria-label', mode === 'inner' ? 'Верхняя панель: ' + routeTitle(hash) : 'Верхняя панель KARETA.KZ');
+    }
 
     if (backButton) {
       backButton.hidden = !shouldShowBack(hash);
@@ -1869,12 +1924,14 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
   function back() {
     const button = document.getElementById('k-mobile-back');
     const fallback = button?.dataset.fallback || HOME;
-    if (window.KaretaNavigationState?.back) {
-      window.KaretaNavigationState.back(fallback);
+    // Browser history can contain an external page on a direct deep link.
+    // Go back only when this SPA has observed a prior in-app route.
+    if (routeTrail.length > 1 && history.length > 1) {
+      if (window.KaretaNavigationState?.back) window.KaretaNavigationState.back(fallback);
+      else history.back();
       return;
     }
-    if (history.length > 1) history.back();
-    else location.hash = fallback;
+    if (location.hash !== fallback) location.hash = fallback;
   }
 
   function openOrders() {
@@ -1945,7 +2002,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
   else boot();
 
-  window.KaretaMobileBack = Object.freeze({ sync, fallbackFor });
+  window.KaretaMobileBack = Object.freeze({ sync, back, fallbackFor, routeTitle });
 })();
 ;
 
