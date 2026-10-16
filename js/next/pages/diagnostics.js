@@ -9,7 +9,7 @@
     return `<section class="k-page k-diagnostics-page" data-page="diagnostics">
       <header class="k-r84-workspace-head k-diagnostics-head">
         <span>ДИАГНОСТИКА АВТОМОБИЛЯ</span>
-        <h1>ELM327 · Bluetooth OBD-II</h1>
+        <h1>ELM327 · Универсальная диагностика OBD-II</h1>
         <p>Подключение адаптера, чтение основных параметров и кодов неисправностей. Сессии сохраняются офлайн и синхронизируются с KARETA.KZ после появления сети.</p>
       </header>
 
@@ -19,7 +19,7 @@
           <p data-obd-native-text>Проверяем Native API.</p>
         </article>
         <article class="k-obd-card">
-          <div class="k-obd-card-head"><strong>Bluetooth</strong><span data-obd-bt class="k-obd-chip">—</span></div>
+          <div class="k-obd-card-head"><strong>Адаптер OBD-II</strong><span data-obd-bt class="k-obd-chip">—</span></div>
           <p data-obd-device>Адаптер не выбран.</p>
         </article>
         <article class="k-obd-card">
@@ -63,12 +63,19 @@
             <div><span>1</span><h2>ELM327</h2></div>
             <button type="button" class="k-btn" data-obd-settings>Bluetooth</button>
           </div>
-          <p class="k-obd-muted">Сначала выполните сопряжение ELM327 в настройках Android. KARETA показывает уже сопряжённые Bluetooth-устройства.</p>
+          <p class="k-obd-muted">Поддержка: Bluetooth Classic (сопряжённые устройства), BLE UART (сканирование) и Wi-Fi TCP (локальная сеть адаптера). Выберите транспорт — команды диагностики одинаковые.</p>
           <div class="k-obd-actions">
-            <button type="button" class="k-btn k-btn-primary" data-obd-devices>Выбрать ELM327</button>
+            <button type="button" class="k-btn k-btn-primary" data-obd-devices>Bluetooth Classic</button>
+            <button type="button" class="k-btn" data-obd-scan-ble disabled>Найти BLE</button>
             <button type="button" class="k-btn" data-obd-init disabled>Инициализировать</button>
             <button type="button" class="k-btn" data-obd-disconnect disabled>Отключить</button>
           </div>
+          <div class="k-obd-wifi-connect">
+            <label>Wi-Fi ELM327 — IP<input type="text" inputmode="decimal" maxlength="15" value="192.168.0.10" placeholder="192.168.0.10" data-obd-wifi-host></label>
+            <label>TCP-порт<input type="number" min="1" max="65535" value="35000" data-obd-wifi-port></label>
+            <button type="button" class="k-btn" data-obd-wifi-connect disabled>Подключить Wi-Fi</button>
+          </div>
+          <p class="k-obd-muted">Сначала подключите телефон к Wi-Fi-сети адаптера. Другие адреса и порты укажите согласно его инструкции. USB OTG пока не поддерживается.</p>
           <div class="k-obd-devices" data-obd-device-list hidden></div>
         </article>
 
@@ -272,16 +279,27 @@
       if(!mobile?.available?.()){
         nativeChip.textContent='Только Android';
         nativeChip.classList.add('is-warn');
-        nativeText.textContent='ELM327 доступен в приложении KARETA.KZ - Автосервис. В обычном браузере раздел работает только как история диагностики.';
+        nativeText.textContent='ELM327 доступен только в Android KARETA. В браузере можно просматривать историю.';
         setConnected(false);
         return;
       }
       nativeChip.textContent='Native API';
       nativeChip.classList.add('is-ok');
-      nativeText.textContent='Bluetooth и офлайн-хранилище доступны.';
+      nativeText.textContent='Bluetooth Classic, BLE, Wi-Fi и офлайн-хранилище доступны в APK 1.5.3.';
       try{
         const status=await mobile.elmStatus();
-        if(!status.permission){
+        const transports=Array.isArray(status?.supportedTransports)
+          ? status.supportedTransports : [status?.transport||'classic_spp'];
+        const bleEnabled=transports.includes('ble_gatt');
+        const wifiEnabled=transports.includes('wifi_tcp');
+        const bleButton=q('[data-obd-scan-ble]');
+        const wifiButton=q('[data-obd-wifi-connect]');
+        if(bleButton)bleButton.disabled=!bleEnabled;
+        if(wifiButton)wifiButton.disabled=!wifiEnabled;
+        nativeText.textContent=(bleEnabled&&wifiEnabled)
+          ? 'Android поддерживает Classic, BLE и Wi-Fi ELM327.'
+          : 'Доступен Bluetooth Classic. Для BLE/Wi-Fi обновите Android KARETA до 1.5.3.';
+        if(status.transport!=='wifi_tcp'&&!status.permission){
           try{
             const permission=await mobile.requestPermission('bluetooth');
             if(permission?.granted===false){
@@ -295,7 +313,7 @@
         btChip.textContent=status.ready?'Готово':status.connected?'Адаптер':'Не подключено';
         if(status.lastError&&!status.ready) nativeText.textContent='ELM327: '+status.lastError;
         if(status.address){
-          currentAdapter={name:status.name||'ELM327',address:status.address};
+          currentAdapter={name:status.name||'ELM327',address:status.address,transport:status.transport||'classic_spp'};
           deviceText.textContent=`${currentAdapter.name} · ${currentAdapter.address}`;
         }else{
           deviceText.textContent=status.enabled?'Адаптер не выбран.':'Bluetooth выключен.';
@@ -304,33 +322,43 @@
       await updateOffline();
     }
 
-    async function listDevices(){
+    async function listDevices(transport='classic_spp'){
       if(!mobile?.available?.())return;
+      const isBle=transport==='ble_gatt';
+      deviceList.hidden=false;
+      deviceList.innerHTML='<p class="k-obd-muted">'+(isBle?'Поиск BLE-устройств (до 7 секунд)…':'Получаем сопряжённые устройства…')+'</p>';
       try{
-        try{
-          const permission=await mobile.requestPermission('bluetooth');
-          if(permission?.granted===false){
-            setResult('Подтвердите системное разрешение Bluetooth, затем снова нажмите «Выбрать ELM327».');
-            return;
-          }
-        }catch(_){}
-        const payload=await mobile.elmDevices();
+        const permission=await mobile.requestPermission(isBle?'bluetooth_scan':'bluetooth');
+        if(permission?.granted===false){
+          setResult('Разрешите '+(isBle?'поиск Bluetooth-устройств':'Bluetooth')+' в системном диалоге.');
+          return;
+        }
+        if(isBle && !mobile.elmScanBle)throw new Error('Для BLE требуется Android KARETA 1.5.3 или новее.');
+        const payload=isBle?await mobile.elmScanBle():await mobile.elmDevices();
         const devices=Array.isArray(payload.devices)?payload.devices:[];
-        deviceList.hidden=false;
         if(!devices.length){
-          deviceList.innerHTML='<p class="k-obd-muted">Нет сопряжённых устройств. Откройте Bluetooth и выполните сопряжение ELM327.</p>';
+          deviceList.innerHTML='<p class="k-obd-muted">'+(isBle?'BLE-устройства не найдены. Проверьте питание и расстояние.':'Нет сопряжённых устройств. Сначала выполните сопряжение через настройки Android.')+'</p>';
           return;
         }
         devices.sort((a,b)=>Number(!!b.likelyElm)-Number(!!a.likelyElm));
-        deviceList.innerHTML=devices.map(d=>`<button type="button" class="k-obd-device-row" data-obd-address="${esc(d.address||'')}" data-obd-name="${esc(d.name||'Bluetooth')}"><span><b>${esc(d.name||'Bluetooth')}</b><small>${esc(d.address||'')}</small></span><em>${d.likelyElm?'ELM/OBD':'Bluetooth'}</em></button>`).join('');
+        deviceList.innerHTML=devices.map(d=>`<button type="button" class="k-obd-device-row" data-obd-address="${esc(d.address||'')}" data-obd-name="${esc(d.name||'ELM327')}" data-obd-transport="${esc(d.transport||transport)}"><span><b>${esc(d.name||'ELM327')}</b><small>${esc(d.address||'')}</small></span><em>${isBle?'BLE':d.likelyElm?'ELM/OBD':'Bluetooth'}</em></button>`).join('');
       }catch(error){setResult(error.message||String(error));}
     }
 
-    async function connect(address,name){
-      setResult('Подключение к '+name+'…');
+    async function connect(address,name,transport='classic_spp'){
+      setResult('Подключение к '+name+' ('+transport+')…');
       try{
-        await mobile.elmConnect(address);
-        currentAdapter={address,name};
+        if(transport==='ble_gatt'){
+          if(!mobile?.elmConnectBle)throw new Error('Для BLE требуется новая APK.');
+          await mobile.elmConnectBle(address);
+        }else if(transport==='wifi_tcp'){
+          if(!mobile?.elmConnectWifi)throw new Error('Для Wi-Fi ELM327 требуется новая APK.');
+          const parts=String(address).split(':');
+          await mobile.elmConnectWifi(parts[0],Number(parts[1]||35000));
+        }else{
+          await mobile.elmConnect(address);
+        }
+        currentAdapter={address,name,transport};
         deviceText.textContent=`${name} · ${address}`;
         setConnected(true);
         deviceList.hidden=true;
@@ -390,10 +418,14 @@
         });
         const payload=await response.json();
         if(!response.ok||!payload.ok)throw new Error(payload.code||'SYNC_FAILED');
-        await mobile.offlineAcknowledge(items);
+        const accepted=new Set(Array.isArray(payload.accepted)?payload.accepted.map(String):[]);
+        const confirmed=items.filter(item=>accepted.has(String(item?.id||'')));
+        if(confirmed.length)await mobile.offlineAcknowledge(confirmed);
         await updateOffline();
         await loadHistory();
-        return true;
+        const pending=items.length-confirmed.length;
+        if(pending)setResult('Синхронизировано '+confirmed.length+' сессий; '+pending+' остаются офлайн.');
+        return pending===0;
       }catch(error){
         await updateOffline();
         setResult('Сессия сохранена офлайн. Синхронизация будет повторена: '+(error.message||String(error)));
@@ -455,7 +487,7 @@
         setResult('Переподключение к последнему ELM327…');
         try{
           const status=await mobile.elmReconnectLast();
-          currentAdapter={name:status?.name||'ELM327',address:status?.address||''};
+          currentAdapter={name:status?.name||'ELM327',address:status?.address||'',transport:status?.transport||'classic_spp'};
           setConnected(true);
           deviceText.textContent=[currentAdapter.name,currentAdapter.address].filter(Boolean).join(' · ');
           const init=await mobile.elmInit();
@@ -472,8 +504,18 @@
         return;
       }
       const device=event.target.closest('[data-obd-address]');
-      if(device){await connect(device.dataset.obdAddress||'',device.dataset.obdName||'ELM327');return;}
-      if(event.target.closest('[data-obd-devices]')){await listDevices();return;}
+      if(device){await connect(device.dataset.obdAddress||'',device.dataset.obdName||'ELM327',device.dataset.obdTransport||'classic_spp');return;}
+      if(event.target.closest('[data-obd-devices]')){await listDevices('classic_spp');return;}
+      if(event.target.closest('[data-obd-scan-ble]')){await listDevices('ble_gatt');return;}
+      if(event.target.closest('[data-obd-wifi-connect]')){
+        const host=String(q('[data-obd-wifi-host]')?.value||'').trim();
+        const port=Number(q('[data-obd-wifi-port]')?.value||35000);
+        if(!/^\d{1,3}(\.\d{1,3}){3}$/.test(host)||!Number.isInteger(port)||port<1||port>65535){
+          setResult('Укажите корректный локальный IPv4 и TCP-порт (1–65535).');return;
+        }
+        await connect(host+':'+port,'Wi-Fi ELM327','wifi_tcp');
+        return;
+      }
       if(event.target.closest('[data-obd-settings]')){try{await mobile?.openBluetoothSettings?.();}catch(_){}return;}
       if(event.target.closest('[data-obd-init]')){
         try{
