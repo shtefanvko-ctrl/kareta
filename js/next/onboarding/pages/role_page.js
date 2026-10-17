@@ -379,7 +379,7 @@
     const verifiedNew = flow.phoneVerified === true && flow.accountExists === false;
     const title = verifiedNew ? 'Завершите регистрацию' : 'Вход или регистрация';
     const subtitle = verifiedNew ? 'Номер подтверждён. Укажите имя для создания аккаунта' : 'Введите номер телефона. Для зарегистрированного номера имя повторно не требуется';
-    const submitLabel = verifiedNew ? 'Создать аккаунт' : (window.location.hostname === 'm.kareta.kz' ? 'Ввести тестовый код' : 'Получить код');
+    const submitLabel = verifiedNew ? 'Создать аккаунт' : (window.location.hostname === 's.kareta.kz' ? 'Ввести тестовый код' : 'Получить код');
     return `<section id="onb2-step-profile" class="onb2-step active" data-step="profile">
       ${sharedModal(title,subtitle,`<form class="onb2-compact-profile k-flow-form" data-onb-profile-form novalidate>
         ${formUI.registrationForm({ flow })}
@@ -552,7 +552,7 @@
     state.submitting = true;
     const oldText = button?.textContent || '';
     if(button && !button.dataset.defaultLabel)button.dataset.defaultLabel=oldText || 'Получить код';
-    if (button) { button.disabled = true; button.textContent = window.location.hostname === 'm.kareta.kz' ? 'Готовим код…' : 'Отправляем…'; button.setAttribute('aria-disabled','true'); }
+    if (button) { button.disabled = true; button.textContent = window.location.hostname === 's.kareta.kz' ? 'Готовим код…' : 'Отправляем…'; button.setAttribute('aria-disabled','true'); }
     try {
       await captureGeo().catch(() => null);
       const codeResult = await api.requestCode(payload.phone);

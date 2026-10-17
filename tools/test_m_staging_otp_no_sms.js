@@ -1,5 +1,5 @@
 'use strict';
-// Ensure m.kareta.kz test OTP cannot silently affect s or production.
+// Ensure s.kareta.kz test OTP cannot silently affect s or production.
 // Read-only tests: PHP reflection does not contact a provider or write MySQL.
 const assert = require('node:assert/strict');
 const cp = require('node:child_process');
@@ -59,26 +59,26 @@ function probe(host, extraEnv = {}) {
   return JSON.parse(stdout);
 }
 
-const m = probe('m.kareta.kz');
-assert.equal(m.environment, 'staging');
-assert.equal(m.transport, 'test_static');
-assert.equal(m.effective, 'test_static');
-assert.equal(m.testCode, '0000');
-assert.equal(m.configuredCode, '0000');
-assert.equal(m.temporaryStatic, false, 'Normal OTP rate limits should remain enabled');
-assert.equal(m.fallback, false);
-assert.equal(m.valid4, true);
-assert.equal(m.invalid3, false);
-assert.equal(m.error, '');
-assert.equal(probe('m.kareta.kz:443').effective, 'test_static');
+const s = probe('s.kareta.kz');
+assert.equal(s.environment, 'staging');
+assert.equal(s.transport, 'test_static');
+assert.equal(s.effective, 'test_static');
+assert.equal(s.testCode, '0000');
+assert.equal(s.configuredCode, '0000');
+assert.equal(s.temporaryStatic, false, 'Normal OTP rate limits should remain enabled');
+assert.equal(s.fallback, false);
+assert.equal(s.valid4, true);
+assert.equal(s.invalid3, false);
+assert.equal(s.error, '');
+assert.equal(probe('s.kareta.kz:443').effective, 'test_static');
 
-const switched = probe('m.kareta.kz', {KARETA_M_STAGING_SMS_ENABLED:'1'});
+const switched = probe('s.kareta.kz', {KARETA_M_STAGING_SMS_ENABLED:'1'});
 assert.equal(switched.transport, 'webhook');
 assert.equal(switched.testCode, '');
 assert.equal(switched.fallback, false);
 assert.equal(switched.effective, 'webhook');
 
-for (const otherHost of ['s.kareta.kz', 'kareta.kz', 'www.kareta.kz']) {
+for (const otherHost of ['m.kareta.kz', 'kareta.kz', 'www.kareta.kz']) {
   const other = probe(otherHost);
   assert.equal(other.transport, 'disabled', `${otherHost}: staging code must not work on a different host`);
   assert.equal(other.testCode, '', `${otherHost}: test code must be absent`);
@@ -87,16 +87,16 @@ for (const otherHost of ['s.kareta.kz', 'kareta.kz', 'www.kareta.kz']) {
 const production = probe('kareta.kz', {KARETA_ENVIRONMENT:'production', KARETA_OTP_TEMP_STATIC_ENABLED:'0'});
 assert.equal(production.transport, 'webhook');
 assert.equal(production.testCode, '');
-const wrongEnvironment = probe('m.kareta.kz', {KARETA_ENVIRONMENT:'production',KARETA_OTP_TEMP_STATIC_ENABLED:'0'});
+const wrongEnvironment = probe('s.kareta.kz', {KARETA_ENVIRONMENT:'production',KARETA_OTP_TEMP_STATIC_ENABLED:'0'});
 assert.equal(wrongEnvironment.transport, 'disabled');
 assert.equal(wrongEnvironment.testCode, '');
 assert.equal(wrongEnvironment.fallback, false);
 assert.equal(wrongEnvironment.error, 'otp_delivery_unavailable');
 
 const ui = fs.readFileSync(path.join(root,'js/next/onboarding/pages/role_page.js'),'utf8');
-assert(ui.includes("window.location.hostname === 'm.kareta.kz' ? 'Ввести тестовый код'"));
+assert(ui.includes("window.location.hostname === 's.kareta.kz' ? 'Ввести тестовый код'"));
 assert(ui.includes('SMS не отправляется на ${maskedPhone}'));
 assert(ui.includes('Тестовый режим: SMS не отправляется. Введите код ${esc(testCode)}'));
 assert(ui.includes('data-kflow-otp-cell'), 'OTP form still contains input cells');
 assert(ui.includes('api.verifyCode(flow.phone, code, codeLength'), 'OTP must be validated on server');
-console.log('PASS m.kareta.kz OTP staging-only, SMS off, code 0000, validation and provider-on switch');
+console.log('PASS s.kareta.kz OTP staging-only, SMS off, code 0000, validation and provider-on switch');

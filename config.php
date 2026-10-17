@@ -275,7 +275,7 @@ if (!defined('KARETA_CONFIG_LOADED')) {
         }
     }
 
-    // Only m.kareta.kz uses the temporary non-SMS test login. Unlike the old
+    // Only s.kareta.kz uses the temporary non-SMS test login. Unlike the old
     // commissioning mode, normal challenge rate limits stay enabled. SMS may be
     // activated later by an explicit private-config switch, never by fallback.
     $kareta_otp_request_host = strtolower(trim((string)($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? '')));
@@ -283,7 +283,7 @@ if (!defined('KARETA_CONFIG_LOADED')) {
     $kareta_m_staging_sms_enabled = filter_var(kareta_config_value(
         'KARETA_M_STAGING_SMS_ENABLED', 'm_staging_sms_enabled', false
     ), FILTER_VALIDATE_BOOLEAN);
-    if ($kareta_otp_request_host === 'm.kareta.kz') {
+    if ($kareta_otp_request_host === 's.kareta.kz') {
         $kareta_otp_temp_static_active = false;
         $kareta_otp_allow_test_fallback = false;
         if ($kareta_environment !== 'staging') {

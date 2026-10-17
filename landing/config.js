@@ -1,5 +1,5 @@
 window.KARETA_LANDING_CONFIG=Object.freeze({
-  webUrl:"https://m.kareta.kz/",
+  webUrl:"https://s.kareta.kz/",
   androidUrl:"",
   iosUrl:""
 });
