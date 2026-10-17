@@ -189,7 +189,7 @@ if (!defined('KARETA_CONFIG_LOADED')) {
      * KARETA_DB_VERSION — актуальная версия migration runner.
      * Версию увеличивать при добавлении новой migration file.
      */
-    define('KARETA_DB_VERSION', 144);
+    define('KARETA_DB_VERSION', 145);
 
     $kareta_environment = strtolower(trim((string) kareta_config_value('KARETA_ENVIRONMENT', 'environment', 'production')));
     if (!in_array($kareta_environment, ['production','staging','development','test'], true)) {
@@ -273,6 +273,37 @@ if (!defined('KARETA_CONFIG_LOADED')) {
             $kareta_otp_transport = 'webhook';
             $kareta_otp_test_code = '';
         }
+    }
+
+    // Only m.kareta.kz uses the temporary non-SMS test login. Unlike the old
+    // commissioning mode, normal challenge rate limits stay enabled. SMS may be
+    // activated later by an explicit private-config switch, never by fallback.
+    $kareta_otp_request_host = strtolower(trim((string)($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? '')));
+    $kareta_otp_request_host = preg_replace('/:\\d+$/', '', $kareta_otp_request_host) ?? '';
+    $kareta_m_staging_sms_enabled = filter_var(kareta_config_value(
+        'KARETA_M_STAGING_SMS_ENABLED', 'm_staging_sms_enabled', false
+    ), FILTER_VALIDATE_BOOLEAN);
+    if ($kareta_otp_request_host === 'm.kareta.kz') {
+        $kareta_otp_temp_static_active = false;
+        $kareta_otp_allow_test_fallback = false;
+        if ($kareta_environment !== 'staging') {
+            // Wrong deployment environment: do not issue codes or contact SMS.
+            $kareta_otp_transport = 'disabled';
+            $kareta_otp_test_code = '';
+        } elseif ($kareta_m_staging_sms_enabled) {
+            // An HTTPS provider must also be configured for delivery to work.
+            $kareta_otp_transport = 'webhook';
+            $kareta_otp_test_code = '';
+        } else {
+            $kareta_otp_transport = 'test_static';
+            $kareta_otp_test_code = '0000';
+        }
+    } elseif ($kareta_environment === 'staging') {
+        // Never authorize the shared staging test code on another hostname.
+        $kareta_otp_transport = 'disabled';
+        $kareta_otp_test_code = '';
+        $kareta_otp_allow_test_fallback = false;
+        $kareta_otp_temp_static_active = false;
     }
     define('KARETA_OTP', [
         'transport' => $kareta_otp_transport,
