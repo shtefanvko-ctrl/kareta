@@ -13,7 +13,7 @@ if ($action === 'config' && $method === 'GET') {
         'platform' => 'android',
         'nativeApiVersion' => 5,
         'minAppVersion' => '1.4.0',
-        'baseUrl' => 'https://s.kareta.kz/',
+        'baseUrl' => 'https://m.kareta.kz/',
         'features' => [
             'push' => true,
             'camera' => true,
