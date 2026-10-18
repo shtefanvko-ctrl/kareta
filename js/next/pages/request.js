@@ -110,12 +110,15 @@
 
   function renderRequest(context){
     const role=roleOf(context),copy=copyFor(role);
-    if(role==='client')return `<section class="k-page k-request-page-ref" data-page="request">${requestContent(context,{windowMode:false})}</section>`;
+    if(role==='client'){if(!window.KaretaClientRequestFinalPages?.renderClientRequest)throw new Error('client_request_v6_missing');return window.KaretaClientRequestFinalPages.renderClientRequest({...context,windowMode:false});}
     return ui.pageShell(context,copy.title,copy.desc,requestContent(context,{windowMode:false}),{page:'request',eyebrow:copy.eyebrow,chromeHeader:false});
   }
-  const renderRequestWindow=context=>requestContent(context,{windowMode:true});
+  const renderRequestWindow=context=>roleOf(context)==='client'
+    ? window.KaretaClientRequestFinalPages.renderClientRequest({...context,windowMode:true})
+    : requestContent(context,{windowMode:true});
 
   function mountRequest(context={}){
+    if(roleOf(context)==='client')return window.KaretaClientRequestFinalPages.mountClientRequest(context);
     const scope=context.root instanceof Element?context.root:document;
     const root=scope.querySelector?.('[data-request-root]')||document.querySelector('[data-request-root]');
     const form=root?.querySelector('[data-request-form]');if(!root||!form)return;
