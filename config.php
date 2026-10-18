@@ -131,6 +131,27 @@ if (!defined('KARETA_CONFIG_LOADED')) {
         'default_zoom' => (int) kareta_config_value('KARETA_GEO_DEFAULT_ZOOM', 'geo_default_zoom', 13),
     ]);
 
+
+    // Plesk/PHP-FPM friendly realtime transport.
+    // Polling is the safe default because a long-lived PHP SSE request occupies
+    // one PHP-FPM worker for the lifetime of the stream. Dedicated deployments
+    // may explicitly opt into SSE through realtime_transport='sse'.
+    $kareta_realtime_transport = strtolower(trim((string) kareta_config_value(
+        'KARETA_REALTIME_TRANSPORT',
+        'realtime_transport',
+        'poll'
+    )));
+    if (!in_array($kareta_realtime_transport, ['poll','sse'], true)) {
+        $kareta_realtime_transport = 'poll';
+    }
+    define('KARETA_REALTIME', [
+        'transport' => $kareta_realtime_transport,
+        'poll_interval_ms' => max(10000, min(60000, (int) kareta_config_value('KARETA_REALTIME_POLL_INTERVAL_MS', 'realtime_poll_interval_ms', 15000))),
+        'request_timeout_ms' => max(5000, min(20000, (int) kareta_config_value('KARETA_REALTIME_REQUEST_TIMEOUT_MS', 'realtime_request_timeout_ms', 8000))),
+        'failure_base_ms' => max(5000, min(30000, (int) kareta_config_value('KARETA_REALTIME_FAILURE_BASE_MS', 'realtime_failure_base_ms', 10000))),
+        'failure_max_ms' => max(30000, min(120000, (int) kareta_config_value('KARETA_REALTIME_FAILURE_MAX_MS', 'realtime_failure_max_ms', 60000))),
+    ]);
+
     $kareta_db_host = kareta_config_value('KARETA_DB_HOST', 'db_host', null);
     if ($kareta_db_host === null || $kareta_db_host === '') {
         $kareta_db_host = kareta_env_first(['DB_HOST', 'MYSQL_HOST'], '127.0.0.1');
@@ -199,12 +220,32 @@ if (!defined('KARETA_CONFIG_LOADED')) {
     $kareta_is_production = KARETA_ENVIRONMENT === 'production';
 
     define('KARETA_DB_AUTO_CREATE', filter_var(kareta_config_value('KARETA_DB_AUTO_CREATE', 'db_auto_create', false), FILTER_VALIDATE_BOOLEAN));
-    $kareta_db_auto_migrate = filter_var(kareta_config_value('KARETA_DB_AUTO_MIGRATE', 'db_auto_migrate', false), FILTER_VALIDATE_BOOLEAN);
-    // R188.5.5.6.84.79: web requests must not mutate production schema. A deployment
-    // may open an explicit maintenance window with KARETA_DB_RUNTIME_MIGRATION_WINDOW=1.
-    if ($kareta_is_production && !filter_var(getenv('KARETA_DB_RUNTIME_MIGRATION_WINDOW') ?: false, FILTER_VALIDATE_BOOLEAN)) {
+
+    // Safe automatic canonical upgrades for staging/development/test.
+    // Production remains fail-closed unless an approved runtime migration window is open.
+    $kareta_db_auto_upgrade = filter_var(kareta_config_value(
+        'KARETA_DB_AUTO_UPGRADE',
+        'db_auto_upgrade',
+        !$kareta_is_production
+    ), FILTER_VALIDATE_BOOLEAN);
+    $kareta_db_auto_migrate = filter_var(kareta_config_value(
+        'KARETA_DB_AUTO_MIGRATE',
+        'db_auto_migrate',
+        false
+    ), FILTER_VALIDATE_BOOLEAN);
+    if ($kareta_db_auto_upgrade) {
+        $kareta_db_auto_migrate = true;
+    }
+    $kareta_runtime_migration_window = filter_var(
+        getenv('KARETA_DB_RUNTIME_MIGRATION_WINDOW') ?: false,
+        FILTER_VALIDATE_BOOLEAN
+    );
+    if ($kareta_is_production && !$kareta_runtime_migration_window) {
+        $kareta_db_auto_upgrade = false;
         $kareta_db_auto_migrate = false;
     }
+    define('KARETA_DB_AUTO_UPGRADE', $kareta_db_auto_upgrade);
+    define('KARETA_DB_RUNTIME_MIGRATION_WINDOW', $kareta_runtime_migration_window);
     define('KARETA_DB_AUTO_MIGRATE', $kareta_db_auto_migrate);
     define('KARETA_RUNTIME_MAINTENANCE_INTERVAL', max(60, (int) kareta_config_value('KARETA_RUNTIME_MAINTENANCE_INTERVAL', 'runtime_maintenance_interval', 900)));
     define('KARETA_API_MAX_BODY_BYTES', max(1048576, (int) kareta_config_value('KARETA_API_MAX_BODY_BYTES', 'api_max_body_bytes', 20971520)));

@@ -26,6 +26,8 @@
   let mineRows=[];
   let listingWizard=null;
   let listingSaving=false;
+  let nearbyShops=[];
+  let nearbyShopsStatus='idle';
 
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const money=value=>`${new Intl.NumberFormat('ru-RU').format(Number(value||0))} ₸`;
@@ -255,13 +257,56 @@
   }
 
 
+  function partsCityTarget(){
+    const raw=state.city||appCity()||'';
+    return window.KaretaKzCityCatalog?.resolveMapTarget?.(raw)||null;
+  }
+  function nearbyShopCard(point){
+    const distance=Number(point.distanceKm),distanceLabel=Number.isFinite(distance)?(distance<1?`${Math.max(50,Math.round(distance*1000/50)*50)} м`:`${distance.toLocaleString('ru-RU',{minimumFractionDigits:distance<10?1:0,maximumFractionDigits:distance<10?1:0})} км`):'в выбранном городе';
+    const storefront=Number(point.publicId||0)>0?`<a class="k-btn k-btn-primary k-btn-sm" href="#/parts/store/${encodeURIComponent(String(point.publicId))}">Товары</a>`:'';
+    return `<article class="k-parts-native-card k-parts-nearby-shop"><div class="k-parts-native-card__body"><small>МАГАЗИН · ${esc(distanceLabel)}</small><h3>${esc(point.label||'Магазин запчастей')}</h3><p>${esc([point.city,point.address].filter(Boolean).join(' · ')||'Адрес уточняется')}</p><div class="k-parts-section-actions">${storefront}<button class="k-btn k-btn-secondary k-btn-sm" type="button" data-parts-nearby-route data-lat="${esc(point.latitude)}" data-lng="${esc(point.longitude)}" data-label="${esc(point.label||point.address||'Магазин')}">${icon('location')} Маршрут</button></div></div></article>`;
+  }
+  function nearbyShopsSection(){
+    if(isUsedSurface())return '';
+    const city=partsCityTarget();
+    return `<section class="k-parts-native-section k-parts-nearby-shops" data-parts-nearby-shops><header><div><small>ГЕО</small><h2>Магазины рядом</h2><p>GPS используется для расстояния. Если он недоступен, остаётся выбранный город${city?.name?`: ${esc(city.name)}`:''}.</p></div><button class="k-btn k-btn-secondary" type="button" data-parts-nearby-detect>${icon('location')} Найти рядом</button></header><div data-parts-nearby-list><div class="k-parts-native-empty">Показываем только опубликованные точки самовывоза.</div></div></section>`;
+  }
+  function renderNearbyShops(){
+    const root=document.querySelector('[data-parts-nearby-list]');if(!root)return;
+    if(nearbyShopsStatus==='loading'){root.innerHTML='<div class="k-parts-native-empty">Определяем местоположение и ищем магазины…</div>';return;}
+    if(nearbyShopsStatus==='error'){root.innerHTML='<div class="k-parts-native-empty">Геопозиция недоступна и у выбранного города пока нет проверенного центра карты.</div>';return;}
+    if(nearbyShopsStatus==='ready'){root.innerHTML=nearbyShops.length?nearbyShops.map(nearbyShopCard).join(''):'<div class="k-parts-native-empty">Публичных точек самовывоза рядом пока нет.</div>';}
+  }
+  async function loadNearbyShops(){
+    if(isUsedSurface())return;
+    nearbyShopsStatus='loading';renderNearbyShops();
+    try{
+      let point=null;
+      try{
+        if(window.KaretaMobile?.bestLocation)point=await window.KaretaMobile.bestLocation({enableHighAccuracy:false,timeout:8000,maximumAge:300000});
+        else if(navigator.geolocation)point=await new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(p=>resolve({latitude:p.coords.latitude,longitude:p.coords.longitude,source:'browser'}),reject,{enableHighAccuracy:false,timeout:8000,maximumAge:300000}));
+      }catch(_geoError){point=null;}
+      let lat=Number(point?.latitude),lng=Number(point?.longitude),source='gps';
+      if(!Number.isFinite(lat)||!Number.isFinite(lng)){
+        const target=partsCityTarget(),center=target?.center;
+        lat=Number(center?.latitude);lng=Number(center?.longitude);source='city';
+      }
+      if(!Number.isFinite(lat)||!Number.isFinite(lng))throw new Error('GEO_OR_CITY_CENTER_UNAVAILABLE');
+      const result=await api.request(`api/geo.php?action=nearby&lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radiusKm=50&types=shop&limit=20`,{method:'GET',cacheTtlMs:15000,cacheKey:`geo.nearby.parts.${source}.${lat.toFixed(3)}.${lng.toFixed(3)}`});
+      if(contextRef===null)return;
+      const payload=result?.payload?.data||result?.payload||{};
+      nearbyShops=Array.isArray(payload.items)?payload.items.filter(row=>String(row.kind||'')==='pickup'):[];
+      nearbyShopsStatus='ready';renderNearbyShops();
+    }catch(_error){nearbyShops=[];nearbyShopsStatus='error';renderNearbyShops();}
+  }
+
   function renderParts(){
     const hashCtx=readHashContext(),used=isUsedSurface();
     return `<section class="k-page${isMasterContext()?' k-master-page k-master-surface-page':''} k-shop-page k-parts-native-page k-parts-ref-page" data-page="${used?'parts-used':'parts-new'}" data-parts-surface="${used?'used':'new'}" data-kflow-screen="parts">
       <header class="k-parts-ref-head${isMasterContext()?' k-master-page-header':''}"><div><h1>Запчасти</h1><p>${used?'БУ, восстановленные детали и обмен':'Новые запчасти и товары магазинов'}</p></div>${used?`<button class="k-parts-ref-head-action" type="button" data-used-add aria-label="Продать деталь">${icon('plus')}</button>`:`<button class="k-parts-ref-head-action" type="button" data-shop-cart-open aria-label="Корзина">${icon('cart')}<i data-shop-cart-count>0</i></button>`}</header>
       ${hashCtx.orderId?`<section class="k-parts-repair-context"><span>РЕМОНТ</span><div><b>Подбор для заказа ${esc(hashCtx.orderId)}</b><small>Найденную позицию можно затем зарезервировать в заказ-наряде.</small></div><a href="#/orders/item/${encodeURIComponent(hashCtx.orderId)}">К ремонту</a></section>`:''}
       ${isMasterContext()?`<section class="k-master-canon-search-shell k-parts-canon-shell" aria-label="Поиск и фильтры запчастей"><label class="k-master-canon-search k-parts-ref-search k-parts-master-search"><span class="k-master-canon-search__icon">${icon('search')}</span><input type="search" data-parts-search value="${esc(state.search)}" placeholder="Найти запчасть, OEM или магазин…" autocomplete="off"></label><nav class="k-master-canon-filters k-parts-master-filters" aria-label="Фильтры магазинов"><button type="button" class="${storeMode==='nearby'?'is-active ':''}is-nearby" data-parts-mode="nearby"><span>${icon('location')}</span><b>Рядом</b></button><button type="button" class="${storeMode==='rating'?'is-active ':''}is-rating" data-parts-mode="rating"><span>${icon('star')}</span><b>Рейтинг</b></button><button type="button" class="is-open" disabled aria-disabled="true" title="График магазинов пока не передаётся каталогом"><span>${icon('calendar')}</span><b>Открыто</b></button><button type="button" class="k-master-canon-filter-icon k-parts-master-filter-icon" data-parts-filter-open aria-label="Дополнительные фильтры">${icon('filter')}<i data-parts-filter-count>0</i></button></nav></section>`:`<section class="k-parts-ref-search k-parts-master-search"><label><span>${icon('search')}</span><input type="search" data-parts-search value="${esc(state.search)}" placeholder="Найти запчасть, OEM или магазин…" autocomplete="off"></label></section><div class="k-parts-master-filters" aria-label="Фильтры магазинов"><button type="button" class="${storeMode==='nearby'?'is-active ':''}is-nearby" data-parts-mode="nearby"><span>${icon('location')}</span><b>Рядом</b></button><button type="button" class="${storeMode==='rating'?'is-active ':''}is-rating" data-parts-mode="rating"><span>${icon('star')}</span><b>Рейтинг</b></button><button type="button" class="is-open" disabled aria-disabled="true" title="График магазинов пока не передаётся каталогом"><span>${icon('calendar')}</span><b>Открыто</b></button><button type="button" class="k-parts-master-filter-icon" data-parts-filter-open aria-label="Дополнительные фильтры">${icon('filter')}<i data-parts-filter-count>0</i></button></div>`}
-      <div data-parts-stores></div>
+      <div data-parts-stores></div>\n      ${nearbyShopsSection()}
       ${used?`<section class="k-parts-ref-used-actions"><button type="button" data-used-add>${icon('plus')}<span><b>Продать деталь</b><small>Создать объявление</small></span></button><button type="button" data-market-mode="favorites">${icon('heart')}<span><b>Избранное</b><small>Сохранённые</small></span></button><button type="button" data-market-mode="mine"><span>${icon('user')}</span><span><b>Мои объявления</b><small>Управление</small></span></button></section>`:''}
       <div data-parts-categories></div>
       <main class="k-parts-ref-main" data-shop-navigator aria-live="polite"></main><aside class="k-flow-parts-cart k-parts-ref-legacy-contract" hidden aria-hidden="true"></aside>
@@ -352,6 +397,8 @@
     page.addEventListener('click',async event=>{
       const close=event.target.closest('[data-dialog-close]');if(close){const map={filter:'parts-filter',vehicle:'parts-vehicle',listing:'used-form',category:'parts-category',market:'parts-market-list',delete:'delete',cart:'shop-cart'};closeDialog(map[close.dataset.dialogClose]||close.dataset.dialogClose);return;}
       if(event.target.closest('[data-shop-cart-open]')){openDialog('shop-cart');return;}
+      if(event.target.closest('[data-parts-nearby-detect]')){await loadNearbyShops();return;}
+      const nearbyRoute=event.target.closest('[data-parts-nearby-route]');if(nearbyRoute){const lat=Number(nearbyRoute.dataset.lat),lng=Number(nearbyRoute.dataset.lng),label=String(nearbyRoute.dataset.label||'Магазин');if(window.KaretaMobile?.openBestMap)await window.KaretaMobile.openBestMap(label,lat,lng);else window.open(`https://www.openstreetmap.org/?mlat=${encodeURIComponent(lat)}&mlon=${encodeURIComponent(lng)}#map=16/${encodeURIComponent(lat)}/${encodeURIComponent(lng)}`,'_blank','noopener,noreferrer');return;}
       if(event.target.closest('[data-parts-filter-open]')){renderFilter(store.getSnapshot());openDialog('parts-filter');return;}
       const partsMode=event.target.closest('[data-parts-mode]');if(partsMode){storeMode=partsMode.dataset.partsMode==='rating'?'rating':'nearby';page.querySelectorAll('[data-parts-mode]').forEach(btn=>btn.classList.toggle('is-active',btn===partsMode));const host=page.querySelector('[data-parts-stores]');if(host)host.innerHTML=storeStrip(store.getSnapshot());return;}
       const storeButton=event.target.closest('[data-parts-store]');if(storeButton){state={...state,storeId:String(storeButton.dataset.partsStore||'')};renderSnapshot(store.getSnapshot());return;}
@@ -405,7 +452,7 @@
   }
 
   function mountParts(context){
-    unsubscribe?.();contextRef=context;usedRows=[];mineRows=[];listingWizard=null;listingSaving=false;usedLoading=false;usedError='';vehicles=[];vehiclesLoaded=false;selectedVehicleId='';vehicleDialogMode='catalog';marketMode='catalog';mineStatus='all';pendingMineFocusId='';storeMode='nearby';storeTrust.clear();storeTrustPending.clear();state={search:'',type:'all',category:'',city:appCity(),sort:'newest',storeId:''};const hashCtx=readHashContext();
+    unsubscribe?.();contextRef=context;usedRows=[];mineRows=[];listingWizard=null;listingSaving=false;usedLoading=false;usedError='';vehicles=[];vehiclesLoaded=false;selectedVehicleId='';vehicleDialogMode='catalog';marketMode='catalog';mineStatus='all';pendingMineFocusId='';nearbyShops=[];nearbyShopsStatus='idle';storeMode='nearby';storeTrust.clear();storeTrustPending.clear();state={search:'',type:'all',category:'',city:appCity(),sort:'newest',storeId:''};const hashCtx=readHashContext();
     unsubscribe=store.subscribe(renderSnapshot);bind(context);store.load({search:'',category:'all',limit:100},{signal:context.lifecycle?.signal});if(isUsedSurface())loadUsed();else{usedRows=[];usedLoading=false;usedError='';}loadVehicles();
     if(hashCtx.mine==='1'){pendingMineFocusId=hashCtx.focus||'';loadMine().then(()=>{if(contextRef!==context)return;marketMode='mine';renderMarketWindow(store.getSnapshot());openDialog('parts-market-list');});}
     return()=>{unsubscribe?.();unsubscribe=null;contextRef=null;store.cancel();};

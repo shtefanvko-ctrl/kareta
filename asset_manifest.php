@@ -148,6 +148,11 @@ foreach (['styles', 'scripts', 'images'] as $group) {
         $seen[$group . ':' . $path] = true;
     }
 }
+foreach (($registry['standaloneScripts'] ?? []) as $order => $path) {
+    if (!is_string($path) || $path === '' || isset($seen['scripts:' . $path])) continue;
+    $entries[] = $assetEntry('scripts', (int)$order, $path, false, 'standalone');
+    $seen['scripts:' . $path] = true;
+}
 
 foreach ($routeBundles as $bundleName => $bundle) {
     if (!is_array($bundle) || str_starts_with((string)$bundleName, '_') || empty($bundle['lazy'])) continue;
@@ -174,6 +179,7 @@ $emit([
     'assetMetrics' => [
         'styleCount' => count($registry['styles'] ?? []),
         'scriptCount' => count($registry['scripts'] ?? []),
+        'standaloneScriptCount' => count($registry['standaloneScripts'] ?? []),
         'sourceScriptCount' => count($registry['scriptSources'] ?? ($registry['scripts'] ?? [])),
         'imageCount' => count($registry['images'] ?? []),
         'lazyStyleCount' => count(array_filter($entries, static fn(array $entry): bool => $entry['group'] === 'styles' && !empty($entry['lazy']))),

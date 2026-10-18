@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KARETA ELM327 DTC",
+  "type": "object",
+  "required": [
+    "id",
+    "code",
+    "category",
+    "scope",
+    "title",
+    "symptom_ids",
+    "cause_ids",
+    "check_ids",
+    "repair_action_ids",
+    "source_ids",
+    "evidence_status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^dtc_[pbcu][0-3][0-9a-f]{3}$"
+    },
+    "code": {
+      "type": "string",
+      "pattern": "^[PBCU][0-3][0-9A-F]{3}$"
+    },
+    "category": {
+      "enum": [
+        "powertrain",
+        "body",
+        "chassis",
+        "network"
+      ]
+    },
+    "scope": {
+      "enum": [
+        "generic",
+        "manufacturer_specific",
+        "mixed"
+      ]
+    },
+    "title": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "ru",
+        "en"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ru": {
+          "type": "string",
+          "minLength": 1
+        },
+        "en": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "diagnostic_rule": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "ru",
+        "en"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ru": {
+          "type": "string",
+          "minLength": 1
+        },
+        "en": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "symptom_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "cause_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "check_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "repair_action_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "evidence_status": {
+      "enum": [
+        "VERIFIED",
+        "SUPPORTED",
+        "DRAFT",
+        "CONFLICT",
+        "UNKNOWN"
+      ]
+    },
+    "expert_review_required": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

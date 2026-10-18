@@ -10,7 +10,7 @@
   const post=(api,action,payload={})=>guardedRequest(api,'api/db.php',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({action,...payload}),
+    body:JSON.stringify({action,...(window.KaretaFormContract?.prepare?.('master',payload)?.compatPayload||payload)}),
     cacheTtlMs:0,
     dedupe:false,
   });

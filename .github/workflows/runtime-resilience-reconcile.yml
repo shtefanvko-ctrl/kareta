@@ -1,0 +1,24 @@
+name: Runtime resilience reconcile
+on:
+  pull_request:
+    paths:
+      - "js/next/route_asset_loader.js"
+      - "js/next/shell_menu.js"
+      - "js/boot/runtime_shell_bundle.js"
+      - "tools/test_runtime_resilience_reconcile.js"
+      - ".github/workflows/runtime-resilience-reconcile.yml"
+permissions:
+  contents: read
+jobs:
+  runtime-resilience:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check js/next/route_asset_loader.js
+      - run: node --check js/next/shell_menu.js
+      - run: node --check js/boot/runtime_shell_bundle.js
+      - run: node tools/test_runtime_resilience_reconcile.js
+      - run: node tools/build_boot_js_bundles.js --check

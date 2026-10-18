@@ -4,12 +4,13 @@
   if (!api) throw new Error('KaretaApiClient is required before client_cabinet_api.js');
   const get = (options={}) => api.request('api/db.php?action=clientCabinet.get',{cacheTtlMs:15000,cacheKey:'client.cabinet',...options});
   const post = payload => api.request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const formPayload=(type,payload,options={})=>window.KaretaFormContract?.prepare?.(type,payload,options)?.compatPayload||payload;
   const saveProfile = payload => post({action:'profile.updateMine',...payload});
   const savePreferences = payload => post({action:'clientPreferences.save',...payload});
   const firstEntryCurrent = (options={}) => api.request('api/db.php?action=clientFirstEntry.current',{cacheTtlMs:0,cacheKey:'client.first-entry',...options});
   const saveFirstEntryDraft = payload => post({action:'clientFirstEntry.saveDraft',...payload});
   const dismissFirstEntry = payload => post({action:'clientFirstEntry.dismiss',...payload});
-  const saveVehicle = vehicle => post({action:'vehicles.upsert',vehicle});
+  const saveVehicle = vehicle => post({action:'vehicles.upsert',vehicle:formPayload('vehicle',vehicle,{canonical:{vehicleId:vehicle?.vehicleId||vehicle?.id,brandId:vehicle?.brandId,modelId:vehicle?.modelId,generationId:vehicle?.generationId}})});
   const setDefaultVehicle = id => post({action:'vehicles.setDefault',id});
   const archiveVehicle = id => post({action:'vehicles.delete',id});
   const restoreVehicle = id => post({action:'vehicles.restore',id});
