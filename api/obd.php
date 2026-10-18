@@ -10,7 +10,10 @@ if ($action === 'config' && $method === 'GET') {
     kareta_json([
         'ok'=>true,
         'feature'=>'obd',
-        'transport'=>'bluetooth_classic_spp',
+        'transport'=>'multi',
+        'transports'=>['bluetooth_classic_spp','ble_gatt','wifi_tcp'],
+        'usbSupported'=>false,
+        'minimumStagingAndroid'=>'1.5.3',
         'nativeRequired'=>true,
         'nativeApiVersion'=>6,
         'commands'=>['ATI','ATZ','ATE0','ATL0','ATS0','ATH0','ATSP0','ATDP','0100','010C','010D','0105','03','0902','ATRV'],
