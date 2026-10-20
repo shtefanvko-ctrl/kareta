@@ -1,6 +1,6 @@
 const assert=require('assert');
 const {chromium}=require('/home/karetadmin/kareta-test-tools/node_modules/playwright');
-const root='/home/karetadmin/kareta-workspace/staging-site/kareta/';
+const root=require('path').resolve(__dirname,'..')+'/';
 const sampleId='pro_electrical_short_circuit';
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:'/home/karetadmin/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell',args:['--no-sandbox']});
