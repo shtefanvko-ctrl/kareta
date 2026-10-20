@@ -182,6 +182,8 @@
   let masterSearch='';
   let masterDrafts=new Map();
   let masterMatrixUnsubscribe=null;
+  let masterProfessionalRecommendations=null;
+  let masterProfessionalOnly=false;
 
   function standardMinutes(value){
     const numbers=String(value||'').match(/\d+/g)||[];
@@ -192,11 +194,12 @@
   function masterEffective(service,offer){
     const draft=masterDrafts.get(service.id);
     if(draft)return draft;
-    return {enabled:masterOfferEnabled(offer),price:Number(offer?.price||service.basePrice||0),duration:Number(offer?.durationMin||standardMinutes(service.avgTime))};
+    return {enabled:masterOfferEnabled(offer),price:Number(offer?.price||service.basePrice||0),duration:offer?Number(offer.durationMin||0):(String(service.id||'').startsWith('pro_')?0:standardMinutes(service.avgTime))};
   }
   function masterMatrixGroups(snapshot){
     const offers=offerMap(snapshot),query=masterSearch.trim().toLowerCase(),groups=new Map();
     snapshot.catalog.forEach(service=>{
+      if(masterProfessionalOnly&&masterProfessionalRecommendations&&!masterProfessionalRecommendations.has(service.id))return;
       if(query&&![service.name,service.shortDesc,service.category,categoryLabel(service.category)].some(v=>String(v||'').toLowerCase().includes(query)))return;
       const key=String(service.category||'other');if(!groups.has(key))groups.set(key,[]);groups.get(key).push({service,offer:offers.get(service.id)});
     });
@@ -204,8 +207,8 @@
   }
   function masterServiceRow(service,offer){
     const effective=masterEffective(service,offer),enabled=effective.enabled===true;
-    const standardPrice=Number(service.basePrice||0),standardTime=service.avgTime||`${standardMinutes(service.avgTime)} мин`;
-    return `<article class="k-master-service-row k-master-service-card-r84 ${enabled?'is-enabled':''}" data-master-service-row="${ui.escHtml(service.id)}"><label class="k-master-service-check k-master-service-card-r84__head"><input type="checkbox" data-master-service-enabled="${ui.escHtml(service.id)}" ${enabled?'checked':''}><span aria-hidden="true"></span><span class="k-master-service-card-r84__icon">${serviceSvg(service)}</span><div><b>${ui.escHtml(service.name)}</b>${service.shortDesc?`<small>${ui.escHtml(service.shortDesc)}</small>`:''}<em>Стандарт: ${ui.escHtml(money(standardPrice))} · ${ui.escHtml(standardTime)}</em></div></label><div class="k-master-service-own-fields k-master-service-card-r84__fields"><label><span>Моя цена, ₸</span><div><input type="number" min="0" max="999999999" step="100" data-master-service-price="${ui.escHtml(service.id)}" value="${ui.escHtml(Math.round(Number(effective.price||0)))}" ${enabled?'':'disabled'}><small>₸</small></div></label><label><span>Моё время, мин</span><div><input type="number" min="5" max="10080" step="5" data-master-service-duration="${ui.escHtml(service.id)}" value="${ui.escHtml(Math.round(Number(effective.duration||standardMinutes(service.avgTime))))}" ${enabled?'':'disabled'}><small>мин</small></div></label></div></article>`;
+    const standardPrice=Number(service.basePrice||0),standardTime=(String(service.id||'').startsWith('pro_')?'По оценке':service.avgTime)||`${standardMinutes(service.avgTime)} мин`;
+    return `<article class="k-master-service-row k-master-service-card-r84 ${enabled?'is-enabled':''}" data-master-service-row="${ui.escHtml(service.id)}"><label class="k-master-service-check k-master-service-card-r84__head"><input type="checkbox" data-master-service-enabled="${ui.escHtml(service.id)}" ${enabled?'checked':''}><span aria-hidden="true"></span><span class="k-master-service-card-r84__icon">${serviceSvg(service)}</span><div><b>${ui.escHtml(service.name)}</b>${service.shortDesc?`<small>${ui.escHtml(service.shortDesc)}</small>`:''}<em>Стандарт: ${ui.escHtml(money(standardPrice))} · ${ui.escHtml(standardTime)}</em></div></label><div class="k-master-service-own-fields k-master-service-card-r84__fields"><label><span>Моя цена, ₸</span><div><input type="number" min="0" max="999999999" step="100" data-master-service-price="${ui.escHtml(service.id)}" value="${ui.escHtml(Math.round(Number(effective.price||0)))}" ${enabled?'':'disabled'}><small>₸</small></div></label><label><span>Моё время, мин</span><div><input type="number" min="5" max="10080" step="5" data-master-service-duration="${ui.escHtml(service.id)}" value="${ui.escHtml(Math.round(Number(effective.duration??standardMinutes(service.avgTime))))}" ${enabled?'':'disabled'}><small>мин</small></div></label></div></article>`;
   }
   function masterCategoryBlock(key,rows){
     const enabledCount=rows.filter(({service,offer})=>masterEffective(service,offer).enabled).length;
@@ -235,7 +238,7 @@
   }
   function renderMasterServiceManagement(context={}){
     const snapshot=state.getSnapshot(),selected=masterSelectionCount(snapshot);
-    return ui.pageShell(context,'Мои услуги','Выберите направления, услуги и оборудование по карточкам. Каждый выбор сохраняется отдельно.',`${masterServiceCanonShell(snapshot,selected)}<section class="k-master-services-overview"><article><b>${selected}</b><span>оказываю</span></article><article><b>${snapshot.offers.filter(masterOfferEnabled).length}</b><span>опубликовано</span></article></section><details class="k-master-service-editor"><summary>Цены и время</summary><div class="k-catalog-status" data-service-offers-status>${snapshot.status==='partial'?'Каталог загружен, личный прайс временно недоступен.':'Изменения ещё не сохранены.'}</div><div class="k-master-services-matrix" data-master-services-matrix>${masterMatrixHtml(snapshot)}</div></details>`,{page:'service-management',eyebrow:'МОИ УСЛУГИ',chromeHeader:false,panel:`<aside class="k-panel k-context-panel k-master-services-help"><h2>Как работает</h2><p>Выбранная карточка включает услугу в ваш профиль и matching Биржи. «Моя цена» заменяет стандартную цену, «Моё время» — стандартную длительность.</p><p>Повторный выбор убирает услугу только из вашего прайса; общий каталог KARETA.KZ не меняется.</p></aside>`});
+    return ui.pageShell(context,'Мои услуги','Выберите направления, услуги и оборудование по карточкам. Каждый выбор сохраняется отдельно.',`${masterServiceCanonShell(snapshot,selected)}<section class="k-master-services-overview"><article><b>${selected}</b><span>оказываю</span></article><article><b>${snapshot.offers.filter(masterOfferEnabled).length}</b><span>опубликовано</span></article></section><details class="k-master-service-editor"><summary>Цены и время</summary><button type="button" class="k-btn k-btn-secondary" data-master-professional-filter disabled aria-pressed="false">По моим профессиям</button><div class="k-catalog-status" data-service-offers-status>${snapshot.status==='partial'?'Каталог загружен, личный прайс временно недоступен.':'Изменения ещё не сохранены.'}</div><div class="k-master-services-matrix" data-master-services-matrix>${masterMatrixHtml(snapshot)}</div></details>`,{page:'service-management',eyebrow:'МОИ УСЛУГИ',chromeHeader:false,panel:`<aside class="k-panel k-context-panel k-master-services-help"><h2>Как работает</h2><p>Выбранная карточка включает услугу в ваш профиль и matching Биржи. «Моя цена» заменяет стандартную цену, «Моё время» — стандартную длительность.</p><p>Повторный выбор убирает услугу только из вашего прайса; общий каталог KARETA.KZ не меняется.</p></aside>`});
   }
 
   function updateMasterMatrix(snapshot){
@@ -248,18 +251,19 @@
     const row=root.querySelector(`[data-master-service-row="${CSS.escape(serviceId)}"]`);if(!row)return;
     const enabled=forcedEnabled===null?row.querySelector('[data-master-service-enabled]')?.checked===true:forcedEnabled;
     const price=Number(row.querySelector('[data-master-service-price]')?.value||0);
-    const duration=Math.max(5,Number(row.querySelector('[data-master-service-duration]')?.value||60));
+    const duration=Math.max(0,Number(row.querySelector('[data-master-service-duration]')?.value||0));
     const previous=masterDrafts.get(serviceId)||{};
     masterDrafts.set(serviceId,{enabled,price,duration,priceTouched:previous.priceTouched===true||changedField==='price',durationTouched:previous.durationTouched===true||changedField==='duration'});
   }
   async function saveMasterDrafts(root,lifecycle){
     const snapshot=state.getSnapshot(),catalog=catalogMap(snapshot),offers=offerMap(snapshot),entries=[...masterDrafts.entries()];
     if(!entries.length)return;
+    for(const [serviceId,draft] of entries){if(draft.enabled&&String(serviceId).startsWith('pro_')&&!(offers.get(serviceId))&&Number(draft.duration)<5)throw new Error('Укажите время выполнения для новой услуги: минимум 5 минут');}
     const status=root.querySelector('[data-service-offers-status]'),button=root.querySelector('[data-master-services-save]');if(button)button.disabled=true;
     let done=0;if(status)status.textContent=`Сохранение 0 из ${entries.length}…`;
     for(const [serviceId,draft] of entries){
       const service=catalog.get(serviceId),existing=offers.get(serviceId);if(!service)continue;
-      if(draft.enabled){const keepPrice=!!existing&&draft.priceTouched!==true,keepDuration=!!existing&&draft.durationTouched!==true;await offersApi.save({...existing,serviceId,priceType:keepPrice?String(existing.priceType||'fixed'):'fixed',price:keepPrice?Number(existing.price||0):Math.max(0,draft.price),priceMax:keepPrice?Number(existing.priceMax||0):0,durationMin:keepDuration?Number(existing.durationMin||0):Math.max(5,draft.duration),durationMaxMin:keepDuration?Number(existing.durationMaxMin||0):0,warrantyDays:Number(existing?.warrantyDays||0),city:String(existing?.city||snapshot.context?.city||''),availabilityStatus:existing&&masterOfferEnabled(existing)?String(existing.availabilityStatus||'available'):'available',notes:String(existing?.notes||''),bookingEnabled:true,active:true},{signal:lifecycle.signal});}
+      if(draft.enabled){const keepPrice=!!existing&&draft.priceTouched!==true,keepDuration=!!existing&&draft.durationTouched!==true;await offersApi.save({...existing,serviceId,priceType:keepPrice?String(existing.priceType||'fixed'):(Number(draft.price)>0?'fixed':'agreement'),price:keepPrice?Number(existing.price||0):Math.max(0,draft.price),priceMax:keepPrice?Number(existing.priceMax||0):0,durationMin:keepDuration?Number(existing.durationMin||0):Math.max(5,draft.duration),durationMaxMin:keepDuration?Number(existing.durationMaxMin||0):0,warrantyDays:Number(existing?.warrantyDays||0),city:String(existing?.city||snapshot.context?.city||''),availabilityStatus:existing&&masterOfferEnabled(existing)?String(existing.availabilityStatus||'available'):'available',notes:String(existing?.notes||''),bookingEnabled:true,active:true},{signal:lifecycle.signal});}
       else if(existing){await offersApi.remove(serviceId,{signal:lifecycle.signal});}
       done++;if(status)status.textContent=`Сохранение ${done} из ${entries.length}…`;
     }
@@ -267,7 +271,7 @@
   }
   function mountMasterServiceManagement(context={}){
     const lifecycle=context.lifecycle||{},root=document.querySelector('[data-page="service-management"]');if(!root)return;
-    masterSearch='';masterDrafts=new Map();masterMatrixUnsubscribe?.();masterMatrixUnsubscribe=state.subscribe(updateMasterMatrix);
+    masterSearch='';masterDrafts=new Map();masterProfessionalOnly=false;masterProfessionalRecommendations=null;masterMatrixUnsubscribe?.();masterMatrixUnsubscribe=state.subscribe(updateMasterMatrix);
     const onInput=event=>{
       if(event.target.matches('[data-master-services-search]')){masterSearch=event.target.value||'';updateMasterMatrix(state.getSnapshot());return;}
       const id=event.target.dataset.masterServicePrice||event.target.dataset.masterServiceDuration;if(id){captureMasterDraft(root,id,null,event.target.matches('[data-master-service-price]')?'price':'duration');const save=root.querySelector('[data-master-services-save]');if(save)save.disabled=false;return;}
@@ -277,6 +281,7 @@
       const category=event.target.closest('[data-master-category-toggle]');if(category){const block=category.closest('[data-master-service-category]');block?.querySelectorAll('[data-master-service-enabled]').forEach(input=>{input.checked=category.checked;const id=input.dataset.masterServiceEnabled||'';const row=input.closest('[data-master-service-row]');row?.classList.toggle('is-enabled',category.checked);row?.querySelectorAll('[data-master-service-price],[data-master-service-duration]').forEach(field=>field.disabled=!category.checked);captureMasterDraft(root,id,category.checked);});updateMasterMatrix(state.getSnapshot());}
     };
     const onClick=async event=>{
+      const professionalFilter=event.target.closest('[data-master-professional-filter]');if(professionalFilter){if(!masterProfessionalRecommendations)return;masterProfessionalOnly=!masterProfessionalOnly;professionalFilter.setAttribute('aria-pressed',String(masterProfessionalOnly));professionalFilter.classList.toggle('is-active',masterProfessionalOnly);updateMasterMatrix(state.getSnapshot());return;}
       const retry=event.target.closest('[data-master-services-retry]');if(retry){retry.disabled=true;try{await state.load({signal:lifecycle.signal,force:true});}finally{if(retry.isConnected)retry.disabled=false;}return;}
       const save=event.target.closest('[data-master-services-save]');if(save){try{await saveMasterDrafts(root,lifecycle);}catch(error){const status=root.querySelector('[data-service-offers-status]');if(status)status.textContent=error?.message||'Не удалось сохранить услуги';window.KaretaToast?.error?.(error?.message||'Не удалось сохранить услуги');if(save.isConnected)save.disabled=false;}return;}
     };
@@ -288,6 +293,18 @@
     }});
     window.KaretaMasterProfessionPicker?.mount?.(root,{lifecycle});
     root.addEventListener('input',onInput);root.addEventListener('change',onChange);root.addEventListener('click',onClick);state.load({signal:lifecycle.signal,force:true});
+    (async()=>{const client=window.KaretaApiClient;if(!client)return;
+      const current=await client.request('api/master_onboarding.php?action=professions',{cacheTtlMs:0,force:true,signal:lifecycle.signal});
+      if(!current?.ok)return;
+      const selected=Array.isArray(current.payload?.data?.selection)?current.payload.data.selection:[];
+      if(!selected.length)return;
+      const map=await client.request('api/catalog/professional_service_matrix.php?professions='+encodeURIComponent(selected.join(',')),{cacheTtlMs:0,force:true,signal:lifecycle.signal});
+      const ids=map?.payload?.data?.serviceIds;
+      if(!map?.ok||!Array.isArray(ids)||!ids.length||!root.isConnected)return;
+      masterProfessionalRecommendations=new Set(ids);
+      const button=root.querySelector('[data-master-professional-filter]');
+      if(button){button.disabled=false;button.textContent='По моим профессиям ('+ids.length+')';}
+    })().catch(()=>{});
     const cleanup=()=>{masterMatrixUnsubscribe?.();masterMatrixUnsubscribe=null;state.cancel();root.removeEventListener('input',onInput);root.removeEventListener('change',onChange);root.removeEventListener('click',onClick);};lifecycle.addCleanup?.(cleanup);return cleanup;
   }
 

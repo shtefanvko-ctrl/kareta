@@ -562,6 +562,12 @@ function kareta_service_offer_save(PDO $pdo, array $body): array
     $notes = kareta_service_catalog_text($offer['notes'] ?? '', 500);
     $bookingEnabled = !array_key_exists('bookingEnabled', $offer) || (bool)$offer['bookingEnabled'] ? 1 : 0;
     $active = !array_key_exists('active', $offer) || (bool)$offer['active'] ? 1 : 0;
+    // New professional services have no trusted default price or duration.
+    // A new published provider offer must declare real duration and a valid price mode.
+    if (str_starts_with($serviceId, 'pro_') && $bookingEnabled === 1 && $active === 1) {
+        if ($duration < 5) kareta_json(['ok'=>false,'error'=>'professional_duration_required','message'=>'Укажите длительность работы не менее 5 минут'],422);
+        if ($priceType !== 'agreement' && $price <= 0) kareta_json(['ok'=>false,'error'=>'professional_price_required','message'=>'Укажите цену или выберите «По договорённости»'],422);
+    }
     $moderation = 'approved';
 
     $sql = "INSERT INTO `service_offers`
