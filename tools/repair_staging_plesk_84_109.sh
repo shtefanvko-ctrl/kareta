@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-RELEASE="188.5.5.6.84.109"
+RELEASE="${KARETA_EXPECTED_RELEASE:-188.5.5.6.84.152}"
+EXPECTED_SHA="${KARETA_EXPECTED_GIT_SHA:-}"
 DOMAIN="kareta.kz"
 SUBDOMAIN="s"
 HOST="${SUBDOMAIN}.${DOMAIN}"
@@ -11,6 +12,10 @@ LOG="${KARETA_STAGING_REPAIR_LOG:-/tmp/kareta-staging-repair-${RELEASE}.log}"
 exec > >(tee -a "$LOG") 2>&1
 
 echo "KARETA_STAGING_REPAIR release=${RELEASE} host=${HOST}"
+if [[ -n "$EXPECTED_SHA" && ! "$EXPECTED_SHA" =~ ^[A-Fa-f0-9]{40}$ ]]; then
+  echo "ERROR: KARETA_EXPECTED_GIT_SHA must be an exact 40-character Git SHA" >&2
+  exit 19
+fi
 echo "started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
 if [[ ${EUID:-$(id -u)} -ne 0 ]]; then
@@ -31,6 +36,16 @@ validate_root() {
   [[ -f "$root/index.php" ]] || return 1
   [[ -f "$root/inc/asset_version.php" ]] || return 1
   grep -Fq "$RELEASE" "$root/inc/asset_version.php" || return 1
+  [[ -f "$root/storage/deployment_manifest.json" ]] || return 1
+  php -r '
+    $p=$argv[1]; $release=$argv[2]; $expected=strtolower(trim($argv[3]));
+    try { $d=json_decode(file_get_contents($p),true,32,JSON_THROW_ON_ERROR); }
+    catch(Throwable $e){ exit(10); }
+    $sha=strtolower(trim((string)($d["gitSha"]??"")));
+    $asset=trim((string)($d["assetVersion"]??""));
+    if(!preg_match("/^[a-f0-9]{40}$/",$sha) || $asset!==$release) exit(11);
+    if($expected!=="" && $sha!==$expected) exit(12);
+  ' "$root/storage/deployment_manifest.json" "$RELEASE" "$EXPECTED_SHA" || return 1
   return 0
 }
 
@@ -73,8 +88,13 @@ case "$TARGET_ROOT" in
 esac
 
 REL_ROOT="/${TARGET_ROOT#${VHOST_BASE}/}"
+MANIFEST_PATH="$TARGET_ROOT/storage/deployment_manifest.json"
+MANIFEST_SHA="$(php -r '$d=json_decode(file_get_contents($argv[1]),true,32,JSON_THROW_ON_ERROR); echo strtolower((string)$d["gitSha"]);' "$MANIFEST_PATH")"
 echo "target_root=$TARGET_ROOT"
 echo "plesk_www_root=$REL_ROOT"
+echo "deployment_manifest=$MANIFEST_PATH"
+echo "deployment_git_sha=$MANIFEST_SHA"
+if [[ -n "$EXPECTED_SHA" ]]; then echo "expected_git_sha=${EXPECTED_SHA,,}"; fi
 
 echo "--- current subdomain state ---"
 plesk bin subdomain --info "$HOST" || true
@@ -125,4 +145,7 @@ fi
 echo "external_host=${HOST}"
 echo "external_application=KARETA.KZ"
 echo "external_release=${RELEASE}"
+VERIFY_ARGS=(--base-url "https://${HOST}" --expected-sha "$MANIFEST_SHA" --expected-asset-version "$RELEASE")
+python3 "$TARGET_ROOT/tools/verify_runtime_provenance.py" "${VERIFY_ARGS[@]}"
+echo "external_git_sha=$MANIFEST_SHA"
 echo "KARETA_STAGING_REPAIR: OK"
