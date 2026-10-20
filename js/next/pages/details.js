@@ -387,6 +387,7 @@
     const requestedServiceId=String(bookingParams.get('serviceId')||'');
     let selectedDate=days[Math.min(3,days.length-1)].iso,selectedTime='',selectedService=requestedServiceId?(offers.find(offer=>String(offer.service_id||offer.serviceId||'')===requestedServiceId)||null):(offers[0]||null),slots=[];
     if(requestedServiceId&&!selectedService){set(providerError('Мастер больше не оказывает выбранную услугу. Вернитесь в каталог и выберите исполнителя.'));return;}
+    let slotsRequestId=0,slotsReady=false,transferStarted=false;
     const root=document.querySelector('[data-master-ref-booking]');
     if(!root)return;
     const avatar=p.avatar_url?`<img src="${esc(p.avatar_url)}" alt="${esc(p.name||'Мастер')}">`:`<span>${esc(String(p.name||'М').split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase())}</span>`;
