@@ -107,6 +107,12 @@ jobs:
       - name: Welcome city geo contract
         run: node tools/test_welcome_city_geo_contract.js
 
+      - name: Design harness policy
+        run: |
+          test -s docs/harness/DESIGN_SYSTEM_POLICY_V1.md
+          grep -Fq 'Settings -> Primitive Tokens -> Semantic Tokens -> Shared Components -> Role Delta -> Page Layout -> Generated Output.' docs/harness/DESIGN_SYSTEM_POLICY_V1.md
+          grep -Fq 'Old PASS is not evidence for a new HEAD.' docs/harness/DESIGN_SYSTEM_POLICY_V1.md
+
       - name: Design canon contract
         run: |
           node tools/test_design_canon_v1.js

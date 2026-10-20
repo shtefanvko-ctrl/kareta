@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "updated_on": "2026-10-05",
+  "canonical_policy": "Git repository is canonical. External datasets are references/import sources only.",
+  "sources": [
+    {
+      "id": "sae_j1979_202505",
+      "name": "SAE J1979_202505 E/E Diagnostic Test Modes",
+      "type": "standard_metadata",
+      "authority": "PRIMARY",
+      "url": "https://saemobilus.sae.org/standards/j1979_202505-e-e-diagnostic-test-modes",
+      "license": "copyrighted standard; metadata/reference only",
+      "use": "protocol/test-mode semantics and validation reference",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "elm_electronics_elm327_v23",
+      "name": "ELM327 / ELM327L official data sheets",
+      "type": "vendor_documentation",
+      "authority": "PRIMARY",
+      "url": "https://www.elmelectronics.com/products/ics/obd/",
+      "license": "vendor documentation; reference only",
+      "use": "AT command and protocol behavior",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "obdex_cc0",
+      "name": "OBDex",
+      "type": "open_dataset",
+      "authority": "SECONDARY_CURATED",
+      "url": "https://github.com/foerbsnavi/obdex",
+      "license": "CC0-1.0 data; MIT tooling",
+      "use": "preferred import source for generic DTC and PID seed data",
+      "status": "IMPORTABLE"
+    },
+    {
+      "id": "nhtsa_datasets",
+      "name": "NHTSA Datasets and APIs",
+      "type": "government_open_data",
+      "authority": "PRIMARY",
+      "url": "https://www.nhtsa.gov/nhtsa-datasets-and-apis",
+      "license": "US government/open-data terms apply",
+      "use": "complaints, recalls, investigations, manufacturer communications/TSBs",
+      "status": "IMPORTABLE_WITH_FIELD_PROVENANCE"
+    },
+    {
+      "id": "nhtsa_vpic",
+      "name": "NHTSA vPIC VIN decoder",
+      "type": "government_api",
+      "authority": "PRIMARY",
+      "url": "https://vpic.nhtsa.dot.gov/decoder/",
+      "license": "US government API",
+      "use": "VIN-derived vehicle metadata where applicable; manufacturer-reported data",
+      "status": "REFERENCE_AND_API"
+    },
+    {
+      "id": "autodiag2_database",
+      "name": "AutoDiag2 database",
+      "type": "open_dataset",
+      "authority": "COMMUNITY",
+      "url": "https://github.com/autodiag2/database",
+      "license": "ODbL-1.0/DbCL-1.0 data; GPL-3.0+ tooling",
+      "use": "vehicle/ECU/manufacturer-specific research only until ODbL integration policy is approved",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "mechanicdb_public",
+      "name": "MechanicDB public sample",
+      "type": "open_sample_dataset",
+      "authority": "COMMUNITY_COMMERCIAL",
+      "url": "https://github.com/MechanicDB/MechanicDB-public",
+      "license": "ODbL-1.0 sample; full dataset commercial",
+      "use": "repair-schema and procedure-ranking research only",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "wal33d_dtc_database",
+      "name": "Wal33D DTC Database",
+      "type": "open_dataset",
+      "authority": "COMMUNITY",
+      "url": "https://github.com/Wal33D/dtc-database",
+      "license": "MIT repository license",
+      "use": "cross-check coverage and offline SQLite implementation; manufacturer-specific provenance requires separate review",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "fixcarcodes_dtc_sample",
+      "name": "obd2-dtc-database",
+      "type": "open_dataset",
+      "authority": "COMMUNITY",
+      "url": "https://github.com/sathya1495/obd2-dtc-database",
+      "license": "MIT",
+      "use": "small cross-check sample only",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "real_vehicle_obd_dataset",
+      "name": "AbouAbdallah-Lounis/OBD-Dataset",
+      "type": "real_vehicle_obd_samples",
+      "authority": "ACADEMIC_COMMUNITY",
+      "url": "https://github.com/AbouAbdallah-Lounis/OBD-Dataset",
+      "license": "NO_LICENSE_FILE_CONFIRMED_2026-10-05",
+      "use": "reference for real vehicle OBD measurement patterns and observed DTC combinations only; do not import/copy dataset until licensing is clarified",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "python_obd",
+      "name": "python-OBD",
+      "type": "diagnostic_library",
+      "authority": "COMMUNITY_MATURE",
+      "url": "https://github.com/brendan-w/python-OBD",
+      "license": "GPL-2.0-or-later",
+      "use": "reference implementation for ELM327 session handling, protocol mapping, PID commands and parsers; do not copy GPL code into KARETA without license review",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "elm327_obdii",
+      "name": "elm327_obdii",
+      "type": "diagnostic_library",
+      "authority": "COMMUNITY_ACTIVE",
+      "url": "https://github.com/tronikos/elm327_obdii",
+      "license": "Apache-2.0 code; fetched OBDb/WiCAN profiles retain their own licenses",
+      "use": "reference for BLE ELM327 state machine, voltage-gated polling, CAN context and vehicle-profile fetching",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "obdb_vehicle_profiles",
+      "name": "OBDb community vehicle profiles",
+      "type": "vehicle_specific_dataset",
+      "authority": "COMMUNITY",
+      "url": "https://github.com/obdb",
+      "license": "reported CC-BY-SA-4.0 for profile data; verify each repository before use",
+      "use": "manufacturer/model-specific signal research; reference only until per-repo licensing/provenance is verified",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "kazakhstan_auto_union_sales_2026_07",
+      "name": "Қазақстанның Автокөлік Одағы — Jan-Jul 2026 new vehicle sales",
+      "type": "market_sales_statistics",
+      "authority": "INDUSTRY_ASSOCIATION",
+      "url": "https://kao.kz/ru/novosti/96/",
+      "license": "reference/citation only",
+      "use": "manufacturer-specific research prioritization; new-sales proxy only",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "kazakhstan_bns_vehicle_stock_2026_09",
+      "name": "Bureau of National Statistics Kazakhstan — vehicle stock as of 2026-09-01",
+      "type": "government_statistics",
+      "authority": "PRIMARY",
+      "url": "https://stat.gov.kz/ru/news/166-6-tys-edinits-avtotransportnykh-sredstv-postavleno-na-uchet-v-avguste/",
+      "license": "government publication; reference/citation",
+      "use": "national fleet-size context; does not provide make ranking in the cited release",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "kazakhstan_auto_union_models_2026_h1",
+      "name": "Қазақстанның Автокөлік Одағы — top models, H1 2026",
+      "type": "market_sales_statistics",
+      "authority": "INDUSTRY_ASSOCIATION",
+      "url": "https://kao.kz/ru/novosti/93/",
+      "license": "reference/citation only",
+      "use": "Kazakhstan model-level research priority; new-sales proxy only",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "hyundai_techinfo_us",
+      "name": "Hyundai Service Website / Hyundaitechinfo",
+      "type": "oem_service_information",
+      "authority": "OEM",
+      "url": "https://www.hyundaitechinfo.com/",
+      "license": "subscription/copyrighted OEM material; metadata/reference only",
+      "use": "shop manuals, electrical troubleshooting manuals and TSBs for Hyundai vehicles sold in the US; requires exact market applicability",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "kia_official_recalls",
+      "name": "Kia official recalls",
+      "type": "oem_recall_information",
+      "authority": "OEM",
+      "url": "https://owners.kia.com/content/owners/en/recalls.html",
+      "license": "OEM website; reference only",
+      "use": "VIN/model recall evidence where market applicability matches",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "kia_korea_repair_campaigns",
+      "name": "Kia Korea recalls and free repair campaigns",
+      "type": "oem_recall_campaign_information",
+      "authority": "OEM",
+      "url": "https://update.kia.com/KR/KO/recall",
+      "license": "OEM website; reference only",
+      "use": "Korean-market recall/free-repair campaign evidence; never assume Kazakhstan applicability",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "gm_service_information",
+      "name": "General Motors Service Information",
+      "type": "oem_service_information",
+      "authority": "OEM",
+      "url": "https://gsitlc.ext.gm.com/userguides/GMSi_User_Guide.pdf",
+      "license": "copyrighted OEM service information; metadata/reference only",
+      "use": "service manuals, DTC lists, diagnostic starting points and bulletins for applicable GM vehicles",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "gm_official_support",
+      "name": "General Motors official vehicle support",
+      "type": "oem_owner_support",
+      "authority": "OEM",
+      "url": "https://experience.gm.com/support/landing",
+      "license": "OEM website; reference only",
+      "use": "recalls, manuals, service support and market identity cross-check",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "changan_global_recall_process",
+      "name": "Changan global recall management documentation",
+      "type": "oem_quality_recall_information",
+      "authority": "OEM",
+      "url": "https://www.globalchangan.com/newsroom/changan-automobile-wins-honor-for-product-safety-and-recall-management-system-innovation-at-the-6th-china-quality-conference.html",
+      "license": "OEM publication; reference only",
+      "use": "confirms manufacturer recall-management process; not a vehicle-specific bulletin feed",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "chery_official_service",
+      "name": "Chery official after-sales service",
+      "type": "oem_service_information",
+      "authority": "OEM",
+      "url": "https://www.chery.cn/m/others/service/",
+      "license": "OEM website; reference only",
+      "use": "official after-sales/warranty/service channel; vehicle-specific repair data requires separate applicable source",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "chery_global_models",
+      "name": "Chery International model catalogue",
+      "type": "oem_vehicle_catalog",
+      "authority": "OEM",
+      "url": "https://www.cheryinternational.com/",
+      "license": "OEM website; reference only",
+      "use": "model identity and global naming cross-check",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "kia_kr_sportage_nq5pe_atcu_mtc_20260720",
+      "name": "Kia Korea Sportage NQ5 PE ATCU/MTC free-repair customer notice",
+      "type": "oem_service_campaign",
+      "authority": "OEM",
+      "url": "https://update.kia.com/KR/KO/updateNoticeView/OnL7pV",
+      "license": "OEM publication; reference only",
+      "use": "KR-market Sportage NQ5 PE ATCU/MTC free-repair campaign; includes diagnostic connector/OTA preparation instructions",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "nhtsa_kia_26v046",
+      "name": "NHTSA recall 26V046 / Kia SC361",
+      "type": "government_recall_document",
+      "authority": "PRIMARY",
+      "url": "https://static.nhtsa.gov/odi/rcl/2026/RCLRPT-26V046-2043.pdf",
+      "license": "US government public record",
+      "use": "US-market 2026 Kia Sportage/Sportage Hybrid/PHEV instrument-cluster recall and OTA remedy evidence",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "hyundai_txxm_t6g_20260326",
+      "name": "Hyundai TXXM/T6G engine warranty extension and inspect/replace dealer notification",
+      "type": "oem_tsb_campaign_document",
+      "authority": "OEM_VIA_NHTSA",
+      "url": "https://static.nhtsa.gov/odi/tsbs/2026/MC-11030330-0001.pdf",
+      "license": "copyrighted OEM service information mirrored in NHTSA; summarize/reference only",
+      "use": "US-market Hyundai DTC P1326 inspection/repair campaign applicability and workflow",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "nhtsa_hyundai_26v047",
+      "name": "NHTSA recall 26V047 / Hyundai 293",
+      "type": "government_recall_document",
+      "authority": "PRIMARY",
+      "url": "https://static.nhtsa.gov/odi/rcl/2026/RCLRPT-26V047-2209.pdf",
+      "license": "US government public record",
+      "use": "US-market 2026 Hyundai Tucson and related instrument-cluster PMIC recall evidence",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "chevrolet_kz_cobalt_2026",
+      "name": "Chevrolet Kazakhstan official Cobalt 2026 model page",
+      "type": "official_market_model_page",
+      "authority": "OEM_DISTRIBUTOR",
+      "url": "https://chevrolet-auto.kz/models/cobalt",
+      "license": "official distributor publication; reference only",
+      "use": "Kazakhstan-market Cobalt 2026 model identity, 1.5L/automatic/current trim context",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "chevrolet_kz_cobalt_owner_manual_uzauto",
+      "name": "Chevrolet Kazakhstan Cobalt owner manual — UzAuto Motors manufacturer statement",
+      "type": "official_owner_manual",
+      "authority": "OEM_DISTRIBUTOR",
+      "url": "https://cdn.chevrolet-auto.kz/cars/BbfXuc2Rkh8FA1Mf69dbopGoBM9UWbRGGiFdgXJA.pdf",
+      "license": "copyrighted owner manual; summarize/reference only",
+      "use": "confirms the Kazakhstan-hosted Cobalt manual is for vehicles manufactured by UzAuto Motors and warns equipment/specification can vary by delivery country",
+      "status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "uzauto_allur_kz_partnership_20260713",
+      "name": "UzAuto Motors — Chevrolet in Kazakhstan / Allur partnership",
+      "type": "manufacturer_market_statement",
+      "authority": "OEM_MANUFACTURER",
+      "url": "https://uzautomotors.com/articles/chevrolet_200_000_mijoz_tanlovi",
+      "license": "manufacturer publication; reference only",
+      "use": "supports UzAuto Motors and Allur partnership for Chevrolet sales in Kazakhstan and identifies Cobalt as a core Kazakhstan model",
+      "status": "REFERENCE_ONLY"
+    }
+  ]
+}
