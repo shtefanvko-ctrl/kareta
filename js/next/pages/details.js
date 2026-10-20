@@ -172,7 +172,7 @@
         <section class="k-service-detail-ref-section"><header><small>СОСТАВ</small><h2>Что входит в работу</h2></header><ul class="k-service-detail-ref-list">${workList.map(x=>`<li><i>✓</i><span>${esc(x)}</span></li>`).join('')}</ul></section>
         <section class="k-service-detail-ref-section"><header><small>СЦЕНАРИЙ</small><h2>Как это работает</h2></header><ol class="k-service-detail-ref-steps">${steps.map((x,i)=>`<li><i>${i+1}</i><span>${esc(x)}</span></li>`).join('')}</ol></section>
         <section class="k-service-detail-ref-section k-service-detail-ref-offers"><header><div><small>КТО ОКАЗЫВАЕТ УСЛУГУ</small><h2>СТО и мастера с ценами</h2></div><span>${providerOffers.length}</span></header><div class="k-service-provider-list">${offerRows}</div></section>
-      </main><aside class="k-service-detail-ref-aside"><div><small>БЫСТРЫЙ СТАРТ</small><h2>${esc(s.name||'Нужен ремонт?')}</h2><p>Выберите автомобиль, способ получения предложений, место и время. Цена подтверждается до начала работ.</p><div class="k-service-detail-ref-aside-facts"><span><b>${price}</b> ориентир</span><span><b>${esc(time)}</b> время</span></div><button data-next-action="service-booking" data-service-id="${esc(s.id)}" data-service-name="${esc(s.name)}">Оставить заявку</button><a href="#/masters">Сначала выбрать мастера</a></div></aside></div>
+      </main><aside class="k-service-detail-ref-aside"><div><small>БЫСТРЫЙ СТАРТ</small><h2>${esc(s.name||'Нужен ремонт?')}</h2><p>Выберите автомобиль, способ получения предложений, место и время. Цена подтверждается до начала работ.</p><div class="k-service-detail-ref-aside-facts"><span><b>${price}</b> ориентир</span><span><b>${esc(time)}</b> время</span></div><button data-next-action="service-booking" data-service-id="${esc(s.id)}" data-service-name="${esc(s.name)}">Оставить заявку</button><a href="#/masters?serviceId=${encodeURIComponent(s.id||id)}">Сначала выбрать мастера</a></div></aside></div>
     </section>`);
     document.querySelectorAll('[data-service-provider-book]').forEach(button=>button.addEventListener('click',()=>{
       const type=String(button.dataset.providerType||'master').toLowerCase();
@@ -221,8 +221,12 @@
         location.hash=`#/chats?${isSto?'stoId':'masterId'}=${encodeURIComponent(id)}`;
       }));
       document.querySelectorAll('[data-provider-book]').forEach(btn=>btn.addEventListener('click',()=>{
-        try{sessionStorage.setItem('kareta.request.prefill',JSON.stringify(isSto?{stoId:id,stoName:btn.dataset.providerName||p.name||'',description:`Запись в СТО ${btn.dataset.providerName||p.name||''}`,source:'provider_profile'}:{masterId:id,masterName:btn.dataset.providerName||p.name||'',description:`Запись к мастеру ${btn.dataset.providerName||p.name||''}`,source:'provider_profile'}));}catch(_e){}
-        if(!isSto){location.hash=`#/masters/book/master/${encodeURIComponent(id)}`;return;}
+        const requestedServiceId=String(queryParams.get('serviceId')||'');
+        const selectedOffer=requestedServiceId?offers.find(o=>String(o.service_id||o.serviceId||'')===requestedServiceId):null;
+        if(requestedServiceId&&!selectedOffer){window.KaretaToast?.error?.('Выбранная услуга больше не опубликована. Вернитесь в каталог.');return;}
+        const selected=selectedOffer?{serviceId:requestedServiceId,serviceName:String(selectedOffer.service_name||selectedOffer.name||''),offerId:selectedOffer.id||'',offerPrice:Number(selectedOffer.price||0),offerPriceType:String(selectedOffer.price_type||selectedOffer.priceType||'agreement')}:{};
+        try{sessionStorage.setItem('kareta.request.prefill',JSON.stringify(isSto?{stoId:id,stoName:btn.dataset.providerName||p.name||'',description:`Запись в СТО ${btn.dataset.providerName||p.name||''}`,source:'provider_profile',...selected}:{masterId:id,masterName:btn.dataset.providerName||p.name||'',description:`Запись к мастеру ${btn.dataset.providerName||p.name||''}`,source:'provider_profile',...selected}));}catch(_e){}
+        if(!isSto){location.hash=`#/masters/book/master/${encodeURIComponent(id)}${requestedServiceId?'?serviceId='+encodeURIComponent(requestedServiceId):''}`;return;}
         if(!window.KaretaRequestWindow?.open?.('#/orders/new'))location.hash='#/orders/new';
       }));
     };
@@ -379,7 +383,10 @@
     if(!rr.ok){set(providerError(rr.payload?.message));return;}
     const data=rr.payload?.data||{},p=data.provider||{},offers=Array.isArray(data.offers)?data.offers:[];
     const now=new Date(),days=Array.from({length:7},(_,i)=>{const d=new Date(now);d.setDate(now.getDate()+i);const iso=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');return {date:d,iso,weekday:new Intl.DateTimeFormat('ru-RU',{weekday:'short'}).format(d).replace('.',''),day:d.getDate()};});
-    let selectedDate=days[Math.min(3,days.length-1)].iso,selectedTime='',selectedService=offers[0]||null,slots=[];
+    const bookingParams=new URLSearchParams(String(location.hash||'').split('?')[1]||'');
+    const requestedServiceId=String(bookingParams.get('serviceId')||'');
+    let selectedDate=days[Math.min(3,days.length-1)].iso,selectedTime='',selectedService=requestedServiceId?(offers.find(offer=>String(offer.service_id||offer.serviceId||'')===requestedServiceId)||null):(offers[0]||null),slots=[];
+    if(requestedServiceId&&!selectedService){set(providerError('Мастер больше не оказывает выбранную услугу. Вернитесь в каталог и выберите исполнителя.'));return;}
     const root=document.querySelector('[data-master-ref-booking]');
     if(!root)return;
     const avatar=p.avatar_url?`<img src="${esc(p.avatar_url)}" alt="${esc(p.name||'Мастер')}">`:`<span>${esc(String(p.name||'М').split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase())}</span>`;
