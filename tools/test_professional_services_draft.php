@@ -41,13 +41,14 @@ try {
     foreach ($published['services'] as $row) {
         $existingNames[$row['category'] . '/' . mb_strtolower(trim($row['name']))] = true;
     }
-    $candidateIds = $candidateNames = $coverage = [];
+    $candidateIds = $candidateNames = $coverage = $professionCoverage = [];
     foreach ($draft['items'] as $index => $row) {
         $id = (string)($row['serviceId'] ?? '');
         $name = trim((string)($row['nameRu'] ?? ''));
         $cat = (string)($row['categoryKey'] ?? '');
         check_professional((bool)preg_match('/^pro_[a-z0-9_]{4,60}$/D', $id), "invalid service ID {$index}");
         check_professional(!isset($existingIds[$id]) && !isset($candidateIds[$id]), "duplicate ID {$id}");
+        check_professional(strlen($id) <= 32, "legacy services.id field overflow {$id}");
         $candidateIds[$id] = true;
         check_professional(isset($validCategories[$cat]), "unknown category {$id}");
         check_professional(mb_strlen($name) >= 8 && mb_strlen($name) <= 191, "invalid title {$id}");
@@ -62,13 +63,14 @@ try {
         check_professional(in_array($row['serviceKind'] ?? null, ['diagnostics','repair','installation','maintenance'], true), "kind {$id}");
         check_professional(is_array($row['professionIds'] ?? null) && count($row['professionIds']) > 0, "missing professions {$id}");
         check_professional(count($row['professionIds']) === count(array_unique($row['professionIds'])), "repeated professions {$id}");
-        foreach ($row['professionIds'] as $prof) check_professional(isset($validProfessions[$prof]), "unknown profession {$prof} in {$id}");
+        foreach ($row['professionIds'] as $prof) {check_professional(isset($validProfessions[$prof]), "unknown profession {$prof} in {$id}");$professionCoverage[$prof] = true;}
         check_professional(is_array($row['suggestedEquipmentIds'] ?? null), "missing suggested equipment {$id}");
         foreach ($row['suggestedEquipmentIds'] as $eq) check_professional(isset($validEquipment[$eq]), "unknown equipment {$eq} in {$id}");
         check_professional(is_array($row['aliasesRu'] ?? null), "missing aliases {$id}");
         $coverage[$cat] = ($coverage[$cat] ?? 0) + 1;
     }
     check_professional(count($coverage) === count($validCategories), 'not all existing categories covered');
+    check_professional(count($professionCoverage) === count($validProfessions), 'not all existing professions covered');
     ksort($coverage);
     echo "PASS: published 109 + candidate " . count($candidateIds) . "; categories " . count($coverage)
         . "; professions verified; equipment IDs verified; no duplicate names/IDs\n";
