@@ -65,7 +65,7 @@ try {
         $payload['masters']=$stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
     if ($type!=='master') {
-        $where=["s.active=1","TRIM(COALESCE(s.name,''))<>''",
+        $where=["s.active=1","TRIM(COALESCE(s.name,''))<>''","TRIM(COALESCE(s.city,''))<>''","TRIM(COALESCE(s.address,''))<>''",
             "EXISTS (SELECT 1 FROM service_offers so WHERE $conditions
                 AND so.owner_type='sto' AND so.owner_entity_id=s.id)"];
         $params=[$id];
@@ -73,7 +73,7 @@ try {
         if ($search!=='') {$where[]="(s.name LIKE ? OR COALESCE(s.primary_specialization,'') LIKE ?)";$like='%'.$search.'%';array_push($params,$like,$like);}
         $sql="SELECT s.id,s.name,COALESCE(s.primary_specialization,'Автосервис') spec,
             COALESCE(s.city,'') city,COALESCE(s.address,'') address,
-            COALESCE(s.work_hours,'') workHours,COALESCE(s.rating,0) rating,
+            COALESCE(NULLIF(s.work_hours,''),'График уточняется') workHours,COALESCE(s.reception_status,'busy') receptionStatus,COALESCE(s.rating,0) rating,
             COALESCE(s.orders_count,0) ordersCount,
             (SELECT COUNT(*) FROM service_offers sx WHERE sx.service_id=".$pdo->quote($id)."
               AND sx.owner_type='sto' AND sx.owner_entity_id=s.id AND sx.active=1
