@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "dataVersion": "professional_services_candidate_2026_10_21_v1",
+  "dataVersion": "professional_services_candidate_2026_10_21_v2_ev",
   "status": "DRAFT_ONLY_NOT_IMPORTED",
   "purpose": "Профессиональные автомобильные работы. ТОЛЬКО предложения для экспертной проверки и безопасного добавления; ни одна запись не активирует услугу.",
   "sourceCatalog": "storage/catalog/services.json",
@@ -51,7 +51,7 @@
       "basePrice": null
     },
     {
-      "serviceId": "pro_maintenance_underbody_inspection",
+      "serviceId": "pro_maintenance_underbo_afe89976",
       "categoryKey": "maintenance",
       "nameRu": "Осмотр автомобиля на подъёмнике",
       "professionIds": [
@@ -275,7 +275,7 @@
       "basePrice": null
     },
     {
-      "serviceId": "pro_detailing_headlight_restoration",
+      "serviceId": "pro_detailing_headlight_892b583e",
       "categoryKey": "detailing",
       "nameRu": "Восстановительная полировка фар",
       "professionIds": [
@@ -899,7 +899,7 @@
       "basePrice": null
     },
     {
-      "serviceId": "pro_transmission_rear_diff_repair",
+      "serviceId": "pro_transmission_rear_d_f2fd93be",
       "categoryKey": "transmission",
       "nameRu": "Ремонт заднего редуктора",
       "professionIds": [
@@ -1320,7 +1320,7 @@
       "basePrice": null
     },
     {
-      "serviceId": "pro_accessories_remote_start_repair",
+      "serviceId": "pro_accessories_remote__22664d8b",
       "categoryKey": "multimedia_security",
       "nameRu": "Диагностика и ремонт автозапуска",
       "professionIds": [
@@ -1651,7 +1651,7 @@
       "basePrice": null
     },
     {
-      "serviceId": "pro_alignment_steering_angle_calibration",
+      "serviceId": "pro_alignment_steering__6ccc86e0",
       "categoryKey": "alignment",
       "nameRu": "Калибровка датчика угла поворота руля",
       "professionIds": [
@@ -2046,6 +2046,213 @@
         "adas_calibration_system"
       ],
       "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_hv_battery_health",
+      "categoryKey": "diagnostics",
+      "nameRu": "Диагностика состояния тяговой батареи",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "диагностика ВВБ"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner",
+        "hv_insulation_tester"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_bms_fault_diag",
+      "categoryKey": "diagnostics",
+      "nameRu": "Диагностика системы BMS",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "ошибка батареи"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_charging_port_diag",
+      "categoryKey": "electrical",
+      "nameRu": "Диагностика зарядного разъёма",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "не заряжается электромобиль"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "insulated_tools"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_hv_insulation_test",
+      "categoryKey": "electrical",
+      "nameRu": "Проверка изоляции высоковольтной системы",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "ошибка изоляции HV"
+      ],
+      "suggestedEquipmentIds": [
+        "hv_insulation_tester",
+        "insulated_tools"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_dcdc_converter_diag",
+      "categoryKey": "electrical",
+      "nameRu": "Диагностика DC/DC-преобразователя",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "нет зарядки 12В у электромобиля"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "insulated_tools"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_inverter_diag",
+      "categoryKey": "electrical",
+      "nameRu": "Диагностика инвертора электропривода",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "ошибка инвертора"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner",
+        "insulated_tools"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_battery_cooling_diag",
+      "categoryKey": "cooling_heating",
+      "nameRu": "Диагностика охлаждения тяговой батареи",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "перегрев батареи"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_drive_unit_diag",
+      "categoryKey": "diagnostics",
+      "nameRu": "Диагностика тягового электропривода",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "ошибка электропривода"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner",
+        "insulated_tools"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_low_voltage_battery",
+      "categoryKey": "maintenance",
+      "nameRu": "Замена вспомогательной аккумуляторной батареи электромобиля",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "АКБ 12В EV"
+      ],
+      "suggestedEquipmentIds": [
+        "battery_tester"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_pre_purchase_hv",
+      "categoryKey": "diagnostics",
+      "nameRu": "Проверка высоковольтной системы перед покупкой",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "проверить электромобиль перед покупкой"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner",
+        "hv_insulation_tester"
+      ],
+      "serviceKind": "diagnostics",
       "status": "DRAFT_ONLY",
       "availableForBooking": false,
       "autoEnableForMasters": false,
