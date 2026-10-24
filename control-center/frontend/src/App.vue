@@ -10,15 +10,19 @@ async function refresh() {
   controller?.abort()
   const current = new AbortController()
   controller = current
+  let timedOut = false
+  const timeout = setTimeout(() => { timedOut = true; current.abort() }, 2500)
   try {
     const response = await fetch('/api/system', {signal:current.signal, cache:'no-store'})
     if (!response.ok) throw new Error('HTTP ' + response.status)
     info.value = await response.json() as System
     error.value = ''
   } catch(e) {
-    if (current.signal.aborted) return
-    error.value = e instanceof Error ? e.message : 'Ошибка соединения'
+    if (current.signal.aborted && !timedOut) return
+    error.value = timedOut ? 'Превышено время ожидания API' : e instanceof Error ? e.message : 'Ошибка соединения'
     info.value = null
+  } finally {
+    clearTimeout(timeout)
   }
 }
 onMounted(() => { void refresh(); timer = setInterval(() => void refresh(), 3000) })
