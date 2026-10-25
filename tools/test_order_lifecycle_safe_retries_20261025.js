@@ -29,6 +29,16 @@ assert(complete.includes("if (empty($tx['skipped'])) {\n        try {\n         
 assert(confirm.includes("if (empty($tx['skipped'])) {\n        try {\n            $mid = (string)($order['master_id'] ?? '');"),
   'confirmation notification should be conditional on a new transition');
 
+assert(complete.includes("if ((string)$order['status'] === 'done_pending_client')"),
+  'completion retry should return success after already moving to pending');
+assert(complete.indexOf("if ((string)$order['status'] === 'done_pending_client')")<
+       complete.indexOf("if (!in_array((string)$order['status'], ['process']"),
+  'retry should be accepted before rejecting an invalid master status');
+assert(confirm.includes("if ((string)$order['status'] === 'done')"),
+  'client retry should return success after completed order');
+assert(confirm.indexOf('if (!$owned)')<confirm.indexOf("if ((string)$order['status'] === 'done')"),
+  'client ownership must be checked before replying to completed retries');
+
 assert(accept.includes("$firstAcceptance=(string)($workflow['current_stage']??'intake')==='intake'"));
 assert(accept.includes("if($firstAcceptance) {\n        kareta_write_event"),
   'acceptance event must not repeat on diagnostics-stage retries');
@@ -37,5 +47,5 @@ assert(accept.includes("'idempotent'=>!$firstAcceptance"),
 assert(accept.includes("kareta_master_order_lifecycle_order($pdo,$orderId,true)"),
   'master order access control must remain enforced');
 
-console.log('PASS: 9 order lifecycle retry/authorization source guards');
+console.log('PASS: 13 order lifecycle retry/authorization source guards');
 // Static contract only. PHP lint, integration and concurrent-request QA remain required.
