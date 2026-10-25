@@ -8452,6 +8452,10 @@ function orders_complete_by_master(?PDO $pdo, array $b): void {
     $st->execute([$orderId, $masterId]);
     $order = $st->fetch();
     if (!$order) kareta_json(['ok'=>false,'error'=>'order_not_found'],404);
+    // A retry after a successful completion must not create events or notifications again.
+    if ((string)$order['status'] === 'done_pending_client') {
+        kareta_json(['ok'=>true,'status'=>'done_pending_client','skipped'=>true,'order'=>kareta_order_snapshot($pdo,$orderId)]);
+    }
     if (!in_array((string)$order['status'], ['process'], true)) kareta_json(['ok'=>false,'error'=>'wrong_status'],409);
     // Требуем финальный этап (ТЗ 4.3 — нельзя обойти этапную систему)
     if (!($b['forceComplete'] ?? false)) {
@@ -8521,6 +8525,11 @@ function orders_confirm_done_by_client(?PDO $pdo, array $b): void {
     if(function_exists('kareta_client_order_handover_confirm')&&kareta_table_exists($pdo,'work_order_handovers')){
         $handover=$pdo->prepare("SELECT status FROM work_order_handovers WHERE order_id=? LIMIT 1");$handover->execute([$orderId]);
         if(in_array((string)($handover->fetchColumn()?:''),['ready','accepted'],true))kareta_client_order_handover_confirm($pdo,['orderId'=>$orderId]);
+    }
+    // Native handover, if applicable, has already handled and verified its own stage.
+    // Legacy retry should acknowledge completion without emitting another event.
+    if ((string)$order['status'] === 'done') {
+        kareta_json(['ok'=>true,'status'=>'done','skipped'=>true,'order'=>kareta_order_snapshot($pdo,$orderId)]);
     }
     if (!in_array((string)$order['status'], ['done_pending_client'], true)) kareta_json(['ok'=>false,'error'=>'wrong_status'],409);
 
