@@ -8483,20 +8483,22 @@ function orders_complete_by_master(?PDO $pdo, array $b): void {
         kareta_sync_order_relations($pdo, $orderId, 'done_pending_client', ['source'=>'orders.complete']);
         kareta_write_event($pdo, $orderId, 'order_completed_by_master', ['masterId'=>$masterId, 'finalPrice'=>$finalPrice?:null]);
     }
-    try {
-        kareta_notification_insert($pdo, [
-            'recipientUserId' => (int)($order['client_user_id'] ?? 0) ?: null,
-            'recipientPhone' => (string)($order['client_phone'] ?? ''),
-            'recipientRole' => 'client',
-            'eventType' => 'order.done_pending',
-            'entityType' => 'order',
-            'entityId' => $orderId,
-            'title' => 'Мастер завершил работу',
-            'body' => 'Мастер отметил заявку как выполненную. Подтвердите завершение.',
-            'actionUrl' => '#myorders',
-            'meta' => ['orderId'=>$orderId],
-        ]);
-    } catch(\Throwable $_e) {}
+    if (empty($tx['skipped'])) {
+        try {
+            kareta_notification_insert($pdo, [
+                'recipientUserId' => (int)($order['client_user_id'] ?? 0) ?: null,
+                'recipientPhone' => (string)($order['client_phone'] ?? ''),
+                'recipientRole' => 'client',
+                'eventType' => 'order.done_pending',
+                'entityType' => 'order',
+                'entityId' => $orderId,
+                'title' => 'Мастер завершил работу',
+                'body' => 'Мастер отметил заявку как выполненную. Подтвердите завершение.',
+                'actionUrl' => '#myorders',
+                'meta' => ['orderId'=>$orderId],
+            ]);
+        } catch(\Throwable $_e) {}
+    }
     kareta_json(['ok'=>true,'status'=>'done_pending_client','skipped'=>!empty($tx['skipped']),'order'=>kareta_order_snapshot($pdo,$orderId)]);
 }
 
@@ -8505,10 +8507,6 @@ function orders_confirm_done_by_client(?PDO $pdo, array $b): void {
     if (!$pdo) _no_db();
     $orderId = trim((string)($b['orderId'] ?? $b['id'] ?? ''));
     if ($orderId === '') kareta_json(['ok'=>false,'error'=>'order_id_required'],422);
-    if(function_exists('kareta_client_order_handover_confirm')&&kareta_table_exists($pdo,'work_order_handovers')){
-        $handover=$pdo->prepare("SELECT status FROM work_order_handovers WHERE order_id=? LIMIT 1");$handover->execute([$orderId]);
-        if(in_array((string)($handover->fetchColumn()?:''),['ready','accepted'],true))kareta_client_order_handover_confirm($pdo,['orderId'=>$orderId]);
-    }
     $u = kareta_current_user();
     $actorId = (int)($u['id'] ?? 0);
     $actorPhone = kareta_normalize_phone((string)($u['phone'] ?? ''));
@@ -8520,6 +8518,10 @@ function orders_confirm_done_by_client(?PDO $pdo, array $b): void {
     $owned = ((int)($order['client_user_id'] ?? 0) > 0 && (int)$order['client_user_id'] === $actorId)
         || ($actorPhone !== '' && kareta_normalize_phone((string)($order['client_phone'] ?? '')) === $actorPhone);
     if (!$owned) kareta_json(['ok'=>false,'error'=>'forbidden_order_owner'],403);
+    if(function_exists('kareta_client_order_handover_confirm')&&kareta_table_exists($pdo,'work_order_handovers')){
+        $handover=$pdo->prepare("SELECT status FROM work_order_handovers WHERE order_id=? LIMIT 1");$handover->execute([$orderId]);
+        if(in_array((string)($handover->fetchColumn()?:''),['ready','accepted'],true))kareta_client_order_handover_confirm($pdo,['orderId'=>$orderId]);
+    }
     if (!in_array((string)$order['status'], ['done_pending_client'], true)) kareta_json(['ok'=>false,'error'=>'wrong_status'],409);
 
     $tx = kareta_order_transition($pdo, $orderId, 'done', 'client', ['source'=>'orders.confirmDone']);
@@ -8529,21 +8531,23 @@ function orders_confirm_done_by_client(?PDO $pdo, array $b): void {
         kareta_sync_order_relations($pdo, $orderId, 'done', ['source'=>'orders.confirmDone']);
         kareta_write_event($pdo, $orderId, 'order_confirmed_by_client', ['masterId'=>(string)($order['master_id'] ?? '')]);
     }
-    try {
-        $mid = (string)($order['master_id'] ?? '');
-        if ($mid !== '') {
-            $mu = $pdo->prepare("SELECT user_id, phone FROM `masters` WHERE id=? LIMIT 1");
-            $mu->execute([$mid]);
-            $mr = $mu->fetch(PDO::FETCH_ASSOC) ?: [];
-            kareta_notification_insert($pdo, [
-                'recipientUserId'=>(int)($mr['user_id'] ?? 0) ?: null,
-                'recipientPhone'=>(string)($mr['phone'] ?? ''),
-                'recipientRole'=>'master', 'eventType'=>'order.done.confirmed', 'entityType'=>'order', 'entityId'=>$orderId,
-                'title'=>'Клиент подтвердил завершение', 'body'=>'Заявка '.$orderId.' закрыта. Клиент может оставить отзыв.',
-                'actionUrl'=>'#master:work:process', 'meta'=>['orderId'=>$orderId],
-            ]);
-        }
-    } catch (Throwable $_e) {}
+    if (empty($tx['skipped'])) {
+        try {
+            $mid = (string)($order['master_id'] ?? '');
+            if ($mid !== '') {
+                $mu = $pdo->prepare("SELECT user_id, phone FROM `masters` WHERE id=? LIMIT 1");
+                $mu->execute([$mid]);
+                $mr = $mu->fetch(PDO::FETCH_ASSOC) ?: [];
+                kareta_notification_insert($pdo, [
+                    'recipientUserId'=>(int)($mr['user_id'] ?? 0) ?: null,
+                    'recipientPhone'=>(string)($mr['phone'] ?? ''),
+                    'recipientRole'=>'master', 'eventType'=>'order.done.confirmed', 'entityType'=>'order', 'entityId'=>$orderId,
+                    'title'=>'Клиент подтвердил завершение', 'body'=>'Заявка '.$orderId.' закрыта. Клиент может оставить отзыв.',
+                    'actionUrl'=>'#master:work:process', 'meta'=>['orderId'=>$orderId],
+                ]);
+            }
+        } catch (Throwable $_e) {}
+    }
     kareta_json(['ok'=>true,'status'=>'done','skipped'=>!empty($tx['skipped']),'order'=>kareta_order_snapshot($pdo,$orderId)]);
 }
 
