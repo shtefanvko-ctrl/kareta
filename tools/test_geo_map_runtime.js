@@ -31,7 +31,8 @@ assert.match(core,/data-home-nearby-map/);
 assert.match(core,/resolveCityCenter\?\.\(selectedCity\)/);
 assert.match(core,/String\(rawLat\)\.trim\(\)===''/);
 assert.match(core,/points:mapPoints,center,notice/);
-assert.doesNotMatch(core,/api\/geo\.php/);
+// GEO enrichment is optional when GPS is available. Verify the actual city-only,
+// failure and disposal behavior below instead of banning the endpoint by name.
 
 const runtime=read('js/boot/runtime_core_bundle.js');
 assert.match(runtime,/data-home-nearby-map/);
@@ -49,4 +50,6 @@ assert.match(index,/KARETA_GEO_MAP_CONFIG/);
 assert.match(index,/\$geoImgSource/);
 assert.match(index,/mobile_native_bridge\.js\?v=<\?= rawurlencode\(\$assetVersion\) \?>/);
 
-console.log('PASS geo runtime reconcile: 8 cities, city map without GPS, strict coords, lazy map, CSP/config, source/runtime parity');
+require('./test_home_geo_runtime.js')().then(()=>{
+  console.log('PASS geo runtime reconcile: 8 cities, city map without GPS, strict coords, lazy map, CSP/config, source/runtime parity');
+}).catch(error=>{console.error(error);process.exitCode=1;});
