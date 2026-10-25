@@ -586,11 +586,11 @@ function kareta_schema_bootstrap_required(PDO $pdo): bool
 function kareta_runtime_maintenance(PDO $pdo): void
 {
     if (!kareta_runtime_maintenance_due()) return;
-    kareta_safe_step($pdo, 'BOOTSTRAP_CATALOG', static function(PDO $pdo): void { kareta_ensure_catalog_content($pdo); });
-    kareta_safe_step($pdo, 'BOOTSTRAP_PUBLIC', static function(PDO $pdo): void { kareta_ensure_public_content($pdo); });
-    kareta_safe_step($pdo, 'BOOTSTRAP_SEED', static function(PDO $pdo): void { kareta_ensure_core_seed_integrity($pdo); });
+    if (defined('KARETA_DEMO_SEED') && KARETA_DEMO_SEED) {
+        kareta_safe_step($pdo, 'BOOTSTRAP_SEED', static function(PDO $pdo): void { kareta_seed($pdo); });
+    }
+    // Relation backfill already rebuilds user statistics. Run that chain once.
     kareta_safe_step($pdo, 'BOOTSTRAP_RELATIONS', static function(PDO $pdo): void { kareta_backfill_relations($pdo); });
-    kareta_safe_step($pdo, 'BOOTSTRAP_STATS', static function(PDO $pdo): void { kareta_rebuild_user_stats($pdo); });
 }
 
 function kareta_db_auto_upgrade_log(string $status, int $fromVersion, int $toVersion, string $detail = ''): void
@@ -647,6 +647,16 @@ function kareta_bootstrap_runtime(PDO $pdo): void
         // Another request can finish migrations while this request waits for the
         // lock. Re-check after lock acquisition and skip duplicate DDL if ready.
         if (kareta_schema_bootstrap_required($pdo)) {
+            // Config already closes production migrations outside the maintenance
+            // window. Enforce that boundary before every schema-writing helper,
+            // including create_schema and ensure_schema_columns.
+            $production = !defined('KARETA_ENVIRONMENT') || KARETA_ENVIRONMENT === 'production';
+            $autoMigrate = defined('KARETA_DB_AUTO_MIGRATE') && KARETA_DB_AUTO_MIGRATE
+                && (!$production || (defined('KARETA_DB_RUNTIME_MIGRATION_WINDOW') && KARETA_DB_RUNTIME_MIGRATION_WINDOW));
+            if ($production && !$autoMigrate) {
+                kareta_db_set_failure_context('bootstrap.migration_required');
+                throw new RuntimeException('Database migration required outside runtime maintenance window');
+            }
             $autoUpgrade = defined('KARETA_DB_AUTO_UPGRADE') && KARETA_DB_AUTO_UPGRADE;
             $targetVersion = defined('KARETA_DB_VERSION') ? (int)KARETA_DB_VERSION : 0;
             $beforeVersion = kareta_db_runtime_schema_version($pdo);

@@ -10,6 +10,7 @@ on:
       - 'tools/test_idempotency_scope_84_154.js'
       - 'tools/test_notification_center_bridge_84_152.js'
       - 'tools/test_runtime_maintenance_boundary_84_154.js'
+      - 'tools/test_runtime_ddl_fail_closed_20261025.js'
       - 'tools/backfill_notification_center_from_legacy.php'
       - '.github/workflows/pr37-recovery-contract.yml'
   workflow_dispatch:
@@ -37,3 +38,9 @@ jobs:
         run: node tools/test_notification_center_bridge_84_152.js
       - name: Runtime maintenance boundary
         run: node tools/test_runtime_maintenance_boundary_84_154.js
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: Runtime DDL rejection and maintenance behavior
+        run: node tools/test_runtime_ddl_fail_closed_20261025.js
