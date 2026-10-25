@@ -232,8 +232,17 @@ def lookup(cx: sqlite3.Connection, term: str, include_candidates: bool) -> dict:
 
 def contract_gate(cx: sqlite3.Connection, root: Path) -> dict:
     test = root / "tools/test_identity_e2e_84_109.js"
-    if not test.is_file() or test.is_symlink():
-        result = {"gate": "identity_contract", "status": "BLOCKED", "details": "test file missing"}
+    prerequisites = (
+        "tools/test_identity_e2e_84_109.js",
+        "api/auth_session.php",
+        "api/context.php",
+        "api/domains/identity_admin.php",
+        "api/identity/challenge_service.php",
+    )
+    missing = [name for name in prerequisites if not (root / name).is_file()]
+    if missing or test.is_symlink():
+        reason = "missing prerequisites: " + ", ".join(missing) if missing else "test file is a symlink"
+        result = {"gate": "identity_contract", "status": "BLOCKED", "details": reason}
     else:
         try:
             run = subprocess.run(
