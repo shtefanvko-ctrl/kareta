@@ -61,6 +61,12 @@ class EngineTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 record(self.cx, "x", "y", url, "evidence")
 
+    def test_contract_gate_reports_missing_dependency_as_blocked(self):
+        from engine import contract_gate
+        result = contract_gate(self.cx, self.root)
+        self.assertEqual(result["status"], "BLOCKED")
+        self.assertIn("api/domains/identity_admin.php", result["details"])
+
     def test_db_must_not_live_inside_project(self):
         with self.assertRaises(ValueError):
             connect(self.root / "knowledge.db", self.root)
