@@ -32,4 +32,7 @@ For sandbox verification, use `--db /tmp/..../knowledge.sqlite3` (outside projec
 ### Status semantics
 `PASS`: a named gate ran and passed; `FAIL`: ran and failed;
 `BLOCKED`: a required condition is absent; `NOT RUN`: no execution.
-Historical E2E pass records are **not** evidence for this candidate.
+Historical E2E pass records are **not** evidence for this candidate. The current
+main-branch identity contract runner references `api/domains/identity_admin.php`,
+which is absent at that ref; the wrapper reports `BLOCKED` with that exact
+missing dependency instead of silently treating the run as `PASS`.
