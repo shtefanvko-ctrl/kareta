@@ -1,0 +1,24 @@
+name: KARETA Knowledge Engine
+on:
+  pull_request:
+    paths:
+      - 'tools/knowledge_engine/**'
+      - '.github/workflows/knowledge-engine.yml'
+  push:
+    branches:
+      - 'agent/knowledge-engine-v1-20261026'
+    paths:
+      - 'tools/knowledge_engine/**'
+      - '.github/workflows/knowledge-engine.yml'
+permissions:
+  contents: read
+jobs:
+  verify-knowledge-engine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run hermetic tests
+        run: PYTHONDONTWRITEBYTECODE=1 python3 tools/knowledge_engine/test_engine.py -v
+      - name: Validate read-only project inventory
+        run: python3 tools/knowledge_engine/engine.py --db "$RUNNER_TEMP/kareta-knowledge.sqlite3" scan
