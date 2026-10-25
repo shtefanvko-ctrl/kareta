@@ -147,10 +147,17 @@ function kareta_master_order_accept(PDO $pdo,array $body): void {
     $orderId=trim((string)($body['orderId']??$body['id']??''));$order=kareta_master_order_lifecycle_order($pdo,$orderId,true);
     kareta_master_order_lifecycle_ensure($pdo);kareta_master_order_lifecycle_default_checklist($pdo,$orderId);
     $workflow=kareta_master_order_lifecycle_require_stage($pdo,$orderId,['intake','diagnostics']);
-    if((string)($workflow['current_stage']??'intake')==='intake')kareta_sto_workflow_transition_apply($pdo,$orderId,'diagnostics','Заказ принят мастером',['source'=>'master_order_accept']);
-    $pdo->prepare("UPDATE orders SET status='process',updated_at=NOW() WHERE id=?")->execute([$orderId]);
-    kareta_write_event($pdo,$orderId,'master_order_accepted',['masterId'=>$actor['masterId']]);
-    kareta_json(['ok'=>true,'data'=>kareta_master_order_lifecycle_snapshot($pdo,$orderId,$order)]);
+    $firstAcceptance=(string)($workflow['current_stage']??'intake')==='intake';
+    if($firstAcceptance) {
+        kareta_sto_workflow_transition_apply($pdo,$orderId,'diagnostics','Заказ принят мастером',['source'=>'master_order_accept']);
+    }
+    if($firstAcceptance || (string)($order['status']??'')!=='process') {
+        $pdo->prepare("UPDATE orders SET status='process',updated_at=NOW() WHERE id=?")->execute([$orderId]);
+    }
+    if($firstAcceptance) {
+        kareta_write_event($pdo,$orderId,'master_order_accepted',['masterId'=>$actor['masterId']]);
+    }
+    kareta_json(['ok'=>true,'idempotent'=>!$firstAcceptance,'data'=>kareta_master_order_lifecycle_snapshot($pdo,$orderId,$order)]);
 }
 
 function kareta_master_order_diagnostics_save(PDO $pdo,array $body): void {
