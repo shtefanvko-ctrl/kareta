@@ -98,6 +98,7 @@ jobs:
       - name: Order lifecycle retry and ownership contracts
         run: |
           node tools/test_order_lifecycle_safe_retries_20261025.js
+          php tools/test_order_lifecycle_fake_pdo_20261025.php
           node tools/test_r1885578_master_order_lifecycle.js
           # Native UI lifecycle test requires assets/onboarding/kareta_logo_full.png,
           # which is absent from this GitHub checkout. Track separately as NOT RUN.
