@@ -59,6 +59,64 @@ function kareta_work_order_decode($value): array {
     return is_array($decoded)?$decoded:[];
 }
 
+/**
+ * Service-owned compatibility contract for scheduling fields kept on legacy orders.
+ *
+ * Booking/Master scheduling code may own planning state such as master_order_plans,
+ * but it must not mutate Service order fields directly. This helper is the single
+ * internal writer for date/time/estimated_duration_min projection updates.
+ *
+ * Caller transaction semantics are preserved: no begin/commit is performed here.
+ */
+function kareta_service_order_schedule_projection_update(
+    PDO $pdo,
+    string $orderId,
+    string $plannedStart,
+    ?int $durationMin = null,
+    string $source = 'schedule'
+): array {
+    $orderId=trim($orderId);
+    if($orderId==='') throw new InvalidArgumentException('service_schedule_order_id_required');
+
+    try{$start=new DateTimeImmutable($plannedStart);}
+    catch(Throwable $e){throw new InvalidArgumentException('service_schedule_invalid_start',0,$e);}
+
+    $q=$pdo->prepare("SELECT id,type,`date`,`time`,estimated_duration_min FROM orders WHERE BINARY id=BINARY ? LIMIT 1 FOR UPDATE");
+    $q->execute([$orderId]);
+    $before=$q->fetch(PDO::FETCH_ASSOC);
+    if(!$before) throw new RuntimeException('service_schedule_order_not_found');
+
+    $type=strtolower(trim((string)($before['type']??'service_order')));
+    if($type==='parts_request') throw new RuntimeException('service_schedule_non_service_order');
+
+    $date=$start->format('Y-m-d');
+    $time=$start->format('H:i');
+    $duration=$durationMin!==null?max(15,$durationMin):null;
+
+    if($duration!==null){
+        $pdo->prepare("UPDATE orders SET `date`=?,`time`=?,estimated_duration_min=? WHERE BINARY id=BINARY ?")
+            ->execute([$date,$time,$duration,$orderId]);
+    }else{
+        $pdo->prepare("UPDATE orders SET `date`=?,`time`=? WHERE BINARY id=BINARY ?")
+            ->execute([$date,$time,$orderId]);
+    }
+
+    return [
+        'orderId'=>$orderId,
+        'source'=>$source,
+        'before'=>[
+            'date'=>(string)($before['date']??''),
+            'time'=>(string)($before['time']??''),
+            'estimatedDurationMin'=>(int)($before['estimated_duration_min']??0),
+        ],
+        'after'=>[
+            'date'=>$date,
+            'time'=>$time,
+            'estimatedDurationMin'=>$duration??(int)($before['estimated_duration_min']??0),
+        ],
+    ];
+}
+
 function kareta_work_order_detail(PDO $pdo, array $input): void {
     $id=trim((string)($input['id']??''));
     if($id==='') kareta_json(['ok'=>false,'error'=>'id_required'],400);

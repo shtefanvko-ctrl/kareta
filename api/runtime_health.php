@@ -40,14 +40,18 @@ try {
     $port = (int)($db['port'] ?? 3306);
     $name = (string)($db['database'] ?? $db['dbname'] ?? '');
     $charset = (string)($db['charset'] ?? 'utf8mb4');
+    $socket = trim((string)($db['socket'] ?? ''));
     $user = (string)($db['username'] ?? $db['user'] ?? '');
     $pass = (string)($db['password'] ?? $db['pass'] ?? '');
     if ($name === '') throw new RuntimeException('Database name is empty');
 
     // Health check deliberately does not load bootstrap.php: bootstrap performs schema
     // maintenance and content backfills, which must never run from a monitoring request.
+    $dsn = $socket !== ''
+        ? 'mysql:unix_socket=' . $socket . ';dbname=' . $name . ';charset=' . $charset
+        : sprintf('mysql:host=%s;port=%d;dbname=%s;charset=%s', $host, $port, $name, $charset);
     $pdo = new PDO(
-        sprintf('mysql:host=%s;port=%d;dbname=%s;charset=%s', $host, $port, $name, $charset),
+        $dsn,
         $user,
         $pass,
         [

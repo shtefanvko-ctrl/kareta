@@ -6221,28 +6221,64 @@ function kareta_notification_insert(PDO $pdo, array $row): void {
     $recipientPhone = kareta_normalize_phone((string)($row['recipientPhone'] ?? ''));
     $recipientRole = kareta_clean_text($row['recipientRole'] ?? '', 32);
     if ($recipientUserId === null && $recipientPhone === '' && $recipientRole === '') return;
+
+    $eventType = kareta_clean_text($row['eventType'] ?? '', 64);
+    $entityType = kareta_clean_text($row['entityType'] ?? '', 32);
+    $entityId = kareta_clean_text($row['entityId'] ?? '', 64);
+    $title = kareta_clean_text($row['title'] ?? '', 191);
+    $body = kareta_clean_text($row['body'] ?? '', 2000);
+    $actionUrl = kareta_clean_text($row['actionUrl'] ?? '', 255);
+    $meta = is_array($row['meta'] ?? null) ? $row['meta'] : [];
+
     $insertNotification=$pdo->prepare("INSERT INTO `notifications`
         (recipient_user_id,recipient_phone,recipient_role,event_type,entity_type,entity_id,title,body,action_url,is_read,meta,created_at)
         VALUES(?,?,?,?,?,?,?,?,?,0,?,NOW())");
     $insertNotification->execute([
-        $recipientUserId,
-        $recipientPhone,
-        $recipientRole,
-        kareta_clean_text($row['eventType'] ?? '', 64),
-        kareta_clean_text($row['entityType'] ?? '', 32),
-        kareta_clean_text($row['entityId'] ?? '', 64),
-        kareta_clean_text($row['title'] ?? '', 191),
-        kareta_clean_text($row['body'] ?? '', 2000),
-        kareta_clean_text($row['actionUrl'] ?? '', 255),
-        !empty($row['meta']) ? json_encode($row['meta'], JSON_UNESCAPED_UNICODE) : null,
+        $recipientUserId,$recipientPhone,$recipientRole,$eventType,$entityType,$entityId,$title,$body,$actionUrl,
+        $meta ? json_encode($meta, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) : null,
     ]);
-    // Order/approval/schedule notifications fan out through Messaging asynchronously.
-    // Chat message delivery has its own queue below messages_add()/external inbound handling.
-    // Do not enqueue message.new here: that would duplicate Telegram/WhatsApp delivery and can echo inbound messages.
+
+    // Capture the legacy id before any compatibility INSERT can change lastInsertId().
+    $notificationId=(int)$pdo->lastInsertId();
+
+    // notification_center is the canonical in-app read model. Mirror only when
+    // the recipient resolves to one concrete user; role-only rows stay legacy-only.
     try {
-        $eventType=kareta_clean_text($row['eventType'] ?? '',64);
+        $centerUserId=(int)($recipientUserId ?? 0);
+        if($centerUserId<=0 && $recipientPhone!=='' && function_exists('kareta_user_id_by_phone')){
+            $centerUserId=(int)kareta_user_id_by_phone($pdo,$recipientPhone);
+        }
+        if($notificationId>0 && $centerUserId>0 && kareta_table_exists($pdo,'notification_center')){
+            $contextId=(int)($row['contextId'] ?? $row['context_id'] ?? 0) ?: null;
+            $notificationKey='legacy:'.$notificationId.':user:'.$centerUserId;
+            $payload=[
+                'schemaVersion'=>1,
+                'source'=>'legacy_notifications',
+                'legacyNotificationId'=>$notificationId,
+                'recipientRole'=>$recipientRole,
+                'meta'=>$meta,
+            ];
+            $mirror=$pdo->prepare("INSERT INTO notification_center
+                (notification_key,user_id,context_id,event_id,notification_type,title,body,action_url,entity_type,entity_key,status,payload_json,created_at)
+                VALUES(?,?,?,NULL,?,?,?,?,?,?,'unread',?,NOW())
+                ON DUPLICATE KEY UPDATE
+                    context_id=COALESCE(VALUES(context_id),context_id),
+                    notification_type=VALUES(notification_type),title=VALUES(title),body=VALUES(body),
+                    action_url=VALUES(action_url),entity_type=VALUES(entity_type),entity_key=VALUES(entity_key),
+                    payload_json=VALUES(payload_json)");
+            $mirror->execute([
+                $notificationKey,$centerUserId,$contextId,$eventType,$title,$body,$actionUrl,$entityType,$entityId,
+                json_encode($payload,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),
+            ]);
+        }
+    } catch (Throwable $e) {
+        try { kareta_log_error('NOTIFICATION_CENTER_BRIDGE',$e->getMessage()); } catch (Throwable $_) {}
+    }
+
+    // External messaging keeps the legacy id as its stable delivery key.
+    // message.new owns a separate chat delivery path and must not fan out twice.
+    try {
         if ($eventType !== 'message.new' && function_exists('kareta_messaging_enqueue_notification')) {
-            $notificationId=(int)$pdo->lastInsertId();
             if($notificationId>0)kareta_messaging_enqueue_notification($pdo,$notificationId,$row);
         }
     } catch (Throwable $_) {}
