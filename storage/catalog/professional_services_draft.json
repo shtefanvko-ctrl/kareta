@@ -1,0 +1,2263 @@
+{
+  "schemaVersion": 1,
+  "dataVersion": "professional_services_candidate_2026_10_21_v2_ev",
+  "status": "DRAFT_ONLY_NOT_IMPORTED",
+  "purpose": "Профессиональные автомобильные работы. ТОЛЬКО предложения для экспертной проверки и безопасного добавления; ни одна запись не активирует услугу.",
+  "sourceCatalog": "storage/catalog/services.json",
+  "sourceAdvisories": "storage/catalog/master_service_advisories.json",
+  "technicalRelationsVerified": false,
+  "matchingEnabled": false,
+  "published": false,
+  "priceIsIndicative": false,
+  "items": [
+    {
+      "serviceId": "pro_maintenance_spark_plug_wells",
+      "categoryKey": "maintenance",
+      "nameRu": "Очистка свечных колодцев",
+      "professionIds": [
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "масло в свечных колодцах"
+      ],
+      "suggestedEquipmentIds": [
+        "socket_set"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_maintenance_fluid_inspection",
+      "categoryKey": "maintenance",
+      "nameRu": "Проверка состояния технических жидкостей",
+      "professionIds": [
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "осмотр жидкостей"
+      ],
+      "suggestedEquipmentIds": [
+        "brake_fluid_tester"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_maintenance_underbo_afe89976",
+      "categoryKey": "maintenance",
+      "nameRu": "Осмотр автомобиля на подъёмнике",
+      "professionIds": [
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "осмотр днища"
+      ],
+      "suggestedEquipmentIds": [
+        "automotive_lift"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_maintenance_seasonal_wiper",
+      "categoryKey": "maintenance",
+      "nameRu": "Замена щёток стеклоочистителя",
+      "professionIds": [
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "дворники"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_maintenance_fastener_torque",
+      "categoryKey": "maintenance",
+      "nameRu": "Контроль затяжки колёсных болтов",
+      "professionIds": [
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "протяжка колёс"
+      ],
+      "suggestedEquipmentIds": [
+        "torque_wrench"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_diag_compression_measure",
+      "categoryKey": "diagnostics",
+      "nameRu": "Измерение компрессии двигателя",
+      "professionIds": [
+        "diagnostician",
+        "engine_specialist"
+      ],
+      "aliasesRu": [
+        "проверка компрессии"
+      ],
+      "suggestedEquipmentIds": [
+        "compression_tester"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_diag_cylinder_leakdown",
+      "categoryKey": "diagnostics",
+      "nameRu": "Тест утечек цилиндров",
+      "professionIds": [
+        "diagnostician",
+        "engine_specialist"
+      ],
+      "aliasesRu": [
+        "пневмотест цилиндров"
+      ],
+      "suggestedEquipmentIds": [
+        "leak_down_tester"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_diag_oscilloscope_sensor",
+      "categoryKey": "diagnostics",
+      "nameRu": "Осциллографическая проверка датчиков",
+      "professionIds": [
+        "diagnostician",
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "осциллограмма датчика"
+      ],
+      "suggestedEquipmentIds": [
+        "oscilloscope"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_diag_parasitic_can_sleep",
+      "categoryKey": "diagnostics",
+      "nameRu": "Проверка засыпания блоков управления",
+      "professionIds": [
+        "diagnostician",
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "блок не засыпает"
+      ],
+      "suggestedEquipmentIds": [
+        "dc_current_clamp"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_diag_paint_thickness",
+      "categoryKey": "diagnostics",
+      "nameRu": "Измерение толщины лакокрасочного покрытия",
+      "professionIds": [
+        "diagnostician",
+        "body_specialist"
+      ],
+      "aliasesRu": [
+        "проверка перекраса"
+      ],
+      "suggestedEquipmentIds": [
+        "paint_thickness_gauge"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_diag_adas_sensor",
+      "categoryKey": "diagnostics",
+      "nameRu": "Диагностика систем ADAS",
+      "professionIds": [
+        "diagnostician",
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "ошибка адаптивного круиза"
+      ],
+      "suggestedEquipmentIds": [
+        "adas_calibration_system"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_wash_engine_bay_careful",
+      "categoryKey": "wash",
+      "nameRu": "Безопасная очистка моторного отсека",
+      "professionIds": [
+        "washer"
+      ],
+      "aliasesRu": [
+        "мойка подкапотного пространства"
+      ],
+      "suggestedEquipmentIds": [
+        "pressure_washer"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_wash_wheel_arch",
+      "categoryKey": "wash",
+      "nameRu": "Мойка колёсных арок",
+      "professionIds": [
+        "washer"
+      ],
+      "aliasesRu": [
+        "мойка подкрылков"
+      ],
+      "suggestedEquipmentIds": [
+        "pressure_washer"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_detailing_headlight_892b583e",
+      "categoryKey": "detailing",
+      "nameRu": "Восстановительная полировка фар",
+      "professionIds": [
+        "detailer"
+      ],
+      "aliasesRu": [
+        "помутнение фар"
+      ],
+      "suggestedEquipmentIds": [
+        "polisher"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_detailing_interior_ozone",
+      "categoryKey": "detailing",
+      "nameRu": "Озонирование салона",
+      "professionIds": [
+        "detailer"
+      ],
+      "aliasesRu": [
+        "удаление запахов"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_detailing_fabric_seat_clean",
+      "categoryKey": "detailing",
+      "nameRu": "Глубокая химчистка сидений",
+      "professionIds": [
+        "detailer"
+      ],
+      "aliasesRu": [
+        "чистка кресел"
+      ],
+      "suggestedEquipmentIds": [
+        "extractor_vacuum"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_engine_head_gasket",
+      "categoryKey": "engine",
+      "nameRu": "Замена прокладки ГБЦ",
+      "professionIds": [
+        "engine_specialist"
+      ],
+      "aliasesRu": [
+        "прокладка головки блока"
+      ],
+      "suggestedEquipmentIds": [
+        "timing_lock_set"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_engine_valve_stem_seals",
+      "categoryKey": "engine",
+      "nameRu": "Замена маслосъёмных колпачков",
+      "professionIds": [
+        "engine_specialist"
+      ],
+      "aliasesRu": [
+        "ремонт колпачков"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_engine_cylinder_head_repair",
+      "categoryKey": "engine",
+      "nameRu": "Ремонт головки блока цилиндров",
+      "professionIds": [
+        "engine_specialist"
+      ],
+      "aliasesRu": [
+        "ремонт ГБЦ"
+      ],
+      "suggestedEquipmentIds": [
+        "engine_stand"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_engine_piston_rings",
+      "categoryKey": "engine",
+      "nameRu": "Замена поршневых колец",
+      "professionIds": [
+        "engine_specialist"
+      ],
+      "aliasesRu": [
+        "поршневая"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_engine_timing_chain",
+      "categoryKey": "engine",
+      "nameRu": "Замена цепи ГРМ",
+      "professionIds": [
+        "engine_specialist",
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "цепь газораспределительного механизма"
+      ],
+      "suggestedEquipmentIds": [
+        "timing_lock_set"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_engine_crank_seals",
+      "categoryKey": "engine",
+      "nameRu": "Замена переднего и заднего сальников коленвала",
+      "professionIds": [
+        "engine_specialist"
+      ],
+      "aliasesRu": [
+        "течёт сальник коленвала"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_engine_mount_diagnosis",
+      "categoryKey": "engine",
+      "nameRu": "Диагностика опор двигателя",
+      "professionIds": [
+        "engine_specialist",
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "вибрация двигателя"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_fuel_injector_bench",
+      "categoryKey": "fuel",
+      "nameRu": "Проверка форсунок на стенде",
+      "professionIds": [
+        "fuel_specialist",
+        "diesel_specialist"
+      ],
+      "aliasesRu": [
+        "стенд форсунок"
+      ],
+      "suggestedEquipmentIds": [
+        "injector_test_bench"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_fuel_rail_pressure",
+      "categoryKey": "fuel",
+      "nameRu": "Проверка давления топлива в рампе",
+      "professionIds": [
+        "fuel_specialist"
+      ],
+      "aliasesRu": [
+        "замер давления топлива"
+      ],
+      "suggestedEquipmentIds": [
+        "fuel_pressure_gauge"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_fuel_common_rail_diag",
+      "categoryKey": "fuel",
+      "nameRu": "Диагностика системы Common Rail",
+      "professionIds": [
+        "diesel_specialist",
+        "fuel_specialist"
+      ],
+      "aliasesRu": [
+        "дизельная рампа"
+      ],
+      "suggestedEquipmentIds": [
+        "diesel_common_rail_bench"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_fuel_pump_module",
+      "categoryKey": "fuel",
+      "nameRu": "Ремонт модуля топливного насоса",
+      "professionIds": [
+        "fuel_specialist"
+      ],
+      "aliasesRu": [
+        "бензонасос модуль"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_fuel_injector_balance",
+      "categoryKey": "fuel",
+      "nameRu": "Проверка баланса работы форсунок",
+      "professionIds": [
+        "fuel_specialist",
+        "diagnostician"
+      ],
+      "aliasesRu": [
+        "тест форсунок"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_cooling_system_pressure",
+      "categoryKey": "cooling_heating",
+      "nameRu": "Опрессовка системы охлаждения",
+      "professionIds": [
+        "mechanic",
+        "climate_specialist"
+      ],
+      "aliasesRu": [
+        "проверка герметичности антифриза"
+      ],
+      "suggestedEquipmentIds": [
+        "cooling_pressure_tester"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_cooling_heater_core_flush",
+      "categoryKey": "cooling_heating",
+      "nameRu": "Промывка радиатора отопителя",
+      "professionIds": [
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "плохо греет печка"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_cooling_fan_repair",
+      "categoryKey": "cooling_heating",
+      "nameRu": "Диагностика и ремонт вентилятора охлаждения",
+      "professionIds": [
+        "mechanic",
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "не включается вентилятор"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_cooling_expansion_tank",
+      "categoryKey": "cooling_heating",
+      "nameRu": "Замена расширительного бачка",
+      "professionIds": [
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "течет бачок"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_cooling_hose_replace",
+      "categoryKey": "cooling_heating",
+      "nameRu": "Замена патрубков охлаждения",
+      "professionIds": [
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "течь патрубка"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_climate_vacuum_leakcheck",
+      "categoryKey": "climate",
+      "nameRu": "Вакуумирование системы кондиционирования",
+      "professionIds": [
+        "climate_specialist"
+      ],
+      "aliasesRu": [
+        "вакуум кондиционера"
+      ],
+      "suggestedEquipmentIds": [
+        "vacuum_pump"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_climate_condenser_flush",
+      "categoryKey": "climate",
+      "nameRu": "Промывка конденсора кондиционера",
+      "professionIds": [
+        "climate_specialist"
+      ],
+      "aliasesRu": [
+        "грязный радиатор кондиционера"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_climate_blower_motor",
+      "categoryKey": "climate",
+      "nameRu": "Ремонт электродвигателя вентилятора печки",
+      "professionIds": [
+        "climate_specialist",
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "моторчик печки"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_climate_flap_actuator",
+      "categoryKey": "climate",
+      "nameRu": "Ремонт привода заслонки климат-контроля",
+      "professionIds": [
+        "climate_specialist"
+      ],
+      "aliasesRu": [
+        "заслонка печки"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_exhaust_flexjoint",
+      "categoryKey": "exhaust",
+      "nameRu": "Замена гофры выхлопной системы",
+      "professionIds": [
+        "exhaust_specialist",
+        "automotive_welder"
+      ],
+      "aliasesRu": [
+        "прогорела гофра"
+      ],
+      "suggestedEquipmentIds": [
+        "mig_mag_welder"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_exhaust_leak_repair",
+      "categoryKey": "exhaust",
+      "nameRu": "Устранение негерметичности выхлопа",
+      "professionIds": [
+        "exhaust_specialist",
+        "automotive_welder"
+      ],
+      "aliasesRu": [
+        "подсос выхлопа"
+      ],
+      "suggestedEquipmentIds": [
+        "mig_mag_welder"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_exhaust_hanger_repair",
+      "categoryKey": "exhaust",
+      "nameRu": "Ремонт креплений глушителя",
+      "professionIds": [
+        "exhaust_specialist"
+      ],
+      "aliasesRu": [
+        "подвес глушителя"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_transmission_valve_body_diag",
+      "categoryKey": "transmission",
+      "nameRu": "Диагностика гидроблока АКПП",
+      "professionIds": [
+        "transmission_specialist"
+      ],
+      "aliasesRu": [
+        "гидроблок коробки"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_transmission_dsg_clutch",
+      "categoryKey": "transmission",
+      "nameRu": "Замена сцепления роботизированной КПП",
+      "professionIds": [
+        "transmission_specialist"
+      ],
+      "aliasesRu": [
+        "сцепление DSG"
+      ],
+      "suggestedEquipmentIds": [
+        "transmission_jack"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_transmission_gear_selector",
+      "categoryKey": "transmission",
+      "nameRu": "Ремонт механизма выбора передач",
+      "professionIds": [
+        "transmission_specialist"
+      ],
+      "aliasesRu": [
+        "кулиса коробки"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_transmission_drive_shaft",
+      "categoryKey": "transmission",
+      "nameRu": "Замена приводного вала",
+      "professionIds": [
+        "transmission_specialist",
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "замена полуоси"
+      ],
+      "suggestedEquipmentIds": [
+        "automotive_lift"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_transmission_cv_joint",
+      "categoryKey": "transmission",
+      "nameRu": "Замена ШРУС",
+      "professionIds": [
+        "transmission_specialist",
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "граната привода"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_transmission_rear_d_f2fd93be",
+      "categoryKey": "transmission",
+      "nameRu": "Ремонт заднего редуктора",
+      "professionIds": [
+        "transmission_specialist"
+      ],
+      "aliasesRu": [
+        "гул редуктора"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_transmission_transfer_case",
+      "categoryKey": "transmission",
+      "nameRu": "Диагностика и ремонт раздаточной коробки",
+      "professionIds": [
+        "transmission_specialist"
+      ],
+      "aliasesRu": [
+        "раздатка"
+      ],
+      "suggestedEquipmentIds": [
+        "transmission_jack"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_suspension_bushing",
+      "categoryKey": "suspension_steering",
+      "nameRu": "Замена втулок стабилизатора",
+      "professionIds": [
+        "suspension_specialist"
+      ],
+      "aliasesRu": [
+        "скрип втулок"
+      ],
+      "suggestedEquipmentIds": [
+        "automotive_lift"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_suspension_tie_rod",
+      "categoryKey": "suspension_steering",
+      "nameRu": "Замена рулевой тяги",
+      "professionIds": [
+        "suspension_specialist",
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "рулевая тяга"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_suspension_steering_tip",
+      "categoryKey": "suspension_steering",
+      "nameRu": "Замена рулевого наконечника",
+      "professionIds": [
+        "suspension_specialist"
+      ],
+      "aliasesRu": [
+        "наконечник руля"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_suspension_lower_arm_bush",
+      "categoryKey": "suspension_steering",
+      "nameRu": "Перепрессовка сайлентблоков рычага",
+      "professionIds": [
+        "suspension_specialist",
+        "mechanic"
+      ],
+      "aliasesRu": [
+        "сайлентблок пресса"
+      ],
+      "suggestedEquipmentIds": [
+        "hydraulic_press"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_suspension_steering_pump",
+      "categoryKey": "suspension_steering",
+      "nameRu": "Ремонт насоса гидроусилителя руля",
+      "professionIds": [
+        "suspension_specialist"
+      ],
+      "aliasesRu": [
+        "насос ГУР"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_suspension_top_mount",
+      "categoryKey": "suspension_steering",
+      "nameRu": "Замена опоры стойки амортизатора",
+      "professionIds": [
+        "suspension_specialist"
+      ],
+      "aliasesRu": [
+        "опорный подшипник"
+      ],
+      "suggestedEquipmentIds": [
+        "spring_compressor"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_electrical_wire_open",
+      "categoryKey": "electrical",
+      "nameRu": "Поиск обрыва электрической цепи",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "обрыв проводки"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "wire_tracer"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_electrical_short_circuit",
+      "categoryKey": "electrical",
+      "nameRu": "Поиск короткого замыкания",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "коротит цепь"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "circuit_probe"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_electrical_battery_circuit",
+      "categoryKey": "electrical",
+      "nameRu": "Диагностика системы зарядки АКБ",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "не заряжается аккумулятор"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_electrical_can_line_repair",
+      "categoryKey": "electrical",
+      "nameRu": "Ремонт проводки CAN-шины",
+      "professionIds": [
+        "auto_electrician",
+        "diagnostician"
+      ],
+      "aliasesRu": [
+        "ошибки CAN"
+      ],
+      "suggestedEquipmentIds": [
+        "can_interface"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_electrical_window_motor",
+      "categoryKey": "electrical",
+      "nameRu": "Ремонт электростеклоподъёмника",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "не работает стеклоподъёмник"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_electrical_wiper_drive",
+      "categoryKey": "electrical",
+      "nameRu": "Ремонт привода стеклоочистителя",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "не работают дворники"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_electrical_immobilizer_diag",
+      "categoryKey": "electrical",
+      "nameRu": "Диагностика иммобилайзера",
+      "professionIds": [
+        "auto_electrician",
+        "diagnostician"
+      ],
+      "aliasesRu": [
+        "не видит ключ"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_electrical_ecu_power",
+      "categoryKey": "electrical",
+      "nameRu": "Проверка питания и масс ЭБУ",
+      "professionIds": [
+        "auto_electrician",
+        "diagnostician"
+      ],
+      "aliasesRu": [
+        "нет питания блока управления"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_electrical_fuse_box_repair",
+      "categoryKey": "electrical",
+      "nameRu": "Ремонт монтажного блока предохранителей",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "подгорел блок предохранителей"
+      ],
+      "suggestedEquipmentIds": [
+        "solder_station"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_lighting_headlamp_wiring",
+      "categoryKey": "lighting",
+      "nameRu": "Ремонт проводки головных фар",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "не горит фара"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_lighting_foglamps",
+      "categoryKey": "lighting",
+      "nameRu": "Установка противотуманных фар",
+      "professionIds": [
+        "auto_electrician",
+        "accessories_installer"
+      ],
+      "aliasesRu": [
+        "установка ПТФ"
+      ],
+      "suggestedEquipmentIds": [
+        "crimp_tool"
+      ],
+      "serviceKind": "installation",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_lighting_tail_lamps",
+      "categoryKey": "lighting",
+      "nameRu": "Ремонт задних фонарей",
+      "professionIds": [
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "не работает стоп сигнал"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_accessories_alarm_can",
+      "categoryKey": "multimedia_security",
+      "nameRu": "Интеграция сигнализации по CAN-шине",
+      "professionIds": [
+        "accessories_installer",
+        "auto_electrician"
+      ],
+      "aliasesRu": [
+        "CAN StarLine"
+      ],
+      "suggestedEquipmentIds": [
+        "can_interface"
+      ],
+      "serviceKind": "installation",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_accessories_remote__22664d8b",
+      "categoryKey": "multimedia_security",
+      "nameRu": "Диагностика и ремонт автозапуска",
+      "professionIds": [
+        "accessories_installer"
+      ],
+      "aliasesRu": [
+        "не заводится с автозапуска"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_accessories_dashcam",
+      "categoryKey": "multimedia_security",
+      "nameRu": "Установка видеорегистратора",
+      "professionIds": [
+        "accessories_installer"
+      ],
+      "aliasesRu": [
+        "регистратор"
+      ],
+      "suggestedEquipmentIds": [
+        "crimp_tool"
+      ],
+      "serviceKind": "installation",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_accessories_parking_front",
+      "categoryKey": "multimedia_security",
+      "nameRu": "Установка передних парковочных датчиков",
+      "professionIds": [
+        "accessories_installer"
+      ],
+      "aliasesRu": [
+        "передние парктроники"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "installation",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_accessories_amplifier",
+      "categoryKey": "multimedia_security",
+      "nameRu": "Установка автомобильного усилителя",
+      "professionIds": [
+        "accessories_installer"
+      ],
+      "aliasesRu": [
+        "усилитель звука"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "installation",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_accessories_subwoofer",
+      "categoryKey": "multimedia_security",
+      "nameRu": "Установка сабвуфера",
+      "professionIds": [
+        "accessories_installer"
+      ],
+      "aliasesRu": [
+        "саб"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "installation",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_accessories_gps_tracker",
+      "categoryKey": "multimedia_security",
+      "nameRu": "Установка GPS-трекера",
+      "professionIds": [
+        "accessories_installer"
+      ],
+      "aliasesRu": [
+        "маяк GPS"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "installation",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_accessories_heated_seat",
+      "categoryKey": "multimedia_security",
+      "nameRu": "Установка подогрева сидений",
+      "professionIds": [
+        "accessories_installer"
+      ],
+      "aliasesRu": [
+        "подогрев сидений"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter"
+      ],
+      "serviceKind": "installation",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_brakes_hose_repair",
+      "categoryKey": "brakes",
+      "nameRu": "Замена тормозного шланга",
+      "professionIds": [
+        "brake_specialist"
+      ],
+      "aliasesRu": [
+        "тормозной шланг"
+      ],
+      "suggestedEquipmentIds": [
+        "brake_bleeder"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_brakes_pipe_repair",
+      "categoryKey": "brakes",
+      "nameRu": "Изготовление и замена тормозной трубки",
+      "professionIds": [
+        "brake_specialist"
+      ],
+      "aliasesRu": [
+        "тормозная трубка"
+      ],
+      "suggestedEquipmentIds": [
+        "brake_bleeder"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_brakes_abs_hydraulic_diag",
+      "categoryKey": "brakes",
+      "nameRu": "Диагностика гидроблока ABS",
+      "professionIds": [
+        "brake_specialist",
+        "diagnostician"
+      ],
+      "aliasesRu": [
+        "ошибка гидроблока ABS"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_brakes_parking_cable",
+      "categoryKey": "brakes",
+      "nameRu": "Замена троса стояночного тормоза",
+      "professionIds": [
+        "brake_specialist"
+      ],
+      "aliasesRu": [
+        "ручник трос"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_brakes_master_cylinder",
+      "categoryKey": "brakes",
+      "nameRu": "Замена главного тормозного цилиндра",
+      "professionIds": [
+        "brake_specialist"
+      ],
+      "aliasesRu": [
+        "главный тормозной"
+      ],
+      "suggestedEquipmentIds": [
+        "brake_bleeder"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_tires_bead_seal",
+      "categoryKey": "tires",
+      "nameRu": "Герметизация борта шины",
+      "professionIds": [
+        "tire_specialist"
+      ],
+      "aliasesRu": [
+        "спускает по ободу"
+      ],
+      "suggestedEquipmentIds": [
+        "tire_changer"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_tires_valve_replace",
+      "categoryKey": "tires",
+      "nameRu": "Замена колесного вентиля",
+      "professionIds": [
+        "tire_specialist"
+      ],
+      "aliasesRu": [
+        "сосок колеса"
+      ],
+      "suggestedEquipmentIds": [
+        "tire_changer"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_tires_tpms_binding",
+      "categoryKey": "tires",
+      "nameRu": "Привязка датчиков давления шин",
+      "professionIds": [
+        "tire_specialist"
+      ],
+      "aliasesRu": [
+        "прописать TPMS"
+      ],
+      "suggestedEquipmentIds": [
+        "tpms_tool"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_tires_tubeless_patch",
+      "categoryKey": "tires",
+      "nameRu": "Ремонт бескамерной шины грибком",
+      "professionIds": [
+        "tire_specialist"
+      ],
+      "aliasesRu": [
+        "грибок шины"
+      ],
+      "suggestedEquipmentIds": [
+        "tire_repair_kit"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_alignment_after_suspension",
+      "categoryKey": "alignment",
+      "nameRu": "Проверка углов после ремонта подвески",
+      "professionIds": [
+        "alignment_specialist"
+      ],
+      "aliasesRu": [
+        "развал после ремонта"
+      ],
+      "suggestedEquipmentIds": [
+        "alignment_rack"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_alignment_steering__6ccc86e0",
+      "categoryKey": "alignment",
+      "nameRu": "Калибровка датчика угла поворота руля",
+      "professionIds": [
+        "alignment_specialist",
+        "diagnostician"
+      ],
+      "aliasesRu": [
+        "датчик SAS"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_body_door_repair",
+      "categoryKey": "body_welding",
+      "nameRu": "Ремонт автомобильной двери после ДТП",
+      "professionIds": [
+        "body_specialist"
+      ],
+      "aliasesRu": [
+        "помята дверь"
+      ],
+      "suggestedEquipmentIds": [
+        "dent_puller"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_body_fender_replace",
+      "categoryKey": "body_welding",
+      "nameRu": "Замена крыла автомобиля",
+      "professionIds": [
+        "body_specialist"
+      ],
+      "aliasesRu": [
+        "крыло"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_body_sill_replace",
+      "categoryKey": "body_welding",
+      "nameRu": "Замена кузовного порога",
+      "professionIds": [
+        "body_specialist",
+        "automotive_welder"
+      ],
+      "aliasesRu": [
+        "замена порога"
+      ],
+      "suggestedEquipmentIds": [
+        "mig_mag_welder"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_body_frame_geometry",
+      "categoryKey": "body_welding",
+      "nameRu": "Контроль геометрии кузова",
+      "professionIds": [
+        "body_specialist"
+      ],
+      "aliasesRu": [
+        "стапель"
+      ],
+      "suggestedEquipmentIds": [
+        "body_measuring_system"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_body_bumper_repair",
+      "categoryKey": "body_welding",
+      "nameRu": "Ремонт креплений бампера",
+      "professionIds": [
+        "body_specialist"
+      ],
+      "aliasesRu": [
+        "сломаны крепления бампера"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_body_pdr_hail",
+      "categoryKey": "body_welding",
+      "nameRu": "Удаление вмятин после града без покраски",
+      "professionIds": [
+        "body_specialist"
+      ],
+      "aliasesRu": [
+        "удаление вмятин PDR"
+      ],
+      "suggestedEquipmentIds": [
+        "pdr_tools"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_body_wheel_arch_repair",
+      "categoryKey": "body_welding",
+      "nameRu": "Ремонт колёсной арки",
+      "professionIds": [
+        "body_specialist",
+        "automotive_welder"
+      ],
+      "aliasesRu": [
+        "ремонт арки"
+      ],
+      "suggestedEquipmentIds": [
+        "mig_mag_welder"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_paint_bumper",
+      "categoryKey": "paint",
+      "nameRu": "Покраска бампера",
+      "professionIds": [
+        "painter"
+      ],
+      "aliasesRu": [
+        "окраска бампера"
+      ],
+      "suggestedEquipmentIds": [
+        "spray_gun",
+        "paint_booth"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_paint_door",
+      "categoryKey": "paint",
+      "nameRu": "Покраска двери автомобиля",
+      "professionIds": [
+        "painter"
+      ],
+      "aliasesRu": [
+        "окраска двери"
+      ],
+      "suggestedEquipmentIds": [
+        "spray_gun",
+        "paint_booth"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_paint_fender",
+      "categoryKey": "paint",
+      "nameRu": "Покраска крыла автомобиля",
+      "professionIds": [
+        "painter"
+      ],
+      "aliasesRu": [
+        "окраска крыла"
+      ],
+      "suggestedEquipmentIds": [
+        "spray_gun",
+        "paint_booth"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_paint_hood",
+      "categoryKey": "paint",
+      "nameRu": "Покраска капота",
+      "professionIds": [
+        "painter"
+      ],
+      "aliasesRu": [
+        "окраска капота"
+      ],
+      "suggestedEquipmentIds": [
+        "spray_gun",
+        "paint_booth"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_paint_local_panel",
+      "categoryKey": "paint",
+      "nameRu": "Локальная окраска кузовного элемента",
+      "professionIds": [
+        "painter"
+      ],
+      "aliasesRu": [
+        "локальная покраска"
+      ],
+      "suggestedEquipmentIds": [
+        "spray_gun"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_paint_primer",
+      "categoryKey": "paint",
+      "nameRu": "Грунтование кузовной детали",
+      "professionIds": [
+        "painter"
+      ],
+      "aliasesRu": [
+        "грунтовка детали"
+      ],
+      "suggestedEquipmentIds": [
+        "spray_gun"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_paint_color_match",
+      "categoryKey": "paint",
+      "nameRu": "Подбор цвета лакокрасочного покрытия",
+      "professionIds": [
+        "painter"
+      ],
+      "aliasesRu": [
+        "подбор автомобильной краски"
+      ],
+      "suggestedEquipmentIds": [],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_glass_windshield_replace",
+      "categoryKey": "glass",
+      "nameRu": "Замена лобового стекла",
+      "professionIds": [
+        "glass_specialist"
+      ],
+      "aliasesRu": [
+        "замена ветрового стекла"
+      ],
+      "suggestedEquipmentIds": [
+        "glass_suction_lifters"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_glass_side_window_replace",
+      "categoryKey": "glass",
+      "nameRu": "Замена бокового стекла",
+      "professionIds": [
+        "glass_specialist"
+      ],
+      "aliasesRu": [
+        "стекло двери"
+      ],
+      "suggestedEquipmentIds": [
+        "glass_suction_lifters"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_glass_rear_window_replace",
+      "categoryKey": "glass",
+      "nameRu": "Замена заднего стекла",
+      "professionIds": [
+        "glass_specialist"
+      ],
+      "aliasesRu": [
+        "заднее стекло"
+      ],
+      "suggestedEquipmentIds": [
+        "glass_suction_lifters"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_glass_chip_repair",
+      "categoryKey": "glass",
+      "nameRu": "Ремонт скола лобового стекла",
+      "professionIds": [
+        "glass_specialist"
+      ],
+      "aliasesRu": [
+        "скол стекла"
+      ],
+      "suggestedEquipmentIds": [
+        "glass_repair_bridge"
+      ],
+      "serviceKind": "repair",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_glass_camera_calibration",
+      "categoryKey": "glass",
+      "nameRu": "Калибровка камеры после замены стекла",
+      "professionIds": [
+        "glass_specialist",
+        "diagnostician"
+      ],
+      "aliasesRu": [
+        "калибровка ADAS"
+      ],
+      "suggestedEquipmentIds": [
+        "adas_calibration_system"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_hv_battery_health",
+      "categoryKey": "diagnostics",
+      "nameRu": "Диагностика состояния тяговой батареи",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "диагностика ВВБ"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner",
+        "hv_insulation_tester"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_bms_fault_diag",
+      "categoryKey": "diagnostics",
+      "nameRu": "Диагностика системы BMS",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "ошибка батареи"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_charging_port_diag",
+      "categoryKey": "electrical",
+      "nameRu": "Диагностика зарядного разъёма",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "не заряжается электромобиль"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "insulated_tools"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_hv_insulation_test",
+      "categoryKey": "electrical",
+      "nameRu": "Проверка изоляции высоковольтной системы",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "ошибка изоляции HV"
+      ],
+      "suggestedEquipmentIds": [
+        "hv_insulation_tester",
+        "insulated_tools"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_dcdc_converter_diag",
+      "categoryKey": "electrical",
+      "nameRu": "Диагностика DC/DC-преобразователя",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "нет зарядки 12В у электромобиля"
+      ],
+      "suggestedEquipmentIds": [
+        "multimeter",
+        "insulated_tools"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_inverter_diag",
+      "categoryKey": "electrical",
+      "nameRu": "Диагностика инвертора электропривода",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "ошибка инвертора"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner",
+        "insulated_tools"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_battery_cooling_diag",
+      "categoryKey": "cooling_heating",
+      "nameRu": "Диагностика охлаждения тяговой батареи",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "перегрев батареи"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_drive_unit_diag",
+      "categoryKey": "diagnostics",
+      "nameRu": "Диагностика тягового электропривода",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "ошибка электропривода"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner",
+        "insulated_tools"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_low_voltage_battery",
+      "categoryKey": "maintenance",
+      "nameRu": "Замена вспомогательной аккумуляторной батареи электромобиля",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "АКБ 12В EV"
+      ],
+      "suggestedEquipmentIds": [
+        "battery_tester"
+      ],
+      "serviceKind": "maintenance",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    },
+    {
+      "serviceId": "pro_ev_pre_purchase_hv",
+      "categoryKey": "diagnostics",
+      "nameRu": "Проверка высоковольтной системы перед покупкой",
+      "professionIds": [
+        "ev_specialist"
+      ],
+      "aliasesRu": [
+        "проверить электромобиль перед покупкой"
+      ],
+      "suggestedEquipmentIds": [
+        "obd_scanner",
+        "hv_insulation_tester"
+      ],
+      "serviceKind": "diagnostics",
+      "status": "DRAFT_ONLY",
+      "availableForBooking": false,
+      "autoEnableForMasters": false,
+      "hardEquipmentFilter": false,
+      "basePrice": null
+    }
+  ]
+}

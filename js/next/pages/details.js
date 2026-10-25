@@ -172,7 +172,7 @@
         <section class="k-service-detail-ref-section"><header><small>СОСТАВ</small><h2>Что входит в работу</h2></header><ul class="k-service-detail-ref-list">${workList.map(x=>`<li><i>✓</i><span>${esc(x)}</span></li>`).join('')}</ul></section>
         <section class="k-service-detail-ref-section"><header><small>СЦЕНАРИЙ</small><h2>Как это работает</h2></header><ol class="k-service-detail-ref-steps">${steps.map((x,i)=>`<li><i>${i+1}</i><span>${esc(x)}</span></li>`).join('')}</ol></section>
         <section class="k-service-detail-ref-section k-service-detail-ref-offers"><header><div><small>КТО ОКАЗЫВАЕТ УСЛУГУ</small><h2>СТО и мастера с ценами</h2></div><span>${providerOffers.length}</span></header><div class="k-service-provider-list">${offerRows}</div></section>
-      </main><aside class="k-service-detail-ref-aside"><div><small>БЫСТРЫЙ СТАРТ</small><h2>${esc(s.name||'Нужен ремонт?')}</h2><p>Выберите автомобиль, способ получения предложений, место и время. Цена подтверждается до начала работ.</p><div class="k-service-detail-ref-aside-facts"><span><b>${price}</b> ориентир</span><span><b>${esc(time)}</b> время</span></div><button data-next-action="service-booking" data-service-id="${esc(s.id)}" data-service-name="${esc(s.name)}">Оставить заявку</button><a href="#/masters">Сначала выбрать мастера</a></div></aside></div>
+      </main><aside class="k-service-detail-ref-aside"><div><small>БЫСТРЫЙ СТАРТ</small><h2>${esc(s.name||'Нужен ремонт?')}</h2><p>Выберите автомобиль, способ получения предложений, место и время. Цена подтверждается до начала работ.</p><div class="k-service-detail-ref-aside-facts"><span><b>${price}</b> ориентир</span><span><b>${esc(time)}</b> время</span></div><button data-next-action="service-booking" data-service-id="${esc(s.id)}" data-service-name="${esc(s.name)}">Оставить заявку</button><a href="#/masters?serviceId=${encodeURIComponent(s.id||id)}">Сначала выбрать мастера</a></div></aside></div>
     </section>`);
     document.querySelectorAll('[data-service-provider-book]').forEach(button=>button.addEventListener('click',()=>{
       const type=String(button.dataset.providerType||'master').toLowerCase();
@@ -221,8 +221,12 @@
         location.hash=`#/chats?${isSto?'stoId':'masterId'}=${encodeURIComponent(id)}`;
       }));
       document.querySelectorAll('[data-provider-book]').forEach(btn=>btn.addEventListener('click',()=>{
-        try{sessionStorage.setItem('kareta.request.prefill',JSON.stringify(isSto?{stoId:id,stoName:btn.dataset.providerName||p.name||'',description:`Запись в СТО ${btn.dataset.providerName||p.name||''}`,source:'provider_profile'}:{masterId:id,masterName:btn.dataset.providerName||p.name||'',description:`Запись к мастеру ${btn.dataset.providerName||p.name||''}`,source:'provider_profile'}));}catch(_e){}
-        if(!isSto){location.hash=`#/masters/book/master/${encodeURIComponent(id)}`;return;}
+        const requestedServiceId=String(queryParams.get('serviceId')||'');
+        const selectedOffer=requestedServiceId?offers.find(o=>String(o.service_id||o.serviceId||'')===requestedServiceId):null;
+        if(requestedServiceId&&!selectedOffer){window.KaretaToast?.error?.('Выбранная услуга больше не опубликована. Вернитесь в каталог.');return;}
+        const selected=selectedOffer?{serviceId:requestedServiceId,serviceName:String(selectedOffer.service_name||selectedOffer.name||''),offerId:selectedOffer.id||'',offerPrice:Number(selectedOffer.price||0),offerPriceType:String(selectedOffer.price_type||selectedOffer.priceType||'agreement')}:{};
+        try{sessionStorage.setItem('kareta.request.prefill',JSON.stringify(isSto?{stoId:id,stoName:btn.dataset.providerName||p.name||'',description:`Запись в СТО ${btn.dataset.providerName||p.name||''}`,source:'provider_profile',...selected}:{masterId:id,masterName:btn.dataset.providerName||p.name||'',description:`Запись к мастеру ${btn.dataset.providerName||p.name||''}`,source:'provider_profile',...selected}));}catch(_e){}
+        if(!isSto){location.hash=`#/masters/book/master/${encodeURIComponent(id)}${requestedServiceId?'?serviceId='+encodeURIComponent(requestedServiceId):''}`;return;}
         if(!window.KaretaRequestWindow?.open?.('#/orders/new'))location.hash='#/orders/new';
       }));
     };
@@ -379,7 +383,11 @@
     if(!rr.ok){set(providerError(rr.payload?.message));return;}
     const data=rr.payload?.data||{},p=data.provider||{},offers=Array.isArray(data.offers)?data.offers:[];
     const now=new Date(),days=Array.from({length:7},(_,i)=>{const d=new Date(now);d.setDate(now.getDate()+i);const iso=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');return {date:d,iso,weekday:new Intl.DateTimeFormat('ru-RU',{weekday:'short'}).format(d).replace('.',''),day:d.getDate()};});
-    let selectedDate=days[Math.min(3,days.length-1)].iso,selectedTime='',selectedService=offers[0]||null,slots=[];
+    const bookingParams=new URLSearchParams(String(location.hash||'').split('?')[1]||'');
+    const requestedServiceId=String(bookingParams.get('serviceId')||'');
+    let selectedDate=days[Math.min(3,days.length-1)].iso,selectedTime='',selectedService=requestedServiceId?(offers.find(offer=>String(offer.service_id||offer.serviceId||'')===requestedServiceId)||null):(offers[0]||null),slots=[];
+    if(requestedServiceId&&!selectedService){set(providerError('Мастер больше не оказывает выбранную услугу. Вернитесь в каталог и выберите исполнителя.'));return;}
+    let slotsRequestId=0,slotsReady=false,transferStarted=false;
     const root=document.querySelector('[data-master-ref-booking]');
     if(!root)return;
     const avatar=p.avatar_url?`<img src="${esc(p.avatar_url)}" alt="${esc(p.name||'Мастер')}">`:`<span>${esc(String(p.name||'М').split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase())}</span>`;
@@ -392,9 +400,24 @@
       <button class="k-master-ref-booking-continue" type="button" data-book-continue disabled>Продолжить</button>
     </div>`;
     const timeBox=root.querySelector('[data-book-time]'),continueButton=root.querySelector('[data-book-continue]');
-    const paintSlots=()=>{timeBox.innerHTML=slots.length?slots.slice(0,5).map(slot=>`<button type="button" data-book-slot="${esc(slot.value||slot.label||'')}" class="${selectedTime===(slot.value||slot.label)?'is-active':''}">${esc(slot.label||slot.value||'')}</button>`).join(''):'<span class="k-master-ref-no-slots">На эту дату свободных окон нет</span>';continueButton.disabled=!selectedDate||!selectedTime;};
-    const loadSlots=async()=>{selectedTime='';continueButton.disabled=true;timeBox.innerHTML='<span class="k-master-ref-loading-slots">Загружаем…</span>';try{const result=await api.getBookingSlots({masterId:id,date:selectedDate},{signal:ctx.lifecycle?.signal});slots=Array.isArray(result?.payload?.data?.slots)?result.payload.data.slots:[]}catch(_e){slots=[];}paintSlots();};
-    root.addEventListener('click',event=>{const dateButton=event.target.closest('[data-book-date]');if(dateButton){selectedDate=dateButton.dataset.bookDate;root.querySelectorAll('[data-book-date]').forEach(x=>x.classList.toggle('is-active',x===dateButton));loadSlots();return;}const timeButton=event.target.closest('[data-book-slot]');if(timeButton){selectedTime=timeButton.dataset.bookSlot;root.querySelectorAll('[data-book-slot]').forEach(x=>x.classList.toggle('is-active',x===timeButton));continueButton.disabled=false;return;}if(event.target.closest('[data-book-continue]')){const serviceId=selectedService?.service_id||selectedService?.id||'',serviceName=selectedService?.service_name||selectedService?.name||'';try{sessionStorage.setItem('kareta.request.prefill',JSON.stringify({masterId:id,masterName:p.name||'',serviceId,serviceName,date:selectedDate,time:selectedTime,description:`Запись к мастеру ${p.name||''}`,source:'master_booking'}));}catch(_e){}if(!window.KaretaRequestWindow?.open?.('#/orders/new'))location.hash='#/orders/new';}},{signal:ctx.lifecycle?.signal});
+    const validSlot=value=>/^([01]\d|2[0-3]):[0-5]\d$/.test(String(value||''));
+    const visibleSlots=()=>slots.slice(0,5).filter(slot=>validSlot(slot?.value));
+    const selectedSlotIsAvailable=()=>slotsReady&&visibleSlots().some(slot=>slot.value===selectedTime);
+    const paintSlots=()=>{const available=visibleSlots();timeBox.innerHTML=available.length?available.map(slot=>`<button type="button" data-book-slot="${esc(slot.value)}" class="${selectedTime===slot.value?'is-active':''}">${esc(slot.label||slot.value)}</button>`).join(''):'<span class="k-master-ref-no-slots">На эту дату свободных окон нет</span>';continueButton.disabled=!selectedDate||!selectedSlotIsAvailable()||transferStarted;};
+    const loadSlots=async()=>{
+      const requestId=++slotsRequestId,date=selectedDate,serviceId=selectedService?.service_id||'';
+      selectedTime='';slots=[];slotsReady=false;transferStarted=false;continueButton.disabled=true;
+      timeBox.innerHTML='<span class="k-master-ref-loading-slots">Загружаем…</span>';
+      try{
+        const result=await api.getBookingSlots({masterId:id,date,serviceId},{signal:ctx.lifecycle?.signal});
+        if(requestId!==slotsRequestId||ctx.lifecycle?.signal?.aborted)return;
+        slots=result?.ok&&Array.isArray(result?.payload?.data?.slots)?result.payload.data.slots:[];
+        slotsReady=Boolean(result?.ok);
+      }catch(_e){if(requestId!==slotsRequestId||ctx.lifecycle?.signal?.aborted)return;slots=[];slotsReady=false;}
+      if(!slotsReady){timeBox.innerHTML='<span class="k-master-ref-no-slots" role="status">Не удалось проверить свободное время. Выберите дату ещё раз.</span>';continueButton.disabled=true;return;}
+      paintSlots();
+    };
+    root.addEventListener('click',event=>{const dateButton=event.target.closest('[data-book-date]');if(dateButton){selectedDate=dateButton.dataset.bookDate;root.querySelectorAll('[data-book-date]').forEach(x=>x.classList.toggle('is-active',x===dateButton));loadSlots();return;}const timeButton=event.target.closest('[data-book-slot]');if(timeButton){const candidate=timeButton.dataset.bookSlot;if(!slotsReady||!visibleSlots().some(slot=>slot.value===candidate))return;selectedTime=candidate;root.querySelectorAll('[data-book-slot]').forEach(x=>x.classList.toggle('is-active',x===timeButton));continueButton.disabled=!selectedSlotIsAvailable();return;}if(event.target.closest('[data-book-continue]')){if(transferStarted||!selectedDate||!selectedSlotIsAvailable())return;transferStarted=true;continueButton.disabled=true;const serviceId=selectedService?.service_id||selectedService?.id||'',serviceName=selectedService?.service_name||selectedService?.name||'';try{sessionStorage.setItem('kareta.request.prefill',JSON.stringify({masterId:id,masterName:p.name||'',serviceId,serviceName,date:selectedDate,time:selectedTime,description:`Запись к мастеру ${p.name||''}`,source:'master_booking'}));}catch(_e){transferStarted=false;continueButton.disabled=false;timeBox.innerHTML+='<span role="alert">Не удалось сохранить выбор. Проверьте настройки браузера.</span>';return;}if(!window.KaretaRequestWindow?.open?.('#/orders/new'))location.hash='#/orders/new';}},{signal:ctx.lifecycle?.signal});
     await loadSlots();
   }
 
