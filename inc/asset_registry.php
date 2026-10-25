@@ -517,7 +517,7 @@ function kareta_route_asset_plan(): array
             'lazy' => true,
             'routeKeys' => ['works','masterExchange','realWorks','workDetail'],
             'routes' => ['#/works','#/master/exchange','#/real-works','#/works/item/*'],
-            'styles' => ['css/next/work_feed.css'],
+            'styles' => ['css/next/work_feed.css','css/next/master_exchange_reference_20261025.css'],
             'scripts' => ['js/next/pages/work_feed.js'],
             'globals' => ['KaretaWorkFeedPages'],
         ],
