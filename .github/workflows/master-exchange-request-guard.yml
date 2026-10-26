@@ -1,0 +1,23 @@
+name: Master exchange request guard
+on:
+  pull_request:
+    paths:
+      - 'js/next/pages/work_feed.js'
+      - 'tools/test_master_exchange_request_sequence_20261027.js'
+      - '.github/workflows/master-exchange-request-guard.yml'
+  workflow_dispatch:
+jobs:
+  request-order:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Parse exchange source
+        run: node --check js/next/pages/work_feed.js
+      - name: Verify request ordering and role isolation
+        run: node tools/test_master_exchange_request_sequence_20261027.js
