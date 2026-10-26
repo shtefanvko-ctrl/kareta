@@ -113,7 +113,7 @@ html[data-user-role="master"] #k-page-outlet .k-exchange-page .k-exchange-servic
   gap: 5px;
   flex: 0 0 auto !important;
   min-width: 0 !important;
-  min-height: 39px !important;
+  min-height: 44px !important;
   width: auto !important;
   padding: 0 10px !important;
   border: 1px solid transparent !important;
@@ -177,7 +177,7 @@ html[data-user-role="master"] #k-page-outlet .k-exchange-page .k-exchange-r71-ta
   justify-content: center;
   gap: 6px;
   min-width: max-content !important;
-  min-height: 37px !important;
+  min-height: 44px !important;
   padding: 0 12px !important;
   border: 1px solid var(--exchange-line) !important;
   border-radius: 999px !important;
@@ -289,7 +289,7 @@ html[data-user-role="master"] #k-page-outlet .k-exchange-page .k-exchange-respon
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 41px;
+  min-height: 44px;
   padding: 8px 12px;
   border: 0;
   border-radius: 11px;
@@ -372,7 +372,7 @@ html[data-user-role="master"] #k-page-outlet .k-exchange-page .k-master-empty-r8
 }
 html[data-user-role="master"] #k-page-outlet .k-exchange-page .k-master-empty-r84__actions :is(button,a) {
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  min-height:38px;padding:8px 12px;font-size:11px;
+  min-height:44px;padding:8px 12px;font-size:11px;
 }
 html[data-user-role="master"] #k-page-outlet .k-exchange-page :is(button,a):focus-visible,
 html[data-user-role="master"] #k-page-outlet .k-exchange-page summary:focus-visible {
@@ -415,7 +415,7 @@ html[data-user-role="master"] #k-page-outlet .k-exchange-page summary:focus-visi
     background: transparent;
   }
   html[data-user-role="master"] #k-page-outlet .k-exchange-page .k-exchange-service-scope button {
-    min-height: 36px !important;
+    min-height: 44px !important;
     padding-inline: 11px !important;
     border: 1px solid var(--exchange-line) !important;
     border-radius: 999px !important;
@@ -431,7 +431,7 @@ html[data-user-role="master"] #k-page-outlet .k-exchange-page summary:focus-visi
     grid-row: 3 !important;
   }
   html[data-user-role="master"] #k-page-outlet .k-exchange-page .k-exchange-r71-tabs button {
-    min-height: 35px !important;
+    min-height: 44px !important;
     padding-inline: 10px !important;
   }
   html[data-user-role="master"] #k-page-outlet .k-exchange-page .k-exchange-r131-toolbar > .k-exchange-filter-button {
@@ -444,7 +444,7 @@ html[data-user-role="master"] #k-page-outlet .k-exchange-page summary:focus-visi
     grid-column: 9/13 !important;grid-row:4 !important;
   }
   html[data-user-role="master"] #k-page-outlet .k-exchange-page .k-exchange-r131-toolbar > :is(.k-exchange-filter-button,.k-exchange-kpi-button,.k-exchange-refresh-button) {
-    min-height: 37px !important;
+    min-height: 44px !important;
     padding: 0 5px !important;
     font-size: 11px !important;
     gap: 4px;

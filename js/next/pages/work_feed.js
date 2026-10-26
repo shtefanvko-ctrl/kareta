@@ -113,9 +113,86 @@
   function exchangeErrorText(result){const raw=String(result?.payload?.error||result?.payload?.code||result?.code||'').toLowerCase();const status=Number(result?.status||result?.payload?.meta?.httpStatus||0);if(['master_profile_not_found','master_not_found'].includes(raw))return 'Профиль Мастера восстанавливается. Повторите загрузку.';if(['capability_denied','role_not_allowed'].includes(raw))return 'Контекст Мастера не получил доступ к Бирже. Права будут синхронизированы при повторной загрузке.';if(['session_required','identity_account_unavailable'].includes(raw))return 'Сессия Мастера требует восстановления. Повторите загрузку.';if(raw==='db_unavailable')return 'База данных Биржи временно недоступна.';if(status>=500)return 'Сервер Биржи временно не ответил. Данные страницы и фильтры сохранены.';const message=String(result?.payload?.message||'').trim();if(message&&message!=='Не удалось выполнить операцию')return message;return raw?`Ошибка Биржи: ${raw}`:'Не удалось загрузить заявки';}
   function exchangeFallbackItem(order,response=null){const item={...(order||{})};const id=String(item.id||item.orderId||response?.request_id||'');item.id=id;item.serviceNames=String(item.serviceNames||item.service_names||response?.request_title||'Ремонт автомобиля');item.vehicleTitle=String(item.vehicleTitle||item.vehicle_title||item.clientCar||item.client_car||'Автомобиль');item.clientCar=String(item.clientCar||item.client_car||item.vehicleTitle||'Автомобиль');item.price=Number(item.price||item.orderPrice||response?.price_from||0);item.saved=!!item.saved;item.myResponse=response||item.myResponse||null;item.responsesCount=Number(item.responsesCount||item.responses_count||0);item.chatId=String(item.chatId||item.chat_id||'');item.dispatch=item.dispatch||{score:0,eligible:true,serviceMatch:item.serviceMatched?100:0,loadPct:0,overloaded:false,distanceKm:null,etaStart:'',etaEnd:'',slaDueAt:'',slaState:'ok',degraded:true};item.matchReason=String(item.matchReason||'Резервный режим Биржи');return item;}
   function exchangeTimedRequest(promise,timeoutMs){let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Сервер Биржи не ответил вовремя. Повторите загрузку.')),timeoutMs);})]).finally(()=>clearTimeout(timer));}
-  async function loadExchangeFallback(params,primaryResult){try{const wr=await exchangeTimedRequest(api.request('api/db.php?action=masterWorkplace.get',{cacheTtlMs:0,force:true,dedupe:false}),8000);if(!wr.ok)return null;const data=wr.payload?.data||{};const business=data.business||{};const ex=business.exchange||{};const responses=Array.isArray(ex.myResponses)?ex.myResponses:[];const responseMap=new Map(responses.map(r=>[String(r.request_id||r.requestId||''),r]));let items=[];if(exchangeState.tab==='accepted'){const closed=new Set(['cancelled','completed','done','delivered','closed']);items=(Array.isArray(data.orders)?data.orders:[]).filter(o=>!closed.has(String(o.status||'').toLowerCase())).map(o=>exchangeFallbackItem(o,responseMap.get(String(o.id||''))||null));}else if(exchangeState.tab==='responded'){items=responses.map(r=>exchangeFallbackItem({id:r.request_id,serviceNames:r.serviceNames,vehicleTitle:r.vehicleTitle,price:r.orderPrice,status:r.orderStatus,date:r.date,time:r.time},r));}else{items=(Array.isArray(ex.leads)?ex.leads:[]).map(o=>exchangeFallbackItem(o,responseMap.get(String(o.id||''))||null));if(exchangeState.tab==='saved')items=items.filter(o=>o.saved);}
+  async function loadExchangeFallback(params,primaryResult){try{const wr=await exchangeTimedRequest(api.request('api/db.php?action=masterWorkplace.get',{cacheTtlMs:0,force:true,dedupe:false}),8000);if(!wr.ok)return null;const data=wr.payload?.data||{};const business=data.business||{};const ex=business.exchange||{};const responses=Array.isArray(ex.myResponses)?ex.myResponses:[];const responseMap=new Map(responses.map(r=>[String(r.request_id||r.requestId||''),r]));let items=[];if(params.tab==='accepted'){const closed=new Set(['cancelled','completed','done','delivered','closed']);items=(Array.isArray(data.orders)?data.orders:[]).filter(o=>!closed.has(String(o.status||'').toLowerCase())).map(o=>exchangeFallbackItem(o,responseMap.get(String(o.id||''))||null));}else if(params.tab==='responded'){items=responses.map(r=>exchangeFallbackItem({id:r.request_id,serviceNames:r.serviceNames,vehicleTitle:r.vehicleTitle,price:r.orderPrice,status:r.orderStatus,date:r.date,time:r.time},r));}else{items=(Array.isArray(ex.leads)?ex.leads:[]).map(o=>exchangeFallbackItem(o,responseMap.get(String(o.id||''))||null));if(params.tab==='saved')items=items.filter(o=>o.saved);}
       const q=String(params.q||'').trim().toLowerCase();if(q)items=items.filter(o=>[o.id,o.serviceNames,o.vehicleTitle,o.clientCar].some(v=>String(v||'').toLowerCase().includes(q)));if(String(params.service_scope||'all')==='mine')items=items.filter(o=>Number(o.dispatch?.serviceMatch||0)>0||o.serviceMatched===true);const counts={new:Number(ex.available||0),saved:Array.isArray(ex.saved)?ex.saved.length:items.filter(o=>o.saved).length,responded:Number(ex.responses||responses.length||0),accepted:Number(ex.accepted||0)};return {items,kpi:{available:counts.new,responses:counts.responded,pending:Number(ex.pending||0),won:counts.accepted,winRate:Number(ex.winRate||0),loadPct:0,overloaded:false},state:{saved:Array.isArray(ex.saved)?ex.saved:[],responses},tabCounts:counts,load:{activeOrders:Array.isArray(data.activeOrders)?data.activeOrders.length:0,runningOrders:0,queuedMinutes:0,capacityMinutes:0,loadPct:0,overloaded:false,etaStart:''},degraded:true,degradedReason:`workplace_fallback:${String(primaryResult?.payload?.error||primaryResult?.code||primaryResult?.status||'unknown')}`};}catch(_fallbackError){return null;}}
-  async function loadExchange(force=false,retriedIdentity=false){const identity=window.KaretaIdentity?.snapshot?.()||{};if(identity.authenticated!==true||String(identity.compatibilityRole||'').toLowerCase()!=='master'||!Number(identity.context?.id||0)){exchangeState.loading=false;exchangeState.error=identity.authenticated?'Переключитесь в контекст Мастера, чтобы открыть Биржу.':'Подтвердите вход, чтобы открыть Биржу.';exchangeState.items=[];paintExchange();return;}exchangeState.loading=true;exchangeState.error='';exchangeState.visibleCount=EXCHANGE_PAGE_SIZE;paintExchange();const params={q:exchangeState.search,sort:exchangeState.sort,tab:exchangeState.tab,urgency:exchangeState.urgency||'all',distance_max:exchangeState.distanceMax||0,price_min:exchangeState.priceMin||0,price_max:exchangeState.priceMax||0,service_scope:exchangeState.serviceScope||'all',limit:60};let r;try{r=await exchangeTimedRequest(api.getMasterExchangeFeed(params,{force}),16000);}catch(error){r={ok:false,status:Number(error?.status||0),code:String(error?.code||''),payload:error?.payload||{message:error?.message||'Сервис временно недоступен'}};}if(!r.ok&&!retriedIdentity&&[401,403,409].includes(Number(r.status||r.payload?.meta?.httpStatus||0))){try{await window.KaretaIdentity?.load?.({force:true,allowLegacyBridge:true,legacyUser:window.KaretaNext?.state?.user||window.KaretaAppState?.user||null});return await loadExchange(true,true);}catch(_identityError){}}if(!r.ok&&![401,403].includes(Number(r.status||r.payload?.meta?.httpStatus||0))){const fallback=await loadExchangeFallback(params,r);if(fallback){exchangeState.loading=false;exchangeState.items=fallback.items||[];exchangeState.kpi=fallback.kpi||{};exchangeState.mine=fallback.state||{};exchangeState.tabCounts=fallback.tabCounts||{};exchangeState.load=fallback.load||{};exchangeState.degraded=true;exchangeState.degradedReason=String(fallback.degradedReason||'workplace_fallback');exchangeState.error='';paintExchange();return;}}exchangeState.loading=false;if(!r.ok){exchangeState.error=exchangeErrorText(r);paintExchange();return;}const data=r.payload?.data||{};exchangeState.items=data.items||[];exchangeState.kpi=data.kpi||{};exchangeState.mine=data.state||{};exchangeState.tabCounts=data.tabCounts||{};exchangeState.load=data.load||{};exchangeState.degraded=!!data.degraded;exchangeState.degradedReason=String(data.degradedReason||'');paintExchange();}
+  // Only the newest request may paint. Switching filters, identity or routes invalidates older replies.
+  let exchangeRequestVersion=0;
+  async function loadExchange(force=false,retriedIdentity=false){
+    const version=++exchangeRequestVersion;
+    const current=()=>version===exchangeRequestVersion;
+    const identity=window.KaretaIdentity?.snapshot?.()||{};
+    if(identity.authenticated!==true||String(identity.compatibilityRole||'').toLowerCase()!=='master'||!Number(identity.context?.id||0)){
+      exchangeState.loading=false;
+      exchangeState.error=identity.authenticated?'Переключитесь в контекст Мастера, чтобы открыть Биржу.':'Подтвердите вход, чтобы открыть Биржу.';
+      exchangeState.items=[];
+      exchangeState.kpi={};
+      exchangeState.tabCounts={};
+      exchangeState.load={};
+      exchangeState.mine={saved:[],responses:[]};
+      exchangeState.degraded=false;
+      exchangeState.degradedReason='';
+      paintExchange();
+      return;
+    }
+    exchangeState.loading=true;
+    exchangeState.error='';
+    exchangeState.visibleCount=EXCHANGE_PAGE_SIZE;
+    paintExchange();
+    const params={
+      q:exchangeState.search,sort:exchangeState.sort,tab:exchangeState.tab,
+      urgency:exchangeState.urgency||'all',distance_max:exchangeState.distanceMax||0,
+      price_min:exchangeState.priceMin||0,price_max:exchangeState.priceMax||0,
+      service_scope:exchangeState.serviceScope||'all',limit:60
+    };
+    let r;
+    try{
+      r=await exchangeTimedRequest(api.getMasterExchangeFeed(params,{force}),16000);
+    }catch(error){
+      r={ok:false,status:Number(error?.status||0),code:String(error?.code||''),payload:error?.payload||{message:error?.message||'Сервис временно недоступен'}};
+    }
+    if(!current())return;
+    if(!r.ok&&!retriedIdentity&&[401,403,409].includes(Number(r.status||r.payload?.meta?.httpStatus||0))){
+      try{
+        await window.KaretaIdentity?.load?.({force:true,allowLegacyBridge:true,legacyUser:window.KaretaNext?.state?.user||window.KaretaAppState?.user||null});
+        if(!current())return;
+        return await loadExchange(true,true);
+      }catch(_identityError){}
+      if(!current())return;
+    }
+    if(!r.ok&&![401,403].includes(Number(r.status||r.payload?.meta?.httpStatus||0))){
+      const fallback=await loadExchangeFallback(params,r);
+      if(!current())return;
+      if(fallback){
+        exchangeState.loading=false;
+        exchangeState.items=fallback.items||[];
+        exchangeState.kpi=fallback.kpi||{};
+        exchangeState.mine=fallback.state||{};
+        exchangeState.tabCounts=fallback.tabCounts||{};
+        exchangeState.load=fallback.load||{};
+        exchangeState.degraded=true;
+        exchangeState.degradedReason=String(fallback.degradedReason||'workplace_fallback');
+        exchangeState.error='';
+        paintExchange();
+        return;
+      }
+    }
+    if(!current())return;
+    exchangeState.loading=false;
+    if(!r.ok){
+      exchangeState.error=exchangeErrorText(r);
+      paintExchange();
+      return;
+    }
+    const data=r.payload?.data||{};
+    exchangeState.items=data.items||[];
+    exchangeState.kpi=data.kpi||{};
+    exchangeState.mine=data.state||{};
+    exchangeState.tabCounts=data.tabCounts||{};
+    exchangeState.load=data.load||{};
+    exchangeState.degraded=!!data.degraded;
+    exchangeState.degradedReason=String(data.degradedReason||'');
+    paintExchange();
+  }
   function openResponse(id,title){const d=document.querySelector('[data-exchange-dialog]'),f=d?.querySelector('form');if(!d||!f)return;const item=(exchangeState.items||[]).find(x=>String(x.id)===String(id));f.requestId.value=id;f.requestTitle.value=title;f.priceFrom.value=Number(item?.myResponse?.price_from||item?.price||0)||'';f.startTime.value=item?.myResponse?.start_time||'';f.durationText.value=item?.myResponse?.duration_text||'';f.warrantyText.value=item?.myResponse?.warranty_text||'';f.comment.value=item?.myResponse?.comment||'';d.showModal();}
   async function submitResponse(form){const fd=new FormData(form);const payload={request_id:fd.get('requestId'),request_title:fd.get('requestTitle'),priceType:'fixed',price_from:Number(fd.get('priceFrom')||0),price_to:Number(fd.get('priceFrom')||0),start_time:String(fd.get('startTime')||''),duration_text:String(fd.get('durationText')||''),warranty_text:String(fd.get('warrantyText')||''),comment:String(fd.get('comment')||''),work_format:'service'};const b=form.querySelector('[type="submit"]');b.disabled=true;const r=await api.saveMasterExchangeResponse(payload);b.disabled=false;if(!r.ok){window.KaretaToast?.error(r.payload?.message||r.payload?.error||'Не удалось отправить отклик');return;}form.closest('dialog')?.close();window.KaretaToast?.success('Отклик сохранён');await loadExchange(true);}
   async function quickResponse(id,title,page){
@@ -125,7 +202,7 @@
   }
   function mountExchange(){
     const page=document.querySelector('.k-exchange-page');if(!page)return()=>{};
-    const resumeAfterIdentity=()=>{const identity=window.KaretaIdentity?.snapshot?.()||{};if(identity.authenticated===true&&String(identity.compatibilityRole||'').toLowerCase()==='master'&&Number(identity.context?.id||0)>0)loadExchange(true);};
+    const resumeAfterIdentity=()=>loadExchange(true);
     window.addEventListener('kareta:identity-ready',resumeAfterIdentity);
     window.addEventListener('kareta:context-changed',resumeAfterIdentity);
     const hashQuery=String(location.hash||'').split('?')[1]||'';const hashParams=new URLSearchParams(hashQuery);exchangeState.focusId=hashParams.get('focus')||'';
@@ -171,7 +248,7 @@
     page.querySelector('[data-exchange-price-min]')?.addEventListener('change',priceReload);page.querySelector('[data-exchange-price-max]')?.addEventListener('change',priceReload);
     const form=page.querySelector('[data-exchange-form]');const submit=e=>{e.preventDefault();submitResponse(e.currentTarget);};form?.addEventListener('submit',submit);
     loadExchange().finally(()=>window.KaretaNavigationState?.restoreAfterAsync?.(location.hash,{replayActive:false,restoreModal:true}));
-    return()=>{clearTimeout(searchTimer);page.removeEventListener('click',click);form?.removeEventListener('submit',submit);window.removeEventListener('kareta:identity-ready',resumeAfterIdentity);window.removeEventListener('kareta:context-changed',resumeAfterIdentity);};
+    return()=>{++exchangeRequestVersion;clearTimeout(searchTimer);page.removeEventListener('click',click);form?.removeEventListener('submit',submit);window.removeEventListener('kareta:identity-ready',resumeAfterIdentity);window.removeEventListener('kareta:context-changed',resumeAfterIdentity);};
   }
 
   function filteredPublic(){const q=publicState.search.toLowerCase();const items=publicState.items.filter(x=>(publicState.active==='all'||x.type===publicState.active)&&(!publicState.city||String(x.city||x.masterCity||x.stoCity||'')===publicState.city)&&(!q||[x.title,x.summary,x.vehicleLabel,x.vehicle_label,x.serviceLabel,x.service_label,x.masterName,x.master_name,x.stoName,x.sto_name].some(v=>String(v||'').toLowerCase().includes(q))));const time=x=>new Date(x.publishedAt||x.published_at||x.createdAt||x.created_at||0).getTime()||0;return items.sort((a,b)=>publicState.sort==='oldest'?time(a)-time(b):publicState.sort==='popular'?Number(b.likesCount||b.likes_count||0)-Number(a.likesCount||a.likes_count||0):publicState.sort==='title_asc'?String(a.title||'').localeCompare(String(b.title||''),'ru'):time(b)-time(a));}
