@@ -586,13 +586,10 @@ function kareta_master_availability_save(PDO $pdo,array $b): void {
     $master=kareta_master_workplace_profile($pdo);$mid=(string)$master['id'];
     $status=strtolower(trim((string)($b['status']??'online')));
     if(!in_array($status,['online','busy','lunch','day_off'],true))kareta_json(['ok'=>false,'error'=>'invalid_master_status'],422);
+    // The quick availability switch is transient. Do not create or overwrite a
+    // dated schedule row: doing so destroys custom hours, explicit days off and
+    // notes. Today's day_off is applied read-only by schedule_day_bounds().
     $pdo->prepare("UPDATE masters SET availability=? WHERE id=?")->execute([$status,$mid]);
-    if(kareta_table_exists($pdo,'master_schedules')){
-        $id='msh_'.substr(md5($mid.'|'.date('Y-m-d')),0,16);
-        $dayOff=$status==='day_off'?1:0;
-        $note=$status==='lunch'?'Обед':($status==='busy'?'Занят':($status==='online'?'Очередь свободна':'Выходной'));
-        $pdo->prepare("INSERT INTO master_schedules(id,master_id,work_date,start_time,end_time,is_day_off,note) VALUES(?,?,CURDATE(),'09:00:00','18:00:00',?,?) ON DUPLICATE KEY UPDATE is_day_off=VALUES(is_day_off),note=VALUES(note),updated_at=CURRENT_TIMESTAMP")->execute([$id,$mid,$dayOff,$note]);
-    }
     kareta_json(['ok'=>true,'status'=>$status,'label'=>kareta_master_availability_label($status)]);
 }
 function kareta_master_schedule_preferences(PDO $pdo, string $masterId): array {
@@ -660,6 +657,16 @@ function kareta_master_schedule_day_bounds(PDO $pdo,string $masterId,string $dat
     if(kareta_table_exists($pdo,'master_schedules')){$q=$pdo->prepare("SELECT start_time,end_time,is_day_off,note FROM master_schedules WHERE BINARY master_id=BINARY ? AND work_date=? LIMIT 1");$q->execute([$masterId,$date]);$explicit=$q->fetch(PDO::FETCH_ASSOC)?:[];}
     if($explicit){$start=substr((string)($explicit['start_time']??$start),0,5);$end=substr((string)($explicit['end_time']??$end),0,5);$dayOff=!empty($explicit['is_day_off']);$note=(string)($explicit['note']??'');$source='exception';}
     elseif(function_exists('kareta_master_weekly_shift_for_date')){$weekly=kareta_master_weekly_shift_for_date($pdo,$masterId,$date);$start=substr((string)($weekly['startTime']??$start),0,5);$end=substr((string)($weekly['endTime']??$end),0,5);$dayOff=!empty($weekly['isDayOff']);$note=(string)($weekly['note']??'');$source='weekly';}
+    // A live 'Выходной' blocks today's slots without mutating dated schedule
+    // exceptions. Switching back restores the original working hours/notes.
+    if($date===date('Y-m-d')){
+        $q=$pdo->prepare("SELECT availability FROM masters WHERE BINARY id=BINARY ? LIMIT 1");
+        $q->execute([$masterId]);
+        if(strtolower((string)($q->fetchColumn()?:''))==='day_off'){
+            $dayOff=true;
+            $source.='+availability';
+        }
+    }
     if($dayOff){$start=$start?:'09:00';$end=$end?:'18:00';}
     $extension=[];if(!$dayOff&&function_exists('kareta_master_shift_extension_for_date')){$extension=kareta_master_shift_extension_for_date($pdo,$masterId,$date);$extended=substr((string)($extension['endTime']??''),0,5);if(preg_match('/^\d{2}:\d{2}$/',$extended)&&$extended>$end){$end=$extended;$source.='+extension';$note=trim($note.($note!==''?' · ':'').($extension['note']??'Продление смены'));}}
     try{$from=new DateTimeImmutable($date.' '.$start);$to=new DateTimeImmutable($date.' '.$end);}catch(Throwable $_){$from=new DateTimeImmutable($date.' 09:00');$to=new DateTimeImmutable($date.' 18:00');}

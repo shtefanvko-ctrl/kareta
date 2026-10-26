@@ -1,0 +1,26 @@
+name: Master availability schedule guard
+on:
+  pull_request:
+    paths:
+      - 'api/master_workplace.php'
+      - 'tools/test_master_availability_schedule_isolation_20261027.php'
+      - '.github/workflows/master-availability-schedule-guard.yml'
+  workflow_dispatch:
+jobs:
+  schedule-isolation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - name: PHP syntax
+        run: |
+          php -l api/master_workplace.php
+          php -l tools/test_master_availability_schedule_isolation_20261027.php
+      - name: Availability and schedule isolation
+        run: php tools/test_master_availability_schedule_isolation_20261027.php
