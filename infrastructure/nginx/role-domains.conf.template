@@ -1,0 +1,41 @@
+# KARETA role-domain v1. Inject into the existing trusted nginx http{} context only
+# after Cloudflare DNS/Tunnel, session/SSO and DB gates pass. NOT automatically installed.
+# All hosts use the existing SPA root in this first compatibility release;
+# host affinity is not a security boundary; backend context/capability checks remain mandatory.
+server {
+    listen 127.0.0.1:9091;
+    server_name client.kareta.kz work.kareta.kz works.kareta.kz shop.kareta.kz;
+    root __RELEASE_ROOT__;
+    index index.php;
+    charset utf-8;
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-Frame-Options SAMEORIGIN always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+    location ~ (^|/)\. { return 404; }
+    location ~* ^/(docs|tools|ai|storage|inc|infrastructure|Анализ|print-banners)(/|$) { return 404; }
+    location ~* \.(md|sql|log|bak|orig|ini|sh|env|pem|key|lock|txt)$ { return 404; }
+    location = /config.php { return 404; }
+    location = /config.private.php { return 404; }
+    location ~* ^/api/(deploy_check|post_deploy_check)\.php$ { return 404; }
+    location ~ ^/api/context/(list|current|select)/?$ {
+        rewrite ^/api/context/(list|current|select)/?$ /api/context.php?action=$1 last;
+    }
+    location ~ ^/api/capabilities/(current|check)/?$ {
+        rewrite ^/api/capabilities/(current|check)/?$ /api/capabilities.php?action=$1 last;
+    }
+    location ~ ^/api/identity/session/?$ {
+        rewrite ^/api/identity/session/?$ /api/identity_session.php last;
+    }
+    location = /sw.js { add_header Cache-Control "no-store" always; try_files $uri =404; }
+    location = /manifest.json { try_files $uri =404; }
+    location / { try_files $uri $uri/ /index.php?$query_string; }
+    location ~ \.php$ {
+        try_files $uri =404;
+        include __FASTCGI_PARAMS__;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param HTTP_PROXY "";
+        fastcgi_pass unix:__PHP_FPM_SOCKET__;
+        fastcgi_connect_timeout 3s;
+        fastcgi_read_timeout 30s;
+    }
+}

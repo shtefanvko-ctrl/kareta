@@ -2,6 +2,9 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/inc/web_guard.php';
+require_once __DIR__ . '/inc/domain_surface.php';
+$domainSurface = kareta_domain_surface_for_host((string)($_SERVER['HTTP_HOST'] ?? ''));
+if ($domainSurface !== null) header('X-Kareta-App-Surface: ' . $domainSurface['surface']);
 
 $geoMapConfig = defined('KARETA_GEO_MAP') && is_array(KARETA_GEO_MAP) ? KARETA_GEO_MAP : [];
 $geoTileUrl = trim((string)($geoMapConfig['tile_url'] ?? 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'));
@@ -87,7 +90,7 @@ foreach (['png','webp'] as $candidateExt) {
 $referenceAssetsReady = $referenceAssetsExt !== '';
 ?>
 <!doctype html>
-<html lang="ru" data-kareta-front="next" data-reference-assets="<?= $referenceAssetsReady ? '1' : '0' ?>" data-reference-assets-ext="<?= htmlspecialchars($referenceAssetsExt, ENT_QUOTES, 'UTF-8') ?>">
+<html lang="ru" data-kareta-front="next" data-kareta-domain-app="<?= htmlspecialchars((string)($domainSurface['surface'] ?? 'legacy'), ENT_QUOTES, 'UTF-8') ?>" data-reference-assets="<?= $referenceAssetsReady ? '1' : '0' ?>" data-reference-assets-ext="<?= htmlspecialchars($referenceAssetsExt, ENT_QUOTES, 'UTF-8') ?>">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -251,6 +254,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
   <script>
     window.KARETA_NEXT_ASSET_VERSION = <?= json_encode($assetVersion, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
     window.KARETA_FRONTEND_MODE = 'next';
+    window.KARETA_DOMAIN_SURFACE = <?= json_encode($domainSurface, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>;
     window.KARETA_ASSET_MANIFEST_URL = '/asset_manifest.php?v=' + encodeURIComponent(window.KARETA_NEXT_ASSET_VERSION);
     window.KARETA_GEO_MAP_CONFIG = Object.freeze(<?= json_encode($geoMapPublicConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>);
   </script>
