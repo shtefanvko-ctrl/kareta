@@ -42,5 +42,9 @@ jobs:
         run: php tools/test_migration_contract.php
       - name: Data Core migration guard regression tests
         run: php tools/test_data_core_migration_guard.php
+      - name: Data Core risk inventory regression tests
+        run: php tools/test_data_core_migration_risks.php
+      - name: Data Core risk inventory (source only)
+        run: php tools/check_data_core_migration_risks.php --check
       - name: Data Core manifest alignment (fail closed)
         run: php tools/check_data_core_migrations.php
