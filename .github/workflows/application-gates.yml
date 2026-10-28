@@ -61,6 +61,9 @@ jobs:
       - name: Boot bundle freshness
         run: node tools/build_boot_js_bundles.js --check
 
+      - name: Onboarding deep-link session recovery
+        run: node tools/test_recovery_onboarding_hash_20261028.js
+
       - name: Migration manifest integrity
         run: php tools/test_release_migration_manifest.php
 

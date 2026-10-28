@@ -45,6 +45,14 @@
   }
 
   function rebuildRoleSurface(source){
+    // The onboarding lifecycle owns #role:..., #onboarding:... and #entry:... URLs.
+    // Identity recovery must not reinterpret them as a missing SPA route and
+    // replace the customer's selected registration branch with #/home.
+    const hash=String(location.hash||'');
+    if(window.KaretaOnboardingBridge?.isOnboardingHash?.(hash)===true || window.KaretaOnboardingRouter?.isOnboarding?.(hash)===true){
+      log('onboarding-route-preserved',{source,route:hash});
+      return hash;
+    }
     const navigation=window.KaretaNavigationCore;
     navigation?.refreshAll?.({ source, redirect:false });
     window.KaretaContextManager?.render?.();
