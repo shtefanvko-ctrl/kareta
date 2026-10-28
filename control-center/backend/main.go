@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
@@ -12,6 +13,7 @@ import (
 )
 
 type systemInfo struct {
+	CPUCores             int      `json:"cpuCores"`
 	Hostname             string   `json:"hostname"`
 	MemoryTotalBytes     *uint64  `json:"memoryTotalBytes"`
 	MemoryAvailableBytes *uint64  `json:"memoryAvailableBytes"`
@@ -50,7 +52,7 @@ func parseMeminfo(data []byte) (*uint64, *uint64) {
 }
 
 func readSystem() systemInfo {
-	result := systemInfo{Timestamp: time.Now().UTC().Format(time.RFC3339)}
+	result := systemInfo{Timestamp: time.Now().UTC().Format(time.RFC3339), CPUCores: runtime.NumCPU()}
 	result.Hostname, _ = os.Hostname()
 	if b, err := os.ReadFile("/proc/meminfo"); err == nil {
 		result.MemoryTotalBytes, result.MemoryAvailableBytes = parseMeminfo(b)
@@ -73,9 +75,15 @@ func readSystem() systemInfo {
 }
 
 func routes() http.Handler {
+	return fleetRoutes(newFleet(nil, ""))
+}
+
+func fleetRoutes(f *fleet) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/health", func(w http.ResponseWriter, r *http.Request) { jsonResponse(w, map[string]string{"status": "ok"}) })
 	mux.HandleFunc("GET /api/system", func(w http.ResponseWriter, r *http.Request) { jsonResponse(w, readSystem()) })
+	mux.HandleFunc("GET /api/fleet", f.overview)
+	mux.HandleFunc("POST /api/tasks", f.submit)
 	return localOnly(mux)
 }
 
@@ -100,7 +108,7 @@ func localOnly(next http.Handler) http.Handler {
 			http.Error(w, "cross-site request forbidden", http.StatusForbidden)
 			return
 		}
-		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead && !(r.Method == http.MethodPost && r.URL.Path == "/api/tasks") {
 			w.Header().Set("Allow", "GET, HEAD")
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return
@@ -122,7 +130,15 @@ func newServer() *http.Server {
 }
 
 func main() {
+	if len(os.Args) == 2 && os.Args[1] == "--agent" {
+		log.Fatal(runAgent())
+	}
+	f, err := configuredFleet()
+	if err != nil {
+		log.Fatal(err)
+	}
 	server := newServer()
+	server.Handler = fleetRoutes(f)
 	log.Printf("KARETA Control Center API on http://%s", server.Addr)
 	log.Fatal(server.ListenAndServe())
 }

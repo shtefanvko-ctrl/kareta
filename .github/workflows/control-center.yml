@@ -36,6 +36,10 @@ jobs:
           go test -race -count=1 ./...
           go vet ./...
           go build ./...
+      - name: Real local agent integration and restart recovery
+        run: |
+          go build -C control-center/backend -o "$RUNNER_TEMP/carat-control" .
+          python3 control-center/scripts/test-fleet-integration.py --binary "$RUNNER_TEMP/carat-control"
       - name: Go vulnerability scan
         working-directory: control-center/backend
         run: |
