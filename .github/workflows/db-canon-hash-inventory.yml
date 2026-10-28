@@ -40,3 +40,7 @@ jobs:
           }'
       - name: PHP migration contract
         run: php tools/test_migration_contract.php
+      - name: Data Core migration guard regression tests
+        run: php tools/test_data_core_migration_guard.php
+      - name: Data Core manifest alignment (fail closed)
+        run: php tools/check_data_core_migrations.php
