@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "purpose": "source-only migration 138-144 risk registry; NOT approval to execute",
+  "entries": [
+    {
+      "version": 138,
+      "file": "138_account_type_profile_lifecycle.php",
+      "sha256": "8b242351e9aca282beb267a598b71a9eef245777037a1c1b8cc4879cfe24eef6",
+      "risk": "HIGH",
+      "domain": "Identity",
+      "reason": "Bulk account-type membership/status backfill; profile lifecycle status and publication rewrites",
+      "tables": [
+        "accounts",
+        "person_profiles",
+        "account_types"
+      ],
+      "manualReviewRequired": true
+    },
+    {
+      "version": 139,
+      "file": "139_client_first_entry_daily_prompt.php",
+      "sha256": "81b90df9aa113be68ec2c4df88743a9bf42e9368a9eea6e6922b632b274bfd06",
+      "risk": "MEDIUM",
+      "domain": "Client",
+      "reason": "ALTER first-entry table and create per-day prompt state; verify columns and index uniqueness",
+      "tables": [
+        "client_first_entry_state",
+        "account_entry_prompt_state"
+      ],
+      "manualReviewRequired": true
+    },
+    {
+      "version": 140,
+      "file": "140_identity_schema_reconciliation.php",
+      "sha256": "768e5292e97c0982381f547f91eb2de6c6e7052c3d512d9e191ad9844d2ae325",
+      "risk": "CRITICAL",
+      "domain": "Identity",
+      "reason": "Replays migration builders 072,128,129,138; replay may overwrite onboarding and role/profile state",
+      "tables": [
+        "accounts",
+        "person_profiles",
+        "master_onboarding_state",
+        "client_first_entry_state",
+        "account_types"
+      ],
+      "manualReviewRequired": true
+    },
+    {
+      "version": 141,
+      "file": "141_master_first_entry_three_steps.php",
+      "sha256": "2a2e10cdf60ed7017bb2853214e6b8a8c5f60f695f766ad5202048e3d3c86768",
+      "risk": "MEDIUM",
+      "domain": "Specialist",
+      "reason": "Bulk master onboarding step and view normalization",
+      "tables": [
+        "master_onboarding_state"
+      ],
+      "manualReviewRequired": true
+    },
+    {
+      "version": 142,
+      "file": "142_client_first_entry_three_steps.php",
+      "sha256": "6937d80206b6e3db546c824ed1a38624a4f8eb434c20dbd793c866ce849ffe37",
+      "risk": "HIGH",
+      "domain": "Client",
+      "reason": "Non-idempotent step compression: rerun can move draft step 3 to 2 to 1",
+      "tables": [
+        "client_first_entry_state"
+      ],
+      "manualReviewRequired": true
+    },
+    {
+      "version": 143,
+      "file": "143_master_navigation_capabilities.php",
+      "sha256": "a23b9826035422aee4710da396bb7f6f024eaddc46c1721bae582b6f811ef1e0",
+      "risk": "HIGH",
+      "domain": "Specialist",
+      "reason": "Upserts allow capabilities services.manage and profile.read; authorization privilege changes",
+      "tables": [
+        "capability_sets",
+        "capabilities"
+      ],
+      "manualReviewRequired": true
+    },
+    {
+      "version": 144,
+      "file": "144_vehicle_catalog_stable_ids.php",
+      "sha256": "53929335a512fe143364d74dadf3e508c75a95b59373a14f2985a121b57a1216",
+      "risk": "HIGH",
+      "domain": "Client",
+      "reason": "Creates vehicle catalog, upserts seed records, backfills client vehicle catalog IDs",
+      "tables": [
+        "client_vehicles",
+        "vehicle_catalog_brands",
+        "vehicle_catalog_models",
+        "vehicle_catalog_generations"
+      ],
+      "manualReviewRequired": true
+    }
+  ]
+}
