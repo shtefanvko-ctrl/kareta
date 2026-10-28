@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
+import Fleet from './Fleet.vue'
 type System = { hostname: string; memoryTotalBytes: number|null; memoryAvailableBytes: number|null; load1: number|null; diskTotalBytes: number|null; diskFreeBytes: number|null; timestamp: string }
 const info = ref<System|null>(null)
 const error = ref('')
@@ -31,7 +32,7 @@ onUnmounted(() => { if(timer) clearInterval(timer); controller?.abort() })
 <template>
 <main>
 <header><div><small>LOCAL · UBUNTU</small><h1>🚘 KARETA <span>CONTROL CENTER</span></h1></div><div class="badge" :class="{offline:!!error}">{{ error ? '● OFFLINE' : info ? '● ONLINE' : '◌ CONNECTING' }}</div></header>
-<p class="sub">Карта системы · Мониторинг в реальном времени · Только чтение</p>
+<p class="sub">Карта системы · Мониторинг в реальном времени · Диагностика машин</p>
 <div v-if="error" role="alert" class="alert">Нет соединения с локальным Go API: {{error}}</div>
 <section class="grid">
 <article><div class="icon">🖥️</div><h2>СИСТЕМА</h2><p>Хост: {{info?.hostname ?? '—'}}</p><p>Load average (1 мин): <b>{{info?.load1 ?? '—'}}</b></p><p class="hint">Не процент загрузки CPU</p></article>
@@ -41,6 +42,7 @@ onUnmounted(() => { if(timer) clearInterval(timer); controller?.abort() })
 <article class="disabled"><div class="icon">🦙</div><h2>OLLAMA</h2><p>Локальные модели</p><p class="hint">Подключение в следующем инкременте</p></article>
 <article class="disabled"><div class="icon">🚘</div><h2>KARETA</h2><p>GitHub · PHP · MySQL</p><p class="hint">Подключение в следующем инкременте</p></article>
 </section>
+<Fleet />
 <footer>Обновление каждые 3 секунды · {{info?.timestamp ?? 'Нет данных'}} · Без системных команд</footer>
 </main>
 </template>
