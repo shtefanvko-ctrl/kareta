@@ -8,7 +8,11 @@ function ao_out(array $v,int $s=200):never{http_response_code($s);echo json_enco
 function ao_body():array{$raw=file_get_contents('php://input');$v=json_decode($raw?:'{}',true);return is_array($v)?$v:[];}
 function ao_admin(PDO $pdo):array{
  $legacy=function_exists('kareta_current_user')?kareta_current_user():null;
- try{$decision=kareta_authorize($pdo,'*',[],is_array($legacy)?$legacy:null);return ['account'=>(int)($decision->accountId??0),'user'=>(int)($legacy['id']??0)];}
+ try{
+    $decision=kareta_authorize($pdo,'*',[],is_array($legacy)?$legacy:null);
+    if (!kareta_is_global_admin_decision($pdo,$decision)) ao_out(['ok'=>false,'error'=>'admin_required'],403);
+    return ['account'=>(int)($decision->accountId??0),'user'=>(int)($legacy['id']??0)];
+ }
  catch(DomainException $e){if(!in_array($e->getMessage(),['session_required','identity_account_unavailable'],true))ao_out(['ok'=>false,'error'=>$e->getMessage()],403);}
  catch(Throwable $e){ao_out(['ok'=>false,'error'=>'admin_identity_resolution_failed'],500);}
  $role=strtolower((string)($legacy['role']??''));if(!in_array($role,['admin','owner'],true))ao_out(['ok'=>false,'error'=>'admin_required'],403);return ['account'=>0,'user'=>(int)($legacy['id']??0)];
