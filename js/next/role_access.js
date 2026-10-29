@@ -21,11 +21,17 @@
 
   const CLIENT_ONLY_ROUTES = new Set(['cabinetGarage','cabinetData','cabinetHistory','cabinetDocuments','cabinetPromos']);
   const SESSION_ONLY_ROUTES = new Set(['notifications','following']);
+  // UI-only anonymous preview; backend authorization remains authoritative.
+  const GUEST_PUBLIC_ROUTES = new Set(['home','works','community','services','masters','parts','realWorks','usedParts','productDetail','serviceDetail','providerDetail','providerReviews','workDetail','about','rules','help','privacy','contacts']);
   let forcedLegacyRole = '';
   const identitySnapshot = () => window.KaretaIdentity?.snapshot?.() || { authenticated:false, mode:'anonymous' };
   const identityActive = () => {
     const snapshot = identitySnapshot();
     return snapshot.authenticated === true && snapshot.mode === 'identity';
+  };
+  const guestPreviewActive = () => {
+    if(identityActive())return false;
+    try{return ['kareta.kz','www.kareta.kz','s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname)&&sessionStorage.getItem('kareta.guest.preview.v1')==='1';}catch(_error){return false;}
   };
   function normalizeRole(value){
     const role=String(value||'').trim().toLowerCase();
@@ -64,6 +70,7 @@
     const key=String(routeKey||'');
     const normalizedRole=normalizeRole(role);
     if (!registry.has(key)) return false;
+    if (guestPreviewActive()) return GUEST_PUBLIC_ROUTES.has(key);
     if (key === 'masterQr') return normalizedRole === 'master';
     if (['scanner','scannerQr','scannerDocument'].includes(key)) return ['client','master'].includes(normalizedRole);
     if (SESSION_ONLY_ROUTES.has(key) && !hasProtectedSession()) return false;
@@ -86,7 +93,7 @@
   function keys(surface='desktop', role=currentRole()){
     if (identityActive()) return dynamic()?.items?.(surface==='routes'?'desktop':surface) || [];
     const p=policy(role);
-    return [...(surface==='mobile'?p.mobile:p.desktop)].filter(registry.has);
+    return [...(surface==='mobile'?p.mobile:p.desktop)].filter(key=>registry.has(key)&&(!guestPreviewActive()||GUEST_PUBLIC_ROUTES.has(key)));
   }
   function hasCapability(capability){ return identityActive() && window.KaretaIdentity?.has?.(capability)===true; }
   function refresh(role){
