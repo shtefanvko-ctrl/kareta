@@ -12,8 +12,8 @@
   }
 
   const guestActive=()=>{
-    if(!['s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname))return false;
-    try{return sessionStorage.getItem('kareta.guest.preview.v1')==='1';}catch(_error){return false;}
+    if(!['kareta.kz','www.kareta.kz','s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname))return false;
+    try{return sessionStorage.getItem('kareta.guest.preview.v1')==='1'&&window.KaretaIdentity?.snapshot?.()?.authenticated!==true;}catch(_error){return false;}
   };
   const OVERLAY_STEPS = Object.freeze(['welcome','role','profile','code']);
   let booted = false;
