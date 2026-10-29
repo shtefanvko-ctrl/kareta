@@ -219,7 +219,16 @@ if (!defined('KARETA_CONFIG_LOADED')) {
     if (!in_array($kareta_account_type_approval_mode, ['test_auto','admin_review'], true)) {
         $kareta_account_type_approval_mode = 'admin_review';
     }
-    if ($kareta_is_production) {
+    // Main-domain enrollment and shared staging storage must not auto-approve
+    // professional accounts. The public opt-in disables test_auto globally
+    // while all public hostnames still share the same database.
+    $kareta_otp_public_role_guard = filter_var(kareta_config_value(
+        'KARETA_OTP_HERMES_PUBLIC_ENABLED', 'otp_hermes_public_enabled', false
+    ), FILTER_VALIDATE_BOOLEAN);
+    $kareta_role_guard_host = strtolower(preg_replace('/:[0-9]+$/', '',
+        (string)($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? '')) ?? '');
+    if ($kareta_is_production || $kareta_otp_public_role_guard ||
+        in_array($kareta_role_guard_host, ['kareta.kz','www.kareta.kz'], true)) {
         $kareta_account_type_approval_mode = 'admin_review';
     }
     define('KARETA_ACCOUNT_TYPE_APPROVAL_MODE', $kareta_account_type_approval_mode);
