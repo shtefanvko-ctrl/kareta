@@ -44,3 +44,23 @@ for (const s of scenarios) {
  console.log(`PASS ${s.name}: ${data.transport}`);
 }
 console.log('PASS: six host/transport safety gates; no database/no OTP delivery');
+// Check Cloudflare Tunnel per-client throttling independently of database or OTP delivery.
+const peerPHP=`
+require getenv('QA_ROOT').'/api/identity/challenge_service.php';
+$_SERVER['REMOTE_ADDR']=getenv('QA_PEER');
+$_SERVER['HTTP_CF_CONNECTING_IP']=getenv('QA_CF_IP');
+$c=new ReflectionClass(KaretaChallengeService::class);
+$s=$c->newInstanceWithoutConstructor();
+echo $c->getMethod('rateLimitPeer')->invoke($s);`;
+for (const [peer,cf,expected] of [
+ ['127.0.0.1','198.51.100.34','198.51.100.34'],
+ ['::1','2001:db8::42','2001:db8::42'],
+ ['127.0.0.1','not-an-ip','127.0.0.1'],
+ ['192.0.2.10','198.51.100.34','192.0.2.10'],
+]) {
+ const p=spawnSync('php',['-r',peerPHP],{encoding:'utf8',env:{...process.env,QA_ROOT:root,QA_PEER:peer,QA_CF_IP:cf}});
+ assert.equal(p.status,0,p.stderr);
+ assert.equal(p.stdout,expected,`peer guard failed: ${peer}`);
+}
+console.log('PASS: four Cloudflare peer trust tests; no database/no OTP delivery');
+
