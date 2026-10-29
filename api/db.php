@@ -317,7 +317,7 @@ switch ($action) {
 
     case 'orders.getAll':     kareta_require_any_role(['client','master','sto','seller','admin','owner']); orders_getAll($pdo,$body); break;
     case 'orders.get':        kareta_require_any_role(['client','master','sto','seller','admin','owner']); orders_get($pdo,$body); break;
-    case 'orders.create':     kareta_require_any_role(['client','master','sto','seller','admin','owner']); kareta_idempotency_begin($pdo,$action,$body); orders_create($pdo,$body); break;
+    case 'orders.create':     if(!$pdo)_no_db(); kareta_require_api_session($pdo,['client','master','sto','seller','admin','owner']); kareta_idempotency_begin($pdo,$action,$body); orders_create($pdo,$body); break;
     case 'orders.claim':        kareta_require_any_role(['admin','owner']); orders_claim($pdo,$body);         break;
     case 'orders.releaseClaim': kareta_require_any_role(['admin','owner']); orders_release_claim($pdo,$body); break;
     // Биржа заявок: мастер сам берёт/возвращает заявки
@@ -3552,7 +3552,8 @@ function parts_request_save_offer(?PDO $pdo, array $b): void {
 function orders_create(?PDO $pdo, array $b): void {
     if (!$pdo) _no_db();
     $o = $b['order'] ?? $b;
-    $actorUser = kareta_session_user() ?: [];
+    // Canonical Identity is authoritative even without a legacy PHP session.
+    $actorUser = kareta_resolve_api_actor($pdo);
     $createScope = kareta_order_scope($pdo);
     $actorRole = kareta_normalize_role((string)($createScope['role'] ?? $actorUser['role'] ?? 'guest'));
     if ($actorRole === 'master') {
