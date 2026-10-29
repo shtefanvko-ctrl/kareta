@@ -44,32 +44,51 @@
     return targetForRole(resolved?.role||user?.entry_role||user?.role||flow?.entryRole||flow?.role||'client');
   }
 
+  // Server Identity context and live onboarding status decide MASTER's first route;
+  // never trust cached legacy role or a previous postAuth status for work access.
+  async function ensureMasterContextAfterAuth(){
+    const api=window.KaretaIdentity;
+    let snapshot=await api?.load?.({force:true}) || api?.snapshot?.() || null;
+    if(!snapshot?.authenticated)throw Object.assign(new Error('Identity session required'),{code:'session_required'});
+    if(identityContextRole({currentContext:snapshot.context})!=='master'){
+      const master=(snapshot?.contexts||[]).find(ctx=>identityContextRole({currentContext:ctx})==='master');
+      if(master&&api?.select)snapshot=await api.select(master.id||master.key);
+    }
+    if(!snapshot?.authenticated||identityContextRole({currentContext:snapshot.context})!=='master'){
+      throw Object.assign(new Error('Контекст мастера не активирован'),{code:'master_context_not_selected'});
+    }
+    return snapshot;
+  }
+
   async function authoritativeTargetAfterAuth(result,flow,user){
-    const role=String(user?.entry_role||user?.role||flow?.entryRole||flow?.role||'').toLowerCase();
+    const role=String(window.KaretaPostAuthFirstEntryResolver?.role?.(result,flow,user)
+      || user?.entry_role||flow?.entryRole||flow?.role||user?.role||'client').toLowerCase();
     if(role==='client'){
-      let target='#/home';
       try{
         let snap=window.KaretaIdentity?.snapshot?.()||null;
         if(!snap?.loaded&&window.KaretaIdentity?.load)snap=await window.KaretaIdentity.load({allowLegacyBridge:true,legacyUser:user});
-        const activeRole=identityContextRole({currentContext:snap?.context});
-        if(activeRole!=='client'){
-          const personal=(snap?.contexts||[]).find(ctx=>String(ctx?.type||ctx?.contextType||'').toLowerCase()==='personal');
-          if(personal&&window.KaretaIdentity?.select){
-            snap=await window.KaretaIdentity.select(personal.id||personal.key);
-          }
+        if(identityContextRole({currentContext:snap?.context})!=='client'){
+          const personal=(snap?.contexts||[]).find(ctx=>identityContextRole({currentContext:ctx})==='client');
+          if(personal&&window.KaretaIdentity?.select)await window.KaretaIdentity.select(personal.id||personal.key);
         }
-        target='#/home';
-      }catch(_clientContextError){
-        console.warn('[KARETA onboarding] client context self-heal failed',_clientContextError);
+      }catch(_error){
+        console.warn('[KARETA onboarding] client context recovery failed',_error);
       }
-      return target;
+      return '#/home';
     }
     const target=targetAfterAuth(result,flow,user);
     if(role!=='master')return target;
+    await ensureMasterContextAfterAuth();
     const gate=window.KaretaMasterOnboardingGate;
-    if(!gate?.ensureCompleted)return '#/onboarding/master';
-    const allowed=await gate.ensureCompleted({redirect:false,source:'post-auth'});
-    return allowed?target:'#/onboarding/master';
+    // Missing or failing live API status is never proof of completed onboarding.
+    if(!gate?.check)return '#/onboarding/master?step=1&view=master-profile';
+    let current=null;
+    try{current=await gate.check({redirect:false,source:'post-auth'});}catch(_error){}
+    if(String(current?.status||'')==='completed')return '#/master';
+    const step=Math.max(1,Math.min(4,Number(current?.currentStep||current?.draft?.currentStep||1)||1));
+    const view=String(current?.currentView||current?.draft?.currentView
+      ||({1:'master-profile',2:'master-services',3:'master-work-place',4:'master-review'}[step]));
+    return '#/onboarding/master?step='+step+'&view='+encodeURIComponent(view);
   }
 
   function confirmedUser(result, flow){
@@ -203,3 +222,5 @@
   function audit(){ return { ok:!!(state && router && api), done:state.isDone(), route:router.parse(), finalizing:!!finalizing, flow:draft.read(), draft:draft.audit() }; }
   window.KaretaOnboardingApp = Object.freeze({ finalize, setActive, targetForRole, targetAfterAuth, authoritativeTargetAfterAuth, synchronizeSession, refreshNextState, audit });
 })();
+
+[executed on device: KaretaMeneger (aee288ef-382f-43d6-933b-f16fb6b5c0bd)]
