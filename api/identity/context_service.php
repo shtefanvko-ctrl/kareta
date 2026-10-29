@@ -90,7 +90,7 @@ final class KaretaIdentityContextService
     public function listAccountTypes(int $accountId, ?array $contexts=null): array
     {
         $contexts = is_array($contexts) ? $contexts : $this->listContexts($accountId);
-        $stmt=$this->pdo->prepare("SELECT u.id,u.role FROM accounts a LEFT JOIN users u ON u.phone=a.phone WHERE a.id=? LIMIT 1");
+        $stmt=$this->pdo->prepare("SELECT u.id,u.role FROM accounts a LEFT JOIN users u ON u.phone=a.phone AND u.active=1 WHERE a.id=? LIMIT 1");
         $stmt->execute([$accountId]);
         $legacy=$stmt->fetch(PDO::FETCH_ASSOC)?:[];
         $userId=(int)($legacy['id']??0);
@@ -151,6 +151,22 @@ final class KaretaIdentityContextService
                 'contextId'=>(int)($context['id']??0)?:null,'contextKey'=>(string)($context['key']??''),
                 'applicationStatus'=>$applicationStatus,'applicationUpdatedAt'=>$application['updated_at']??null,
             ];
+        }
+        // Global admin binding is server-derived from an active legacy admin identity.
+        // Business organization.owner has its own '*' but must never mint this binding.
+        if (in_array(strtolower((string)($legacy['role'] ?? '')), ['admin','owner'], true)) {
+            foreach ($contexts as $personalContext) {
+                if (($personalContext['type'] ?? '') !== 'personal') continue;
+                $personalId=(int)($personalContext['id'] ?? 0);
+                if ($personalId <= 0) continue;
+                $result[]=[
+                    'role'=>'admin','label'=>'Администратор','icon'=>'shield','status'=>'active',
+                    'statusLabel'=>'Доступен','description'=>'Глобальный администратор',
+                    'contextId'=>$personalId,'contextKey'=>(string)($personalContext['key'] ?? ''),
+                    'applicationStatus'=>'','applicationUpdatedAt'=>null,'internal'=>true,
+                ];
+                break;
+            }
         }
         return $result;
     }
