@@ -22,7 +22,7 @@
   }
   function snapshot(){return state;}
   function patch(values,type='change'){state={...state,...values};emit(type,values);return state;}
-  function setFeedMode(mode){return patch({feedMode:['recommended','subscriptions','nearby'].includes(mode)?mode:'recommended'},'feed-mode');}
+  function setFeedMode(mode){return patch({feedMode:['recommended','subscriptions','nearby','sto'].includes(mode)?mode:'recommended'},'feed-mode');}
   function rememberScroll(route,y){state.scrollByRoute={...state.scrollByRoute,[route]:Math.max(0,Number(y)||0)};emit('scroll',{route,y:state.scrollByRoute[route]});}
   function scrollFor(route){return Number(state.scrollByRoute?.[route]||0);}
   function toggleSet(field,id){const values=new Set(Array.isArray(state[field])?state[field]:[]);values.has(id)?values.delete(id):values.add(id);state={...state,[field]:[...values]};emit(field,{id,active:values.has(id)});return values.has(id);}
