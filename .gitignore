@@ -24,3 +24,10 @@ config.private.php*
 storage/logs/
 storage/backups/
 /storage/deployment_manifest.json
+
+# Never publish private runtime data and temporary release artifacts
+/storage/private/
+/downloads/*-debug.apk
+*.before-*
+*.pre-*
+*.backup-*
