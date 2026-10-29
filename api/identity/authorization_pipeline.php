@@ -90,6 +90,18 @@ final class KaretaAuthorizationPipeline
     }
 }
 
+// An organization-scoped '*' is not global administrative authority.
+// Both the authoritative legacy role AND the personal identity context must match.
+function kareta_is_global_admin_decision(PDO $pdo, KaretaAuthorizationDecision $decision): bool
+{
+    if (($decision->context['type'] ?? $decision->context['contextType'] ?? '') !== 'personal') return false;
+    if ($decision->accountId <= 0 || $decision->contextId <= 0) return false;
+    $stmt=$pdo->prepare("SELECT LOWER(u.role) FROM accounts a JOIN users u ON u.phone=a.phone
+        WHERE a.id=? AND u.active=1 LIMIT 1");
+    $stmt->execute([$decision->accountId]);
+    return in_array((string)($stmt->fetchColumn() ?: ''), ['admin','owner'], true);
+}
+
 function kareta_authorize(PDO $pdo,string $capability,array $resource=[],?array $legacyUser=null): KaretaAuthorizationDecision
 {
     $pipeline=new KaretaAuthorizationPipeline($pdo);

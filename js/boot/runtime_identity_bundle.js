@@ -330,7 +330,16 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
   }
 
   function compatibilityRole(context = state.context) {
-    if (state.capabilities.includes('*')) return 'admin';
+    // organization.owner grants '*' only inside the business context, not global admin.
+    // Require an explicit active admin role on this personal context.
+    const personalId = Number(context?.id);
+    const validPersonalId = (typeof context?.id === 'number' || typeof context?.id === 'string') &&
+      Number.isSafeInteger(personalId) && personalId > 0;
+    const explicitAdmin = context?.type === 'personal' && validPersonalId &&
+      state.accountTypes.some(x => x?.role === 'admin' && x.status === 'active' &&
+        (typeof x.contextId === 'number' || typeof x.contextId === 'string') &&
+        Number(x.contextId) === personalId);
+    if (explicitAdmin && state.capabilities.includes('*')) return 'admin';
     if (!context) return 'client';
     if (context.type === 'profile') {
       if (context.profileType === 'master') return 'master';
