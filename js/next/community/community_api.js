@@ -52,6 +52,16 @@
   }
 
   async function getFeed({mode='recommended',limit=24,signal,force=false}={}){
+    if(mode==='sto'){
+      // The backend scopes this query to the signed-in STO organization.
+      // Do not infer ownership from a display name or client-side role.
+      try{
+        const r=await api.request(`api/db.php?action=communityPosts.list&scope=own_sto&limit=${Math.min(100,Math.max(1,limit))}`,{method:'GET',cacheTtlMs:8000,force,signal});
+        if(!r?.ok)return {ok:false,error:'sto_posts_unavailable',data:{items:[]}};
+        const rows=list(r,['items']).map(normalizeCommunity);
+        return {ok:true,data:{items:rows,hasMore:false,cursor:null,source:'sto-context'}};
+      }catch(_e){return {ok:false,error:'sto_posts_unavailable',data:{items:[]}};}
+    }
     const calls=[
       api.request(`api/db.php?action=communityPosts.list&limit=${Math.min(80,Math.max(24,limit))}`,{method:'GET',cacheTtlMs:8000,force,signal}),
       api.getWorkPosts({limit:20},{signal,force}),
@@ -79,7 +89,7 @@
     if(!online&&isProduction())return {ok:false,error:'community_sources_unavailable',data:{items:[],hasMore:false,cursor:null,source:'server-unavailable',city}};
     return {ok:true,data:{items:rows.slice(0,limit),hasMore:rows.length>limit,cursor:rows.length>limit?String(limit):null,source:isProduction()?'server':'development',city}};
   }
-  async function getPost(id){const feed=await getFeed({limit:100});return {ok:!!feed.ok,data:{post:feed.data?.items?.find(x=>x.id===id)||null}};}
+  async function getPost(id){const feed=await getFeed({limit:100});let post=feed.data?.items?.find(x=>x.id===id)||null;if(!post&&String(id).startsWith('community:')&&window.KaretaNavigationCore?.contextKind?.()==='organization_service'){const own=await getFeed({mode:'sto',limit:100});post=own.data?.items?.find(x=>x.id===id)||null;}return {ok:!!feed.ok||!!post,data:{post}};}
   async function getComments(post){if(post?.source==='workPosts'&&post.sourceId){const r=await api.getWorkPostComments(post.sourceId);return {ok:!!r?.ok,data:{items:r?.payload?.data?.items||[]}};}if(['masterWall','communityPosts'].includes(post?.source)&&post.entityKey){const r=await api.request(`api/db.php?action=masterSocialWall.comments&entityKey=${encodeURIComponent(post.entityKey)}`,{method:'GET',cacheTtlMs:0,dedupe:false});return {ok:!!r?.ok,data:{items:r?.payload?.data?.items||[]}};}return {ok:false,error:'comments_not_supported',data:{items:[]}};}
   async function addComment(post,textValue){if(post?.source==='workPosts'&&post.sourceId)return api.addWorkPostComment(post.sourceId,textValue);if(['masterWall','communityPosts'].includes(post?.source)&&post.entityKey)return api.request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'masterSocialWall.comment',entityKey:post.entityKey,text:textValue}),cacheTtlMs:0,dedupe:false});return {ok:false,payload:{error:'comments_not_supported'}};}
   async function likePost(post,value){if(post?.source==='workPosts'&&post.sourceId)return api.likeWorkPost(post.sourceId);if(['masterWall','communityPosts'].includes(post?.source)&&post.entityKey)return api.request('api/db.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'masterSocialWall.like',entityKey:post.entityKey,value}),cacheTtlMs:0,dedupe:false});return {ok:false,payload:{error:'reaction_not_supported'}};}

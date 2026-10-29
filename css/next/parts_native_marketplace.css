@@ -483,68 +483,6 @@
   }
 }
 
-/* Community desktop: explicit tracks stop late width-guards from moving the feed. */
-@media(min-width:1180px){
-  .k-community-v2 .k-community-layout-v2{
-    display:grid!important;
-    grid-template-columns:190px minmax(520px,640px) 260px!important;
-    grid-template-areas:"community-nav community-feed community-aside"!important;
-    justify-content:center!important;
-    align-items:start!important;
-    gap:18px!important;
-    width:min(100%,1144px)!important;
-    max-width:1144px!important;
-    margin:0 auto!important;
-    padding:18px 12px!important;
-  }
-  .k-community-v2 .k-community-desktop-nav{
-    grid-area:community-nav!important;
-    grid-column:auto!important;
-    width:100%!important;
-    min-width:0!important;
-  }
-  .k-community-v2 .k-flow-community-main.k-community-feed-column{
-    grid-area:community-feed!important;
-    grid-column:auto!important;
-    width:100%!important;
-    max-width:640px!important;
-    min-width:0!important;
-    justify-self:stretch!important;
-    margin:0!important;
-  }
-  .k-community-v2 .k-community-secondary{
-    grid-area:community-aside!important;
-    grid-column:auto!important;
-    display:block!important;
-    width:100%!important;
-    min-width:0!important;
-    margin:0!important;
-  }
-}
-@media(min-width:768px) and (max-width:1179px){
-  .k-community-v2 .k-community-layout-v2{
-    display:grid!important;
-    grid-template-columns:minmax(0,1fr) minmax(240px,320px)!important;
-    gap:16px!important;
-    width:min(100%,960px)!important;
-    max-width:960px!important;
-    margin:0 auto!important;
-    padding:16px!important;
-  }
-  .k-community-v2 .k-community-desktop-nav{display:none!important}
-  .k-community-v2 .k-flow-community-main.k-community-feed-column{
-    grid-column:1!important;
-    width:100%!important;
-    max-width:none!important;
-    margin:0!important;
-  }
-  .k-community-v2 .k-community-secondary{
-    grid-column:2!important;
-    width:100%!important;
-    min-width:0!important;
-  }
-}
-
 /* <=699 owns the mobile shell. The desktop rail must not consume content width. */
 @media(max-width:699px){
   html[data-user-role="client"] .k-app-shell{

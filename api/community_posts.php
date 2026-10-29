@@ -221,6 +221,23 @@ function kareta_community_posts_list(?PDO $pdo, array $input): void {
     $type = strtoupper(trim((string)($input['type'] ?? '')));
     $where = ["p.active=1", "p.visibility='public'"];
     $args = [];
+    // Own organization posts are selected by the authenticated server context,
+    // never by an organization/user ID supplied by the browser.
+    if (trim((string)($input['scope'] ?? '')) === 'own_sto') {
+        $actor = kareta_community_actor($pdo);
+        if ($actor['role'] !== 'sto' || $actor['contextId'] <= 0) {
+            kareta_json(['ok'=>false,'error'=>'sto_context_required'],403);
+        }
+        $where[] = "p.author_role='sto'";
+        if ($actor['entityId'] !== '') {
+            $where[] = "(p.author_entity_id=? OR ((p.author_entity_id IS NULL OR p.author_entity_id='') AND p.author_context_id=?))";
+            $args[] = $actor['entityId'];
+            $args[] = $actor['contextId'];
+        } else {
+            $where[] = 'p.author_context_id=?';
+            $args[] = $actor['contextId'];
+        }
+    }
     if (in_array($type, ['POST','QUESTION','NEWS'], true)) {
         $where[] = 'p.post_type=?';
         $args[] = $type;
