@@ -275,7 +275,7 @@ if (!defined('KARETA_CONFIG_LOADED')) {
         }
     }
 
-    // Only s.kareta.kz uses the temporary non-SMS test login. Unlike the old
+    // Only s.kareta.kz uses four-digit WhatsApp OTP via karetasupport. The old
     // commissioning mode, normal challenge rate limits stay enabled. SMS may be
     // activated later by an explicit private-config switch, never by fallback.
     $kareta_otp_request_host = strtolower(trim((string)($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? '')));
@@ -283,6 +283,12 @@ if (!defined('KARETA_CONFIG_LOADED')) {
     $kareta_m_staging_sms_enabled = filter_var(kareta_config_value(
         'KARETA_M_STAGING_SMS_ENABLED', 'm_staging_sms_enabled', false
     ), FILTER_VALIDATE_BOOLEAN);
+    // Explicit staging-only opt-in for the public domain while the official
+    // production WhatsApp provider is being provisioned. Disabled by default.
+    $kareta_otp_hermes_public_enabled = filter_var(kareta_config_value(
+        'KARETA_OTP_HERMES_PUBLIC_ENABLED', 'otp_hermes_public_enabled', false
+    ), FILTER_VALIDATE_BOOLEAN);
+    $kareta_otp_hermes_public_host = in_array($kareta_otp_request_host, ['kareta.kz','www.kareta.kz'], true);
     if ($kareta_otp_request_host === 's.kareta.kz') {
         $kareta_otp_temp_static_active = false;
         $kareta_otp_allow_test_fallback = false;
@@ -290,17 +296,17 @@ if (!defined('KARETA_CONFIG_LOADED')) {
             // Wrong deployment environment: do not issue codes or contact SMS.
             $kareta_otp_transport = 'disabled';
             $kareta_otp_test_code = '';
-        } elseif ($kareta_m_staging_sms_enabled) {
-            // An HTTPS provider must also be configured for delivery to work.
-            $kareta_otp_transport = 'webhook';
-            $kareta_otp_test_code = '';
         } else {
-            $kareta_otp_transport = 'test_static';
-            $kareta_otp_test_code = '0000';
+            // s.kareta.kz only: direct loopback delivery using the existing
+            // karetasupport Hermes WhatsApp bridge (never the production domain).
+            $kareta_otp_transport = 'whatsapp_hermes';
+            $kareta_otp_test_code = '';
         }
     } elseif ($kareta_environment === 'staging') {
-        // Never authorize the shared staging test code on another hostname.
-        $kareta_otp_transport = 'disabled';
+        // Never authorize a static code on the public host. Only an explicit
+        // staging-only switch can reuse the local Hermes OTP sender.
+        $kareta_otp_transport = $kareta_otp_hermes_public_enabled && $kareta_otp_hermes_public_host
+            ? 'whatsapp_hermes' : 'disabled';
         $kareta_otp_test_code = '';
         $kareta_otp_allow_test_fallback = false;
         $kareta_otp_temp_static_active = false;
@@ -309,6 +315,7 @@ if (!defined('KARETA_CONFIG_LOADED')) {
         'transport' => $kareta_otp_transport,
         'test_code' => $kareta_otp_test_code,
         'allow_test_fallback' => $kareta_otp_allow_test_fallback,
+        'hermes_public_enabled' => $kareta_otp_hermes_public_enabled,
         'temporary_static' => $kareta_otp_temp_static_active,
         'temporary_static_until' => $kareta_otp_temp_static_until,
         'webhook_url' => trim((string) kareta_config_value('KARETA_OTP_WEBHOOK_URL', 'otp_webhook_url', '')),
