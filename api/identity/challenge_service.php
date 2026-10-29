@@ -130,6 +130,14 @@ final class KaretaChallengeService {
     $allowFallback=(bool)(KARETA_OTP['allow_test_fallback']??false);
     if($this->productionMode()){
       if($this->temporaryStaticMode())return 'test_static';
+      if($transport==='whatsapp_hermes'){
+        $host=strtolower(preg_replace('/:[0-9]+$/','',(string)($_SERVER['HTTP_HOST']??''))??'');
+        if(!(bool)(KARETA_OTP['hermes_production_enabled']??false)
+           || !in_array($host,['kareta.kz','www.kareta.kz'],true)){
+          throw new KaretaOtpDeliveryException('otp_delivery_unavailable','provider_not_configured',0,60);
+        }
+        return 'whatsapp_hermes';
+      }
       // Outside the explicit commissioning window production is fail-closed:
       // only an HTTPS webhook may deliver OTP.
       $url=trim((string)(KARETA_OTP['webhook_url']??''));
@@ -164,6 +172,10 @@ final class KaretaChallengeService {
   }
 
   private function deliver(string $phone,string $code,string $purpose,string $transport): void {
+    if($transport==='whatsapp_hermes') {
+      $this->deliverViaHermes($phone,$code);
+      return;
+    }
     if($transport==='test_static' || $this->developmentMode())return;
     $url=trim((string)(KARETA_OTP['webhook_url']??''));
     $host=strtolower((string)(parse_url($url,PHP_URL_HOST)?:''));
@@ -255,6 +267,51 @@ final class KaretaChallengeService {
       [$category,$retry]=$classifyHttp($status);
       $throwDelivery($category,$status,$retry,0);
     }
+  }
+
+  /**
+   * Production-only, explicit opt-in, localhost-only Hermes OTP delivery.
+   * Does not accept a destination URL or AI prompt from the request.
+   */
+  private function deliverViaHermes(string $phone,string $code): void {
+    $host=strtolower(preg_replace('/:[0-9]+$/','',(string)($_SERVER['HTTP_HOST']??''))??'');
+    if(!$this->productionMode() || !(bool)(KARETA_OTP['hermes_production_enabled']??false)
+       || !in_array($host,['kareta.kz','www.kareta.kz'],true)){
+      throw new KaretaOtpDeliveryException('otp_delivery_unavailable','provider_not_configured',0,60);
+    }
+    if(!preg_match('/^[+]7[0-9]{10}$/D',$phone) || !preg_match('/^[0-9]{6}$/D',$code)){
+      throw new KaretaOtpDeliveryException('otp_delivery_unavailable','provider_rejected_payload',0,60);
+    }
+    if(!function_exists('curl_init')){
+      throw new KaretaOtpDeliveryException('otp_delivery_unavailable','provider_not_configured',0,60);
+    }
+    $payload=json_encode([
+      'chatId'=>substr($phone,1).'@s.whatsapp.net',
+      'message'=>'KARETA.KZ: код подтверждения '.$code.'. Действует 10 минут. Никому не сообщайте этот код.'
+    ],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+    if(!is_string($payload))throw new KaretaOtpDeliveryException('otp_delivery_failed','payload_encode',0,60);
+    $ch=curl_init('http://127.0.0.1:3002/send');
+    curl_setopt_array($ch,[
+      CURLOPT_POST=>true,
+      CURLOPT_POSTFIELDS=>$payload,
+      CURLOPT_HTTPHEADER=>['Content-Type: application/json','Accept: application/json'],
+      CURLOPT_RETURNTRANSFER=>true,
+      CURLOPT_CONNECTTIMEOUT=>2,
+      CURLOPT_TIMEOUT=>12,
+      CURLOPT_PROTOCOLS=>CURLPROTO_HTTP,
+      CURLOPT_MAXREDIRS=>0
+    ]);
+    $body=curl_exec($ch);
+    $status=(int)curl_getinfo($ch,CURLINFO_HTTP_CODE);
+    $errno=(int)curl_errno($ch);
+    curl_close($ch);
+    $json=is_string($body)?json_decode($body,true):null;
+    if($errno===0 && $status===200 && is_array($json)
+      && ($json['success']??false)===true && !empty($json['messageId']))return;
+    // Never log or return the OTP itself.
+    $category=$errno===28?'provider_timeout':($errno!==0?'provider_connect':
+      ($status===429?'provider_rate_limited':'provider_failure'));
+    throw new KaretaOtpDeliveryException('otp_delivery_failed',$category,$status,$status===429?60:15);
   }
 
   private function temporaryStaticMode(): bool {
