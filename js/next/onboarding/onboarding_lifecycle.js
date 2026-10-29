@@ -67,10 +67,22 @@
   }
 
   function removeSurfaces(){
-    ['onboarding-welcome','onb2-overlay','k-onboarding-page-host'].forEach(id => {
+    ['onboarding-welcome','onb2-overlay','k-onboarding-page-host','kareta-guest-signin'].forEach(id => {
       try { document.getElementById(id)?.remove(); } catch (_error) {}
     });
     try { if (window.OnboardingV2?.state) window.OnboardingV2.state.overlay = null; } catch (_error) {}
+  }
+
+  function guestPublicUI(){
+    removeSurfaces();
+    app.setActive(false);
+    const login=document.createElement('a');
+    login.id='kareta-guest-signin';
+    login.href='#role:client:welcome';
+    login.textContent='Войти / зарегистрироваться';
+    login.setAttribute('aria-label','Войти или зарегистрироваться в KARETA');
+    login.style.cssText='position:fixed;right:12px;top:76px;z-index:100;background:#fff;color:#161616;border:1px solid #aaa;border-radius:12px;padding:10px 14px;box-shadow:0 3px 16px #0002;text-decoration:none;font-weight:600';
+    document.body.appendChild(login);
   }
 
   function transitionToApp(flow, options = {}){
@@ -147,7 +159,7 @@
   }
 
   function resume(options = {}){
-    if(guestActive()&&!router.isOnboarding()){removeSurfaces();app.setActive(false);return String(location.hash||'#/home');}
+    if(guestActive()&&!router.isOnboarding()){guestPublicUI();return String(location.hash||'#/home');}
     const flow = draft.read();
     if (state.isDone()) return transitionToApp(flow, { source:options.source || 'resume-done', forceRoute:router.isOnboarding() });
     app.setActive(true);
@@ -175,7 +187,7 @@
   }
 
   function reconcile(source, options = {}){
-    if(guestActive()&&!router.isOnboarding()){removeSurfaces();app.setActive(false);return false;}
+    if(guestActive()&&!router.isOnboarding()){guestPublicUI();return false;}
     if (state.isDone()) {
       if (router.isOnboarding()) return transitionToApp(draft.read(), { source, forceRoute:true });
       removeSurfaces();
@@ -266,7 +278,7 @@
   }
 
   function start(options = {}){
-    if(guestActive()&&!router.isOnboarding()){removeSurfaces();app.setActive(false);return false;}
+    if(guestActive()&&!router.isOnboarding()){guestPublicUI();return false;}
     if (!options.force && state.isDone() && !router.isOnboarding()) return false;
     if (options.force && options.skipWelcome === true && !router.isOnboarding()) {
       const target = router.canonical(draft.currentRole(), 'role');
