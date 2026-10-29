@@ -20,7 +20,7 @@ INSERT INTO capabilities VALUES (1,'requests.read','allow'),(1,'vehicles.read','
 ");
 $contexts=new KaretaIdentityContextService($db);
 $engine=new KaretaCapabilityService($db,$contexts);
-$roles=[101=>['client',10,'requests.read'],202=>['master',20,'requests.respond'],303=>['sto',30,'organization.read'],404=>['seller',40,'market.products.manage']];
+$roles=[101=>['client',10,'requests.read'],202=>['master',20,'master.onboarding.view'],303=>['sto',30,'organization.read'],404=>['seller',40,'market.products.manage']];
 $passed=0; $failed=0;
 function check(bool $ok,string $name):void {global $passed,$failed;echo ($ok?'PASS':'FAIL')." $name\n";if($ok)$passed++;else $failed++;}
 foreach($roles as $account=>$role){
