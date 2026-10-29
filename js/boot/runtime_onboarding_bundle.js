@@ -2062,7 +2062,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     const verifiedNew = flow.phoneVerified === true && flow.accountExists === false;
     const title = verifiedNew ? 'Завершите регистрацию' : 'Вход или регистрация';
     const subtitle = verifiedNew ? 'Номер подтверждён. Укажите имя для создания аккаунта' : 'Введите номер телефона. Для зарегистрированного номера имя повторно не требуется';
-    const submitLabel = verifiedNew ? 'Создать аккаунт' : 'Получить код';
+    const submitLabel = verifiedNew ? 'Создать аккаунт' : (window.location.hostname === 's.kareta.kz' ? 'Ввести тестовый код' : 'Получить код');
     return `<section id="onb2-step-profile" class="onb2-step active" data-step="profile">
       ${sharedModal(title,subtitle,`<form class="onb2-compact-profile k-flow-form" data-onb-profile-form novalidate>
         ${formUI.registrationForm({ flow })}
@@ -2080,16 +2080,18 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     const codeLength = otpLength(flow.otpCodeLength);
     const testMode = flow.otpTestMode === true || flow.otpDeliveryMode === 'test_static';
     const testCode = String(flow.otpTestCode || '0000').replace(/\D/g,'').slice(0, codeLength) || '0000';
-    const subtitle = `Код отправлен на ${window.KaretaKFlow?.maskPhone?.(flow.phone || '') || esc(flow.phone || '')}`;
+    const maskedPhone = window.KaretaKFlow?.maskPhone?.(flow.phone || '') || esc(flow.phone || '');
+    const subtitle = testMode ? `SMS не отправляется на ${maskedPhone}. Введите тестовый код.` : `Код отправлен на ${maskedPhone}`;
     const resendRemaining = remainingSeconds(flow.otpResendAt);
     const countdown = window.KaretaKFlow?.formatCountdown?.(resendRemaining) || `00:${String(resendRemaining).padStart(2,'0')}`;
-    const resendLabel = resendRemaining > 0 ? `Отправить повторно через ${countdown}` : 'Отправить код повторно';
+    const resendVerb = testMode ? 'Запросить код' : 'Отправить код';
+    const resendLabel = resendRemaining > 0 ? `${resendVerb} повторно через ${countdown}` : `${resendVerb} повторно`;
     const cells = Array.from({length:codeLength},(_,index)=>`<input class="k-flow-otp-cell" data-kflow-otp-cell inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Цифра ${index+1} кода" ${index===0?'autocomplete="one-time-code"':''}>`).join('');
     return `<section id="onb2-step-code" class="onb2-step active" data-step="code">
       ${sharedModal('Подтвердите номер',subtitle,`<form class="onb2-code-form k-flow-form" data-onb-code-form novalidate>
         <input type="hidden" id="onb2-ref-code" data-kflow-otp-value value="">
         <div class="k-flow-otp k-flow-otp--${codeLength}" data-otp-length="${codeLength}" role="group" aria-label="Код подтверждения">${cells}</div>
-        ${testMode?`<div class="k-flow-code-test">Тестовый режим: код ${esc(testCode)}</div>`:''}
+        ${testMode?`<div class="k-flow-code-test">Тестовый режим: SMS не отправляется. Введите код ${esc(testCode)}</div>`:''}
         <div class="onb2-compact-error" data-onb-profile-error hidden></div>
         <div class="k-flow-actions"><button type="submit" class="onb2-btn onb2-btn--primary k-flow-primary" data-action="verify-code">Подтвердить</button>
           <div class="k-flow-code-meta"><button type="button" data-action="resend-code" ${resendRemaining > 0 ? 'disabled aria-disabled="true"' : 'aria-disabled="false"'}>${esc(resendLabel)}</button><button type="button" class="k-flow-link" data-action="back-profile">Изменить номер</button></div>
@@ -2233,7 +2235,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     state.submitting = true;
     const oldText = button?.textContent || '';
     if(button && !button.dataset.defaultLabel)button.dataset.defaultLabel=oldText || 'Получить код';
-    if (button) { button.disabled = true; button.textContent = 'Отправляем…'; button.setAttribute('aria-disabled','true'); }
+    if (button) { button.disabled = true; button.textContent = window.location.hostname === 's.kareta.kz' ? 'Готовим код…' : 'Отправляем…'; button.setAttribute('aria-disabled','true'); }
     try {
       await captureGeo().catch(() => null);
       const codeResult = await api.requestCode(payload.phone);
