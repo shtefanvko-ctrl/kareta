@@ -1699,7 +1699,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
 
   const state = { overlay:null, selectedRole:'', currentStep:'welcome', submitting:false, resendTimer:null, requestTimer:null, pendingEnter:'neutral', otpCleanup:null };
   const esc = formUI.esc;
-  const guestAllowed=()=>['s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname);
+  const guestAllowed=()=>['kareta.kz','www.kareta.kz','s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname)&&window.KaretaIdentity?.snapshot?.()?.authenticated!==true;
   const guestAction=label=>guestAllowed()?'<button type="button" class="k-guest-entry" data-action="guest-preview">'+label+'</button>':'';
   const normalizeRole = value => definitions.normalizeRole(value || 'client');
   window.normalizeEntryRole = normalizeRole;
@@ -2354,6 +2354,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     try{window.KaretaRouteRuntime?.transition?.('home',{source:'guest-public-preview'});}catch(_error){}
     try{window.KaretaShellNav?.refresh?.({activeKey:'home'});}catch(_error){}
     try{window.dispatchEvent(new HashChangeEvent('hashchange'));}catch(_error){}
+    try{window.KaretaOnboardingLifecycle?.resume?.({source:'guest-preview-enter'});}catch(_error){}
   }
   const boundOverlays = new WeakSet();
   function bind(overlay){
@@ -2596,8 +2597,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   const guestActive=()=>{
-    if(!['s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname))return false;
-    try{return sessionStorage.getItem('kareta.guest.preview.v1')==='1';}catch(_error){return false;}
+    if(!['kareta.kz','www.kareta.kz','s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname))return false;
+    try{return sessionStorage.getItem('kareta.guest.preview.v1')==='1'&&window.KaretaIdentity?.snapshot?.()?.authenticated!==true;}catch(_error){return false;}
   };
   const OVERLAY_STEPS = Object.freeze(['welcome','role','profile','code']);
   let booted = false;
@@ -2651,10 +2652,22 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function removeSurfaces(){
-    ['onboarding-welcome','onb2-overlay','k-onboarding-page-host'].forEach(id => {
+    ['onboarding-welcome','onb2-overlay','k-onboarding-page-host','kareta-guest-signin'].forEach(id => {
       try { document.getElementById(id)?.remove(); } catch (_error) {}
     });
     try { if (window.OnboardingV2?.state) window.OnboardingV2.state.overlay = null; } catch (_error) {}
+  }
+
+  function guestPublicUI(){
+    removeSurfaces();
+    app.setActive(false);
+    const login=document.createElement('a');
+    login.id='kareta-guest-signin';
+    login.href='#role:client:welcome';
+    login.textContent='Войти / зарегистрироваться';
+    login.setAttribute('aria-label','Войти или зарегистрироваться в KARETA');
+    login.style.cssText='position:fixed;right:12px;top:76px;z-index:100;background:#fff;color:#161616;border:1px solid #aaa;border-radius:12px;padding:10px 14px;box-shadow:0 3px 16px #0002;text-decoration:none;font-weight:600';
+    document.body.appendChild(login);
   }
 
   function transitionToApp(flow, options = {}){
@@ -2731,7 +2744,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function resume(options = {}){
-    if(guestActive()&&!router.isOnboarding()){removeSurfaces();app.setActive(false);return String(location.hash||'#/home');}
+    if(guestActive()&&!router.isOnboarding()){guestPublicUI();return String(location.hash||'#/home');}
     const flow = draft.read();
     if (state.isDone()) return transitionToApp(flow, { source:options.source || 'resume-done', forceRoute:router.isOnboarding() });
     app.setActive(true);
@@ -2759,7 +2772,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function reconcile(source, options = {}){
-    if(guestActive()&&!router.isOnboarding()){removeSurfaces();app.setActive(false);return false;}
+    if(guestActive()&&!router.isOnboarding()){guestPublicUI();return false;}
     if (state.isDone()) {
       if (router.isOnboarding()) return transitionToApp(draft.read(), { source, forceRoute:true });
       removeSurfaces();
@@ -2850,7 +2863,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   function start(options = {}){
-    if(guestActive()&&!router.isOnboarding()){removeSurfaces();app.setActive(false);return false;}
+    if(guestActive()&&!router.isOnboarding()){guestPublicUI();return false;}
     if (!options.force && state.isDone() && !router.isOnboarding()) return false;
     if (options.force && options.skipWelcome === true && !router.isOnboarding()) {
       const target = router.canonical(draft.currentRole(), 'role');
