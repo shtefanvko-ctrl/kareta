@@ -189,7 +189,7 @@ if (!defined('KARETA_CONFIG_LOADED')) {
      * KARETA_DB_VERSION — актуальная версия migration runner.
      * Версию увеличивать при добавлении новой migration file.
      */
-    define('KARETA_DB_VERSION', 145);
+    define('KARETA_DB_VERSION', 146);
 
     $kareta_environment = strtolower(trim((string) kareta_config_value('KARETA_ENVIRONMENT', 'environment', 'production')));
     if (!in_array($kareta_environment, ['production','staging','development','test'], true)) {
@@ -263,13 +263,22 @@ if (!defined('KARETA_CONFIG_LOADED')) {
         && $kareta_otp_temp_static_enabled
         && $kareta_otp_temp_static_within_window;
 
+    // Explicit opt-in for the loopback-only Hermes OTP adapter. OFF by default.
+    $kareta_otp_hermes_prod_enabled = $kareta_is_production && filter_var(
+        kareta_config_value('KARETA_OTP_HERMES_PROD_ENABLED', 'otp_hermes_prod_enabled', false),
+        FILTER_VALIDATE_BOOLEAN
+    );
     if ($kareta_is_production) {
         $kareta_otp_allow_test_fallback = false;
         if ($kareta_otp_temp_static_active) {
             $kareta_otp_transport = 'test_static';
             $kareta_otp_test_code = '0000';
+        } elseif ($kareta_otp_hermes_prod_enabled) {
+            // No test bypass. Six-digit random code delivered via connected Hermes.
+            $kareta_otp_transport = 'whatsapp_hermes';
+            $kareta_otp_test_code = '';
         } else {
-            // Production is fail-closed when the commissioning override is disabled.
+            // Fail closed until a real HTTPS webhook or explicitly enabled Hermes exists.
             $kareta_otp_transport = 'webhook';
             $kareta_otp_test_code = '';
         }
@@ -313,6 +322,8 @@ if (!defined('KARETA_CONFIG_LOADED')) {
         'temporary_static_until' => $kareta_otp_temp_static_until,
         'webhook_url' => trim((string) kareta_config_value('KARETA_OTP_WEBHOOK_URL', 'otp_webhook_url', '')),
         'webhook_token' => trim((string) kareta_config_value('KARETA_OTP_WEBHOOK_TOKEN', 'otp_webhook_token', '')),
+        'hermes_production_enabled' => $kareta_otp_hermes_prod_enabled,
+        'hermes_canary_phones' => array_values(array_filter(array_map('trim', explode(',', (string) kareta_config_value('KARETA_OTP_HERMES_CANARY_PHONES', 'otp_hermes_canary_phones', ''))))),
         'sender' => trim((string) kareta_config_value('KARETA_OTP_SENDER', 'otp_sender', 'KARETA')),
     ]);
     // R188.5.5.6.84.86: omnichannel Messaging Core. Provider secrets are read only

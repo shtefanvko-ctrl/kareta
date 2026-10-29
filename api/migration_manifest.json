@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "targetDbVersion": 145,
+  "targetDbVersion": 146,
   "migrations": [
     {
       "version": 1,
@@ -726,6 +726,11 @@
       "version": 145,
       "file": "145_order_assignments_readiness.php",
       "sha256": "ce3a0a13646cf5d0d1eb15cbc1db16f8b29ec294d2c0993dc962c0a830f8538f"
+    },
+    {
+      "version": 146,
+      "file": "146_ai_user_conversations.php",
+      "sha256": "8d4a39aaa2bab67a811f7f7a9b00edd971e7df612e74afd3eeb2881a1c35205c"
     }
   ]
 }
