@@ -671,6 +671,7 @@
     try{window.KaretaRouteRuntime?.transition?.('home',{source:'guest-public-preview'});}catch(_error){}
     try{window.KaretaShellNav?.refresh?.({activeKey:'home'});}catch(_error){}
     try{window.dispatchEvent(new HashChangeEvent('hashchange'));}catch(_error){}
+    try{window.KaretaOnboardingLifecycle?.resume?.({source:'guest-preview-enter'});}catch(_error){}
   }
   const boundOverlays = new WeakSet();
   function bind(overlay){
