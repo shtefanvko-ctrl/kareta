@@ -31,7 +31,10 @@ assert.match(core,/data-home-nearby-map/);
 assert.match(core,/resolveCityCenter\?\.\(selectedCity\)/);
 assert.match(core,/String\(rawLat\)\.trim\(\)===''/);
 assert.match(core,/points:mapPoints,center,notice/);
-assert.doesNotMatch(core,/api\/geo\.php/);
+// Nearby API may be called only after explicit user coordinates are present.
+// City-only browsing stays local and does not request precise location.
+assert.match(core,/const loadGeoNearby=async\(\)=>\{if\(!userCoords\|\|!api\?\.request\)\{geoNearby=new Map\(\);return;\}/);
+assert.match(core,/api\/geo\.php\?action=nearby&lat=/);
 
 const runtime=read('js/boot/runtime_core_bundle.js');
 assert.match(runtime,/data-home-nearby-map/);
