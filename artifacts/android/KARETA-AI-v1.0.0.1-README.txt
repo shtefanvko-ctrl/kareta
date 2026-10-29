@@ -1,0 +1,14 @@
+KARETA AI — Android 1.0.0.1 (debug build)
+
+Package: kz.kareta.adminassistant
+versionName: 1.0.0.1
+versionCode: 2
+Min SDK: 26 (Android 8.0)
+Start URL: https://chat.kareta.kz/c/461c1853-00f8-4e65-9cfe-58ad97f7f4c2
+SHA256: e3e068189520489f491633fe24352b2f369cd2b46b45145f0e604c402fd2f7a1
+
+Installed label and launcher icon: KARETA AI.
+Signed using the existing project's Android debug key; v2/v3 signatures verified.
+This is a debug/testing APK, not a production-signed release.
+Cloudflare challenge HTTP 403 on chat.kareta.kz was previously observed. WhatsApp OTP and device E2E were not verified as part of this Android packaging change.
+The distribution commit exists on a separate release branch; default main branch was not modified.
