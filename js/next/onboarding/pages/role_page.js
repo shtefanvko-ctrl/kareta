@@ -16,7 +16,7 @@
 
   const state = { overlay:null, selectedRole:'', currentStep:'welcome', submitting:false, resendTimer:null, requestTimer:null, pendingEnter:'neutral', otpCleanup:null };
   const esc = formUI.esc;
-  const guestAllowed=()=>['s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname);
+  const guestAllowed=()=>false; // sign-in-only: no guest preview
   const guestAction=label=>guestAllowed()?'<button type="button" class="k-guest-entry" data-action="guest-preview">'+label+'</button>':'';
   const normalizeRole = value => definitions.normalizeRole(value || 'client');
   window.normalizeEntryRole = normalizeRole;

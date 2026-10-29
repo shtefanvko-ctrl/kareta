@@ -17,13 +17,13 @@
       invalid_json:'Сервер не принял данные формы.',
       verification_required:'Сначала запросите код ещё раз.',
       verification_expired:'Код устарел. Отправьте новый код.',
-      verification_invalid:'Неверный код из SMS.',
-      invalid_code:'Неверный код из SMS.',
+      verification_invalid:'Неверный код из WhatsApp.',
+      invalid_code:'Неверный код из WhatsApp.',
       invalid_code_format:'Введите код полностью.',
       challenge_rate_limited:'Слишком много запросов. Попробуйте позже.',
       challenge_attempts_exceeded:'Слишком много попыток. Запросите новый код.',
-      otp_delivery_unavailable:'Отправка SMS пока не настроена.',
-      otp_delivery_failed:'SMS-провайдер временно недоступен.',
+      otp_delivery_unavailable:'Отправка кода WhatsApp пока недоступна.',
+      otp_delivery_failed:'Отправка WhatsApp временно недоступна.',
       verification_attempts:'Слишком много попыток. Запросите новый код.',
       profile_save_failed:'Не удалось сохранить основной профиль.',
       database_unavailable:'База данных временно недоступна.',
@@ -56,17 +56,17 @@
     const deliveryCategory = String(payload?.deliveryCategory || '');
     const providerStatus = Number(payload?.providerStatus || 0);
     const deliveryMessages = {
-      provider_not_configured:'Отправка SMS на сервере не настроена.',
-      provider_auth:'SMS-сервис не прошёл авторизацию на сервере.',
-      provider_endpoint:'Адрес SMS-сервиса настроен неверно.',
-      provider_rejected_payload:'SMS-сервис отклонил формат запроса.',
-      provider_dns:'Сервер не может найти SMS-сервис.',
-      provider_connect:'Сервер не может подключиться к SMS-сервису.',
-      provider_tls:'Не удалось установить защищённое соединение с SMS-сервисом.',
-      provider_timeout:'SMS-сервис не ответил вовремя.',
-      provider_rate_limited:'SMS-сервис временно ограничил отправку.',
-      provider_unavailable:'SMS-сервис временно недоступен.',
-      provider_network:'Ошибка соединения с SMS-сервисом.'
+      provider_not_configured:'Отправка кода WhatsApp на сервере не настроена.',
+      provider_auth:'WhatsApp-сервис не прошёл авторизацию на сервере.',
+      provider_endpoint:'Адрес WhatsApp-сервиса настроен неверно.',
+      provider_rejected_payload:'WhatsApp-сервис отклонил формат запроса.',
+      provider_dns:'Сервер не может найти WhatsApp-сервис.',
+      provider_connect:'Сервер не может подключиться к WhatsApp-сервису.',
+      provider_tls:'Не удалось установить защищённое соединение с WhatsApp-сервисом.',
+      provider_timeout:'WhatsApp-сервис не ответил вовремя.',
+      provider_rate_limited:'WhatsApp-сервис временно ограничил отправку.',
+      provider_unavailable:'WhatsApp-сервис временно недоступен.',
+      provider_network:'Ошибка соединения с WhatsApp-сервисом.'
     };
     const deliveryRetry = code === 'otp_delivery_failed' && retryAfter > 0;
     const baseMessage = code === 'challenge_rate_limited' && retryAfter > 0
@@ -348,7 +348,7 @@
     let demoVerifiedPhone = '';
     try { demoVerifiedPhone = String(sessionStorage.getItem('kareta_onboarding_demo_verified') || ''); } catch (_error) {}
     if (!demoVerifiedPhone || demoVerifiedPhone !== normalizePhone(profile.phone)) {
-      throw Object.assign(new Error('Подтвердите номер кодом из SMS.'), { code:'verification_required' });
+      throw Object.assign(new Error('Подтвердите номер кодом из WhatsApp.'), { code:'verification_required' });
     }
 
     const payload = {
