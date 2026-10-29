@@ -439,13 +439,13 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
       invalid_json:'Сервер не принял данные формы.',
       verification_required:'Сначала запросите код ещё раз.',
       verification_expired:'Код устарел. Отправьте новый код.',
-      verification_invalid:'Неверный код из SMS.',
-      invalid_code:'Неверный код из SMS.',
+      verification_invalid:'Неверный код из WhatsApp.',
+      invalid_code:'Неверный код из WhatsApp.',
       invalid_code_format:'Введите код полностью.',
       challenge_rate_limited:'Слишком много запросов. Попробуйте позже.',
       challenge_attempts_exceeded:'Слишком много попыток. Запросите новый код.',
-      otp_delivery_unavailable:'Отправка SMS пока не настроена.',
-      otp_delivery_failed:'SMS-провайдер временно недоступен.',
+      otp_delivery_unavailable:'Отправка кода WhatsApp пока недоступна.',
+      otp_delivery_failed:'Отправка WhatsApp временно недоступна.',
       verification_attempts:'Слишком много попыток. Запросите новый код.',
       profile_save_failed:'Не удалось сохранить основной профиль.',
       database_unavailable:'База данных временно недоступна.',
@@ -478,17 +478,17 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     const deliveryCategory = String(payload?.deliveryCategory || '');
     const providerStatus = Number(payload?.providerStatus || 0);
     const deliveryMessages = {
-      provider_not_configured:'Отправка SMS на сервере не настроена.',
-      provider_auth:'SMS-сервис не прошёл авторизацию на сервере.',
-      provider_endpoint:'Адрес SMS-сервиса настроен неверно.',
-      provider_rejected_payload:'SMS-сервис отклонил формат запроса.',
-      provider_dns:'Сервер не может найти SMS-сервис.',
-      provider_connect:'Сервер не может подключиться к SMS-сервису.',
-      provider_tls:'Не удалось установить защищённое соединение с SMS-сервисом.',
-      provider_timeout:'SMS-сервис не ответил вовремя.',
-      provider_rate_limited:'SMS-сервис временно ограничил отправку.',
-      provider_unavailable:'SMS-сервис временно недоступен.',
-      provider_network:'Ошибка соединения с SMS-сервисом.'
+      provider_not_configured:'Отправка кода WhatsApp на сервере не настроена.',
+      provider_auth:'WhatsApp-сервис не прошёл авторизацию на сервере.',
+      provider_endpoint:'Адрес WhatsApp-сервиса настроен неверно.',
+      provider_rejected_payload:'WhatsApp-сервис отклонил формат запроса.',
+      provider_dns:'Сервер не может найти WhatsApp-сервис.',
+      provider_connect:'Сервер не может подключиться к WhatsApp-сервису.',
+      provider_tls:'Не удалось установить защищённое соединение с WhatsApp-сервисом.',
+      provider_timeout:'WhatsApp-сервис не ответил вовремя.',
+      provider_rate_limited:'WhatsApp-сервис временно ограничил отправку.',
+      provider_unavailable:'WhatsApp-сервис временно недоступен.',
+      provider_network:'Ошибка соединения с WhatsApp-сервисом.'
     };
     const deliveryRetry = code === 'otp_delivery_failed' && retryAfter > 0;
     const baseMessage = code === 'challenge_rate_limited' && retryAfter > 0
@@ -770,7 +770,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     let demoVerifiedPhone = '';
     try { demoVerifiedPhone = String(sessionStorage.getItem('kareta_onboarding_demo_verified') || ''); } catch (_error) {}
     if (!demoVerifiedPhone || demoVerifiedPhone !== normalizePhone(profile.phone)) {
-      throw Object.assign(new Error('Подтвердите номер кодом из SMS.'), { code:'verification_required' });
+      throw Object.assign(new Error('Подтвердите номер кодом из WhatsApp.'), { code:'verification_required' });
     }
 
     const payload = {
@@ -2062,7 +2062,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     const verifiedNew = flow.phoneVerified === true && flow.accountExists === false;
     const title = verifiedNew ? 'Завершите регистрацию' : 'Вход или регистрация';
     const subtitle = verifiedNew ? 'Номер подтверждён. Укажите имя для создания аккаунта' : 'Введите номер телефона. Для зарегистрированного номера имя повторно не требуется';
-    const submitLabel = verifiedNew ? 'Создать аккаунт' : 'Получить код';
+    const submitLabel = verifiedNew ? 'Создать аккаунт' : (window.location.hostname === 's.kareta.kz' ? 'Ввести тестовый код' : 'Получить код');
     return `<section id="onb2-step-profile" class="onb2-step active" data-step="profile">
       ${sharedModal(title,subtitle,`<form class="onb2-compact-profile k-flow-form" data-onb-profile-form novalidate>
         ${formUI.registrationForm({ flow })}
@@ -2080,16 +2080,18 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     const codeLength = otpLength(flow.otpCodeLength);
     const testMode = flow.otpTestMode === true || flow.otpDeliveryMode === 'test_static';
     const testCode = String(flow.otpTestCode || '0000').replace(/\D/g,'').slice(0, codeLength) || '0000';
-    const subtitle = `Код отправлен на ${window.KaretaKFlow?.maskPhone?.(flow.phone || '') || esc(flow.phone || '')}`;
+    const maskedPhone = window.KaretaKFlow?.maskPhone?.(flow.phone || '') || esc(flow.phone || '');
+    const subtitle = testMode ? `SMS не отправляется на ${maskedPhone}. Введите тестовый код.` : `Код отправлен на ${maskedPhone}`;
     const resendRemaining = remainingSeconds(flow.otpResendAt);
     const countdown = window.KaretaKFlow?.formatCountdown?.(resendRemaining) || `00:${String(resendRemaining).padStart(2,'0')}`;
-    const resendLabel = resendRemaining > 0 ? `Отправить повторно через ${countdown}` : 'Отправить код повторно';
+    const resendVerb = testMode ? 'Запросить код' : 'Отправить код';
+    const resendLabel = resendRemaining > 0 ? `${resendVerb} повторно через ${countdown}` : `${resendVerb} повторно`;
     const cells = Array.from({length:codeLength},(_,index)=>`<input class="k-flow-otp-cell" data-kflow-otp-cell inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Цифра ${index+1} кода" ${index===0?'autocomplete="one-time-code"':''}>`).join('');
     return `<section id="onb2-step-code" class="onb2-step active" data-step="code">
       ${sharedModal('Подтвердите номер',subtitle,`<form class="onb2-code-form k-flow-form" data-onb-code-form novalidate>
         <input type="hidden" id="onb2-ref-code" data-kflow-otp-value value="">
         <div class="k-flow-otp k-flow-otp--${codeLength}" data-otp-length="${codeLength}" role="group" aria-label="Код подтверждения">${cells}</div>
-        ${testMode?`<div class="k-flow-code-test">Тестовый режим: код ${esc(testCode)}</div>`:''}
+        ${testMode?`<div class="k-flow-code-test">Тестовый режим: SMS не отправляется. Введите код ${esc(testCode)}</div>`:''}
         <div class="onb2-compact-error" data-onb-profile-error hidden></div>
         <div class="k-flow-actions"><button type="submit" class="onb2-btn onb2-btn--primary k-flow-primary" data-action="verify-code">Подтвердить</button>
           <div class="k-flow-code-meta"><button type="button" data-action="resend-code" ${resendRemaining > 0 ? 'disabled aria-disabled="true"' : 'aria-disabled="false"'}>${esc(resendLabel)}</button><button type="button" class="k-flow-link" data-action="back-profile">Изменить номер</button></div>
@@ -2233,7 +2235,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     state.submitting = true;
     const oldText = button?.textContent || '';
     if(button && !button.dataset.defaultLabel)button.dataset.defaultLabel=oldText || 'Получить код';
-    if (button) { button.disabled = true; button.textContent = 'Отправляем…'; button.setAttribute('aria-disabled','true'); }
+    if (button) { button.disabled = true; button.textContent = window.location.hostname === 's.kareta.kz' ? 'Готовим код…' : 'Отправляем…'; button.setAttribute('aria-disabled','true'); }
     try {
       await captureGeo().catch(() => null);
       const codeResult = await api.requestCode(payload.phone);
