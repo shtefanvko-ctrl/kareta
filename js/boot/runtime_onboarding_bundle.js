@@ -1699,7 +1699,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
 
   const state = { overlay:null, selectedRole:'', currentStep:'welcome', submitting:false, resendTimer:null, requestTimer:null, pendingEnter:'neutral', otpCleanup:null };
   const esc = formUI.esc;
-  const guestAllowed=()=>['s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname);
+  const guestAllowed=()=>['kareta.kz','www.kareta.kz','s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname)&&window.KaretaIdentity?.snapshot?.()?.authenticated!==true;
   const guestAction=label=>guestAllowed()?'<button type="button" class="k-guest-entry" data-action="guest-preview">'+label+'</button>':'';
   const normalizeRole = value => definitions.normalizeRole(value || 'client');
   window.normalizeEntryRole = normalizeRole;
@@ -2596,8 +2596,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   }
 
   const guestActive=()=>{
-    if(!['s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname))return false;
-    try{return sessionStorage.getItem('kareta.guest.preview.v1')==='1';}catch(_error){return false;}
+    if(!['kareta.kz','www.kareta.kz','s.kareta.kz','localhost','127.0.0.1'].includes(location.hostname))return false;
+    try{return sessionStorage.getItem('kareta.guest.preview.v1')==='1'&&window.KaretaIdentity?.snapshot?.()?.authenticated!==true;}catch(_error){return false;}
   };
   const OVERLAY_STEPS = Object.freeze(['welcome','role','profile','code']);
   let booted = false;
