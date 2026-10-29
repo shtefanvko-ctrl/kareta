@@ -775,8 +775,17 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     const found=candidates.find(item=>item?.role);
     return normalizeRole(found?.role || window._karetaCookieRole || 'client');
   }
+  function identityPresentationRole(){
+    const snapshot=identitySnapshot();
+    // Presentation follows the active, authenticated Identity context. The navigation
+    // core already resolves organization_service to STO, regardless of a stale
+    // compatibilityRole. Server capabilities still decide actual access.
+    const fromContext=String(window.KaretaNavigationCore?.interfaceRole?.()||'').trim().toLowerCase();
+    if (['client','master','sto','seller','admin','owner'].includes(fromContext)) return normalizeRole(fromContext);
+    return normalizeRole(snapshot.compatibilityRole || 'client');
+  }
   function currentRole(){
-    if (identityActive()) return normalizeRole(identitySnapshot().compatibilityRole || 'client');
+    if (identityActive()) return identityPresentationRole();
     // Once warmSession has established that there is no authenticated session,
     // stale localStorage/session-resume role hints must never authorize a protected route.
     // A resume-degraded boot is the only anonymous-like state where the cached role is
@@ -836,7 +845,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
   function snapshot(role=currentRole()){
     if (identityActive()) {
       return Object.freeze({
-        role:normalizeRole(identitySnapshot().compatibilityRole || 'client'),
+        role:identityPresentationRole(),
         label:'Identity Context',
         defaultRoute:defaultRoute(),
         desktop:keys('desktop'),
