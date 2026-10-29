@@ -61,7 +61,7 @@ final class KaretaChallengeService {
     $lockStmt=$this->pdo->prepare("SELECT GET_LOCK(?,3)");$lockStmt->execute([$lock]);
     if((int)$lockStmt->fetchColumn()!==1)throw new KaretaChallengeRateLimitException(3);
     try {
-      $ipHash=hash('sha256',(string)($_SERVER['REMOTE_ADDR']??'unknown'));
+      $ipHash=hash('sha256',$this->rateLimitPeer());
       $transport=$this->effectiveTransport();
       $temporaryStatic=$transport==='test_static' && $this->temporaryStaticMode();
       // Commissioning code 0000 is intentionally reusable for rapid logout/relogin testing.
@@ -123,6 +123,21 @@ final class KaretaChallengeService {
       if(!password_verify($code,(string)$row['code_hash'])) { $this->pdo->prepare("UPDATE auth_challenges SET attempts=attempts+1 WHERE id=?")->execute([(int)$row['id']]); $this->pdo->commit(); throw new DomainException('invalid_code'); }
       $this->pdo->prepare("UPDATE auth_challenges SET consumed_at=NOW() WHERE id=?")->execute([(int)$row['id']]); $this->pdo->commit(); return $row;
     } catch(Throwable $e){ if($this->pdo->inTransaction())$this->pdo->rollBack(); throw $e; }
+  }
+
+  // Cloudflare Tunnel connects to Nginx over loopback. The socket peer is
+  // therefore shared by all public users; use the Cloudflare-provided client
+  // address for per-IP OTP throttling, but ONLY for the local trusted peer.
+  // Non-loopback callers can never override their IP with a request header.
+  private function rateLimitPeer(): string {
+    $peer=trim((string)($_SERVER['REMOTE_ADDR']??''));
+    if(in_array($peer,['127.0.0.1','::1'],true)){
+      $client=trim((string)($_SERVER['HTTP_CF_CONNECTING_IP']??''));
+      if(strlen($client)<=45 && filter_var($client,FILTER_VALIDATE_IP)!==false){
+        return $client;
+      }
+    }
+    return $peer!==''?$peer:'unknown';
   }
 
   private function effectiveTransport(): string {
