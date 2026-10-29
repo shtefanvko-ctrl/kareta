@@ -14,7 +14,7 @@
       <div class="k-master-reference-inner">
         <div class="k-provider-ref-titlebar"><h1 data-master-title>Мастера</h1><div class="k-provider-ref-kind" role="group" aria-label="Тип исполнителя"><button type="button" data-master-provider-kind="sto">СТО</button><button type="button" data-master-provider-kind="master">Мастера</button></div></div>
         <label class="k-master-reference-search">${uiIcon('search')}<input type="search" data-master-search placeholder="Найти СТО, услугу или мастера…" autocomplete="off"></label>
-        <div class="k-master-reference-filters" aria-label="Фильтры исполнителей"><button type="button" class="is-active is-nearby" data-master-mode="nearby"><span class="k-master-reference-filter-glyph">${uiIcon('location')}</span><span>Рядом</span></button><button type="button" class="is-rating" data-master-mode="rating"><span class="k-master-reference-filter-glyph">${uiIcon('star')}</span><span>Рейтинг</span></button><button type="button" class="is-available" data-master-mode="available"><span class="k-master-reference-filter-glyph">${uiIcon('calendar')}</span><span>Открыты</span></button><button type="button" class="k-master-reference-filter-icon is-filter" data-master-filter-toggle aria-label="Дополнительные фильтры"><span class="k-master-reference-filter-glyph">${uiIcon('filter')}</span></button></div>
+        <div class="k-master-reference-filters" aria-label="Фильтры исполнителей">${currentRole()==='sto'?'<a class="k-btn k-btn-secondary" href="#/masters" data-sto-own-masters>Мои мастера</a>':''}<button type="button" class="is-active is-nearby" data-master-mode="nearby"><span class="k-master-reference-filter-glyph">${uiIcon('location')}</span><span>Рядом</span></button><button type="button" class="is-rating" data-master-mode="rating"><span class="k-master-reference-filter-glyph">${uiIcon('star')}</span><span>Рейтинг</span></button><button type="button" class="is-available" data-master-mode="available"><span class="k-master-reference-filter-glyph">${uiIcon('calendar')}</span><span>Открыты</span></button><button type="button" class="k-master-reference-filter-icon is-filter" data-master-filter-toggle aria-label="Дополнительные фильтры"><span class="k-master-reference-filter-glyph">${uiIcon('filter')}</span></button></div>
         <div class="k-master-reference-filter-panel" data-master-filter-panel hidden><button type="button" class="is-active" data-master-spec="">Все услуги</button><button type="button" data-master-spec="диагност">Диагностика</button><button type="button" data-master-spec="ходов">Ходовая</button><button type="button" data-master-spec="электр">Электрика</button></div>
         <div class="k-masters-status" data-masters-status>Загружаем исполнителей…</div>
         <section class="k-masters-directory k-master-reference-directory" data-masters-directory aria-live="polite"></section>
@@ -26,14 +26,15 @@
 
   function renderStoTeam(){
     return `<section class="k-page k-masters-page k-sto-r75-team k-flow-primary-page" data-masters-page data-sto-team data-kflow-screen="masters">
-      <header class="k-sto-r75-team-toolbar"><div><strong>Мастера СТО</strong><span>Команда, загрузка и KPI вашего автосервиса.</span></div><div><label class="k-sto-r75-team-search">${uiSvg('search')}<input type="search" data-sto-team-search placeholder="Имя или специализация" autocomplete="off"></label><button class="k-btn k-btn-secondary" type="button" data-sto-team-refresh>${uiSvg('refresh')}<span>Обновить</span></button></div></header>
+      <header class="k-sto-r75-team-toolbar"><div><strong>Мастера СТО</strong><span>Команда, загрузка и KPI вашего автосервиса.</span></div><div><label class="k-sto-r75-team-search">${uiSvg('search')}<input type="search" data-sto-team-search placeholder="Имя или специализация" autocomplete="off"></label><a class="k-btn k-btn-secondary" href="#/masters?view=directory" data-sto-all-masters>Все мастера</a><button class="k-btn k-btn-secondary" type="button" data-sto-team-refresh>${uiSvg('refresh')}<span>Обновить</span></button></div></header>
       <div class="k-sto-r75-team-summary" data-sto-team-summary><span><b>—</b><small>Мастеров</small></span><span><b>—</b><small>Сегодня</small></span><span><b>—</b><small>В работе</small></span><span><b>—</b><small>Средняя загрузка</small></span></div>
       <div class="k-sto-r75-team-list" data-sto-team-list><div class="k-empty"><h2>Загружаем команду</h2><p>Получаем Мастеров и текущую загрузку.</p></div></div>
     </section>`;
   }
 
   function renderMasters(){
-    return currentRole()==='sto' ? renderStoTeam() : renderPublicMasters();
+    const showDirectory=new URLSearchParams(String(location.hash||'').split('?')[1]||'').get('view')==='directory';
+    return currentRole()==='sto'&&!showDirectory ? renderStoTeam() : renderPublicMasters();
   }
 
   function stoTeamRow(master,dispatch){

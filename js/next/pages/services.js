@@ -221,11 +221,12 @@
 
   function panel(){ return ''; }
 
+  const stoOwnerContext=()=>window.KaretaRoleAccess?.currentRole?.()==='sto';
   function toolbar(){
     const searchIcon=window.KaretaUIIcons?.svg?.('search')||'⌕';
     const submitIcon=window.KaretaUIIcons?.svg?.('chevronRight')||'›';
     return `<section class="k-services-canon-shell" aria-label="Услуги">
-      <div class="k-services-canon-titlebar"><h1>Услуги</h1><a class="k-services-canon-create" href="#/orders/new">＋ Заявка</a></div>
+      <div class="k-services-canon-titlebar"><h1>Услуги</h1>${stoOwnerContext()?'<a class="k-services-canon-create" href="#/services/manage">Мои услуги</a>':'<a class="k-services-canon-create" href="#/orders/new">＋ Заявка</a>'}</div>
       <div class="k-services-canon-search" role="search" aria-label="Поиск услуг">
         <span class="k-services-canon-search__icon" aria-hidden="true">${searchIcon}</span>
         <input type="search" data-services-toolbar-search value="${ui.escHtml(view.search)}" placeholder="Найти услугу, работу или категорию…" autocomplete="off" aria-label="Найти услугу">
@@ -360,6 +361,12 @@
       }
       sessionStorage.removeItem('kareta.services.intent');
     }catch(_e){}
+    // A STO owner enters their own price list first; the public catalogue remains explicit.
+    // This is navigation only: permissions and the organization scope remain server-side.
+    if(stoOwnerContext()&&isServicesRoot()&&!new URLSearchParams(String(location.hash||'').split('?')[1]||'').has('view')){
+      location.replace('#/services/manage');
+      return;
+    }
     unsubscribe?.(); unsubscribe=catalogState.subscribe(updateView);
     const shell=document.querySelector('[data-services-shell]');
     const navigator=document.querySelector('[data-services-navigator]');
