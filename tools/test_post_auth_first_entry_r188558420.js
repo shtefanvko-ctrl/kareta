@@ -24,8 +24,8 @@ const checks=[];
 const expect=(name,ok)=>{checks.push([name,!!ok]);console.log(`${ok?'PASS':'FAIL'} ${name}`);};
 
 expect('OTP carries selected entry role',onbApi.includes("entryRole:selectedRole")&&rolePage.includes("flow.entryRole || flow.role || state.selectedRole"));
-expect('existing account uses post-auth resolver',rolePage.includes('app.targetAfterAuth?.(verifyResult,flow,user)'));
-expect('new account uses post-auth resolver',onbApp.includes('targetAfterAuth(result,flow,user)')&&onbApp.includes('const target = options.target || targetAfterAuth'));
+expect('existing account uses post-auth resolver',rolePage.includes('app.authoritativeTargetAfterAuth?.(verifyResult,flow,user)'));
+expect('new account uses post-auth resolver',onbApp.includes('targetAfterAuth(result,flow,user)')&&onbApp.includes('await authoritativeTargetAfterAuth(result,flow,user)'));
 expect('legacy users.role is not route authority',onbApp.includes('legacy_role:legacyRole')&&onbApp.includes('result?.selectedRole || result?.entryRole'));
 expect('backend verify activates selected role',auth.includes('establish($existingProfile,$selectedEntryRole)')&&auth.includes("'selectedRole' => $selectedEntryRole"));
 expect('backend complete activates requested role',auth.includes('establish($profile,$requestedRole)')&&auth.includes("'selectedRole'=>$requestedRole"));
@@ -71,3 +71,5 @@ expect('CLIENT mobile contract is six items',navigation.includes("personal: Obje
 expect('legacy CLIENT fallback is also six items',roleAccess.includes("mobile:['home','services','works','masters','parts','__more__']"));
 expect('garage active state maps mobile More / desktop Cabinet',shellNav.includes("const personalMoreKeys=new Set(['cabinetGarage'])")&&shellNav.includes("?'cabinet':key")&&shellNav.includes("?'__more__':key"));
 const failed=checks.filter(x=>!x[1]);console.log(`\n${checks.length-failed.length}/${checks.length} checks passed`);if(failed.length)process.exit(1);
+
+[executed on device: KaretaMeneger (aee288ef-382f-43d6-933b-f16fb6b5c0bd)]
