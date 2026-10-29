@@ -31,7 +31,12 @@ assert.match(core,/data-home-nearby-map/);
 assert.match(core,/resolveCityCenter\?\.\(selectedCity\)/);
 assert.match(core,/String\(rawLat\)\.trim\(\)===''/);
 assert.match(core,/points:mapPoints,center,notice/);
-assert.doesNotMatch(core,/api\/geo\.php/);
+// The private nearby lookup is valid only after explicit/previously consented GPS coordinates.
+assert.match(core,/const loadGeoNearby=async\(\)=>\{if\(!userCoords\|\|!api\?\.request\)\{geoNearby=new Map\(\);return;/);
+assert.match(core,/api\/geo\.php\?action=nearby&lat=/);
+assert.match(core,/locationDetect\?\.addEventListener\('click'/);
+const geoAPI=read('api/geo.php');
+assert.match(geoAPI,/\$action==='nearby'/);
 
 const runtime=read('js/boot/runtime_core_bundle.js');
 assert.match(runtime,/data-home-nearby-map/);
