@@ -25,5 +25,13 @@ for (const relative of ['js/next/identity_frontend.js','js/boot/runtime_identity
       [{role:'admin',status:'active',contextId:10}],['*']), 'admin');
     assert.equal(role({id:10,type:'personal'},
       [{role:'admin',status:'active',contextId:11}],['*']), 'client');
+    assert.equal(role({id:null,type:'personal'},
+      [{role:'admin',status:'active',contextId:null}],['*']), 'client');
+    assert.equal(role({id:0,type:'personal'},
+      [{role:'admin',status:'active',contextId:0}],['*']), 'client');
+    assert.equal(role({id:true,type:'personal'},
+      [{role:'admin',status:'active',contextId:1}],['*']), 'client');
+    assert.equal(role({id:10,type:'personal'},
+      [{role:'admin',status:'active',contextId:null}],['*']), 'client');
   });
 }
