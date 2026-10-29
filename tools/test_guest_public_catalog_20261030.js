@@ -38,4 +38,6 @@ assert.match(rolePage,/const guestAllowed=\(\)=>\['kareta.kz','www.kareta.kz','s
 assert.match(lifecycle,/const guestActive=\(\)=>\{/);
 assert.match(lifecycle,/sessionStorage.getItem\('kareta.guest.preview.v1'\)==='1'/);
 assert.match(lifecycle,/authenticated!==true/);
+assert.match(lifecycle,/login.href='#role:client:welcome'/);
+assert.match(rolePage,/guest-preview-enter/);
 console.log('PASS guest public catalogue routes; protected routes, admin actions and capabilities denied on kareta.kz');
