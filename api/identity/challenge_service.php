@@ -133,6 +133,7 @@ final class KaretaChallengeService {
       if($transport==='whatsapp_hermes'){
         $host=strtolower(preg_replace('/:[0-9]+$/','',(string)($_SERVER['HTTP_HOST']??''))??'');
         if(!(bool)(KARETA_OTP['hermes_production_enabled']??false)
+           || empty(KARETA_OTP['hermes_canary_phones'])
            || !in_array($host,['kareta.kz','www.kareta.kz'],true)){
           throw new KaretaOtpDeliveryException('otp_delivery_unavailable','provider_not_configured',0,60);
         }
@@ -281,6 +282,10 @@ final class KaretaChallengeService {
     }
     if(!preg_match('/^[+]7[0-9]{10}$/D',$phone) || !preg_match('/^[0-9]{6}$/D',$code)){
       throw new KaretaOtpDeliveryException('otp_delivery_unavailable','provider_rejected_payload',0,60);
+    }
+    $allowed=KARETA_OTP['hermes_canary_phones']??[];
+    if(!is_array($allowed) || !in_array($phone,$allowed,true)){
+      throw new KaretaOtpDeliveryException('otp_delivery_unavailable','recipient_not_approved',0,60);
     }
     if(!function_exists('curl_init')){
       throw new KaretaOtpDeliveryException('otp_delivery_unavailable','provider_not_configured',0,60);

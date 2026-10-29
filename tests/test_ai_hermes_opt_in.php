@@ -3,11 +3,12 @@ declare(strict_types=1);
 /** Negative/positive opt-in tests; never sends an OTP or connects to WhatsApp. */
 if(($argv[1]??'')==='case'){
   $variant=(string)($argv[2]??'disabled');
-  $allow=in_array($variant,['enabled_public','enabled_www','enabled_admin','enabled_stagehost'],true);
+  $allow=in_array($variant,['enabled_public','enabled_www','enabled_admin','enabled_stagehost','enabled_no_canary'],true);
   define('KARETA_ENVIRONMENT','production');
   define('KARETA_OTP',[
     'transport'=>$variant==='disabled'?'webhook':'whatsapp_hermes',
     'hermes_production_enabled'=>$allow,
+    'hermes_canary_phones'=>$variant==='enabled_no_canary'?[]:['+77000000001','+77000000002'],
     'temporary_static'=>false,'allow_test_fallback'=>false,'webhook_url'=>'','test_code'=>''
   ]);
   $_SERVER['HTTP_HOST']=match($variant){
@@ -26,6 +27,7 @@ if(($argv[1]??'')==='case'){
 $expected=[
   'disabled'=>'ERROR=otp_delivery_unavailable',
   'fake_opt_in'=>'ERROR=otp_delivery_unavailable',
+  'enabled_no_canary'=>'ERROR=otp_delivery_unavailable',
   'enabled_public'=>'RESULT=whatsapp_hermes',
   'enabled_www'=>'RESULT=whatsapp_hermes',
   'enabled_admin'=>'ERROR=otp_delivery_unavailable',

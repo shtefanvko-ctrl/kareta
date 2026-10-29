@@ -323,6 +323,7 @@ if (!defined('KARETA_CONFIG_LOADED')) {
         'webhook_url' => trim((string) kareta_config_value('KARETA_OTP_WEBHOOK_URL', 'otp_webhook_url', '')),
         'webhook_token' => trim((string) kareta_config_value('KARETA_OTP_WEBHOOK_TOKEN', 'otp_webhook_token', '')),
         'hermes_production_enabled' => $kareta_otp_hermes_prod_enabled,
+        'hermes_canary_phones' => array_values(array_filter(array_map('trim', explode(',', (string) kareta_config_value('KARETA_OTP_HERMES_CANARY_PHONES', 'otp_hermes_canary_phones', ''))))),
         'sender' => trim((string) kareta_config_value('KARETA_OTP_SENDER', 'otp_sender', 'KARETA')),
     ]);
     // R188.5.5.6.84.86: omnichannel Messaging Core. Provider secrets are read only
