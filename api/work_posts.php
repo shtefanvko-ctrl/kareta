@@ -200,7 +200,7 @@ function kareta_work_post_publish(PDO $pdo,array $body): void {
 
 
 function kareta_master_works_portfolio(PDO $pdo,array $input=[]): void {
-    kareta_require_api_capability($pdo,'profile.manage',['master','admin','owner']);
+    kareta_require_api_capability($pdo,'profile.edit_own',['master','admin','owner']);
     kareta_work_posts_ensure($pdo);
     $master=function_exists('kareta_master_workplace_profile')?kareta_master_workplace_profile($pdo):[];
     $masterId=trim((string)($master['id']??''));
