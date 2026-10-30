@@ -17,28 +17,28 @@ function kareta_work_order_effective_role(PDO $pdo): string {
 }
 
 function kareta_work_order_can_view(PDO $pdo, array $order): bool {
-    if (kareta_has_role('admin') || kareta_has_role('owner')) return true;
-    $user = kareta_session_user();
-    $uid = (int)($user['id'] ?? 0);
-    $phone = kareta_normalize_phone((string)($user['phone'] ?? ''));
-    $role = kareta_work_order_effective_role($pdo);
+    // Resolve the authoritative Identity account and selected context, not a
+    // stale or absent legacy PHP session. Missing IDs (0) cannot prove ownership.
+    $scope = kareta_order_scope($pdo);
+    $role = (string)($scope['role'] ?? 'guest');
+    $uid = (int)($scope['userId'] ?? 0);
+    $phone = kareta_normalize_phone((string)($scope['phone'] ?? ''));
+    if (in_array($role,['admin','owner'],true)) return true;
     if ($role === 'client') {
-        return ((int)($order['client_user_id'] ?? 0) === $uid)
-            || ($phone !== '' && kareta_normalize_phone((string)($order['client_phone'] ?? '')) === $phone);
+        $orderUid = (int)($order['client_user_id'] ?? 0);
+        $orderPhone = kareta_normalize_phone((string)($order['client_phone'] ?? ''));
+        return ($uid > 0 && $orderUid > 0 && $uid === $orderUid)
+            || ($phone !== '' && $orderPhone !== '' && $phone === $orderPhone);
     }
     if ($role === 'master') {
-        $masterId = '';
-        if (function_exists('kareta_master_workplace_profile')) {
-            $profile = kareta_master_workplace_profile($pdo);
-            $masterId = trim((string)($profile['id'] ?? ''));
-        }
-        if ($masterId !== '' && $masterId === (string)($order['master_id'] ?? '')) return true;
-        return trim((string)($order['master_id'] ?? '')) === '' && (int)($order['master_user_id'] ?? 0) === $uid;
+        $id = trim((string)($scope['masterId'] ?? ''));
+        $target = trim((string)($order['master_id'] ?? ''));
+        return $id !== '' && $target !== '' && $id === $target;
     }
     if ($role === 'sto') {
-        $st=$pdo->prepare("SELECT id FROM sto_profiles WHERE user_id=? OR user_phone=? OR contact_phone=? LIMIT 1");
-        $st->execute([$uid ?: -1,$phone,$phone]);
-        return (string)($st->fetchColumn() ?: '') === (string)($order['sto_id'] ?? '');
+        $id = trim((string)($scope['stoId'] ?? ''));
+        $target = trim((string)($order['sto_id'] ?? ''));
+        return $id !== '' && $target !== '' && $id === $target;
     }
     return false;
 }
