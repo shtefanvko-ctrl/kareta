@@ -1,0 +1,23 @@
+name: Client mobile nav clearance
+on:
+  pull_request:
+    paths:
+      - 'css/next/client_surface_layout.css'
+      - 'css/routes/client_guard_postlude.css'
+      - 'css/runtime_boot_bundle.css'
+      - 'tools/test_client_mobile_nav_clearance_20261027.js'
+      - '.github/workflows/client-mobile-nav-clearance.yml'
+  workflow_dispatch:
+jobs:
+  ui-contract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Source and bundle parity, no master nav regressions
+        run: node tools/test_client_mobile_nav_clearance_20261027.js
