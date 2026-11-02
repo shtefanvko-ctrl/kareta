@@ -272,3 +272,46 @@ html[data-user-role="client"] .k-parts-ref-categories > div{
     min-width:0!important;
   }
 }
+
+
+/* Community desktop: preserve all three direct children as real grid tracks.
+   This route-scoped rule runs after legacy community/reference layout layers. */
+@media (min-width:1180px){
+  html[data-user-role="client"] #k-page-outlet > .k-community-page.k-community-v2
+  > .k-flow-community-layout.k-community-layout-v2{
+    display:grid!important;
+    grid-template-columns:190px minmax(0,1fr) 260px!important;
+    grid-template-areas:"community-nav community-feed community-aside"!important;
+    justify-content:stretch!important;
+    align-items:start!important;
+    gap:18px!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+  html[data-user-role="client"] #k-page-outlet > .k-community-page.k-community-v2
+  > .k-community-layout-v2 > .k-community-desktop-nav{
+    grid-area:community-nav!important;
+    display:grid!important;
+    min-width:0!important;
+    width:100%!important;
+  }
+  html[data-user-role="client"] #k-page-outlet > .k-community-page.k-community-v2
+  > .k-community-layout-v2 > .k-flow-community-main.k-community-feed-column{
+    grid-area:community-feed!important;
+    min-width:0!important;
+    width:100%!important;
+    max-width:none!important;
+    justify-self:stretch!important;
+  }
+  html[data-user-role="client"] #k-page-outlet > .k-community-page.k-community-v2
+  > .k-community-layout-v2 > .k-community-secondary{
+    grid-area:community-aside!important;
+    display:block!important;
+    min-width:0!important;
+    width:100%!important;
+    max-width:none!important;
+  }
+}
