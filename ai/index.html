@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111327"><title>KARETA AI — личный помощник</title>
+<style>
+:root{color-scheme:dark;font:16px/1.45 system-ui,-apple-system,Arial,sans-serif;background:#0b1127;color:#e8f2fb}
+*{box-sizing:border-box}body{margin:0}
+header{padding:17px 20px;background:#141c39;border-bottom:1px solid #33436a;display:flex;align-items:center;justify-content:space-between;gap:10px}
+header strong{font-size:23px;letter-spacing:.7px;color:#58ddeb}button{cursor:pointer;border:1px solid #475785;background:#283a67;color:white;padding:11px 14px;border-radius:10px}
+button:disabled{opacity:.4;cursor:wait}
+main{margin:auto;max-width:900px;padding:22px 16px}.hidden{display:none!important}
+.panel{border:1px solid #293b60;border-radius:15px;background:#171e39;padding:20px;margin:14px 0}
+label{display:block;margin:13px 0 6px;color:#c2d0e1}
+input,textarea{width:100%;padding:12px;background:#0b132c;color:#f0f8ff;border:1px solid #55658d;border-radius:10px;font:inherit}
+textarea{resize:vertical;min-height:75px}
+.primary{background:#136779;border-color:#20b4cb;font-weight:600}
+.note{color:#a6b7cb;font-size:13px}#messages{display:flex;flex-direction:column;gap:12px;min-height:200px;max-height:52vh;overflow:auto}
+.msg{padding:12px;border-radius:12px;white-space:pre-wrap;overflow-wrap:anywhere;background:#2b294e}
+.msg.mine{background:#1a5360;margin-left:9%}.msg .by{display:block;font-size:12px;color:#91dbe8;margin-bottom:6px}
+#status{min-height:20px;color:#f1c57b}#threads{max-width:100%;display:flex;gap:8px;overflow:auto;margin:8px 0}
+#threads button{white-space:nowrap}
+#threads button[aria-pressed=true]{border-color:#32d9f0;background:#235770}
+.bar{display:flex;gap:8px;align-items:center;margin-top:10px}
+@media(max-width:580px){main{padding:8px}header{padding:11px}header strong{font-size:19px}.panel{padding:12px}.bar{flex-direction:column;align-items:stretch}}
+</style></head><body>
+<header><strong>◆ KARETA AI</strong><button id="logout" class="hidden">Выйти</button></header>
+<main>
+<p id="status" role="status" aria-live="polite"></p>
+<section id="login" class="panel hidden">
+<h2>Вход по WhatsApp</h2>
+<p class="note">Для каждой учётной записи KARETA создаётся отдельная история переписки.</p>
+<form id="phone-form"><label for="phone">Номер телефона</label><input id="phone" inputmode="tel" autocomplete="tel" placeholder="+7 7XX XXX XX XX" required><button class="primary" type="submit">Получить код</button></form>
+<form id="otp-form" class="hidden"><label for="otp">Код подтверждения WhatsApp</label><input id="otp" autocomplete="one-time-code" inputmode="numeric" minlength="4" maxlength="8" required><button type="submit" class="primary">Войти</button></form>
+</section>
+<section id="chat" class="hidden">
+<div class="panel"><p id="welcome" class="note"></p>
+<div id="threads"></div><button id="new-chat">+ Новый диалог</button></div>
+<div class="panel">
+<div id="messages"></div>
+<form id="send-form"><label for="message">Сообщение KARETA AI</label><textarea id="message" maxlength="1500" required></textarea>
+<div class="bar"><span class="note">Ответы могут задерживаться при высокой нагрузке.</span><button class="primary" id="send" type="submit">Отправить</button></div>
+</form></div>
+</section>
+</main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+let conversationId=null,challengeKey=null,isBusy=false;
+function status(t){$('status').textContent=t||'';}
+function toggle(id,on){$(id).classList.toggle('hidden',!on);}
+async function call(url,data,ai=false){
+ const opts={credentials:'same-origin',cache:'no-store',headers:{'Accept':'application/json'}};
+ if(data!==null){opts.method='POST';opts.headers['Content-Type']='application/json';opts.body=JSON.stringify(data);}
+ if(ai)opts.headers['X-Kareta-AI-Client']='1';
+ const r=await fetch(url,opts);
+ let payload;try{payload=await r.json();}catch(_){throw Error('Сервер вернул некорректный ответ');}
+ if(!r.ok||payload.ok===false)throw Error((payload.error||'Ошибка сервера')+' (HTTP '+r.status+')');
+ return payload;
+}
+async function current(){
+ try{
+  const me=await call('/api/identity_session.php?action=current',null);
+  if(me.authenticated){toggle('login',false);toggle('chat',true);toggle('logout',true);
+   $('welcome').textContent='Личный кабинет: '+(me.account&&me.account.fullname||'KARETA')+'. Только ваши диалоги.';
+   await call('/api/ai_chat.php?action=status',null,true);await threads();newChat();
+  }else{toggle('login',true);toggle('chat',false);toggle('logout',false);}
+ }catch(e){status(e.message);toggle('login',true);toggle('chat',false);}
+}
+$('phone-form').addEventListener('submit',async e=>{
+ e.preventDefault();if(isBusy)return;isBusy=true;status('Запрашиваю код...');
+ try{
+  const r=await call('/api/identity_session.php',{action:'requestCode',phone:$('phone').value});
+  challengeKey=r.challengeKey;toggle('otp-form',true);
+  $('otp').maxLength=Number(r.codeLength||6);status('Код отправлен. Проверьте WhatsApp.');
+ }catch(error){status(error.message);}finally{isBusy=false;}
+});
+$('otp-form').addEventListener('submit',async e=>{
+ e.preventDefault();if(isBusy)return;isBusy=true;status('Проверяю код...');
+ try{await call('/api/identity_session.php',{action:'verifyCode',challengeKey,code:$('otp').value});challengeKey=null;$('otp').value='';status('');await current();}
+ catch(error){status(error.message);}finally{isBusy=false;}
+});
+$('logout').addEventListener('click',async()=>{
+ try{await call('/api/identity_session.php',{action:'logout'});}catch(e){status(e.message);}
+ conversationId=null;$('messages').replaceChildren();await current();
+});
+function addMessage(by,content,mine){
+ const d=document.createElement('div');d.className='msg'+(mine?' mine':'');
+ const tag=document.createElement('span');tag.className='by';tag.textContent=by;
+ d.append(tag,document.createTextNode(content));$('messages').append(d);
+ $('messages').scrollTop=$('messages').scrollHeight;
+}
+function newChat(){conversationId=null;$('messages').replaceChildren();addMessage('KARETA AI','Новый личный диалог. Чем помочь?',false);}
+$('new-chat').addEventListener('click',newChat);
+async function threads(){
+ const r=await call('/api/ai_chat.php?action=conversations',null,true);
+ $('threads').replaceChildren();
+ for(const c of r.conversations||[]){
+  const b=document.createElement('button');b.textContent=c.title||'Диалог';
+  b.setAttribute('aria-pressed',conversationId===c.id?'true':'false');
+  b.addEventListener('click',async()=>{
+   try{const messages=await call('/api/ai_chat.php?action=messages&conversationId='+encodeURIComponent(c.id),null,true);
+     conversationId=c.id;$('messages').replaceChildren();
+     for(const m of messages.messages||[])addMessage(m.role==='user'?'Вы':'KARETA AI',m.content,m.role==='user');
+     status('');await threads();
+   }catch(e){status(e.message);}
+  });$('threads').append(b);
+ }
+}
+$('send-form').addEventListener('submit',async e=>{
+ e.preventDefault();if(isBusy)return;const message=$('message').value.trim();if(!message)return;
+ isBusy=true;$('send').disabled=true;status('Модель отвечает...');addMessage('Вы',message,true);$('message').value='';
+ try{
+  const result=await call('/api/ai_chat.php?action=send',{conversationId,message},true);
+  conversationId=result.conversationId;addMessage('KARETA AI',result.answer,false);status('');
+  await threads();
+ }catch(error){status(error.message);$('message').value=message;}finally{isBusy=false;$('send').disabled=false;}
+});
+current();
+</script></body></html>
