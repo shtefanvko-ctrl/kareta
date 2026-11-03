@@ -101,3 +101,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{fon
   .footer-row{grid-template-columns:1fr}.footer nav{flex-wrap:wrap}.footer small{grid-column:auto}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+/* Domain app entry cards */
+.role-portals{background:#fafbfc}.role-portals__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.role-portals__item{display:flex;flex-direction:column;align-items:flex-start;min-height:215px;gap:12px;padding:26px;text-decoration:none;color:#1a2534;background:#fff;border:1px solid var(--line);border-radius:22px;transition:transform .15s,border-color .15s}.role-portals__item:hover{transform:translateY(-3px);border-color:#ff6b00}.role-portals__item img{width:34px;height:34px}.role-portals__item strong{font-size:21px}.role-portals__item span{font-size:14px;line-height:1.5;color:#626e7c}
+@media(max-width:1050px){.role-portals__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:540px){.role-portals__grid{grid-template-columns:1fr}.role-portals__item{min-height:155px}}

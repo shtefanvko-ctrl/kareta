@@ -10,6 +10,7 @@ function kareta_asset_registry(): array
     return [
         'styles' => [
             'css/runtime_boot_bundle.css',
+            'css/next/domain_surface.css',
         ],
         'scripts' => [
             'js/next/runtime_logger.js',
@@ -22,6 +23,7 @@ function kareta_asset_registry(): array
             'js/boot/runtime_shell_bundle.js',
             'js/boot/runtime_ui_bundle.js',
             'js/boot/runtime_core_bundle.js',
+            'js/next/domain_surface.js',
             'js/next/app_next.js',
         ],
         'images' => [
@@ -143,6 +145,7 @@ function kareta_asset_registry(): array
             'js/next/window_engine.js',
             'js/next/client_viewport_runtime.js',
             'js/next/client_surface_modernization_phase3.js',
+            'js/next/domain_surface.js',
             'js/next/app_next.js',
         ],
     ];

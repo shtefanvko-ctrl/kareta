@@ -1,0 +1,59 @@
+name: KARETA domain surface compatibility
+on:
+  pull_request:
+    paths:
+      - 'inc/domain_surface.php'
+      - 'inc/asset_registry.php'
+      - 'inc/asset_version.php'
+      - 'index.php'
+      - 'js/next/domain_surface.js'
+      - 'js/next/app_next.js'
+      - 'css/next/domain_surface.css'
+      - 'landing/**'
+      - 'tools/test_domain_surfaces.php'
+      - 'tools/test_domain_surface_runtime.js'
+      - 'infrastructure/nginx/role-domains.conf.template'
+      - '.github/workflows/domain-surfaces.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'inc/domain_surface.php'
+      - 'inc/asset_registry.php'
+      - 'inc/asset_version.php'
+      - 'index.php'
+      - 'js/next/domain_surface.js'
+      - 'js/next/app_next.js'
+      - 'css/next/domain_surface.css'
+      - 'landing/**'
+      - 'tools/test_domain_surfaces.php'
+      - 'tools/test_domain_surface_runtime.js'
+      - 'infrastructure/nginx/role-domains.conf.template'
+      - '.github/workflows/domain-surfaces.yml'
+permissions:
+  contents: read
+jobs:
+  domain-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: PHP syntax and role mapping
+        run: |
+          php -l inc/domain_surface.php
+          php -l index.php
+          php -l inc/asset_registry.php
+          php tools/test_domain_surfaces.php
+      - name: Domain SPA frontend contract
+        run: |
+          node --check js/next/domain_surface.js
+          node --check js/next/app_next.js
+          node tools/test_domain_surface_runtime.js
+          node tools/build_boot_js_bundles.js --check
+      - name: Prevent runtime migration activation
+        run: php tools/test_release_migration_manifest.php
