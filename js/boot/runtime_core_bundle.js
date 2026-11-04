@@ -292,7 +292,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
   const HOME_DIRECTIONS=Object.freeze([['all','Все',true],['auto','Авто',true],['home','Дом',false],['garden','Сад',false],['beauty','Красота',false],['health','Здоровье',false]]);
   function homeDirectionSelected(){
     const hash=String(location.hash||'');
-    const requested=new URLSearchParams(hash.includes('?')?hash.split('?').slice(1).join('?'):'').get('direction');
+    const requested=hash.includes('?')?new URLSearchParams(hash.split('?').slice(1).join('?')).get('direction'):null;
     if(requested!==null)return requested==='all'?'all':'auto';
     try{return localStorage.getItem('kareta.home.direction.v1')==='all'?'all':'auto';}catch(_e){return 'auto';}
   }
@@ -369,8 +369,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
     dirs?.addEventListener('click',saveDir);
     more?.addEventListener('click',openDir);
     close?.addEventListener('click',closeDir);
-    window.addEventListener('hashchange',syncDir);
-    syncDir();
+    if(dirs){window.addEventListener?.('hashchange',syncDir);syncDir();}
 
     let disposed=false;
     let catalog={masters:[],stos:[]};
@@ -442,7 +441,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
     (async()=>{if(!worksRail||!api?.getWorkPosts)return;try{const result=await api.getWorkPosts({limit:4},{signal:context.lifecycle?.signal});if(disposed)return;if(!result?.ok)throw new Error('work_feed_failed');const payload=result.payload?.data||result.payload||{};const rows=(Array.isArray(payload.items)?payload.items:Array.isArray(payload.posts)?payload.posts:Array.isArray(payload.works)?payload.works:[]).slice(0,4);worksRail.innerHTML=rows.length?rows.map(homeWorkCard).join(''):'<div class="k-home-feed-empty">Работы мастеров появятся после первых публикаций.</div>';}catch(_error){if(!disposed)renderFeedError(worksRail,'Не удалось загрузить последние работы.');}})();
     (async()=>{if(!communityRail||!api)return;try{const [newsResult,wallResult]=await Promise.allSettled([api.getNews?.({limit:4},{signal:context.lifecycle?.signal}),api.request?.('api/db.php?action=masterSocialWall.community&limit=4',{method:'GET',cacheTtlMs:12000,signal:context.lifecycle?.signal})]);if(disposed)return;const rows=[];if(newsResult.status==='fulfilled'&&newsResult.value?.ok){const payload=newsResult.value.payload?.data||newsResult.value.payload||{};(Array.isArray(payload.items)?payload.items:Array.isArray(payload.news)?payload.news:[]).forEach(item=>rows.push({...item,__source:'news'}));}if(wallResult.status==='fulfilled'&&wallResult.value?.ok){const payload=wallResult.value.payload?.data||wallResult.value.payload||{};(Array.isArray(payload.items)?payload.items:[]).forEach(item=>rows.push({...item,__source:'wall'}));}rows.sort((a,b)=>{const av=new Date(String(a.publishedAt||a.published_at||a.createdAt||a.created_at||0).replace(' ','T')).getTime()||0;const bv=new Date(String(b.publishedAt||b.published_at||b.createdAt||b.created_at||0).replace(' ','T')).getTime()||0;return bv-av;});const latest=rows.slice(0,4);communityRail.innerHTML=latest.length?latest.map(homeCommunityCard).join(''):'<div class="k-home-feed-empty">Новые публикации сообщества появятся здесь.</div>';}catch(_error){if(!disposed)renderFeedError(communityRail,'Не удалось загрузить публикации сообщества.');}})();
 
-    return()=>{disposed=true;window.removeEventListener('hashchange',syncDir);dirs?.removeEventListener('click',saveDir);more?.removeEventListener('click',openDir);close?.removeEventListener('click',closeDir);promoCleanup?.();form.removeEventListener('submit',submit);feedCleanups.forEach(fn=>fn?.());locationButton?.removeEventListener('click',openLocation);nearbyMapButton?.removeEventListener('click',openNearbyMap);locationClose?.removeEventListener('click',closeLocation);};
+    return()=>{disposed=true;window.removeEventListener?.('hashchange',syncDir);dirs?.removeEventListener('click',saveDir);more?.removeEventListener('click',openDir);close?.removeEventListener('click',closeDir);promoCleanup?.();form.removeEventListener('submit',submit);feedCleanups.forEach(fn=>fn?.());locationButton?.removeEventListener('click',openLocation);nearbyMapButton?.removeEventListener('click',openNearbyMap);locationClose?.removeEventListener('click',closeLocation);};
   }
 
   window.KaretaCorePages = Object.freeze({ renderHome, mountHome });
