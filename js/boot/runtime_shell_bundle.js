@@ -34,13 +34,13 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
   // headers look identical.
   const DESKTOP_TEMPLATES = Object.freeze({
     admin: Object.freeze(['adminMonitoring','adminUsers','adminOrganizations','adminManagement','platform']),
-    personal: Object.freeze(['home','services','community','masters','parts','orders','chats']),
-    master: Object.freeze(['masterDashboard','masterExchange','orders','masterSchedule','serviceManagement','parts','community','chats','cabinet']),
-    seller: Object.freeze(['seller','sellerProducts','sellerOrders','market','finance','parts','chats','cabinet']),
-    organization_service: Object.freeze(['stoDashboard','orders','masters','workflow','serviceManagement','finance','parts','chats','cabinet']),
-    organization_store: Object.freeze(['seller','sellerProducts','sellerOrders','market','finance','parts','chats','cabinet']),
+    personal: Object.freeze(['home','services','community','masters','map','parts','orders','chats']),
+    master: Object.freeze(['masterDashboard','masterExchange','orders','masterSchedule','serviceManagement','map','parts','community','chats','cabinet']),
+    seller: Object.freeze(['seller','sellerProducts','sellerOrders','market','finance','map','parts','chats','cabinet']),
+    organization_service: Object.freeze(['stoDashboard','orders','masters','workflow','serviceManagement','finance','map','parts','chats','cabinet']),
+    organization_store: Object.freeze(['seller','sellerProducts','sellerOrders','market','finance','map','parts','chats','cabinet']),
     organization: Object.freeze(['orders','workflow','calendarBooking','finance','crm','chats','cabinet']),
-    anonymous: Object.freeze(['home','services','community','masters','parts']),
+    anonymous: Object.freeze(['home','services','community','masters','map','parts']),
   });
 
   const ACTIONS = Object.freeze({
@@ -821,7 +821,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_shell_bundle","js/boot/runtime
     window.KaretaNext=Object.assign(window.KaretaNext||{}, {audit:()=>({ok:false,bootPending:true,release,source:'route_asset_loader'})});
   }
   const KNOWN_LAZY_ROUTE_KEYS=new Set([
-    'community',
+    'map','community',
     'parts','usedParts','productDetail',
     'masters','providerDetail','providerBooking','serviceDetail',
     'stoDashboard',

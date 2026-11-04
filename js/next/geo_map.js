@@ -188,12 +188,13 @@
     window.open(url,'_blank','noopener,noreferrer');
   }
 
-  function render(){
+  function render(onlyMarkers=false){
     if(!state||!dialog?.open)return;
     const viewport=dialog.querySelector('[data-geo-map-viewport]'),tiles=dialog.querySelector('[data-geo-map-tiles]'),markers=dialog.querySelector('[data-geo-map-markers]');
     tiles.style.transform='';markers.style.transform='';
-    tileRenderSeq+=1;state.tileLoaded=0;state.tileFailed=0;updateTileStatus();
+    if(!onlyMarkers){tileRenderSeq+=1;state.tileLoaded=0;state.tileFailed=0;updateTileStatus();}
     const width=Math.max(280,viewport.clientWidth||320),height=Math.max(260,viewport.clientHeight||320),zoom=state.zoom,center=world(state.center.lat,state.center.lng,zoom),n=Math.pow(2,zoom);
+    if(!onlyMarkers){
     const minX=Math.floor((center.x-width/2)/256)-1,maxX=Math.floor((center.x+width/2)/256)+1,minY=Math.max(0,Math.floor((center.y-height/2)/256)-1),maxY=Math.min(n-1,Math.floor((center.y+height/2)/256)+1);
     const tileHtml=[];
     for(let ty=minY;ty<=maxY;ty++)for(let tx=minX;tx<=maxX;tx++){
@@ -201,6 +202,7 @@
       tileHtml.push(`<img src="${esc(tileUrl(zoom,wrapped,ty))}" alt="" data-geo-tile-render="${tileRenderSeq}" draggable="false" loading="eager" referrerpolicy="strict-origin-when-cross-origin" style="left:${left}px;top:${top}px" width="256" height="256">`);
     }
     tiles.innerHTML=tileHtml.join('');
+    }
     const visible=state.points.map((point,index)=>{const p=world(point.latitude,point.longitude,zoom),left=width/2+(p.x-center.x),top=height/2+(p.y-center.y);return {point,index,left,top};}).filter(item=>item.left>=-40&&item.left<=width+40&&item.top>=-40&&item.top<=height+40);
     const userItems=visible.filter(item=>item.point.user),providerItems=visible.filter(item=>!item.point.user),clusterSize=zoom>=config.maxZoom?1:52,buckets=new Map();
     providerItems.forEach(item=>{const key=clusterSize===1?item.point.id:(Math.floor(item.left/clusterSize)+':'+Math.floor(item.top/clusterSize));const list=buckets.get(key)||[];list.push(item);buckets.set(key,list);});
@@ -247,7 +249,7 @@
     const status=dialog.querySelector('[data-geo-map-data-status]');
     status.textContent=String(notice||'');status.hidden=!status.textContent;
     if(!state.selected)dialog.querySelector('[data-geo-map-detail]').innerHTML='<b>Выберите точку на карте</b><span>Адрес и маршрут появятся здесь.</span>';
-    render();return {ok:true,count:state.points.length};
+    render(true);return {ok:true,count:state.points.length};
   }
   function close(){if(!dialog)return;try{dialog.close();}catch(_error){dialog.removeAttribute('open');}state=null;drag=null;if(dialog.classList.contains('is-inline'))dialog.remove();}
 

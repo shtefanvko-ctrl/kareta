@@ -7,6 +7,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
 
   const ROUTES = Object.freeze({
     home:Object.freeze({ path:'#/home', label:'Главная', icon:'⌂' }),
+    map:Object.freeze({ path:'#/map', label:'Карта', icon:'location' }),
     masterQr:Object.freeze({ path:'#/master/qr', label:'Мой QR', icon:'grid', nav:false }),
     scanner:Object.freeze({ path:'#/scan', label:'Сканировать', icon:'camera', nav:false }),
     scannerQr:Object.freeze({ path:'#/scan/qr', label:'QR KARETA', icon:'camera', nav:false }),
@@ -82,7 +83,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
 
   const UX_SURFACE_BY_KEY = Object.freeze({
     masterQr:'workspace', scanner:'workspace', scannerQr:'workspace', scannerDocument:'workspace',
-    home:'workspace', platform:'workspace', corePlatform:'workspace', calendarBooking:'workspace', finance:'workspace', market:'workspace', crm:'workspace',
+    home:'workspace', map:'workspace', platform:'workspace', corePlatform:'workspace', calendarBooking:'workspace', finance:'workspace', market:'workspace', crm:'workspace',
     identityMigration:'workspace', adminUsers:'workspace', adminOrganizations:'workspace', adminMonitoring:'workspace', adminManagement:'workspace',
     services:'workspace', news:'deep-link-fallback', masterNews:'workspace', masterNewsCreate:'work-dialog', masterNewsEdit:'work-dialog', works:'workspace', profile:'entity-window', following:'workspace', realWorks:'workspace',
     workDetail:'entity-window', serviceManagement:'workspace', masters:'workspace', masterOnboarding:'workspace', masterDashboard:'workspace', masterSchedule:'workspace', masterProfileOwner:'workspace', masterWallOwner:'workspace', masterWorks:'workspace', masterReviews:'workspace', masterExchange:'workspace', community:'workspace', stoDashboard:'workspace',
@@ -590,6 +591,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     { key:'services', section:'main', desktop:30, menu:30, public:true },
     { key:'masters', section:'main', desktop:40, menu:40, public:true },
     { key:'parts', section:'main', desktop:50, menu:50, public:true },
+    { key:'map', section:'main', menu:45, public:true },
 
     { key:'orders', section:'work', desktop:60, menu:60, mobilePriority:30, any:['requests.read'], contextTypes:['personal','profile','organization'] },
     { key:'requestNew', section:'work', menu:61, any:['requests.create'], contextTypes:['personal','profile','organization'] },
@@ -746,10 +748,10 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
   if (!registry) throw new Error('KaretaRouteRegistry is required before role_access.js');
 
   const LEGACY = Object.freeze({
-    client:{ role:'client', label:'Клиент', defaultRoute:'home', desktop:['home','works','services','masters','parts','diagnostics','orders','chats','cabinet'], mobile:['home','services','works','masters','parts','__more__'] },
-    master:{ role:'master', label:'Мастер', defaultRoute:'masterDashboard', desktop:['masterDashboard','masterExchange','serviceManagement','diagnostics','parts','cabinet'], mobile:['masterDashboard','masterExchange','serviceManagement','parts','cabinet','__more__'] },
-    sto:{ role:'sto', label:'СТО', defaultRoute:'stoDashboard', desktop:['stoDashboard','orders','masters','workflow','serviceManagement','diagnostics','finance','parts','chats','cabinet'], mobile:['stoDashboard','orders','masters','chats','cabinet'] },
-    seller:{ role:'seller', label:'Продавец', defaultRoute:'seller', desktop:['seller','sellerProducts','sellerOrders','market','finance','parts','chats','cabinet'], mobile:['seller','sellerProducts','sellerOrders','parts','chats','cabinet'] },
+    client:{ role:'client', label:'Клиент', defaultRoute:'home', desktop:['home','works','services','masters','map','parts','diagnostics','orders','chats','cabinet'], mobile:['home','services','works','masters','parts','__more__'] },
+    master:{ role:'master', label:'Мастер', defaultRoute:'masterDashboard', desktop:['masterDashboard','masterExchange','serviceManagement','diagnostics','map','parts','cabinet'], mobile:['masterDashboard','masterExchange','serviceManagement','parts','cabinet','__more__'] },
+    sto:{ role:'sto', label:'СТО', defaultRoute:'stoDashboard', desktop:['stoDashboard','orders','masters','workflow','serviceManagement','diagnostics','map','finance','parts','chats','cabinet'], mobile:['stoDashboard','orders','masters','chats','cabinet'] },
+    seller:{ role:'seller', label:'Продавец', defaultRoute:'seller', desktop:['seller','sellerProducts','sellerOrders','market','finance','map','parts','chats','cabinet'], mobile:['seller','sellerProducts','sellerOrders','parts','chats','cabinet'] },
     admin:{ role:'admin', label:'Администратор', defaultRoute:'home', desktop:registry.desktopKeys, mobile:registry.mobileKeys },
     owner:{ role:'owner', label:'Владелец', defaultRoute:'home', desktop:registry.desktopKeys, mobile:registry.mobileKeys },
   });
