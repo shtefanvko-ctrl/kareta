@@ -14,38 +14,31 @@
 
 
   const HOME_REFERENCE_POPULAR = Object.freeze([
-    { title:'Замена масла', route:'#/services/category/maintenance', icon:'oil', image:'/assets/reference/automotive/oil_filters.png', price:'от 8 000 ₸' },
-    { title:'Диагностика', route:'#/services/category/diagnostics', icon:'diagnostics', image:'/assets/reference/automotive/service_station.png', price:'от 5 000 ₸' },
-    { title:'Шиномонтаж', route:'#/services/category/tires', icon:'tires', image:'/assets/services/home_hero_lift_r63a.png', price:'от 6 000 ₸' },
-    { title:'Ремонт ходовой', route:'#/services', icon:'suspension', image:'/assets/reference/automotive/shock_absorber.png', price:'от 15 000 ₸' },
-    { title:'Автоэлектрика', route:'#/services', icon:'services', image:'/assets/reference/automotive/service_station.png', price:'от 7 000 ₸' },
-    { title:'Тормозная система', route:'#/services', icon:'diagnostics', image:'/assets/reference/automotive/shock_absorber.png', price:'от 9 000 ₸' },
-    { title:'Кондиционер', route:'#/services', icon:'services', image:'/assets/services/home_hero_lift_r63a.png', price:'от 8 000 ₸' },
-    { title:'Стартер и генератор', route:'#/services', icon:'diagnostics', image:'/assets/reference/automotive/oil_filters.png', price:'от 10 000 ₸' }
+    { title:'Замена масла', route:'#/services/category/maintenance', icon:'oil', image:'/assets/reference/automotive/oil_filters.png', price:'Уточнить стоимость' },
+    { title:'Диагностика', route:'#/services/category/diagnostics', icon:'diagnostics', image:'/assets/reference/automotive/service_station.png', price:'Уточнить стоимость' },
+    { title:'Шиномонтаж', route:'#/services/category/tires', icon:'tires', image:'/assets/services/home_hero_lift_r63a.png', price:'Уточнить стоимость' },
+    { title:'Ремонт ходовой', route:'#/services', icon:'suspension', image:'/assets/reference/automotive/shock_absorber.png', price:'Уточнить стоимость' },
+    { title:'Автоэлектрика', route:'#/services', icon:'services', image:'/assets/reference/automotive/service_station.png', price:'Уточнить стоимость' },
+    { title:'Тормозная система', route:'#/services', icon:'diagnostics', image:'/assets/reference/automotive/shock_absorber.png', price:'Уточнить стоимость' },
+    { title:'Кондиционер', route:'#/services', icon:'services', image:'/assets/services/home_hero_lift_r63a.png', price:'Уточнить стоимость' },
+    { title:'Стартер и генератор', route:'#/services', icon:'diagnostics', image:'/assets/reference/automotive/oil_filters.png', price:'Уточнить стоимость' }
   ]);
 
+  // Platform navigation only: never invent provider discounts, prices or appointment slots.
   const HOME_PROMO_BANNERS = Object.freeze([
-    { id:'diagnostics-25', badge:'−25%', title:'Компьютерная диагностика', provider:'KARETA Service', location:'ул. Казахстан, 68', field:false, price:'4 500 ₸', oldPrice:'6 000 ₸', slots:4, note:'Акция до конца недели', route:'#/services/category/diagnostics', image:'/media/kareta_create_request_vehicle_background_r188_5_5_6_84_31.png' },
-    { id:'oil-20', badge:'−20%', title:'Замена масла и фильтра', provider:'Мастер Арман', location:'Выезд к клиенту до 20 км', field:true, price:'8 000 ₸', oldPrice:'10 000 ₸', slots:3, note:'Сегодня и завтра', route:'#/services/category/maintenance', image:'/assets/reference/automotive/oil_filters.png' },
-    { id:'suspension-18', badge:'−18%', title:'Диагностика ходовой', provider:'СТО Восток', location:'пр. Абая, 112', field:false, price:'7 400 ₸', oldPrice:'9 000 ₸', slots:6, note:'Свободные окна на этой неделе', route:'#/services', image:'/assets/reference/automotive/shock_absorber.png' },
-    { id:'tires-15', badge:'−15%', title:'Шиномонтаж комплектом', provider:'KARETA Partner', location:'Выезд к клиенту', field:true, price:'10 200 ₸', oldPrice:'12 000 ₸', slots:2, note:'Осталось мало мест', route:'#/services/category/tires', image:'/assets/services/home_hero_lift_r63a.png' }
+    {id:'auto-services',title:'Ремонт и обслуживание автомобиля',
+      description:'Выберите услугу или найдите специалиста на KARETA.KZ.',
+      route:'#/services',image:'/media/kareta_create_request_vehicle_background_r188_5_5_6_84_31.png'}
   ]);
 
   function homePromoBanner(item,index){
-    const locationIcon=homeRefIcon(item.field?'car':'location');
     return `<article class="k-home-promo-slide" data-home-promo-slide data-promo-index="${index}" style="--k-home-promo-image:url('${esc(item.image)}')">
       <div class="k-home-promo-slide__overlay"></div>
-      <div class="k-home-promo-slide__content">
-        <div class="k-home-promo-slide__top"><span class="k-home-promo-slide__badge">${esc(item.badge)}</span><span class="k-home-promo-slide__slots">${item.slots>0?`Осталось ${item.slots} мест`:'Мест нет'}</span></div>
-        <div class="k-home-promo-slide__copy">
-          <small class="k-home-promo-slide__provider">${esc(item.provider)}</small>
-          <h2>${esc(item.title)}</h2>
-          <div class="k-home-promo-slide__price"><strong>${esc(item.price)}</strong><s>${esc(item.oldPrice)}</s></div>
-          <div class="k-home-promo-slide__meta"><span>${locationIcon}${esc(item.location)}</span><span>${homeRefIcon('calendar')}${esc(item.note)}</span></div>
-          <button class="k-home-ref-cta k-home-promo-slide__cta" type="button" data-home-promo-book data-promo-id="${esc(item.id)}" data-promo-title="${esc(item.title)}" data-promo-price="${esc(item.price)}">Записаться</button>
-        </div>
-      </div>
-    </article>`;
+      <div class="k-home-promo-slide__content"><div class="k-home-promo-slide__copy">
+        <small class="k-home-promo-slide__provider">KARETA.KZ</small>
+        <h2>${esc(item.title)}</h2><p>${esc(item.description)}</p>
+        <a class="k-home-ref-cta k-home-promo-slide__cta" href="${esc(item.route)}">Выбрать услугу</a>
+      </div></div></article>`;
   }
 
   function homePromoCarousel(){
@@ -53,13 +46,12 @@
       <div class="k-home-promo__viewport" data-home-promo-viewport>
         <div class="k-home-promo__track">${HOME_PROMO_BANNERS.map(homePromoBanner).join('')}</div>
       </div>
-      <div class="k-home-promo__controls">
+      ${HOME_PROMO_BANNERS.length>1?`<div class="k-home-promo__controls">
         <div class="k-home-promo__dots" data-home-promo-dots>${HOME_PROMO_BANNERS.map((_,index)=>`<button type="button" data-home-promo-dot="${index}" class="${index===0?'is-active':''}" aria-label="Баннер ${index+1}"></button>`).join('')}</div>
         <span class="k-home-promo__counter" data-home-promo-counter>1 / ${HOME_PROMO_BANNERS.length}</span>
-      </div>
+      </div>`:''}
     </section>`;
   }
-
   function bindHomePromo(root){
     if(!root)return()=>{};
     const viewport=root.querySelector('[data-home-promo-viewport]');
