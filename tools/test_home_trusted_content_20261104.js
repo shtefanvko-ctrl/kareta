@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const root=path.resolve(__dirname,'..');
+const core=fs.readFileSync(path.join(root,'js/next/pages/core.js'),'utf8');
+const boot=fs.readFileSync(path.join(root,'js/boot/runtime_core_bundle.js'),'utf8');
+assert(boot.includes('/* SOURCE: js/next/pages/core.js */\n'+core.trimEnd()+'\n;\n'),'stale boot core');
+const sandbox={window:{}};vm.runInNewContext(core,sandbox,{filename:'pages/core.js'});
+const html=sandbox.window.KaretaCorePages.renderHome({state:{user:{}}});
+for(const need of ['Ремонт и обслуживание автомобиля','Уточнить стоимость','href="#/services"','data-home-section="nearby"','data-home-feed="community"'])assert(html.includes(need),'missing '+need);
+for(const fake of ['−25%','−20%','Осталось 4 места','Акция до конца недели','Мастер Арман','СТО Восток','от 8 000 ₸','data-home-promo-book'])assert(!html.includes(fake),'unverified '+fake);
+assert(!/<s>\s*\d[\d\s]*\s*₸\s*<\/s>/.test(html),'invented old-price');
+console.log('HOME_TRUSTED_CONTENT: PASS');
