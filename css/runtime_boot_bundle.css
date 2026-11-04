@@ -20617,3 +20617,22 @@ html[data-user-role="master"] body{max-width:100%!important;overflow-x:clip!impo
 #k-shell-header[data-kareta-header-mode="inner"] ~ #k-page-outlet .k-services-ref-navigator-head > a[data-service-back]{
   display:none!important;
 }
+
+/* KARETA home directions: no shell/header/nav modifications. */
+.k-home-reference .k-home-directions{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%;width:100%;box-sizing:border-box;padding:3px 0 8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;overscroll-behavior-inline:contain;touch-action:pan-x}
+.k-home-reference .k-home-directions::-webkit-scrollbar{display:none}
+.k-home-reference .k-home-direction{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 auto;min-height:42px;padding:0 15px;border:1px solid var(--k-home-border,#e3e3e3);border-radius:14px;background:#fff;color:var(--k-home-text,#111);text-decoration:none;white-space:nowrap;font-family:inherit;font-size:14px;font-weight:650;cursor:pointer}
+.k-home-reference .k-home-direction.is-active{background:var(--k-home-accent,#ff3b12);border-color:var(--k-home-accent,#ff3b12);color:#fff;font-weight:750}
+.k-home-reference .k-home-direction.is-active::before{content:'✓';margin-right:7px}
+.k-home-reference .k-home-direction.is-disabled{opacity:.58;background:#f4f5f7;cursor:not-allowed}
+.k-home-reference .k-home-directions-more{background:#fff7f1;border-color:#ffddc6;color:#a53c16}
+.k-home-reference .k-home-direction:focus-visible,.k-home-directions-dialog button:focus-visible{outline:3px solid #ff831f;outline-offset:3px}
+.k-home-directions-dialog{box-sizing:border-box;width:100%;max-width:min(440px,calc(100vw - 32px));max-height:calc(100dvh - 44px);overflow:auto;padding:22px;border:1px solid #e5e7eb;border-radius:20px;background:#fff;color:#171717;box-shadow:0 20px 70px #1113}
+.k-home-directions-dialog::backdrop{background:rgba(15,23,42,.46)}
+.k-home-directions-dialog header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.k-home-directions-dialog h2{font-size:20px;margin:0}
+.k-home-directions-dialog header button{background:#f4f4f4;border:0;border-radius:10px;font-size:25px;min-width:42px;min-height:42px;cursor:pointer}
+.k-home-directions-dialog p{margin:14px 0 18px;color:#555;font-size:14px;line-height:1.5}
+.k-home-direction-pending{display:flex;justify-content:space-between;gap:12px;padding:12px;border:1px solid #eee;border-radius:12px;margin-top:8px}
+.k-home-direction-pending small{color:#777}
+@media(max-width:420px){.k-home-reference .k-home-direction{padding-inline:13px;font-size:13px}.k-home-directions-dialog{padding:18px}}

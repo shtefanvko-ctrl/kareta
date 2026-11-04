@@ -288,11 +288,34 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
     return `<dialog class="k-home-location-dialog" data-home-location-dialog aria-labelledby="k-home-location-title"><section class="k-home-location-panel"><header><div><small>МЕСТОПОЛОЖЕНИЕ</small><h2 id="k-home-location-title">Город и расстояние</h2><p>Выберите город или разрешите геопозицию — ближайшие сервисы пересчитаются автоматически.</p></div><button type="button" data-home-location-close aria-label="Закрыть">${homeRefIcon('close')}</button></header><button class="k-home-location-detect" type="button" data-home-location-detect>${homeRefIcon('location')}<span><b>Определить моё местоположение</b><small>Используем только для расчёта расстояния</small></span></button><div class="k-home-location-status" data-home-location-status hidden></div><div class="k-home-location-cities" data-home-location-cities></div></section></dialog>`;
   }
 
+  // UI readiness: unavailable verticals never create fake service routes.
+  const HOME_DIRECTIONS=Object.freeze([['all','Все',true],['auto','Авто',true],['home','Дом',false],['garden','Сад',false],['beauty','Красота',false],['health','Здоровье',false]]);
+  function homeDirectionSelected(){
+    const hash=String(location.hash||'');
+    const requested=new URLSearchParams(hash.includes('?')?hash.split('?').slice(1).join('?'):'').get('direction');
+    if(requested!==null)return requested==='all'?'all':'auto';
+    try{return localStorage.getItem('kareta.home.direction.v1')==='all'?'all':'auto';}catch(_e){return 'auto';}
+  }
+  function homeDirectionRail(){
+    const choice=homeDirectionSelected();
+    return `<nav class="k-home-directions" aria-label="Направления услуг" data-home-directions>
+    ${HOME_DIRECTIONS.map(([id,label,ready])=>ready
+      ? `<a class="k-home-direction ${id===choice?'is-active':''}" data-home-direction="${id}" ${id===choice?'aria-current="page"':''} href="#/home?direction=${id}">${esc(label)}</a>`
+      : `<span class="k-home-direction is-disabled" aria-disabled="true" title="Пока не опубликовано">${esc(label)}</span>`).join('')}
+    <button type="button" class="k-home-direction k-home-directions-more" data-home-directions-more aria-haspopup="dialog">Ещё</button>
+    </nav><dialog class="k-home-directions-dialog" data-home-directions-dialog aria-labelledby="k-home-directions-title">
+    <header><h2 id="k-home-directions-title">Все направления</h2><button type="button" data-home-directions-close aria-label="Закрыть">×</button></header>
+    <p>Сейчас доступны автомобильные услуги. Остальные направления подключаются после проверки услуг и исполнителей.</p>
+    ${HOME_DIRECTIONS.filter(x=>!x[2]).map(x=>`<div class="k-home-direction-pending">${esc(x[1])} <small>Готовится</small></div>`).join('')}
+    </dialog>`;
+  }
+
   function renderHome(context){
     return `<section class="k-page k-home-simple k-home-reference k-home-reference--app" data-page="home" data-kflow-screen="home">
       <button class="k-home-ref-location" type="button" data-home-location-button>${homeRefIcon('location')}<span data-home-city>Усть-Каменогорск</span><i>${homeRefIcon('chevron')}</i></button>
       <div class="k-home-ref-heading" aria-hidden="true"><h1 data-home-greeting>${homeGreeting(context)}</h1></div>
       <form class="k-home-ref-search" data-home-ai-form aria-label="Поиск услуги, мастера или СТО"><label class="k-home-ref-search__box">${homeRefIcon('search')}<input id="k-home-ai-problem" class="k-home-ref-search__input" type="text" autocomplete="off" placeholder="Найти услугу, мастера или СТО…"></label></form>
+      ${homeDirectionRail()}
       ${homePromoCarousel()}
       <section class="k-home-ref-actions" aria-label="Быстрые действия">${HOME_REFERENCE_ACTIONS.map(item=>`<a class="k-home-ref-action" href="${item.route}"><span class="k-home-ref-action__icon">${homeActionIcon(item.icon)}</span><b>${item.title}</b></a>`).join('')}</section>
       <section class="k-home-ref-section" data-home-section="popular"><header class="k-home-ref-section__head"><h2>Популярные услуги</h2><a href="#/services">Все <span aria-hidden="true">${homeRefIcon('chevronRight')}</span></a></header><div class="k-home-ref-chips k-home-ref-service-grid">${HOME_REFERENCE_POPULAR.map(item=>`<a class="k-home-ref-chip k-home-ref-service-card" href="${item.route}"><span class="k-home-ref-service-card__media"><img src="${item.image}" alt="" loading="lazy" decoding="async"></span><span class="k-home-ref-service-card__copy"><span class="k-home-ref-service-card__title"><span class="k-ui-icon k-ui-icon--sm" data-icon="${item.icon}">${homeActionIcon(item.icon)}</span><b>${item.title}</b></span><small>${item.price}</small></span></a>`).join('')}</div></section>
@@ -324,6 +347,30 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
     const promoRoot=document.querySelector('[data-home-promo]');
     const promoCleanup=bindHomePromo(promoRoot);
     if(!form||!input){promoCleanup?.();return()=>{};}
+    const dirs=document.querySelector('[data-home-directions]');
+    const modal=document.querySelector('[data-home-directions-dialog]');
+    const more=dirs?.querySelector('[data-home-directions-more]');
+    const close=modal?.querySelector('[data-home-directions-close]');
+    const syncDir=()=>{
+      const active=homeDirectionSelected();
+      dirs?.querySelectorAll('[data-home-direction]').forEach(el=>{
+        const current=el.dataset.homeDirection===active;
+        el.classList.toggle('is-active',current);
+        if(current)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');
+      });
+      try{localStorage.setItem('kareta.home.direction.v1',active);}catch(_e){}
+    };
+    const saveDir=e=>{
+      const el=e.target.closest('[data-home-direction]');
+      if(el)try{localStorage.setItem('kareta.home.direction.v1',el.dataset.homeDirection);}catch(_e){}
+    };
+    const openDir=()=>{if(modal&&!modal.open)modal.showModal?.();};
+    const closeDir=()=>{if(modal?.open)modal.close?.();};
+    dirs?.addEventListener('click',saveDir);
+    more?.addEventListener('click',openDir);
+    close?.addEventListener('click',closeDir);
+    window.addEventListener('hashchange',syncDir);
+    syncDir();
 
     let disposed=false;
     let catalog={masters:[],stos:[]};
@@ -395,7 +442,7 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
     (async()=>{if(!worksRail||!api?.getWorkPosts)return;try{const result=await api.getWorkPosts({limit:4},{signal:context.lifecycle?.signal});if(disposed)return;if(!result?.ok)throw new Error('work_feed_failed');const payload=result.payload?.data||result.payload||{};const rows=(Array.isArray(payload.items)?payload.items:Array.isArray(payload.posts)?payload.posts:Array.isArray(payload.works)?payload.works:[]).slice(0,4);worksRail.innerHTML=rows.length?rows.map(homeWorkCard).join(''):'<div class="k-home-feed-empty">Работы мастеров появятся после первых публикаций.</div>';}catch(_error){if(!disposed)renderFeedError(worksRail,'Не удалось загрузить последние работы.');}})();
     (async()=>{if(!communityRail||!api)return;try{const [newsResult,wallResult]=await Promise.allSettled([api.getNews?.({limit:4},{signal:context.lifecycle?.signal}),api.request?.('api/db.php?action=masterSocialWall.community&limit=4',{method:'GET',cacheTtlMs:12000,signal:context.lifecycle?.signal})]);if(disposed)return;const rows=[];if(newsResult.status==='fulfilled'&&newsResult.value?.ok){const payload=newsResult.value.payload?.data||newsResult.value.payload||{};(Array.isArray(payload.items)?payload.items:Array.isArray(payload.news)?payload.news:[]).forEach(item=>rows.push({...item,__source:'news'}));}if(wallResult.status==='fulfilled'&&wallResult.value?.ok){const payload=wallResult.value.payload?.data||wallResult.value.payload||{};(Array.isArray(payload.items)?payload.items:[]).forEach(item=>rows.push({...item,__source:'wall'}));}rows.sort((a,b)=>{const av=new Date(String(a.publishedAt||a.published_at||a.createdAt||a.created_at||0).replace(' ','T')).getTime()||0;const bv=new Date(String(b.publishedAt||b.published_at||b.createdAt||b.created_at||0).replace(' ','T')).getTime()||0;return bv-av;});const latest=rows.slice(0,4);communityRail.innerHTML=latest.length?latest.map(homeCommunityCard).join(''):'<div class="k-home-feed-empty">Новые публикации сообщества появятся здесь.</div>';}catch(_error){if(!disposed)renderFeedError(communityRail,'Не удалось загрузить публикации сообщества.');}})();
 
-    return()=>{disposed=true;promoCleanup?.();form.removeEventListener('submit',submit);feedCleanups.forEach(fn=>fn?.());locationButton?.removeEventListener('click',openLocation);nearbyMapButton?.removeEventListener('click',openNearbyMap);locationClose?.removeEventListener('click',closeLocation);};
+    return()=>{disposed=true;window.removeEventListener('hashchange',syncDir);dirs?.removeEventListener('click',saveDir);more?.removeEventListener('click',openDir);close?.removeEventListener('click',closeDir);promoCleanup?.();form.removeEventListener('submit',submit);feedCleanups.forEach(fn=>fn?.());locationButton?.removeEventListener('click',openLocation);nearbyMapButton?.removeEventListener('click',openNearbyMap);locationClose?.removeEventListener('click',closeLocation);};
   }
 
   window.KaretaCorePages = Object.freeze({ renderHome, mountHome });
