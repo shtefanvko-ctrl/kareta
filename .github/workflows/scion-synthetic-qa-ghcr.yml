@@ -35,6 +35,14 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Fail-closed independent environment protection preflight
+        # Read-only public GitHub API; no secrets required.
+        # This must PASS before registry authentication or any GHCR push.
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s infra/scion-worker-qa -p 'test_check_environment.py' -q
+          python3 infra/scion-worker-qa/check_environment.py
+
       - name: Install Go
         uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
