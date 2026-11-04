@@ -18,6 +18,9 @@
         <div class="k-master-reference-filter-panel" data-master-filter-panel hidden><button type="button" class="is-active" data-master-spec="">Все услуги</button><button type="button" data-master-spec="диагност">Диагностика</button><button type="button" data-master-spec="ходов">Ходовая</button><button type="button" data-master-spec="электр">Электрика</button></div>
         <div class="k-masters-status" data-masters-status>Загружаем исполнителей…</div>
         <section class="k-masters-directory k-master-reference-directory" data-masters-directory aria-live="polite"></section>
+        <section class="k-masters-directory k-master-reference-directory" data-sto-claim-directory hidden></section>
+        <section class="k-masters-directory k-master-reference-directory" data-sto-claim-mine hidden></section>
+        <section class="k-masters-directory k-master-reference-directory" data-sto-claim-admin hidden></section>
       </div>
     </section>`;
   }
@@ -171,6 +174,7 @@
     input?.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(()=>{search=String(input.value||'').trim();load();},260);},{signal:context.lifecycle?.signal});
     input?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();clearTimeout(timer);search=String(input.value||'').trim();load();}},{signal:context.lifecycle?.signal});
     load();
+    window.KaretaStoClaimUi?.mount(root,context);
   }
 
 
