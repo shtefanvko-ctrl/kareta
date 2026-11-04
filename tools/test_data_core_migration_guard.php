@@ -56,6 +56,15 @@ try {
     $write($records,2,$records,2,2);
     file_put_contents($root . '/api/migrations/001_test_migration.php', "<?php\nreturn null;\n");
     $assert('migration edit detected', 'FAIL', 'PHP_FILE_HASH_MISMATCH');
+    file_put_contents($root . '/api/migrations/001_test_migration.php', "<?php\nreturn static function (): void {};\n");
+    $write($records,2,$records,2,2);
+    $wrongType = $records;
+    $wrongType[0]['version'] = '1garbage';
+    $write($wrongType,2,$records,2,2);
+    $assert('malformed json migration version rejected', 'FAIL', 'JSON_BAD_VERSION_TYPE');
+    $wrongType[0]['version'] = '1';
+    $write($wrongType,2,$records,2,2);
+    $assert('string json migration version rejected', 'FAIL', 'JSON_BAD_VERSION_TYPE');
 } finally {
     $cleanup($root);
 }
