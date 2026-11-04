@@ -6,12 +6,98 @@ function kareta_geo_point_id(string $ownerType,string $ownerId,string $kind): st
 }
 function kareta_geo_number($value): ?float {
     if($value===null||$value===''||!is_numeric($value))return null;
-    return (float)$value;
+    $number=(float)$value;
+    return is_finite($number) ? $number : null;
 }
 function kareta_geo_coords_valid(?float $lat,?float $lng): bool {
     if($lat===null&&$lng===null)return true;
     return $lat!==null&&$lng!==null&&$lat>=-90.0&&$lat<=90.0&&$lng>=-180.0&&$lng<=180.0;
 }
+/** Consent receipts can only be written by the Geo upsert core, not client metadata. */
+function kareta_geo_consent_receipt_sql(string $column='metadata_json'): string {
+    return "(JSON_VALID({$column}) AND
+        NULLIF(JSON_UNQUOTE(JSON_EXTRACT(
+            IF(JSON_VALID({$column}),{$column},'{}'),
+            '$.geoExactConsentRecordedAt')), '') IS NOT NULL)";
+}
+/** A shop pickup and mobile origin are public only with explicit owner consent. */
+function kareta_geo_public_where(): string {
+    return "active=1 AND visibility='exact' AND kind<>'warehouse'
+        AND latitude IS NOT NULL AND longitude IS NOT NULL
+        AND (kind NOT IN ('mobile_origin','pickup')
+            OR (kind='pickup' AND owner_type<>'shop')
+            OR ".kareta_geo_consent_receipt_sql().")";
+}
+function kareta_geo_pickup_needs_consent(string $ownerType,string $kind,string $visibility): bool {
+    return $ownerType==='shop' && $kind==='pickup' && $visibility==='exact';
+}
+function kareta_geo_explicit_publish_consent($value): bool {
+    // Reject strings such as "false" and "yes": only an explicit JSON boolean is consent.
+    return $value === true;
+}
+
+/** Bounding box with antimeridian and pole handling. Always verify Haversine. */
+function kareta_geo_bounds(float $lat,float $lng,float $radiusKm): array {
+    $angular=$radiusKm/6371.0088;
+    $latDelta=rad2deg($angular);
+    $minLat=max(-90.0,$lat-$latDelta);
+    $maxLat=min(90.0,$lat+$latDelta);
+    if($minLat<=-90.0||$maxLat>=90.0) {
+        return ['minLat'=>$minLat,'maxLat'=>$maxLat,'lngMode'=>'all','minLng'=>-180.0,'maxLng'=>180.0];
+    }
+    $cos=cos(deg2rad($lat));
+    $ratio=sin($angular)/max(1.0e-12,abs($cos));
+    if($ratio>=1.0) {
+        return ['minLat'=>$minLat,'maxLat'=>$maxLat,'lngMode'=>'all','minLng'=>-180.0,'maxLng'=>180.0];
+    }
+    $lngDelta=rad2deg(asin(min(1.0,$ratio)));
+    $left=$lng-$lngDelta;
+    $right=$lng+$lngDelta;
+    $wrap=$left<-180.0||$right>180.0;
+    if($left<-180.0)$left+=360.0;
+    if($right>180.0)$right-=360.0;
+    return ['minLat'=>$minLat,'maxLat'=>$maxLat,
+        'lngMode'=>$wrap?'wrap':'between','minLng'=>$left,'maxLng'=>$right];
+}
+
+/** Execute the exact-public nearest-neighbor search against real MySQL. */
+function kareta_geo_nearby(PDO $pdo,float $lat,float $lng,float $radius,array $types,int $limit): array {
+    $radius=max(1.0,min(100.0,$radius));
+    $limit=max(1,min(100,$limit));
+    $allowed=['master','sto','organization','organization_unit','shop'];
+    $types=array_values(array_unique(array_intersect($types,$allowed)));
+    if(!$types)return [];
+    $bounds=kareta_geo_bounds($lat,$lng,$radius);
+    $marks=implode(',',array_fill(0,count($types),'?'));
+    $where="latitude BETWEEN ? AND ?";
+    $params=[$lat,$lat,$lng,$bounds['minLat'],$bounds['maxLat']];
+    if($bounds['lngMode']==='between'){
+        $where.=" AND longitude BETWEEN ? AND ?";
+        array_push($params,$bounds['minLng'],$bounds['maxLng']);
+    }elseif($bounds['lngMode']==='wrap'){
+        $where.=" AND (longitude >= ? OR longitude <= ?)";
+        array_push($params,$bounds['minLng'],$bounds['maxLng']);
+    }
+    array_push($params,...$types);
+    $params[]=$radius;
+    // Index first via public bounding box, then Haversine ORDER/LIMIT.
+    // An unordered LIMIT before the distance calculation drops closer results.
+    $distanceSql="(6371.0088 * 2 * ASIN(LEAST(1.0,SQRT(
+        POW(SIN(RADIANS(latitude - ?)/2),2)
+        + COS(RADIANS(?))*COS(RADIANS(latitude))
+        * POW(SIN(RADIANS(longitude - ?)/2),2)))))";
+    $sql="SELECT id,owner_type,owner_id,kind,label,country_code,city,address,
+                 latitude,longitude,verified_at, $distanceSql AS geoDistanceKm
+          FROM geo_points
+          WHERE ".kareta_geo_public_where()."
+            AND $where AND owner_type IN ($marks)
+          HAVING geoDistanceKm <= ?
+          ORDER BY geoDistanceKm ASC, id ASC LIMIT $limit";
+    $q=$pdo->prepare($sql);
+    $q->execute($params);
+    return $q->fetchAll(PDO::FETCH_ASSOC)?:[];
+}
+
 function kareta_geo_sync_legacy_address(PDO $pdo,array $point): void {
     $ownerType=(string)($point['ownerType']??'');$ownerId=(string)($point['ownerId']??'');$kind=(string)($point['kind']??'');
     $city=(string)($point['city']??'');$address=(string)($point['address']??'');$lat=$point['latitude']??null;$lng=$point['longitude']??null;
@@ -50,7 +136,8 @@ function kareta_geo_upsert_point(PDO $pdo,array $point): array {
     $visibility=strtolower(trim((string)($point['visibility']??'hidden')));
     if(!in_array($visibility,$allowedVisibility,true))$visibility='hidden';
     if($kind==='warehouse')$visibility='hidden';
-    if($kind==='mobile_origin'&&$visibility==='exact'&&empty($point['publishExact']))$visibility='city';
+    if($kind==='mobile_origin'&&$visibility==='exact'&&!kareta_geo_explicit_publish_consent($point['publishExact']??null))$visibility='city';
+    if(kareta_geo_pickup_needs_consent($ownerType,$kind,$visibility)&&!kareta_geo_explicit_publish_consent($point['publishExact']??null))$visibility='hidden';
     if($visibility==='exact'&&($lat===null||$lng===null))throw new InvalidArgumentException('exact_geo_coordinates_required');
     $source=strtolower(trim((string)($point['source']??'manual')));
     if(!in_array($source,['manual','gps','geocoder','organization'],true))$source='manual';
@@ -58,16 +145,30 @@ function kareta_geo_upsert_point(PDO $pdo,array $point): array {
     $country=strtoupper(mb_substr(trim((string)($point['countryCode']??$point['country_code']??'KZ')),0,8,'UTF-8'));
     $city=mb_substr(trim((string)($point['city']??'')),0,120,'UTF-8');
     $address=mb_substr(trim((string)($point['address']??'')),0,255,'UTF-8');
-    $metadata=is_array($point['metadata']??null)?json_encode($point['metadata'],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES):null;
+    $meta=is_array($point['metadata']??null)?$point['metadata']:[];
+    // This key is reserved: the client cannot manufacture a publication receipt.
+    unset($meta['geoExactConsentRecordedAt']);
+    if($visibility==='exact'&&kareta_geo_explicit_publish_consent($point['publishExact']??null)
+        &&($kind==='mobile_origin'||kareta_geo_pickup_needs_consent($ownerType,$kind,$visibility))){
+        $meta['geoExactConsentRecordedAt']=gmdate('Y-m-d\TH:i:s\Z');
+    }
+    $metadata=$meta?json_encode($meta,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR):null;
     $active=array_key_exists('active',$point)?!empty($point['active']):true;
-    $verifiedAt=trim((string)($point['verifiedAt']??$point['verified_at']??''))?:null;
+    // Owner-editable input never grants verification status.
+    $verifiedAt=null;
     $id=kareta_geo_point_id($ownerType,$ownerId,$kind);
     $q=$pdo->prepare("INSERT INTO geo_points
       (id,owner_type,owner_id,kind,label,country_code,city,address,latitude,longitude,source,visibility,metadata_json,verified_at,active)
       VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-      ON DUPLICATE KEY UPDATE label=VALUES(label),country_code=VALUES(country_code),city=VALUES(city),address=VALUES(address),
+      ON DUPLICATE KEY UPDATE
+        verified_at=CASE WHEN NOT(latitude<=>VALUES(latitude))
+                            OR NOT(longitude<=>VALUES(longitude))
+                            OR NOT(address<=>VALUES(address))
+                         THEN NULL ELSE verified_at END,
+        label=VALUES(label),country_code=VALUES(country_code),city=VALUES(city),address=VALUES(address),
         latitude=VALUES(latitude),longitude=VALUES(longitude),source=VALUES(source),visibility=VALUES(visibility),
-        metadata_json=VALUES(metadata_json),verified_at=VALUES(verified_at),active=VALUES(active),updated_at=CURRENT_TIMESTAMP");
+        metadata_json=VALUES(metadata_json),
+        active=VALUES(active),updated_at=CURRENT_TIMESTAMP");
     $q->execute([$id,$ownerType,$ownerId,$kind,$label,$country,$city,$address,$lat,$lng,$source,$visibility,$metadata,$verifiedAt,$active?1:0]);
     $result=['id'=>$id,'ownerType'=>$ownerType,'ownerId'=>$ownerId,'kind'=>$kind,'label'=>$label,'countryCode'=>$country,'city'=>$city,'address'=>$address,'latitude'=>$lat,'longitude'=>$lng,'source'=>$source,'visibility'=>$visibility,'active'=>$active];
     kareta_geo_sync_legacy_address($pdo,$result);
@@ -81,7 +182,7 @@ function kareta_geo_set_owner_kind_active(PDO $pdo,string $ownerType,string $own
 function kareta_geo_owner_points(PDO $pdo,string $ownerType,string $ownerId,bool $publicOnly=false): array {
     if(!kareta_table_exists($pdo,'geo_points'))return [];
     $sql="SELECT id,owner_type AS ownerType,owner_id AS ownerId,kind,label,country_code AS countryCode,city,address,latitude,longitude,source,visibility,verified_at AS verifiedAt,active,updated_at AS updatedAt FROM geo_points WHERE owner_type=? AND owner_id=? AND active=1";
-    if($publicOnly)$sql.=" AND visibility='exact' AND latitude IS NOT NULL AND longitude IS NOT NULL";
+    if($publicOnly)$sql.=" AND ".kareta_geo_public_where();
     $sql.=" ORDER BY FIELD(kind,'service','branch','pickup','warehouse','mobile_origin'),updated_at DESC";
     $q=$pdo->prepare($sql);$q->execute([strtolower(trim($ownerType)),trim($ownerId)]);
     $rows=$q->fetchAll(PDO::FETCH_ASSOC)?:[];

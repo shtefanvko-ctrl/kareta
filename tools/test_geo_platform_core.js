@@ -13,6 +13,7 @@ const manifestJson=JSON.parse(read('api/migration_manifest.json'));
 const workflow=read('.github/workflows/geo-runtime-reconcile.yml');
 const core=read('js/next/pages/core.js');
 const geoCore=read('api/geo_core.php');
+const geoAccess=read('api/geo_owner_access.php');
 const bridge=read('js/mobile_native_bridge.js');
 const masterOnboarding=read('api/master_onboarding.php');
 const sellerApi=read('api/seller_shop.php');
@@ -29,12 +30,15 @@ assert(migration.includes('`visibility` VARCHAR(24)'), 'visibility boundary miss
 assert(migration.includes("CASE WHEN COALESCE(m.work_mode,'shop')='mobile' THEN 'mobile_origin' ELSE 'service' END"),'master geo backfill missing');
 assert(migration.includes("WHEN COALESCE(m.work_mode,'shop')='mobile' THEN 'city'"),'mobile-master privacy backfill missing');
 
-assert(api.includes("visibility='exact'"),'public nearby must expose exact-public points only');
+assert(geoCore.includes("visibility='exact'")&&api.includes("kareta_geo_public_where"),'public Geo endpoints must use the shared exact-only boundary');
 assert(api.includes('min(100.0'), 'nearby radius must be bounded');
 assert(api.includes('min(100,'), 'nearby result limit must be bounded');
-assert(api.includes('LIMIT 300'), 'nearby database scan must be bounded');
+assert(geoCore.includes('ORDER BY geoDistanceKm ASC, id ASC LIMIT $limit'), 'Haversine order must precede the bounded SQL LIMIT');
 assert(api.includes("geo_context_allows_owner"),'geo ownership guard missing');
 assert(api.includes("'geo_owner_forbidden'"),'negative ownership path missing');
+assert(api.includes('geo_owner_access.php')&&geoAccess.includes('function geo_context_allows_owner'),'Geo owner authorization must be isolated and executable');
+assert(!geoAccess.includes('market.products.manage'),'product management alone must not allow exact Geo edits');
+assert(api.includes('exact_pickup_requires_explicit_consent')&&geoCore.includes('kareta_geo_explicit_publish_consent'),'exact pickup must require strict boolean consent');
 assert(api.includes("if ($kind==='warehouse') $visibility='hidden';"),'warehouse privacy guard missing');
 assert(api.includes("exact_mobile_origin_requires_explicit_consent"),'mobile origin exact-public consent guard missing');
 assert(api.includes("$pdo->prepare"),'geo API must use parameterized queries');
@@ -46,6 +50,9 @@ assert(manifestJson.migrations.some(x=>x.version===144&&x.file==='144_vehicle_ca
 assert(manifestPhp.includes("137 => ['file' => '137_geo_platform_core.php'"),'PHP manifest geo migration missing');
 assert(workflow.includes('node tools/test_geo_platform_core.js'),'geo core contract not wired to dedicated Geo runtime workflow');
 assert(workflow.includes('php -l api/geo.php')&&workflow.includes('php -l api/geo_core.php'),'geo endpoint syntax gate missing');
+assert(workflow.includes('php tools/test_geo_public_pickup_privacy.php'),'public shop pickup privacy regression not wired into Geo CI');
+assert(workflow.includes('php tools/test_geo_publication_receipt.php')&&workflow.includes('php tools/test_geo_seller_owner_rbac.php'),'Geo consent and RBAC negatives must run in CI');
+assert(workflow.includes('node tools/test_geo_seller_client_contract.js'),'seller Geo client contract must run in Geo CI');
 assert(core.includes('window.KaretaMobile'),'client home must prefer the native mobile bridge when available');
 assert(bridge.includes('async function bestLocation'),'shared best-location bridge missing');
 assert(bridge.includes('call("getLocation"'),'native location bridge command missing');
@@ -58,6 +65,13 @@ assert(core.includes('geoNearby=new Map()'),'client home Geo response index miss
 assert(geoCore.includes("if($kind==='warehouse')$visibility='hidden';"),'shared core must force warehouse hidden');
 assert(geoCore.includes("if($kind==='mobile_origin'&&$visibility==='exact'"),'shared core mobile-origin privacy guard missing');
 assert(geoCore.includes('kareta_geo_sync_legacy_address'),'legacy address synchronization missing');
+assert(geoCore.includes("kind<>'warehouse'"),'warehouse must be blocked even for stale exact rows');
+assert(geoCore.includes('geoExactConsentRecordedAt'),'mobile exact publication requires server-owned consent');
+assert(geoCore.includes('kareta_geo_bounds'),'antimeridian/pole bounds helper missing');
+const publicCatalog=read('api/masters_catalog.php');
+assert(!publicCatalog.includes('m.service_lat')&&!publicCatalog.includes('AVG(m2.service_lat)'),'public catalog exposes private legacy master coordinates');
+assert(publicCatalog.includes("$hasGeo"),'public catalog must consume canonical geo_points');
+
 // Provider/shop/STO/parts/master-list consumer integration is intentionally
 // tracked by tools/test_geo_platform_consumers.js and is not part of this
 // recovery core gate. PR #100 proves backend/privacy + client-home integration.

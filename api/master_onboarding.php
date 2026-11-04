@@ -341,6 +341,42 @@ if($method==='POST'&&$action==='complete'){
       $sets=[];$vals=[];$put=function(string $column,$value)use(&$sets,&$vals,$pdo){if(kareta_column_exists($pdo,'masters',$column)){$sets[]="`{$column}`=?";$vals[]=$value;}};
       $put('name',$name);$put('spec',$specId);$put('description',$bio);$put('city',$city);$put('work_mode',kmob_mode_to_storage($mode));$activeAddress=in_array($mode,['fixed','both'],true)?kmob_text($address['text']??'',200):'';$activeRadius=in_array($mode,['mobile','both'],true)?max(0,min(500,(int)($area['radiusKm']??0))):0;$put('service_address',$activeAddress);$put('service_radius_km',$activeRadius);$lat=$mode==='mobile'?($origin['latitude']??null):($address['latitude']??$origin['latitude']??null);$lng=$mode==='mobile'?($origin['longitude']??null):($address['longitude']??$origin['longitude']??null);if(is_numeric($lat))$put('service_lat',(float)$lat);if(is_numeric($lng))$put('service_lng',(float)$lng);$put('location_visibility',$mode==='mobile'?'city':'exact');$put('experience_label',kmob_experience_label($range));$put('primary_services',json_encode(array_values(array_filter($primary)),JSON_UNESCAPED_UNICODE));$put('profile_visible',1);$put('resume',json_encode($resume,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
       if($sets){$vals[]=$masterId;$pdo->prepare("UPDATE masters SET ".implode(',',$sets)." WHERE BINARY id=BINARY ?")->execute($vals);}if($uid>0){$userSets=['name=?','city=?'];$userVals=[$name,$city];if(kareta_column_exists($pdo,'users','bio')){$userSets[]='bio=?';$userVals[]=$bio;}$userVals[]=$uid;$pdo->prepare("UPDATE users SET ".implode(',',$userSets)." WHERE id=?")->execute($userVals);}
+      // Persist the already validated locations to the canonical Geo table in
+      // the SAME onboarding transaction. Never publicize a mobile home origin.
+      if(kareta_table_exists($pdo,'geo_points')){
+        require_once __DIR__.'/geo_core.php';
+        if(in_array($mode,['fixed','both'],true)){
+          $serviceLat=kareta_geo_number($address['latitude']??null);
+          $serviceLng=kareta_geo_number($address['longitude']??null);
+          if(!kareta_geo_coords_valid($serviceLat,$serviceLng))throw new RuntimeException('master_service_geo_invalid');
+          $serviceExact=!empty($address['isPublic'])&&$serviceLat!==null&&$serviceLng!==null;
+          $servicePoint=[
+            'ownerType'=>'master','ownerId'=>$masterId,'kind'=>'service',
+            'label'=>$name,'city'=>$city,'address'=>$activeAddress,
+            'latitude'=>$serviceLat,'longitude'=>$serviceLng,
+            'source'=>($loc['locationSource']??'personal')==='organization'?'organization':'manual',
+            'visibility'=>'city','active'=>true
+          ];
+          if($serviceExact)$servicePoint['visibility']='exact';
+          elseif(empty($address['isPublic']))$servicePoint['visibility']='hidden';
+          kareta_geo_upsert_point($pdo,$servicePoint);
+        }else{
+          kareta_geo_set_owner_kind_active($pdo,'master',$masterId,'service',false);
+        }
+        if(in_array($mode,['mobile','both'],true)){
+          $originLat=kareta_geo_number($origin['latitude']??null);
+          $originLng=kareta_geo_number($origin['longitude']??null);
+          if(!kareta_geo_coords_valid($originLat,$originLng))throw new RuntimeException('master_origin_geo_invalid');
+          kareta_geo_upsert_point($pdo,[
+            'ownerType'=>'master','ownerId'=>$masterId,'kind'=>'mobile_origin',
+            'label'=>$name,'city'=>$city,'address'=>kmob_text($origin['text']??'',200),
+            'latitude'=>$originLat,'longitude'=>$originLng,'source'=>'manual',
+            'visibility'=>'city','active'=>true
+          ]);
+        }else{
+          kareta_geo_set_owner_kind_active($pdo,'master',$masterId,'mobile_origin',false);
+        }
+      }
       if(kareta_table_exists($pdo,'service_offers')){$selected=[];foreach($services as $service){if(!is_array($service)||($service['source']??'catalog')==='custom')continue;$sid=kmob_text($service['serviceId']??'',64);if($sid==='')continue;$check=$pdo->prepare("SELECT id FROM service_catalog WHERE id=? AND active=1 LIMIT 1");$check->execute([$sid]);if(!$check->fetchColumn()){throw new RuntimeException('service_not_found:'.$sid);}$selected[]=$sid;$priceMode=($service['priceMode']??'from')==='negotiable'?'agreement':'from';$price=$priceMode==='agreement'?0:max(1,(int)($service['priceFrom']??0));$sql="INSERT INTO service_offers(service_id,owner_type,owner_user_id,owner_entity_id,city,price,price_type,price_max,duration_min,duration_max_min,warranty_days,availability_status,booking_enabled,notes,active,moderation_status) VALUES(?,'master',?,?,?,?,?,0,0,0,0,'available',1,'',1,'approved') ON DUPLICATE KEY UPDATE city=VALUES(city),price=VALUES(price),price_type=VALUES(price_type),availability_status='available',booking_enabled=1,active=1,moderation_status='approved',updated_at=CURRENT_TIMESTAMP";$pdo->prepare($sql)->execute([$sid,$uid,$masterId,$city,$price,$priceMode]);}
         if($selected){$marks=implode(',',array_fill(0,count($selected),'?'));$args=array_merge([$masterId],$selected);$pdo->prepare("UPDATE service_offers SET active=0,booking_enabled=0,availability_status='paused',updated_at=CURRENT_TIMESTAMP WHERE owner_type='master' AND BINARY owner_entity_id=BINARY ? AND service_id NOT IN ($marks)")->execute($args);}else{$pdo->prepare("UPDATE service_offers SET active=0,booking_enabled=0,availability_status='paused',updated_at=CURRENT_TIMESTAMP WHERE owner_type='master' AND BINARY owner_entity_id=BINARY ?")->execute([$masterId]);}}
       $terms=KMOB_TERMS_VERSION;$draft['onboardingStatus']='completed';$draft['agreement']['acceptedAt']=date(DATE_ATOM);$encoded=json_encode($draft,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);

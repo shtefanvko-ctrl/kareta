@@ -60,8 +60,10 @@ function kareta_product_detail(?PDO $pdo, array $input): void {
     if (!$pdo) kareta_json(['ok'=>false,'error'=>'db_unavailable'],503);
     $id = kareta_detail_id($input);
     if ($id === '') kareta_json(['ok'=>false,'error'=>'product_id_required'],422);
+    $pickupExpr=function_exists('kareta_public_pickup_address_expr')
+        ? kareta_public_pickup_address_expr($pdo,'sp') : "''";
     $sql = "SELECT p.id,p.seller_user_id,p.sku,p.oem_number,p.name,p.category,p.condition_code,p.exchange_available,p.exchange_note,p.brand,p.price,p.old_price,p.stock_qty,p.description,p.image_url,p.fitment_json,p.updated_at,
-            sp.store_name,sp.legal_name,sp.city,sp.warehouse_address,sp.delivery_modes,sp.payment_methods,sp.minimum_order,sp.return_days,sp.return_policy,sp.description AS store_description
+            sp.store_name,sp.legal_name,sp.city,COALESCE({$pickupExpr},'') AS warehouse_address,sp.delivery_modes,sp.payment_methods,sp.minimum_order,sp.return_days,sp.return_policy,sp.description AS store_description
             FROM seller_products p INNER JOIN seller_profiles sp ON sp.user_id=p.seller_user_id
             WHERE p.id=? AND p.status='active' AND sp.active=1 AND sp.moderation_status='approved' LIMIT 1";
     $st=$pdo->prepare($sql); $st->execute([$id]); $row=$st->fetch(PDO::FETCH_ASSOC);
