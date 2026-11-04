@@ -16,7 +16,7 @@ const stoPage=read('js/next/pages/sto_workplace.js');
 const parts=read('js/next/pages/parts.js');
 const masters=read('js/next/pages/masters.js');
 
-assert(masterOnboarding.includes("'kind'=>'service'")&&masterOnboarding.includes("'visibility'=>'exact'"),'master onboarding must persist exact service point');
+assert(masterOnboarding.includes("'kind'=>'service'")&&masterOnboarding.includes("$servicePoint['visibility']='exact'"),'master onboarding must conditionally persist owner-consented exact service point');
 assert(masterOnboarding.includes("'kind'=>'mobile_origin'")&&masterOnboarding.includes("'visibility'=>'city'"),'master onboarding must keep mobile origin non-public');
 assert(sellerApi.includes("'kind'=>'warehouse'")&&sellerApi.includes("'visibility'=>'hidden'"),'seller warehouse must stay hidden');
 assert(sellerApi.includes("'kind'=>'pickup'")&&sellerApi.includes("'visibility'=>'exact'"),'seller public pickup point missing');
