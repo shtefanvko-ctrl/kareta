@@ -306,11 +306,25 @@ function seller_order_update_status(?PDO $pdo,array $body): void {
     kareta_json(['ok'=>true,'status'=>$status]);
 }
 
+/**
+ * Preserve the legacy public warehouse_address JSON key, but never publish the
+ * underlying private warehouse location. Only approved exact pickup points
+ * become public pickup addresses. Actual warehouse storage is unchanged.
+ */
+function kareta_public_pickup_address_expr(PDO $pdo,string $alias='sp'): string {
+    if(!function_exists('kareta_table_exists')||!kareta_table_exists($pdo,'geo_points'))return "''";
+    return "(SELECT g.address FROM geo_points g WHERE
+        g.owner_type='shop' AND BINARY g.owner_id=BINARY CAST({$alias}.id AS CHAR)
+        AND g.kind='pickup' AND g.active=1 AND g.visibility='exact'
+        AND g.latitude IS NOT NULL AND g.longitude IS NOT NULL LIMIT 1)";
+}
+
 function shop_storefront(?PDO $pdo,array $input): void {
     if(!$pdo)kareta_json(['ok'=>false,'error'=>'db_unavailable'],503);
     $sellerId=(int)($input['sellerId']??$input['seller_id']??0);
     if($sellerId<0)kareta_json(['ok'=>false,'error'=>'invalid_seller_id'],422);
-    $profileSt=$pdo->prepare("SELECT user_id,store_name,legal_name,city,warehouse_address,description,assortment,category_tags,delivery_modes,payment_methods,minimum_order,return_days,return_policy,created_at,updated_at FROM seller_profiles WHERE user_id=? AND active=1 AND moderation_status='approved' LIMIT 1");
+    $pickupExpr=kareta_public_pickup_address_expr($pdo,'sp');
+    $profileSt=$pdo->prepare("SELECT user_id,store_name,legal_name,city,COALESCE({$pickupExpr},'') AS warehouse_address,description,assortment,category_tags,delivery_modes,payment_methods,minimum_order,return_days,return_policy,created_at,updated_at FROM seller_profiles sp WHERE user_id=? AND active=1 AND moderation_status='approved' LIMIT 1");
     $profileSt->execute([$sellerId]);$profile=$profileSt->fetch(PDO::FETCH_ASSOC);
     if(!$profile)kareta_json(['ok'=>false,'error'=>'store_not_found'],404);
     foreach(['category_tags','delivery_modes','payment_methods'] as $field)$profile[$field]=seller_decode_json_field($profile[$field]??null);
@@ -361,7 +375,8 @@ function shop_catalog(?PDO $pdo, array $body): void {
         }
         $countSql="SELECT COUNT(*) FROM seller_products p INNER JOIN seller_profiles sp ON sp.user_id=p.seller_user_id WHERE ".implode(' AND ',$where);
         $countSt=$pdo->prepare($countSql); $countSt->execute($params); $total=(int)($countSt->fetchColumn() ?: 0);
-        $sql="SELECT p.id,p.seller_user_id,p.sku,p.oem_number,p.name,p.category,p.condition_code,p.exchange_available,p.exchange_note,p.brand,p.price,p.old_price,p.stock_qty,p.description,p.image_url,p.fitment_json,p.updated_at,sp.store_name,sp.city,sp.warehouse_address,sp.delivery_modes,sp.payment_methods,sp.return_days,sp.moderation_status FROM seller_products p INNER JOIN seller_profiles sp ON sp.user_id=p.seller_user_id WHERE ".implode(' AND ',$where)." ORDER BY p.updated_at DESC LIMIT ".$limit;
+        $pickupExpr=kareta_public_pickup_address_expr($pdo,'sp');
+        $sql="SELECT p.id,p.seller_user_id,p.sku,p.oem_number,p.name,p.category,p.condition_code,p.exchange_available,p.exchange_note,p.brand,p.price,p.old_price,p.stock_qty,p.description,p.image_url,p.fitment_json,p.updated_at,sp.store_name,sp.city,COALESCE({$pickupExpr},'') AS warehouse_address,sp.delivery_modes,sp.payment_methods,sp.return_days,sp.moderation_status FROM seller_products p INNER JOIN seller_profiles sp ON sp.user_id=p.seller_user_id WHERE ".implode(' AND ',$where)." ORDER BY p.updated_at DESC LIMIT ".$limit;
         $st=$pdo->prepare($sql); $st->execute($params); $products=$st->fetchAll();
         foreach($products as &$row) {
             $row['fitment']=seller_decode_json_field($row['fitment_json']??null); unset($row['fitment_json']);

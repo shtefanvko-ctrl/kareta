@@ -19,7 +19,8 @@ function geo_text($value, int $max=255): string {
 }
 function geo_float($value): ?float {
     if ($value === null || $value === '' || !is_numeric($value)) return null;
-    return (float)$value;
+    $number=(float)$value;
+    return is_finite($number)?$number:null;
 }
 function geo_valid_lat(?float $lat): bool { return $lat !== null && $lat >= -90.0 && $lat <= 90.0; }
 function geo_valid_lng(?float $lng): bool { return $lng !== null && $lng >= -180.0 && $lng <= 180.0; }
@@ -45,6 +46,22 @@ function geo_context_allows_owner(PDO $pdo,KaretaAuthResolution $auth,string $ow
     if (!in_array($ownerType,geo_owner_types(),true) || $ownerId==='') return false;
     $context=$auth->context;
     $type=strtolower((string)($context['type']??''));
+    // Context membership alone is not edit permission. In particular,
+    // organization.member and organization.master must not edit an STO.
+    $allowed=$auth->capabilities;
+    $denied=$auth->deniedCapabilities;
+    if(in_array('*',$denied,true)||in_array('geo.upsert',$denied,true))return false;
+    if($type==='profile'&&!in_array('*',$allowed,true)
+        &&!in_array('profile.edit_own',$allowed,true)
+        &&!in_array('profile.manage',$allowed,true))return false;
+    if($type==='organization'){
+        $orgOwner=in_array('*',$allowed,true);
+        $storeManager=($ownerType==='shop' ||
+            ($ownerType==='organization'&&($context['organizationType']??'')==='parts_store'))
+            &&(in_array('profile.manage',$allowed,true)
+                ||in_array('market.products.manage',$allowed,true));
+        if(!$orgOwner&&!$storeManager)return false;
+    }
 
     if ($type==='profile') {
         $profileId=(int)($context['profileId']??0);
@@ -95,11 +112,6 @@ function geo_public_payload(array $row,float $distanceKm): array {
         'distanceKm'=>round($distanceKm,2),
         'verifiedAt'=>$row['verified_at']??null,
     ];
-    if((string)($row['owner_type']??'')==='shop'){
-        $meta=json_decode((string)($row['metadata_json']??''),true);
-        $sellerUserId=(int)($meta['sellerUserId']??0);
-        if($sellerUserId>0)$payload['publicId']=$sellerUserId;
-    }
     return $payload;
 }
 
@@ -116,31 +128,10 @@ if ($method==='GET' && $action==='nearby') {
     )),static fn($v)=>in_array($v,geo_owner_types(),true)));
     if (!$requested) $requested=geo_owner_types();
 
-    $latDelta=$radius/111.32;
-    $cos=max(0.1,abs(cos(deg2rad((float)$lat))));
-    $lngDelta=$radius/(111.32*$cos);
-    $marks=implode(',',array_fill(0,count($requested),'?'));
-    $params=[(float)$lat-$latDelta,(float)$lat+$latDelta,(float)$lng-$lngDelta,(float)$lng+$lngDelta,...$requested];
-    $sql="SELECT id,owner_type,owner_id,kind,label,country_code,city,address,latitude,longitude,metadata_json,verified_at
-          FROM geo_points
-          WHERE active=1
-            AND visibility='exact'
-            AND latitude IS NOT NULL
-            AND longitude IS NOT NULL
-            AND latitude BETWEEN ? AND ?
-            AND longitude BETWEEN ? AND ?
-            AND owner_type IN ($marks)
-          LIMIT 300";
-    $q=$pdo->prepare($sql);
-    $q->execute($params);
     $items=[];
-    foreach ($q->fetchAll(PDO::FETCH_ASSOC)?:[] as $row) {
-        $rowLat=(float)$row['latitude'];$rowLng=(float)$row['longitude'];
-        $distance=geo_haversine((float)$lat,(float)$lng,$rowLat,$rowLng);
-        if ($distance<=$radius) $items[]=geo_public_payload($row,$distance);
+    foreach(kareta_geo_nearby($pdo,$lat,$lng,$radius,$requested,$limit) as $row) {
+        $items[]=geo_public_payload($row,(float)$row['geoDistanceKm']);
     }
-    usort($items,static fn(array $a,array $b): int => ($a['distanceKm']<=>$b['distanceKm']) ?: strcmp($a['ownerType'].':'.$a['ownerId'],$b['ownerType'].':'.$b['ownerId']));
-    $items=array_slice($items,0,$limit);
     kareta_json(['ok'=>true,'items'=>$items,'meta'=>['radiusKm'=>$radius,'limit'=>$limit,'distanceMode'=>'straight_line','visibility'=>'exact_only']]);
 }
 
@@ -148,11 +139,10 @@ if ($method==='GET' && $action==='entity') {
     $ownerType=strtolower(geo_text($_GET['ownerType']??'',32));
     $ownerId=geo_text($_GET['ownerId']??'',96);
     if (!in_array($ownerType,geo_owner_types(),true) || $ownerId==='') kareta_json(['ok'=>false,'error'=>'invalid_owner'],422);
-    $q=$pdo->prepare("SELECT id,owner_type,owner_id,kind,label,country_code,city,address,latitude,longitude,metadata_json,verified_at
+    $q=$pdo->prepare("SELECT id,owner_type,owner_id,kind,label,country_code,city,address,latitude,longitude,verified_at
                       FROM geo_points
-                      WHERE owner_type=? AND owner_id=? AND active=1 AND visibility='exact'
-                        AND latitude IS NOT NULL AND longitude IS NOT NULL
-                      ORDER BY FIELD(kind,'service','branch','pickup','warehouse','mobile_origin'),updated_at DESC");
+                      WHERE owner_type=? AND owner_id=? AND ".kareta_geo_public_where()."
+                      ORDER BY FIELD(kind,'service','branch','pickup','mobile_origin'),updated_at DESC LIMIT 100");
     $q->execute([$ownerType,$ownerId]);
     $items=[];
     foreach ($q->fetchAll(PDO::FETCH_ASSOC)?:[] as $row) {

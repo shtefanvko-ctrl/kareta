@@ -16,6 +16,16 @@ function kareta_masters_catalog_payload(?PDO $pdo): array {
     $hasStos = function_exists('kareta_table_exists') ? kareta_table_exists($pdo, 'sto_profiles') : true;
     $hasOffers = function_exists('kareta_table_exists') ? kareta_table_exists($pdo, 'service_offers') : true;
     $hasStoLinks = function_exists('kareta_table_exists') ? kareta_table_exists($pdo, 'sto_master_links') : true;
+    $hasGeo = function_exists('kareta_table_exists') && kareta_table_exists($pdo, 'geo_points');
+    // Public catalog is never allowed to infer points from legacy private GPS.
+    $masterPublicGeo = "g.owner_type='master' AND BINARY g.owner_id=BINARY m.id
+        AND g.kind='service' AND g.visibility='exact' AND g.active=1
+        AND g.latitude IS NOT NULL AND g.longitude IS NOT NULL
+        AND COALESCE(m.work_mode,'shop')<>'mobile'";
+    $stoPublicGeo = "g.owner_type='sto' AND BINARY g.owner_id=BINARY s.id
+        AND g.kind IN ('service','branch') AND g.visibility='exact' AND g.active=1
+        AND g.latitude IS NOT NULL AND g.longitude IS NOT NULL";
+
     $offerHasActive = $hasOffers && kareta_catalog_table_has_column($pdo, 'service_offers', 'active');
     $offerHasAvailability = $hasOffers && kareta_catalog_table_has_column($pdo, 'service_offers', 'availability_status');
     $offerHasPrice = $hasOffers && kareta_catalog_table_has_column($pdo, 'service_offers', 'price');
@@ -49,12 +59,16 @@ function kareta_masters_catalog_payload(?PDO $pdo): array {
     $masterPrimaryServices = $hasMasters && kareta_catalog_table_has_column($pdo, 'masters', 'primary_services') ? 'm.primary_services' : 'NULL';
     $masterAvailability = $hasMasters && kareta_catalog_table_has_column($pdo, 'masters', 'availability') ? 'm.availability' : "'online'";
     $masterProfileVisible = $hasMasters && kareta_catalog_table_has_column($pdo, 'masters', 'profile_visible') ? 'm.profile_visible' : '1';
-    $masterServiceAddress = $hasMasters && kareta_catalog_table_has_column($pdo, 'masters', 'service_address') ? 'm.service_address' : "''";
+    $masterServiceAddress = $hasGeo
+        ? "(SELECT g.address FROM geo_points g WHERE {$masterPublicGeo} LIMIT 1)" : "''";
     $masterServiceRadius = $hasMasters && kareta_catalog_table_has_column($pdo, 'masters', 'service_radius_km') ? 'm.service_radius_km' : '0';
-    $masterServiceLat = $hasMasters && kareta_catalog_table_has_column($pdo, 'masters', 'service_lat') ? 'm.service_lat' : 'NULL';
-    $masterServiceLng = $hasMasters && kareta_catalog_table_has_column($pdo, 'masters', 'service_lng') ? 'm.service_lng' : 'NULL';
-    $masterLocationVisibility = $hasMasters && kareta_catalog_table_has_column($pdo, 'masters', 'location_visibility') ? 'm.location_visibility' : "'city'";
-    $masterAddress = $hasMasters && kareta_catalog_table_has_column($pdo, 'masters', 'address') ? 'm.address' : "''";
+    $masterServiceLat = $hasGeo
+        ? "(SELECT g.latitude FROM geo_points g WHERE {$masterPublicGeo} LIMIT 1)" : 'NULL';
+    $masterServiceLng = $hasGeo
+        ? "(SELECT g.longitude FROM geo_points g WHERE {$masterPublicGeo} LIMIT 1)" : 'NULL';
+    $masterLocationVisibility = $hasGeo
+        ? "(CASE WHEN EXISTS(SELECT 1 FROM geo_points g WHERE {$masterPublicGeo}) THEN 'exact' ELSE 'city' END)" : "'city'";
+    $masterAddress = $masterServiceAddress;
     $masterOrgName = $hasMasters && kareta_catalog_table_has_column($pdo, 'masters', 'org_name') ? 'm.org_name' : "''";
     $masterBusinessType = $hasMasters && kareta_catalog_table_has_column($pdo, 'masters', 'business_type') ? 'm.business_type' : "''";
     $masterAvatar = $hasMasters && kareta_catalog_table_has_column($pdo, 'users', 'avatar_url') ? "(SELECT u.avatar_url FROM users u WHERE (u.id=m.user_id OR u.phone=m.user_phone OR u.phone=m.phone) AND u.active=1 ORDER BY (u.id=m.user_id) DESC LIMIT 1)" : "''";
@@ -88,8 +102,11 @@ function kareta_masters_catalog_payload(?PDO $pdo): array {
     $stoSpec = $hasStos && kareta_catalog_table_has_column($pdo, 'sto_profiles', 'primary_specialization') ? 's.primary_specialization' : "''";
     $stoLogo = $hasStos && kareta_catalog_table_has_column($pdo, 'sto_profiles', 'logo_url') ? 's.logo_url' : "''";
     $stoReceptionStatus = $hasStos && kareta_catalog_table_has_column($pdo, 'sto_profiles', 'reception_status') ? 's.reception_status' : "'open'";
-    $stoLatExpr = $hasStos && $hasMasters && $hasStoLinks && kareta_catalog_table_has_column($pdo, 'masters', 'service_lat') ? "(SELECT AVG(m2.service_lat) FROM sto_master_links l2 JOIN masters m2 ON m2.id=l2.master_id WHERE l2.sto_id=s.id AND l2.status='active' AND m2.service_lat IS NOT NULL)" : 'NULL';
-    $stoLngExpr = $hasStos && $hasMasters && $hasStoLinks && kareta_catalog_table_has_column($pdo, 'masters', 'service_lng') ? "(SELECT AVG(m2.service_lng) FROM sto_master_links l2 JOIN masters m2 ON m2.id=l2.master_id WHERE l2.sto_id=s.id AND l2.status='active' AND m2.service_lng IS NOT NULL)" : 'NULL';
+    // Averaging private employee locations does not produce a verified STO address.
+    $stoLatExpr = $hasGeo
+        ? "(SELECT g.latitude FROM geo_points g WHERE {$stoPublicGeo} ORDER BY FIELD(g.kind,'service','branch'),g.id LIMIT 1)" : 'NULL';
+    $stoLngExpr = $hasGeo
+        ? "(SELECT g.longitude FROM geo_points g WHERE {$stoPublicGeo} ORDER BY FIELD(g.kind,'service','branch'),g.id LIMIT 1)" : 'NULL';
 
     $stoMastersCountExpr = $hasStoLinks
         ? "(SELECT COUNT(DISTINCT l.master_id) FROM sto_master_links l WHERE l.sto_id=s.id AND l.status='active')"

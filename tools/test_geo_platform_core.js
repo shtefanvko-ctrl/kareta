@@ -29,10 +29,10 @@ assert(migration.includes('`visibility` VARCHAR(24)'), 'visibility boundary miss
 assert(migration.includes("CASE WHEN COALESCE(m.work_mode,'shop')='mobile' THEN 'mobile_origin' ELSE 'service' END"),'master geo backfill missing');
 assert(migration.includes("WHEN COALESCE(m.work_mode,'shop')='mobile' THEN 'city'"),'mobile-master privacy backfill missing');
 
-assert(api.includes("visibility='exact'"),'public nearby must expose exact-public points only');
+assert(geoCore.includes("visibility='exact'")&&api.includes("kareta_geo_public_where"),'public Geo endpoints must use the shared exact-only boundary');
 assert(api.includes('min(100.0'), 'nearby radius must be bounded');
 assert(api.includes('min(100,'), 'nearby result limit must be bounded');
-assert(api.includes('LIMIT 300'), 'nearby database scan must be bounded');
+assert(geoCore.includes('ORDER BY geoDistanceKm ASC, id ASC LIMIT $limit'), 'Haversine order must precede the bounded SQL LIMIT');
 assert(api.includes("geo_context_allows_owner"),'geo ownership guard missing');
 assert(api.includes("'geo_owner_forbidden'"),'negative ownership path missing');
 assert(api.includes("if ($kind==='warehouse') $visibility='hidden';"),'warehouse privacy guard missing');
@@ -58,6 +58,13 @@ assert(core.includes('geoNearby=new Map()'),'client home Geo response index miss
 assert(geoCore.includes("if($kind==='warehouse')$visibility='hidden';"),'shared core must force warehouse hidden');
 assert(geoCore.includes("if($kind==='mobile_origin'&&$visibility==='exact'"),'shared core mobile-origin privacy guard missing');
 assert(geoCore.includes('kareta_geo_sync_legacy_address'),'legacy address synchronization missing');
+assert(geoCore.includes("kind<>'warehouse'"),'warehouse must be blocked even for stale exact rows');
+assert(geoCore.includes('geoExactConsentRecordedAt'),'mobile exact publication requires server-owned consent');
+assert(geoCore.includes('kareta_geo_bounds'),'antimeridian/pole bounds helper missing');
+const publicCatalog=read('api/masters_catalog.php');
+assert(!publicCatalog.includes('m.service_lat')&&!publicCatalog.includes('AVG(m2.service_lat)'),'public catalog exposes private legacy master coordinates');
+assert(publicCatalog.includes("$hasGeo"),'public catalog must consume canonical geo_points');
+
 // Provider/shop/STO/parts/master-list consumer integration is intentionally
 // tracked by tools/test_geo_platform_consumers.js and is not part of this
 // recovery core gate. PR #100 proves backend/privacy + client-home integration.
