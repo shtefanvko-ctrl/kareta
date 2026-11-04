@@ -6,12 +6,32 @@ on:
       - 'api/migrations/**'
       - 'config.php'
       - 'tools/test_migration_contract.php'
+      - 'api/migration_manifest.php'
+      - 'api/migration_manifest.json'
+      - 'tools/check_data_core_migrations.php'
+      - 'tools/test_data_core_migration_guard.php'
+      - 'tools/check_data_core_migration_risks.php'
+      - 'tools/test_data_core_migration_risks.php'
+      - 'tools/check_data_core_db_history.php'
+      - 'tools/test_data_core_db_history.php'
+      - 'tools/test_data_core_mysql_isolated_rehearsal.sh'
+      - 'tools/data_core_audit_grants.php'
       - '.github/workflows/db-canon-hash-inventory.yml'
   pull_request:
     paths:
       - 'api/migrations/**'
       - 'config.php'
       - 'tools/test_migration_contract.php'
+      - 'api/migration_manifest.php'
+      - 'api/migration_manifest.json'
+      - 'tools/check_data_core_migrations.php'
+      - 'tools/test_data_core_migration_guard.php'
+      - 'tools/check_data_core_migration_risks.php'
+      - 'tools/test_data_core_migration_risks.php'
+      - 'tools/check_data_core_db_history.php'
+      - 'tools/test_data_core_db_history.php'
+      - 'tools/test_data_core_mysql_isolated_rehearsal.sh'
+      - 'tools/data_core_audit_grants.php'
       - '.github/workflows/db-canon-hash-inventory.yml'
 permissions:
   contents: read
@@ -42,6 +62,10 @@ jobs:
         run: php tools/test_migration_contract.php
       - name: Data Core migration guard regression tests
         run: php tools/test_data_core_migration_guard.php
+      - name: Data Core DB history read-only fixture regression tests
+        run: php tools/test_data_core_db_history.php
+      - name: Data Core isolated MySQL rehearsal script syntax
+        run: bash -n tools/test_data_core_mysql_isolated_rehearsal.sh
       - name: Data Core risk inventory regression tests
         run: php tools/test_data_core_migration_risks.php
       - name: Data Core risk inventory (source only)
