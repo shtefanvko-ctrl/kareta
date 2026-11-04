@@ -18,7 +18,8 @@ const masters=read('js/next/pages/masters.js');
 
 assert(masterOnboarding.includes("'kind'=>'service'")&&masterOnboarding.includes("$servicePoint['visibility']='exact'"),'master onboarding must conditionally persist owner-consented exact service point');
 assert(masterOnboarding.includes("'kind'=>'mobile_origin'")&&masterOnboarding.includes("'visibility'=>'city'"),'master onboarding must keep mobile origin non-public');
-assert(sellerApi.includes("'kind'=>'warehouse'")&&sellerApi.includes("'visibility'=>'hidden'"),'seller warehouse must stay hidden');
+assert(sellerApi.includes('function kareta_public_pickup_address_expr')&&sellerApi.includes("g.kind='pickup'")&&sellerApi.includes("g.visibility='exact'")&&sellerApi.includes('COALESCE({$pickupExpr}'),'public shop addresses must come only from exact pickup points');
+assert(sellerApi.includes("'kind'=>'warehouse'")&&sellerApi.includes("'visibility'=>'hidden'"),'seller private warehouse Geo write path missing');
 assert(sellerApi.includes("'kind'=>'pickup'")&&sellerApi.includes("'visibility'=>'exact'"),'seller public pickup point missing');
 assert(sellerPage.includes('data-seller-geo-detect'),'seller GPS control missing');
 assert(sellerPage.includes('pickupPublic'),'seller explicit pickup publication control missing');

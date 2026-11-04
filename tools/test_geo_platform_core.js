@@ -46,6 +46,7 @@ assert(manifestJson.migrations.some(x=>x.version===144&&x.file==='144_vehicle_ca
 assert(manifestPhp.includes("137 => ['file' => '137_geo_platform_core.php'"),'PHP manifest geo migration missing');
 assert(workflow.includes('node tools/test_geo_platform_core.js'),'geo core contract not wired to dedicated Geo runtime workflow');
 assert(workflow.includes('php -l api/geo.php')&&workflow.includes('php -l api/geo_core.php'),'geo endpoint syntax gate missing');
+assert(workflow.includes('php tools/test_geo_public_pickup_privacy.php'),'public shop pickup privacy regression not wired into Geo CI');
 assert(core.includes('window.KaretaMobile'),'client home must prefer the native mobile bridge when available');
 assert(bridge.includes('async function bestLocation'),'shared best-location bridge missing');
 assert(bridge.includes('call("getLocation"'),'native location bridge command missing');

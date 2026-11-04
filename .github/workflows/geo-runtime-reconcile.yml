@@ -27,3 +27,4 @@ jobs:
       - run: node tools/test_geo_map_runtime.js
       - run: node --check tools/test_geo_platform_consumers.js
       - run: node tools/test_geo_platform_core.js
+      - run: php tools/test_geo_public_pickup_privacy.php
