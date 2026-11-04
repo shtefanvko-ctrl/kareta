@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/contracts/enterprise_data_v1.php';
 
 $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 $action = strtolower(trim((string)($_GET['action'] ?? 'history')));
@@ -85,9 +86,13 @@ if ($action === 'history' && $method === 'GET') {
             $decoded = json_decode((string)($row[$key] ?? ''),true);
             $row[$key] = is_array($decoded) ? $decoded : [];
         }
+        $row['diagnosticSessionId']=(string)($row['id']??'');
+        $row['protocol']=(string)($row['protocolLabel']??'');
+        $row['snapshot']=$row['snapshotJson'];
+        $row['schemaVersion']=KARETA_ENTERPRISE_DATA_SCHEMA_VERSION;
     }
     unset($row);
-    kareta_json(['ok'=>true,'sessions'=>$rows]);
+    kareta_json(['ok'=>true,'schemaVersion'=>KARETA_ENTERPRISE_DATA_SCHEMA_VERSION,'sessions'=>$rows]);
 }
 
 if ($method !== 'POST' || $action !== 'sync') {
@@ -122,9 +127,11 @@ $upsert = $pdo->prepare("INSERT INTO obd_diagnostic_sessions(
     captured_at=VALUES(captured_at)");
 
 $accepted = [];
+$sessionLinks = [];
 foreach ($items as $item) {
     if (!is_array($item)) continue;
     $payload = isset($item['payload']) && is_array($item['payload']) ? $item['payload'] : $item;
+    $payload = kareta_enterprise_data_v1_compat_payload($payload);
     $syncKey = trim((string)($item['id'] ?? $payload['syncKey'] ?? ''));
     if ($syncKey === '') $syncKey = 'obd_'.bin2hex(random_bytes(12));
     $id = 'obd_'.substr(hash('sha256',$accountId.'|'.$syncKey),0,40);
@@ -134,7 +141,10 @@ foreach ($items as $item) {
     $snapshot = is_array($payload['snapshot'] ?? null) ? $payload['snapshot'] : [];
     $dtc = is_array($payload['dtc'] ?? null) ? $payload['dtc'] : [];
     $vehicleId=trim((string)($payload['vehicleId'] ?? ''));
-    if($vehicleId!==''&&!kareta_obd_vehicle_access($pdo,$vehicleId,$actorUserId,$phone,$actorRole)){
+    if($vehicleId===''){
+        kareta_json(['ok'=>false,'code'=>'VEHICLE_ID_REQUIRED'],422);
+    }
+    if(!kareta_obd_vehicle_access($pdo,$vehicleId,$actorUserId,$phone,$actorRole)){
         kareta_json(['ok'=>false,'code'=>'VEHICLE_FORBIDDEN','vehicleId'=>$vehicleId],403);
     }
     $upsert->execute([
@@ -152,5 +162,6 @@ foreach ($items as $item) {
         $capturedAt
     ]);
     $accepted[] = $syncKey;
+    $sessionLinks[]=['syncKey'=>$syncKey,'diagnosticSessionId'=>$id,'vehicleId'=>$vehicleId,'orderId'=>trim((string)($payload['orderId']??''))];
 }
-kareta_json(['ok'=>true,'accepted'=>$accepted,'count'=>count($accepted)]);
+kareta_json(['ok'=>true,'schemaVersion'=>KARETA_ENTERPRISE_DATA_SCHEMA_VERSION,'accepted'=>$accepted,'sessions'=>$sessionLinks,'count'=>count($accepted)]);

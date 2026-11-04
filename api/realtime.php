@@ -13,6 +13,11 @@ $legacyUser=$auth->legacyUser;
 $identitySession=$auth->identitySession;
 $mode=(string)($_GET['mode']??'stream');
 if(!in_array($mode,['stream','poll'],true))kareta_json(['ok'=>false,'error'=>'invalid_mode'],400);
+$transport=(defined('KARETA_REALTIME')&&is_array(KARETA_REALTIME))?(string)(KARETA_REALTIME['transport']??'poll'):'poll';
+if($mode==='stream'&&$transport!=='sse'){
+  header('Retry-After: 15');
+  kareta_json(['ok'=>false,'error'=>'realtime_stream_disabled','mode'=>'poll'],409);
+}
 $cursor=max(0,(int)($_GET['cursor']??($_SERVER['HTTP_LAST_EVENT_ID']??0)));
 $clientId=substr(preg_replace('/[^a-zA-Z0-9_.:-]/','',(string)($_GET['clientId']??''))??'',0,80);
 $accountId=$auth->accountId;

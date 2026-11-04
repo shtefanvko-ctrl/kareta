@@ -14,19 +14,25 @@ function kareta_asset_registry(): array
         'scripts' => [
             'js/next/runtime_logger.js',
             'js/next/runtime_dependencies.js',
+            'js/next/contracts/enterprise_data_v1.js',
+            'js/next/forms/form_contract.js',
             'js/next/recovery_manager.js',
             'js/next/diagnostics_snapshot.js',
             'js/next/app_preloader.js',
             'js/boot/runtime_onboarding_bundle.js',
+            'js/next/geo/kz_city_catalog.js',
             'js/boot/runtime_identity_bundle.js',
             'js/boot/runtime_shell_bundle.js',
             'js/boot/runtime_ui_bundle.js',
             'js/boot/runtime_core_bundle.js',
             'js/next/app_next.js',
         ],
+        'standaloneScripts' => [
+            'js/mobile_native_bridge.js',
+        ],
         'images' => [
             'media/kareta_create_request_vehicle_background_r188_5_5_6_84_31.png',
-            'assets/onboarding/kareta_logo_full.png',
+            'assets/logo/main/kareta_logo_full.png',
             'assets/onboarding/kareta_logo_icon.png',
             'assets/onboarding/backgrounds/welcome/city-calm/city-calm-mobile.png',
             'assets/onboarding/backgrounds/welcome/city-calm/city-calm-desktop-narrow.png',
@@ -52,6 +58,8 @@ function kareta_asset_registry(): array
         'critical' => [
             'js/next/runtime_logger.js',
             'js/next/runtime_dependencies.js',
+            'js/next/contracts/enterprise_data_v1.js',
+            'js/next/forms/form_contract.js',
             'css/next/app_preloader.css',
             'css/next/app_next.css',
             'css/next_shell.css',
@@ -66,7 +74,7 @@ function kareta_asset_registry(): array
             'js/next/route_asset_loader.js',
             'js/next/session_resume_runtime.js',
             'js/next/app_next.js',
-            'assets/onboarding/kareta_logo_full.png',
+            'assets/logo/main/kareta_logo_full.png',
             'assets/onboarding/kareta_logo_icon.png',
         ],
         // R188.5.5.6.84.82: canonical source modules retained for audit/build integrity.
@@ -92,6 +100,7 @@ function kareta_asset_registry(): array
             'js/next/kflow_windows.js',
             'js/next/onboarding/pages/role_definitions.js',
             'js/next/onboarding/onboarding_selection_catalog.js',
+            'js/next/geo/kz_city_catalog.js',
             'js/next/onboarding/pages/role_page.js',
             'js/next/onboarding/pages/client_profile_page.js',
             'js/next/onboarding/pages/master_profile_page.js',
@@ -783,6 +792,7 @@ function kareta_asset_missing(): array
     $paths = array_values(array_unique(array_merge(
         $registry['styles'],
         $registry['scripts'],
+        $registry['standaloneScripts'] ?? [],
         $registry['scriptSources'] ?? [],
         $registry['images'],
         function_exists('kareta_route_asset_paths') ? kareta_route_asset_paths() : []

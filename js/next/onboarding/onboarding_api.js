@@ -169,7 +169,7 @@
   }
 
   function payloadFromFlow(flow){
-    return {
+    const payload = {
       role:String(flow.role || 'client'),
       name:String(flow.accountName || flow.name || ''),
       phone:String(flow.phone || flow.contactPhone || ''),
@@ -203,6 +203,15 @@
       },
       onboardingVersion:'20260718-request-correlation-r87'
     };
+    const prepared=window.KaretaFormContract?.prepare?.('onboarding',payload,{
+      canonical:{
+        accountId:flow.accountId,
+        personId:flow.personId,
+        contextId:flow.contextId,
+        cityId:flow.cityId || window.KaretaOnboardingSelectionCatalog?.resolveCityId?.(flow.city || flow.cityName || '')
+      }
+    });
+    return prepared?.compatPayload || payload;
   }
 
   function normalizePhone(value){

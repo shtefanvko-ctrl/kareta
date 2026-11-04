@@ -1,0 +1,55 @@
+name: Enterprise contract
+
+on:
+  pull_request:
+    paths:
+      - 'api/contracts/**'
+      - 'schemas/enterprise-data-v1.schema.json'
+      - 'docs/architecture/API_CONTRACT.md'
+      - 'docs/harness/ENTERPRISE_DATA_FORM_CONTRACT_V1.md'
+      - 'js/next/contracts/**'
+      - 'js/next/forms/**'
+      - 'js/next/onboarding/**'
+      - 'js/next/client/client_cabinet_api.js'
+      - 'js/next/orders/**'
+      - 'js/next/work_orders/**'
+      - 'js/next/seller/seller_api.js'
+      - 'js/next/pages/master_onboarding.js'
+      - 'api/obd.php'
+      - 'tests/contracts/**'
+      - 'tests/integration/**'
+      - 'scripts/enterprise_contract_gate.js'
+      - 'tools/test_enterprise_data_form_contract.js'
+      - '.github/workflows/enterprise-contract.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'api/contracts/**'
+      - 'schemas/enterprise-data-v1.schema.json'
+      - 'js/next/contracts/**'
+      - 'js/next/forms/**'
+      - 'api/obd.php'
+      - 'tests/contracts/**'
+      - 'tests/integration/**'
+      - 'scripts/enterprise_contract_gate.js'
+      - '.github/workflows/enterprise-contract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  enterprise-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Enterprise contract gate
+        run: node scripts/enterprise_contract_gate.js

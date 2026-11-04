@@ -14,7 +14,7 @@
   function modalHeader(options = {}) {
     const roleIcon = options.roleIcon ? `<div class="onb2-modal-role-ico">${esc(options.roleIcon)}</div>` : '';
     return `<div class="onb2-modal-head onb2-modal-head--compact">
-      <div class="onb2-headbar"><div class="onb2-brandbox onb2-brandbox--official"><img class="onb2-brand-logo onb2-brand-logo--full" src="assets/onboarding/kareta_logo_full.png" alt="KARETA.KZ Автосервис"></div></div>
+      <div class="onb2-headbar"><div class="onb2-brandbox onb2-brandbox--official"><img class="onb2-brand-logo onb2-brand-logo--full" src="/assets/logo/main/kareta_logo_full.png" alt="KARETA.KZ Автосервис"></div></div>
       ${roleIcon}
       <div class="onb2-modal-title">${esc(options.title || '')}</div>
       <div class="onb2-modal-sub">${esc(options.sub || '')}</div>

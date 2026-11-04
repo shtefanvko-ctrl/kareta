@@ -12,10 +12,17 @@
     'Павлодар': '🌊'
   });
 
-  const cities = Object.freeze([
-    'Алматы','Астана','Шымкент','Караганда',
-    'Усть-Каменогорск','Семей','Павлодар','Риддер'
+  const cityRecords = Object.freeze([
+    Object.freeze({id:'almaty',name:'Алматы'}),
+    Object.freeze({id:'astana',name:'Астана'}),
+    Object.freeze({id:'shymkent',name:'Шымкент'}),
+    Object.freeze({id:'karaganda',name:'Караганда'}),
+    Object.freeze({id:'ust-kamenogorsk',name:'Усть-Каменогорск'}),
+    Object.freeze({id:'semey',name:'Семей'}),
+    Object.freeze({id:'pavlodar',name:'Павлодар'}),
+    Object.freeze({id:'ridder',name:'Риддер'})
   ]);
+  const cities = Object.freeze(cityRecords.map(row=>row.name));
 
   // Approximate WGS84 centers are for city browsing only, never user/provider identity.
   const cityCenters=Object.freeze({
@@ -29,9 +36,16 @@
     'Риддер':Object.freeze({latitude:50.34524,longitude:83.515621})
   });
   const cityAliases=Object.freeze({'өскемен':'Усть-Каменогорск','oskemen':'Усть-Каменогорск','семей':'Семей','semey':'Семей','алматы':'Алматы','almaty':'Алматы','астана':'Астана','astana':'Астана','шымкент':'Шымкент','shymkent':'Шымкент','қарағанды':'Караганда','karaganda':'Караганда','павлодар':'Павлодар','pavlodar':'Павлодар','риддер':'Риддер','ridder':'Риддер'});
-  const resolveCityCenter=value=>{
+  const resolveCityName=value=>{
     const name=String(value||'').trim(),lower=name.toLocaleLowerCase('ru-RU');
-    const key=cityAliases[lower]||cities.find(city=>city.toLocaleLowerCase('ru-RU')===lower);
+    return cityAliases[lower]||cities.find(city=>city.toLocaleLowerCase('ru-RU')===lower)||'';
+  };
+  const resolveCityId=value=>{
+    const name=resolveCityName(value);
+    return cityRecords.find(row=>row.name===name)?.id||'';
+  };
+  const resolveCityCenter=value=>{
+    const key=resolveCityName(value);
     return key&&cityCenters[key]?{...cityCenters[key],city:key,precision:'city',source:'GeoNames'}:null;
   };
 
@@ -45,7 +59,9 @@
 
   window.KaretaOnboardingSelectionCatalog = Object.freeze({
     cities,
+    cityRecords,
     cityIcons,
+    resolveCityId,
     resolveCityCenter,
     brands,
     audit(){

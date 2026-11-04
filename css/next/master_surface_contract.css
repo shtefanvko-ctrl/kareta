@@ -2,19 +2,19 @@
    Route/page bridge only. Tokens/components live in master_ui_foundation.css;
    shared-route role skin lives in master_role_skin.css. */
 html[data-user-role="master"]{
-  /* Kept here as contract assertions for legacy regression tooling. */
-  --k-master-content-max:1420px;
-  --k-master-page-x:clamp(14px,2.2vw,34px);
+  /* Role delta only. Shared visual tokens resolve through design_contract.css. */
+  --k-master-content-max:var(--k-layout-content-max);
+  --k-master-page-x:var(--k-layout-page-gutter);
   --k-master-page-y:18px;
-  --k-master-section-gap:16px;
-  --k-master-control-radius:12px;
-  --k-master-small-card-radius:16px;
-  --k-master-card-radius:20px;
-  --k-master-dialog-radius:24px;
-  --k-master-line:#e4e7ec;
-  --k-master-surface:#fff;
-  --k-master-page-bg:var(--k-master-bg,#f5f6f8);
-  --k-master-shadow:0 4px 16px rgba(15,23,42,.045);
+  --k-master-section-gap:var(--k-space-4);
+  --k-master-control-radius:var(--k-radius-action);
+  --k-master-small-card-radius:16px; /* intentional compact Master card delta */
+  --k-master-card-radius:var(--k-radius-panel);
+  --k-master-dialog-radius:var(--k-radius-dialog);
+  --k-master-line:var(--k-line);
+  --k-master-surface:var(--k-surface-card);
+  --k-master-page-bg:var(--k-surface-page);
+  --k-master-shadow:0 4px 16px rgba(15,23,42,.045); /* intentional lower Master elevation */
 }
 
 /* Shell: one position and one density on every Master route. */
@@ -791,19 +791,6 @@ html[data-user-role="master"]{
 /* R188.5.5.6.84.182 — canonical UI system: page width, buttons, surfaces, toolbars. */
 /* Route-late Master CSS may remain loaded after navigation. Every rule in this block is role-scoped. */
 html[data-user-role="master"]{
-  --k-ui-page-max:1440px;
-  --k-ui-page-gutter:clamp(18px,2vw,32px);
-  --k-ui-control-h:44px;
-  --k-ui-control-radius:12px;
-  --k-ui-card-radius:18px;
-  --k-ui-panel-radius:20px;
-  --k-ui-line:#e5e7eb;
-  --k-ui-soft:#f7f8fa;
-  --k-ui-text:#171a1f;
-  --k-ui-muted:#747b84;
-  --k-ui-accent:#ff4b0a;
-  --k-ui-accent-hover:#e74308;
-  --k-ui-shadow:0 8px 24px rgba(15,23,42,.055);
 }
 
 /* One desktop canvas. Intentional wizards/onboarding remain independently sized. */

@@ -1,0 +1,152 @@
+name: Runtime acceptance
+
+on:
+  pull_request:
+    paths:
+      - 'api/**'
+      - 'inc/**'
+      - 'js/**'
+      - 'tools/runtime_acceptance_*'
+      - 'asset_manifest.php'
+      - 'index.php'
+      - 'sw.js'
+      - '.github/workflows/runtime-acceptance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: runtime-acceptance-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mysql-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    env:
+      KARETA_ENVIRONMENT: test
+      KARETA_DB_HOST: 127.0.0.1
+      KARETA_DB_PORT: 3306
+      KARETA_DB_NAME: kareta_runtime_acceptance
+      KARETA_DB_USER: root
+      KARETA_DB_PASS: root
+      KARETA_DB_AUTO_CREATE: '1'
+      KARETA_DB_AUTO_MIGRATE: '1'
+      KARETA_DEMO_SEED: '0'
+      KARETA_STORAGE_ROOT: ${{ github.workspace }}/storage
+      KARETA_DIAGNOSTICS_TOKEN: runtime-acceptance-diagnostics-token-000000000000
+      KARETA_ACCEPTANCE_BASE_URL: http://127.0.0.1:8080
+      KARETA_ACCEPTANCE_EXPECTED_VERSION: 188.5.5.6.84.178
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+
+      - name: Set up PHP 8.1
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: pdo_mysql, mbstring
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Prove exact checkout
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$EXPECTED_SHA"
+          echo "EXACT_HEAD: $actual"
+
+      - name: Bootstrap and verify real MySQL
+        run: php tools/runtime_acceptance_db.php
+
+      - name: Generate exact-candidate provenance
+        shell: bash
+        env:
+          KARETA_DEPLOY_GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          KARETA_DEPLOY_GIT_REF: ${{ github.head_ref || github.ref_name }}
+          KARETA_DEPLOY_WORKFLOW_RUN_ID: ${{ github.run_id }}
+        run: php tools/generate_deployment_manifest.php >/tmp/kareta-provenance.json
+
+      - name: Start PHP runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          PHP_CLI_SERVER_WORKERS=4 php -S 127.0.0.1:8080 -t . >/tmp/kareta-runtime-server.log 2>&1 &
+          echo $! >/tmp/kareta-runtime-server.pid
+          for i in {1..40}; do
+            if curl -fsS http://127.0.0.1:8080/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/kareta-runtime-server.log
+          exit 1
+
+      - name: HTTP health and provenance
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          token="$KARETA_DIAGNOSTICS_TOKEN"
+          curl -fsS -H "X-Kareta-Diagnostics-Token: $token" "$KARETA_ACCEPTANCE_BASE_URL/api/schema_health.php" >/tmp/schema-health.json
+          curl -fsS -H "X-Kareta-Diagnostics-Token: $token" "$KARETA_ACCEPTANCE_BASE_URL/api/identity_health.php" >/tmp/identity-health.json
+          curl -fsS "$KARETA_ACCEPTANCE_BASE_URL/api/provenance.php" >/tmp/provenance.json
+          php -r '
+            $schema=json_decode(file_get_contents("/tmp/schema-health.json"),true,64,JSON_THROW_ON_ERROR);
+            $identity=json_decode(file_get_contents("/tmp/identity-health.json"),true,64,JSON_THROW_ON_ERROR);
+            $prov=json_decode(file_get_contents("/tmp/provenance.json"),true,64,JSON_THROW_ON_ERROR);
+            $expectedSha=strtolower((string)getenv("EXPECTED_SHA"));
+            $expectedVersion=(string)getenv("KARETA_ACCEPTANCE_EXPECTED_VERSION");
+            if(empty($schema["ok"])||($schema["status"]??"")!=="ready"||(int)($schema["dbVersion"]??0)!==144) throw new RuntimeException("schema_health_not_ready");
+            if(empty($identity["ok"])||($identity["status"]??"")!=="ready"||(int)($identity["dbVersion"]??0)!==144) throw new RuntimeException("identity_health_not_ready");
+            if(empty($prov["ok"])||strtolower((string)($prov["gitSha"]??""))!==$expectedSha||(string)($prov["assetVersion"]??"")!==$expectedVersion) throw new RuntimeException("provenance_mismatch");
+            echo "HTTP_RUNTIME: PASS db=144 version={$expectedVersion} sha={$expectedSha}\n";
+          '
+
+      - name: Install headless browser
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --no-package-lock playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Client SPA second-circle smoke
+        run: node tools/runtime_acceptance_browser.js
+
+      - name: Upload runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-acceptance-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            artifacts/runtime-acceptance/**
+            /tmp/schema-health.json
+            /tmp/identity-health.json
+            /tmp/provenance.json
+            /tmp/kareta-runtime-server.log
+            storage/logs/**
+          if-no-files-found: warn
+          retention-days: 30

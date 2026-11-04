@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "pid_01_04",
+      "mode": "01",
+      "pid": "04",
+      "name": {
+        "ru": "Расчётная нагрузка двигателя",
+        "en": "Calculated engine load"
+      },
+      "formula": "100/255 * A",
+      "unit": "%",
+      "vehicle_specific_interpretation_required": true,
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "pid_01_05",
+      "mode": "01",
+      "pid": "05",
+      "name": {
+        "ru": "Температура охлаждающей жидкости",
+        "en": "Engine coolant temperature"
+      },
+      "formula": "A - 40",
+      "unit": "°C",
+      "vehicle_specific_interpretation_required": true,
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "pid_01_06",
+      "mode": "01",
+      "pid": "06",
+      "name": {
+        "ru": "Краткосрочная топливная коррекция — банк 1",
+        "en": "Short term fuel trim — Bank 1"
+      },
+      "formula": "100/128 * A - 100",
+      "unit": "%",
+      "vehicle_specific_interpretation_required": true,
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "pid_01_07",
+      "mode": "01",
+      "pid": "07",
+      "name": {
+        "ru": "Долгосрочная топливная коррекция — банк 1",
+        "en": "Long term fuel trim — Bank 1"
+      },
+      "formula": "100/128 * A - 100",
+      "unit": "%",
+      "vehicle_specific_interpretation_required": true,
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "pid_01_0b",
+      "mode": "01",
+      "pid": "0B",
+      "name": {
+        "ru": "Абсолютное давление во впускном коллекторе",
+        "en": "Intake manifold absolute pressure"
+      },
+      "formula": "A",
+      "unit": "kPa",
+      "vehicle_specific_interpretation_required": true,
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "pid_01_0c",
+      "mode": "01",
+      "pid": "0C",
+      "name": {
+        "ru": "Обороты двигателя",
+        "en": "Engine RPM"
+      },
+      "formula": "(256*A + B) / 4",
+      "unit": "rpm",
+      "vehicle_specific_interpretation_required": true,
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "pid_01_0d",
+      "mode": "01",
+      "pid": "0D",
+      "name": {
+        "ru": "Скорость автомобиля",
+        "en": "Vehicle speed"
+      },
+      "formula": "A",
+      "unit": "km/h",
+      "vehicle_specific_interpretation_required": true,
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "pid_01_0e",
+      "mode": "01",
+      "pid": "0E",
+      "name": {
+        "ru": "Угол опережения зажигания",
+        "en": "Timing advance"
+      },
+      "formula": "A/2 - 64",
+      "unit": "° before TDC",
+      "vehicle_specific_interpretation_required": true,
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "pid_01_0f",
+      "mode": "01",
+      "pid": "0F",
+      "name": {
+        "ru": "Температура воздуха на впуске",
+        "en": "Intake air temperature"
+      },
+      "formula": "A - 40",
+      "unit": "°C",
+      "vehicle_specific_interpretation_required": true,
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "pid_01_10",
+      "mode": "01",
+      "pid": "10",
+      "name": {
+        "ru": "Массовый расход воздуха",
+        "en": "Mass air flow rate"
+      },
+      "formula": "(256*A + B) / 100",
+      "unit": "g/s",
+      "vehicle_specific_interpretation_required": true,
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "pid_01_11",
+      "mode": "01",
+      "pid": "11",
+      "name": {
+        "ru": "Положение дросселя",
+        "en": "Throttle position"
+      },
+      "formula": "100/255 * A",
+      "unit": "%",
+      "vehicle_specific_interpretation_required": true,
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "pid_01_42",
+      "mode": "01",
+      "pid": "42",
+      "name": {
+        "ru": "Напряжение модуля управления",
+        "en": "Control module voltage"
+      },
+      "formula": "(256*A + B) / 1000",
+      "unit": "V",
+      "vehicle_specific_interpretation_required": true,
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED"
+    },
+    {
+      "id": "pid_09_02",
+      "mode": "09",
+      "pid": "02",
+      "name": {
+        "ru": "Идентификационный номер автомобиля (VIN)",
+        "en": "Vehicle Identification Number"
+      },
+      "formula": null,
+      "unit": "ascii",
+      "vehicle_specific_interpretation_required": true,
+      "source_ids": [
+        "obdex_cc0",
+        "sae_j1979_202505"
+      ],
+      "evidence_status": "SUPPORTED"
+    }
+  ]
+}

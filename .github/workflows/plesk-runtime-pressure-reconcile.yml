@@ -1,0 +1,35 @@
+name: Plesk runtime pressure reconcile
+on:
+  pull_request:
+    paths:
+      - "config.php"
+      - "config.private.example.php"
+      - "index.php"
+      - "api/realtime.php"
+      - "api/runtime_diagnostics.php"
+      - "js/next/core/realtime_client.js"
+      - "js/next/runtime_logger.js"
+      - "js/boot/runtime_ui_bundle.js"
+      - "tools/test_plesk_runtime_pressure_reconcile.js"
+      - ".github/workflows/plesk-runtime-pressure-reconcile.yml"
+permissions:
+  contents: read
+jobs:
+  pressure-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+      - run: php -l config.php
+      - run: php -l index.php
+      - run: php -l api/realtime.php
+      - run: php -l api/runtime_diagnostics.php
+      - run: node --check js/next/core/realtime_client.js
+      - run: node --check js/next/runtime_logger.js
+      - run: node tools/test_plesk_runtime_pressure_reconcile.js
+      - run: node tools/build_boot_js_bundles.js --check

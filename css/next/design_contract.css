@@ -1,6 +1,8 @@
-/* KARETA Design Contract v1 — shared tokens and the canonical layer scale.
-   Role/page files own geometry; generated bundles never own source decisions. */
+/* KARETA Design Contract v2 — single source of shared visual tokens.
+   Role/page files may own layout geometry, but shared visual values must resolve here.
+   Legacy --k-ui-* names are compatibility aliases only and must not own values. */
 :root{
+  /* Existing shared geometry */
   --k-radius-xs:5px;
   --k-radius-control:10px;
   --k-radius-card:18px;
@@ -24,6 +26,48 @@
   --k-muted:#667085;
   --k-shadow-card:0 9px 28px rgba(15,23,42,.08);
 
+  /* Canonicalized values that already existed in client_surface_layout.css.
+     Kept distinct where merging would change the current UI. */
+  --k-layout-page-max:1440px;
+  --k-layout-workspace-gutter:clamp(18px,2vw,32px);
+  --k-control-height:44px;
+  --k-radius-action:12px;
+  --k-radius-panel:20px;
+  --k-line-soft:#e5e7eb;
+  --k-surface-soft:#f7f8fa;
+  --k-text-strong:#171a1f;
+  --k-muted-ui:#747b84;
+  --k-accent:#ff4b0a;
+  --k-accent-hover:#e74308;
+  --k-shadow-surface:0 8px 24px rgba(15,23,42,.055);
+
+
+  /* Shared Components v1 semantic contract.
+     These values intentionally mirror the current UI so ownership can move
+     without changing visual output. Component selectors migrate separately. */
+  --k-component-control-h:var(--k-control-height);
+
+  --k-component-button-radius:var(--k-radius-action);
+  --k-component-button-gap:7px;
+  --k-component-button-font-size:12.5px;
+  --k-component-button-font-weight:800;
+  --k-component-button-icon-size:18px;
+  --k-component-button-accent:var(--k-accent);
+  --k-component-button-accent-hover:var(--k-accent-hover);
+
+  --k-component-field-h:42px;
+  --k-component-field-radius:var(--k-radius-action);
+  --k-component-field-line:var(--k-line-soft);
+  --k-component-field-surface:var(--k-surface-card);
+  --k-component-field-text:var(--k-text-strong);
+  --k-component-field-muted:var(--k-muted-ui);
+
+  --k-component-state-radius:16px;
+  --k-component-state-line:#dde1e6;
+  --k-component-state-surface:var(--k-surface-card);
+  --k-component-state-text:var(--k-muted-ui);
+
+  /* Canonical layer scale */
   --k-z-base:0;
   --k-z-local-raised:3;
   --k-z-sticky:20;
@@ -35,6 +79,21 @@
   --k-z-toast:120;
   --k-z-shell-brand:161;
   --k-z-debug:200;
+
+  /* Temporary compatibility aliases. These names must never receive raw values elsewhere. */
+  --k-ui-page-max:var(--k-layout-page-max);
+  --k-ui-page-gutter:var(--k-layout-workspace-gutter);
+  --k-ui-control-h:var(--k-control-height);
+  --k-ui-control-radius:var(--k-radius-action);
+  --k-ui-card-radius:var(--k-radius-card);
+  --k-ui-panel-radius:var(--k-radius-panel);
+  --k-ui-line:var(--k-line-soft);
+  --k-ui-soft:var(--k-surface-soft);
+  --k-ui-text:var(--k-text-strong);
+  --k-ui-muted:var(--k-muted-ui);
+  --k-ui-accent:var(--k-accent);
+  --k-ui-accent-hover:var(--k-accent-hover);
+  --k-ui-shadow:var(--k-shadow-surface);
 }
 
 html[data-user-role="master"],

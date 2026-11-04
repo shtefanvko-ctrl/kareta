@@ -1,7 +1,33 @@
 (() => {
   const pending = new Map();
+  const MIN_NATIVE_API_VERSION = 6;
+  const CAPABILITY_BY_COMMAND = Object.freeze({
+    pickImage:"images",
+    takePhoto:"camera",
+    pickContact:"contacts",
+    getLocation:"location",
+    scanCode:"scanner",
+    actionSheet:"actionSheet",
+    elmStatus:"elm327",
+    elmDevices:"elm327",
+    elmConnect:"elm327",
+    elmReconnectLast:"elm327",
+    elmDisconnect:"elm327",
+    elmInit:"elm327",
+    elmCommand:"elm327",
+    elmSnapshot:"elm327",
+    elmLiveSnapshot:"elm327",
+    offlineState:"offlineQueue",
+    offlineEnqueue:"offlineQueue",
+    offlineDrain:"offlineQueue",
+    offlineAcknowledge:"offlineQueue",
+    offlineRestore:"offlineQueue",
+    offlineClear:"offlineQueue",
+  });
   let seq = 0;
   let geoMapModulePromise = null;
+  let nativeProbePromise = null;
+  let nativeInfo = null;
 
   function nativeAvailable() {
     return !!window.KaretaNative?.postMessage;
@@ -12,19 +38,67 @@
     return "km_" + Date.now().toString(36) + "_" + seq.toString(36);
   }
 
-  function call(command, payload = {}, timeoutMs = 8000) {
+  function bridgeError(code, message = code) {
+    const error = new Error(message);
+    error.code = code;
+    return error;
+  }
+
+  function rawCall(command, payload = {}, timeoutMs = 8000) {
     if (!nativeAvailable()) {
-      return Promise.reject(new Error("KARETA_NATIVE_UNAVAILABLE"));
+      return Promise.reject(bridgeError("KARETA_NATIVE_UNAVAILABLE"));
     }
     const id = nextId();
     return new Promise((resolve, reject) => {
       const timer = window.setTimeout(() => {
         pending.delete(id);
-        reject(new Error("KARETA_NATIVE_TIMEOUT"));
+        reject(bridgeError("KARETA_NATIVE_TIMEOUT"));
       }, timeoutMs);
       pending.set(id, { resolve, reject, timer });
       window.KaretaNative.postMessage(JSON.stringify({ id, command, payload }));
     });
+  }
+
+  function probeNative() {
+    if (nativeInfo) return Promise.resolve(nativeInfo);
+    if (!nativeAvailable()) return Promise.reject(bridgeError("KARETA_NATIVE_UNAVAILABLE"));
+    if (nativeProbePromise) return nativeProbePromise;
+    nativeProbePromise = rawCall("appInfo", {}, 8000).then(info => {
+      const nativeApiVersion = Number(info?.nativeApiVersion || 0);
+      if (!Number.isFinite(nativeApiVersion) || nativeApiVersion < MIN_NATIVE_API_VERSION) {
+        throw bridgeError(
+          "KARETA_NATIVE_API_UNSUPPORTED",
+          "Native API " + nativeApiVersion + " is below required version " + MIN_NATIVE_API_VERSION
+        );
+      }
+      const capabilities = Array.isArray(info?.nativeCapabilities)
+        ? Array.from(new Set(info.nativeCapabilities.map(value => String(value || "").trim()).filter(Boolean)))
+        : [];
+      nativeInfo = Object.freeze({
+        ...info,
+        nativeApiVersion,
+        nativeCapabilities:Object.freeze(capabilities),
+      });
+      window.dispatchEvent(new CustomEvent("kareta:mobile-capabilities", { detail:nativeInfo }));
+      return nativeInfo;
+    }).catch(error => {
+      nativeProbePromise = null;
+      throw error;
+    });
+    return nativeProbePromise;
+  }
+
+  async function call(command, payload = {}, timeoutMs = 8000) {
+    if (command === "appInfo") return rawCall(command, payload, timeoutMs);
+    const info = await probeNative();
+    const capability = CAPABILITY_BY_COMMAND[command];
+    if (capability && !info.nativeCapabilities.includes(capability)) {
+      throw bridgeError(
+        "KARETA_NATIVE_CAPABILITY_UNAVAILABLE",
+        "Native capability is unavailable: " + capability
+      );
+    }
+    return rawCall(command, payload, timeoutMs);
   }
 
   function onNativeMessage(event) {
@@ -53,6 +127,11 @@
     try { window.KaretaNative.onmessage = onNativeMessage; } catch (_error) {}
     document.documentElement.classList.add("kareta-native-app");
     window.dispatchEvent(new CustomEvent("kareta:mobile-ready"));
+    probeNative().catch(error => {
+      window.dispatchEvent(new CustomEvent("kareta:mobile-error", {
+        detail:{ code:String(error?.code || "KARETA_NATIVE_ERROR"), message:String(error?.message || error) }
+      }));
+    });
     return true;
   }
 
@@ -150,11 +229,15 @@
 
   const api = {
     available: nativeAvailable,
+    ready: () => probeNative(),
+    info: () => nativeInfo,
+    supports: capability => nativeInfo ? nativeInfo.nativeCapabilities.includes(String(capability || "")) : null,
+    minimumApiVersion: MIN_NATIVE_API_VERSION,
     attach,
     call,
     ping: () => call("ping"),
-    appInfo: () => call("appInfo"),
-    deviceInfo: () => call("appInfo"),
+    appInfo: () => probeNative(),
+    deviceInfo: () => probeNative(),
     network: () => call("network"),
     pushToken: () => call("pushToken"),
     registerPush: () => call("registerPush"),

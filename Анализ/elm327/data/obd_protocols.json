@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "sae_j1850_pwm",
+      "name": "SAE J1850 PWM",
+      "transport": "J1850",
+      "source_ids": [
+        "elm_electronics_elm327_v23",
+        "sae_j1979_202505"
+      ]
+    },
+    {
+      "id": "sae_j1850_vpw",
+      "name": "SAE J1850 VPW",
+      "transport": "J1850",
+      "source_ids": [
+        "elm_electronics_elm327_v23",
+        "sae_j1979_202505"
+      ]
+    },
+    {
+      "id": "iso_9141_2",
+      "name": "ISO 9141-2",
+      "transport": "K-line",
+      "source_ids": [
+        "elm_electronics_elm327_v23",
+        "sae_j1979_202505"
+      ]
+    },
+    {
+      "id": "iso_14230_4",
+      "name": "ISO 14230-4 / KWP2000",
+      "transport": "K-line",
+      "source_ids": [
+        "elm_electronics_elm327_v23",
+        "sae_j1979_202505"
+      ]
+    },
+    {
+      "id": "iso_15765_4",
+      "name": "ISO 15765-4 / CAN",
+      "transport": "CAN",
+      "source_ids": [
+        "elm_electronics_elm327_v23",
+        "sae_j1979_202505"
+      ]
+    }
+  ]
+}

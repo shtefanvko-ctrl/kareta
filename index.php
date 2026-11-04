@@ -20,6 +20,16 @@ $geoMapPublicConfig = [
     'defaultZoom'=>(int)($geoMapConfig['default_zoom'] ?? 13),
 ];
 
+$realtimeConfig = defined('KARETA_REALTIME') && is_array(KARETA_REALTIME) ? KARETA_REALTIME : [];
+$realtimePublicConfig = [
+    'transport'=>in_array((string)($realtimeConfig['transport'] ?? 'poll'), ['poll','sse'], true)
+        ? (string)$realtimeConfig['transport'] : 'poll',
+    'pollIntervalMs'=>(int)($realtimeConfig['poll_interval_ms'] ?? 15000),
+    'requestTimeoutMs'=>(int)($realtimeConfig['request_timeout_ms'] ?? 8000),
+    'failureBaseMs'=>(int)($realtimeConfig['failure_base_ms'] ?? 10000),
+    'failureMaxMs'=>(int)($realtimeConfig['failure_max_ms'] ?? 60000),
+];
+
 $requestPath = parse_url((string)($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH);
 if (in_array($requestPath, ['/sites/kareta.kz', '/sites/kareta.kz/'], true)) {
     $query = trim((string)($_SERVER['QUERY_STRING'] ?? ''));
@@ -253,6 +263,7 @@ $referenceAssetsReady = $referenceAssetsExt !== '';
     window.KARETA_FRONTEND_MODE = 'next';
     window.KARETA_ASSET_MANIFEST_URL = '/asset_manifest.php?v=' + encodeURIComponent(window.KARETA_NEXT_ASSET_VERSION);
     window.KARETA_GEO_MAP_CONFIG = Object.freeze(<?= json_encode($geoMapPublicConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>);
+    window.KARETA_REALTIME_CONFIG = Object.freeze(<?= json_encode($realtimePublicConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>);
   </script>
 </head>
 <body>
