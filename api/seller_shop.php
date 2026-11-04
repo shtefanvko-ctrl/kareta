@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/catalog/product_categories.php';
+require_once __DIR__ . '/geo_core.php';
 
 function seller_decode_json_field($value): array {
     if (is_array($value)) return array_values($value);
@@ -316,7 +317,8 @@ function kareta_public_pickup_address_expr(PDO $pdo,string $alias='sp'): string 
     return "(SELECT g.address FROM geo_points g WHERE
         g.owner_type='shop' AND BINARY g.owner_id=BINARY CAST({$alias}.id AS CHAR)
         AND g.kind='pickup' AND g.active=1 AND g.visibility='exact'
-        AND g.latitude IS NOT NULL AND g.longitude IS NOT NULL LIMIT 1)";
+        AND g.latitude IS NOT NULL AND g.longitude IS NOT NULL
+        AND ".kareta_geo_consent_receipt_sql('g.metadata_json')." LIMIT 1)";
 }
 
 function shop_storefront(?PDO $pdo,array $input): void {

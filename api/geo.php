@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/inc/request_logger.php';
 require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/identity/auth_resolver.php';
+require_once __DIR__ . '/geo_owner_access.php';
 require_once __DIR__ . '/geo_core.php';
 
 $pdo = kareta_pdo();
@@ -24,7 +25,6 @@ function geo_float($value): ?float {
 }
 function geo_valid_lat(?float $lat): bool { return $lat !== null && $lat >= -90.0 && $lat <= 90.0; }
 function geo_valid_lng(?float $lng): bool { return $lng !== null && $lng >= -180.0 && $lng <= 180.0; }
-function geo_owner_types(): array { return ['master','sto','organization','organization_unit','shop']; }
 function geo_kinds(): array { return ['service','branch','pickup','warehouse','mobile_origin']; }
 function geo_visibility(): array { return ['exact','approximate','city','hidden']; }
 function geo_default_visibility(string $kind): string {
@@ -41,61 +41,6 @@ function geo_haversine(float $lat1,float $lng1,float $lat2,float $lng2): float {
     $dLng=deg2rad($lng2-$lng1);
     $a=sin($dLat/2)**2+cos(deg2rad($lat1))*cos(deg2rad($lat2))*sin($dLng/2)**2;
     return 2*$r*asin(min(1.0,sqrt($a)));
-}
-function geo_context_allows_owner(PDO $pdo,KaretaAuthResolution $auth,string $ownerType,string $ownerId): bool {
-    if (!in_array($ownerType,geo_owner_types(),true) || $ownerId==='') return false;
-    $context=$auth->context;
-    $type=strtolower((string)($context['type']??''));
-    // Context membership alone is not edit permission. In particular,
-    // organization.member and organization.master must not edit an STO.
-    $allowed=$auth->capabilities;
-    $denied=$auth->deniedCapabilities;
-    if(in_array('*',$denied,true)||in_array('geo.upsert',$denied,true))return false;
-    if($type==='profile'&&!in_array('*',$allowed,true)
-        &&!in_array('profile.edit_own',$allowed,true)
-        &&!in_array('profile.manage',$allowed,true))return false;
-    if($type==='organization'){
-        $orgOwner=in_array('*',$allowed,true);
-        $storeManager=($ownerType==='shop' ||
-            ($ownerType==='organization'&&($context['organizationType']??'')==='parts_store'))
-            &&(in_array('profile.manage',$allowed,true)
-                ||in_array('market.products.manage',$allowed,true));
-        if(!$orgOwner&&!$storeManager)return false;
-    }
-
-    if ($type==='profile') {
-        $profileId=(int)($context['profileId']??0);
-        $profileType=strtolower((string)($context['profileType']??''));
-        if ($profileId<=0) return false;
-        $q=$pdo->prepare("SELECT legacy_entity_type,legacy_entity_id FROM person_profiles WHERE id=? AND status='active' LIMIT 1");
-        $q->execute([$profileId]);
-        $profile=$q->fetch(PDO::FETCH_ASSOC)?:[];
-        $legacyType=strtolower((string)($profile['legacy_entity_type']??''));
-        $legacyId=(string)($profile['legacy_entity_id']??'');
-        if ($profileType==='master' && $legacyType==='master') return $ownerType==='master' && hash_equals($legacyId,$ownerId);
-        if ($profileType==='seller' && $legacyType==='seller_profile') return $ownerType==='shop' && hash_equals($legacyId,$ownerId);
-        return false;
-    }
-
-    if ($type!=='organization') return false;
-    $organizationId=trim((string)($context['organizationKey']??$context['organizationId']??''));
-    if ($organizationId==='') return false;
-    if ($ownerType==='organization' && hash_equals($organizationId,$ownerId)) return true;
-
-    if ($ownerType==='organization_unit') {
-        $q=$pdo->prepare("SELECT 1 FROM organization_units WHERE id=? AND organization_id=? AND status='active' LIMIT 1");
-        $q->execute([$ownerId,$organizationId]);
-        return (bool)$q->fetchColumn();
-    }
-
-    $q=$pdo->prepare("SELECT legacy_entity_type,legacy_entity_id FROM organizations WHERE id=? AND status='active' LIMIT 1");
-    $q->execute([$organizationId]);
-    $organization=$q->fetch(PDO::FETCH_ASSOC)?:[];
-    $legacyType=strtolower((string)($organization['legacy_entity_type']??''));
-    $legacyId=(string)($organization['legacy_entity_id']??'');
-    if ($ownerType==='sto' && $legacyType==='sto_profile') return $legacyId!=='' && hash_equals($legacyId,$ownerId);
-    if ($ownerType==='shop' && $legacyType==='seller_profile') return $legacyId!=='' && hash_equals($legacyId,$ownerId);
-    return false;
 }
 function geo_public_payload(array $row,float $distanceKm): array {
     $payload=[
@@ -174,7 +119,10 @@ if ($method==='POST' && $action==='upsert') {
     $visibility=strtolower(geo_text($body['visibility']??geo_default_visibility($kind),24));
     if (!in_array($visibility,geo_visibility(),true)) kareta_json(['ok'=>false,'error'=>'invalid_visibility'],422);
     if ($kind==='warehouse') $visibility='hidden';
-    if ($kind==='mobile_origin' && $visibility==='exact' && empty($body['publishExact'])) {
+    if (kareta_geo_pickup_needs_consent($ownerType,$kind,$visibility) && !kareta_geo_explicit_publish_consent($body['publishExact']??null)) {
+        kareta_json(['ok'=>false,'error'=>'exact_pickup_requires_explicit_consent'],422);
+    }
+    if ($kind==='mobile_origin' && $visibility==='exact' && !kareta_geo_explicit_publish_consent($body['publishExact']??null)) {
         kareta_json(['ok'=>false,'error'=>'exact_mobile_origin_requires_explicit_consent'],422);
     }
     if ($visibility==='exact' && ($lat===null || $lng===null)) kareta_json(['ok'=>false,'error'=>'exact_coordinates_required'],422);
@@ -193,7 +141,7 @@ if ($method==='POST' && $action==='upsert') {
         $point=kareta_geo_upsert_point($pdo,[
             'ownerType'=>$ownerType,'ownerId'=>$ownerId,'kind'=>$kind,'label'=>$label,'countryCode'=>$countryCode,
             'city'=>$city,'address'=>$address,'latitude'=>$lat,'longitude'=>$lng,'source'=>$source,
-            'visibility'=>$visibility,'active'=>$active,'publishExact'=>!empty($body['publishExact']),
+            'visibility'=>$visibility,'active'=>$active,'publishExact'=>kareta_geo_explicit_publish_consent($body['publishExact']??null),
             'metadata'=>is_array($body['metadata']??null)?$body['metadata']:[]
         ]);
     }catch(InvalidArgumentException $e){kareta_json(['ok'=>false,'error'=>$e->getMessage()],422);}

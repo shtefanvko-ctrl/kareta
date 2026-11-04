@@ -13,18 +13,27 @@ function kareta_geo_coords_valid(?float $lat,?float $lng): bool {
     if($lat===null&&$lng===null)return true;
     return $lat!==null&&$lng!==null&&$lat>=-90.0&&$lat<=90.0&&$lng>=-180.0&&$lng<=180.0;
 }
-/**
- * Exact-public Geo boundary. Private mobile origins need an explicit
- * server-recorded consent receipt; user-supplied metadata cannot create it.
- */
+/** Consent receipts can only be written by the Geo upsert core, not client metadata. */
+function kareta_geo_consent_receipt_sql(string $column='metadata_json'): string {
+    return "(JSON_VALID({$column}) AND
+        NULLIF(JSON_UNQUOTE(JSON_EXTRACT(
+            IF(JSON_VALID({$column}),{$column},'{}'),
+            '$.geoExactConsentRecordedAt')), '') IS NOT NULL)";
+}
+/** A shop pickup and mobile origin are public only with explicit owner consent. */
 function kareta_geo_public_where(): string {
     return "active=1 AND visibility='exact' AND kind<>'warehouse'
         AND latitude IS NOT NULL AND longitude IS NOT NULL
-        AND (kind<>'mobile_origin' OR
-            (JSON_VALID(metadata_json) AND
-             NULLIF(JSON_UNQUOTE(JSON_EXTRACT(
-                IF(JSON_VALID(metadata_json),metadata_json,'{}'),
-                '$.geoExactConsentRecordedAt')), '') IS NOT NULL))";
+        AND (kind NOT IN ('mobile_origin','pickup')
+            OR (kind='pickup' AND owner_type<>'shop')
+            OR ".kareta_geo_consent_receipt_sql().")";
+}
+function kareta_geo_pickup_needs_consent(string $ownerType,string $kind,string $visibility): bool {
+    return $ownerType==='shop' && $kind==='pickup' && $visibility==='exact';
+}
+function kareta_geo_explicit_publish_consent($value): bool {
+    // Reject strings such as "false" and "yes": only an explicit JSON boolean is consent.
+    return $value === true;
 }
 
 /** Bounding box with antimeridian and pole handling. Always verify Haversine. */
@@ -127,7 +136,8 @@ function kareta_geo_upsert_point(PDO $pdo,array $point): array {
     $visibility=strtolower(trim((string)($point['visibility']??'hidden')));
     if(!in_array($visibility,$allowedVisibility,true))$visibility='hidden';
     if($kind==='warehouse')$visibility='hidden';
-    if($kind==='mobile_origin'&&$visibility==='exact'&&empty($point['publishExact']))$visibility='city';
+    if($kind==='mobile_origin'&&$visibility==='exact'&&!kareta_geo_explicit_publish_consent($point['publishExact']??null))$visibility='city';
+    if(kareta_geo_pickup_needs_consent($ownerType,$kind,$visibility)&&!kareta_geo_explicit_publish_consent($point['publishExact']??null))$visibility='hidden';
     if($visibility==='exact'&&($lat===null||$lng===null))throw new InvalidArgumentException('exact_geo_coordinates_required');
     $source=strtolower(trim((string)($point['source']??'manual')));
     if(!in_array($source,['manual','gps','geocoder','organization'],true))$source='manual';
@@ -138,7 +148,8 @@ function kareta_geo_upsert_point(PDO $pdo,array $point): array {
     $meta=is_array($point['metadata']??null)?$point['metadata']:[];
     // This key is reserved: the client cannot manufacture a publication receipt.
     unset($meta['geoExactConsentRecordedAt']);
-    if($kind==='mobile_origin'&&$visibility==='exact'&&!empty($point['publishExact'])){
+    if($visibility==='exact'&&kareta_geo_explicit_publish_consent($point['publishExact']??null)
+        &&($kind==='mobile_origin'||kareta_geo_pickup_needs_consent($ownerType,$kind,$visibility))){
         $meta['geoExactConsentRecordedAt']=gmdate('Y-m-d\TH:i:s\Z');
     }
     $metadata=$meta?json_encode($meta,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR):null;

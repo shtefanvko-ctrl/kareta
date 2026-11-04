@@ -20,6 +20,8 @@ jobs:
       - run: php -l index.php
       - run: php -l api/geo.php
       - run: php -l api/geo_core.php
+      - run: php -l api/geo_owner_access.php
+      - run: php -l api/seller_shop.php
       - run: node --check js/mobile_native_bridge.js
       - run: node --check js/next/geo_map.js
       - run: node --check js/next/onboarding/onboarding_selection_catalog.js
@@ -28,3 +30,8 @@ jobs:
       - run: node --check tools/test_geo_platform_consumers.js
       - run: node tools/test_geo_platform_core.js
       - run: php tools/test_geo_public_pickup_privacy.php
+      - run: php tools/test_geo_publication_receipt.php
+      - run: php tools/test_geo_seller_owner_rbac.php
+      - run: node --check js/next/pages/seller.js
+      - run: node --check js/next/seller/seller_api.js
+      - run: node tools/test_geo_seller_client_contract.js

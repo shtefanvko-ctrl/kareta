@@ -19,6 +19,22 @@
     return response.payload;
   }
 
+  async function geoRequest(url, data, options={}) {
+    const response=await client.request(url,{
+      method:data?'POST':'GET',cacheTtlMs:0,dedupe:false,...options,
+      ...(data?{headers:{'Content-Type':'application/json',...(options.headers||{})},body:JSON.stringify(data)}:{})
+    });
+    if(!response.ok){
+      const problem=new Error(response.payload?.message||response.payload?.error||'Не удалось сохранить точку');
+      problem.code=response.payload?.error||'seller_geo_failed';
+      problem.status=response.status;
+      throw problem;
+    }
+    return response.payload;
+  }
+  const saveGeoPoint=(point,options)=>geoRequest('api/geo.php?action=upsert',point,options);
+  const getPublicGeoPoints=(ownerId,options)=>geoRequest('api/geo.php?action=entity&ownerType=shop&ownerId='+encodeURIComponent(String(ownerId)),null,options);
+
   const dashboard = options => post('seller.dashboard', {}, options);
   const saveProfile = (profile, options) => post('seller.profile.save', { profile }, options);
   const saveProduct = (product, options) => post('seller.products.save', { product }, options);
@@ -27,5 +43,5 @@
   const updateStock = (id, change = {}, options) => post('seller.products.stock', { id, ...change }, options);
   const updateOrderStatus = (id, status, options) => post('seller.orders.updateStatus', { id, status }, options);
 
-  window.KaretaSellerApi = Object.freeze({ dashboard, saveProfile, saveProduct, deleteProduct, restoreProduct, updateStock, updateOrderStatus });
+  window.KaretaSellerApi = Object.freeze({ dashboard, saveProfile, saveProduct, deleteProduct, restoreProduct, updateStock, updateOrderStatus, saveGeoPoint, getPublicGeoPoints });
 })();

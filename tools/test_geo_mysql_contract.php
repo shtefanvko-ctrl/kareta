@@ -80,6 +80,22 @@ $upsert(['ownerType'=>'shop','ownerId'=>'shop_w','kind'=>'warehouse',
     'visibility'=>'exact','label'=>'Private warehouse']);
 check((string)$pdo->query("SELECT visibility FROM geo_points WHERE owner_id='shop_w'")->fetchColumn()==='hidden',
     'warehouse stays hidden regardless of request');
+$upsert(['ownerType'=>'shop','ownerId'=>'shop_p','kind'=>'pickup',
+    'visibility'=>'exact','label'=>'Private pickup','metadata'=>['geoExactConsentRecordedAt'=>'FORGED']]);
+check(kareta_geo_owner_points($pdo,'shop','shop_p',true)===[],
+    'shop pickup requires explicit consent');
+$upsert(['ownerType'=>'shop','ownerId'=>'shop_p','kind'=>'pickup',
+    'visibility'=>'exact','publishExact'=>'false','label'=>'String is not consent']);
+check(kareta_geo_owner_points($pdo,'shop','shop_p',true)===[],
+    'string false must not publish pickup');
+$upsert(['ownerType'=>'shop','ownerId'=>'shop_p','kind'=>'pickup',
+    'visibility'=>'exact','publishExact'=>true,'label'=>'Consented pickup']);
+check(count(kareta_geo_owner_points($pdo,'shop','shop_p',true))===1,
+    'server-recorded pickup consent enables public point');
+$upsert(['ownerType'=>'shop','ownerId'=>'shop_p','kind'=>'pickup',
+    'visibility'=>'hidden','label'=>'Withdrawn pickup']);
+check(kareta_geo_owner_points($pdo,'shop','shop_p',true)===[],
+    'withdrawn pickup consent hides point');
 
 $upsert(['ownerId'=>'mobile_a','kind'=>'mobile_origin','visibility'=>'exact',
     'label'=>'Mobile private','metadata'=>['geoExactConsentRecordedAt'=>'FORGED']]);
