@@ -70,8 +70,13 @@ if ($mode === 'snapshot') {
             } else {
                 // Server-enforced read-only transaction; only SELECT statements below.
                 $pdo->exec('START TRANSACTION READ ONLY');
-                $rows = $pdo->query('SELECT version, checksum FROM db_migrations ORDER BY version')->fetchAll();
-                $pdo->rollBack();
+                try {
+                    $rows = $pdo->query('SELECT version, checksum FROM db_migrations ORDER BY version')->fetchAll();
+                } finally {
+                    // PDO::rollBack() does not recognize transactions started by raw SQL.
+                    // SQL ROLLBACK closes the explicitly started read-only transaction.
+                    $pdo->exec('ROLLBACK');
+                }
             }
         } catch (Throwable $e) {
             $add('READ_ONLY_INVENTORY_FAILED'); // Never reveal DSN, DB errors or credentials.
