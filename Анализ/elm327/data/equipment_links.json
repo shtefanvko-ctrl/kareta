@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "canonical_equipment_source": "Анализ/data/equipment.json",
+  "items": [
+    {
+      "check_id": "read_freeze_frame",
+      "equipment_ids": [
+        "obd_scanner"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    },
+    {
+      "check_id": "inspect_fuel_trims",
+      "equipment_ids": [
+        "obd_scanner"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    },
+    {
+      "check_id": "smoke_or_vacuum_leak_check",
+      "equipment_ids": [
+        "smoke_tester"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    },
+    {
+      "check_id": "maf_live_data_check",
+      "equipment_ids": [
+        "obd_scanner"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    },
+    {
+      "check_id": "fuel_pressure_check",
+      "equipment_ids": [
+        "fuel_pressure_gauge"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    },
+    {
+      "check_id": "misfire_cylinder_isolation",
+      "equipment_ids": [
+        "obd_scanner",
+        "multimeter"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    },
+    {
+      "check_id": "coil_power_ground_check",
+      "equipment_ids": [
+        "multimeter",
+        "oscilloscope"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    },
+    {
+      "check_id": "sensor_supply_ground_signal_check",
+      "equipment_ids": [
+        "multimeter",
+        "oscilloscope"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    },
+    {
+      "check_id": "egr_command_response_check",
+      "equipment_ids": [
+        "obd_scanner"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    },
+    {
+      "check_id": "o2_catalyst_waveform_check",
+      "equipment_ids": [
+        "obd_scanner",
+        "oscilloscope"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    },
+    {
+      "check_id": "evap_visual_pressure_check",
+      "equipment_ids": [
+        "smoke_tester"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    },
+    {
+      "check_id": "battery_charging_voltage_check",
+      "equipment_ids": [
+        "multimeter",
+        "dc_current_clamp"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    },
+    {
+      "check_id": "ecu_power_ground_check",
+      "equipment_ids": [
+        "multimeter",
+        "circuit_probe"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    },
+    {
+      "check_id": "can_bus_basic_check",
+      "equipment_ids": [
+        "obd_scanner",
+        "multimeter",
+        "oscilloscope",
+        "can_interface"
+      ],
+      "rule": "recommendation_not_skill_proof"
+    }
+  ]
+}

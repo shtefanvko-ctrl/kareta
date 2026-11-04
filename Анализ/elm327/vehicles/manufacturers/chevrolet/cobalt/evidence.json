@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "make": "Chevrolet",
+  "model": "Cobalt",
+  "market_scope": "KZ_IDENTITY_EVIDENCE",
+  "items": [
+    {
+      "id": "chevrolet_cobalt_2026_kz_uzauto_lineage",
+      "make": "Chevrolet",
+      "model": "Cobalt",
+      "model_year": 2026,
+      "market": "KZ",
+      "generation": null,
+      "platform": null,
+      "engine": "1.5L",
+      "ecu": null,
+      "vin_pattern": null,
+      "applicability": "MODEL_YEAR_MARKET",
+      "source_id": "chevrolet_kz_cobalt_2026",
+      "evidence_type": "MODEL_IDENTITY",
+      "status": "SUPPORTED",
+      "title": {
+        "ru": "Chevrolet Cobalt 2026 для рынка Казахстана — официальная модель 1.5 л",
+        "en": "Kazakhstan-market 2026 Chevrolet Cobalt — official 1.5L model"
+      },
+      "summary": {
+        "ru": "Официальный дистрибьютор Chevrolet в Казахстане показывает Cobalt 2026 с двигателем 1.5 л, передним приводом и автоматической коробкой в актуальных комплектациях.",
+        "en": "Chevrolet's official Kazakhstan distributor lists the 2026 Cobalt with a 1.5L engine, front-wheel drive and automatic transmission in current trims."
+      },
+      "source_ref": "Chevrolet Kazakhstan Cobalt 2026 model page",
+      "kz_applicability": "SUPPORTED_MODEL_IDENTITY"
+    },
+    {
+      "id": "chevrolet_cobalt_kz_uzauto_manufacturer_lineage",
+      "make": "Chevrolet",
+      "model": "Cobalt",
+      "model_year": null,
+      "market": "KZ",
+      "generation": null,
+      "platform": null,
+      "engine": null,
+      "ecu": null,
+      "vin_pattern": null,
+      "applicability": "MODEL_YEAR_MARKET",
+      "source_id": "chevrolet_kz_cobalt_owner_manual_uzauto",
+      "evidence_type": "MODEL_IDENTITY",
+      "status": "SUPPORTED",
+      "title": {
+        "ru": "Руководство Cobalt на сайте Chevrolet Kazakhstan указывает UzAuto Motors как производителя",
+        "en": "Cobalt manual hosted by Chevrolet Kazakhstan identifies UzAuto Motors as manufacturer"
+      },
+      "summary": {
+        "ru": "В официально размещённом руководстве сказано, что оно предназначено для автомобиля, произведённого АО UzAuto Motors. То же руководство отдельно предупреждает, что часть характеристик и функций зависит от варианта модели и страны поставки.",
+        "en": "The officially hosted manual states that it covers a vehicle manufactured by UzAuto Motors. It also notes that specifications/features can vary by model version and delivery country."
+      },
+      "source_ref": "Chevrolet Kazakhstan Cobalt owner manual",
+      "kz_applicability": "SUPPORTED_MANUFACTURER_LINEAGE"
+    },
+    {
+      "id": "chevrolet_kz_uzauto_allur_market_relationship_2026",
+      "make": "Chevrolet",
+      "model": "Cobalt",
+      "model_year": 2026,
+      "market": "KZ",
+      "generation": null,
+      "platform": null,
+      "engine": null,
+      "ecu": null,
+      "vin_pattern": null,
+      "applicability": "MODEL_YEAR_MARKET",
+      "source_id": "uzauto_allur_kz_partnership_20260713",
+      "evidence_type": "MODEL_IDENTITY",
+      "status": "SUPPORTED",
+      "title": {
+        "ru": "UzAuto Motors подтверждает партнёрство с Allur по Chevrolet в Казахстане",
+        "en": "UzAuto Motors confirms Chevrolet partnership with Allur in Kazakhstan"
+      },
+      "summary": {
+        "ru": "UzAuto Motors в июле 2026 года сообщила о шестилетнем партнёрстве с Allur в Казахстане и отдельно назвала Cobalt одной из ключевых моделей Chevrolet на рынке страны.",
+        "en": "In July 2026, UzAuto Motors described its six-year partnership with Allur in Kazakhstan and specifically identified Cobalt as a key Chevrolet model in the market."
+      },
+      "source_ref": "UzAuto Motors Kazakhstan/Allur partnership statement",
+      "kz_applicability": "SUPPORTED_MARKET_RELATIONSHIP"
+    }
+  ],
+  "diagnostic_boundary": {
+    "ru": "Эти записи подтверждают рыночную/производственную линию KZ Cobalt, но не дают platform/ECU/VIN соответствия американским Chevrolet Cobalt. Американские GM/NHTSA Cobalt TSB запрещено применять по имени модели.",
+    "en": "These records support the KZ Cobalt market/manufacturer lineage, but they do not establish platform/ECU/VIN equivalence to US Chevrolet Cobalt vehicles. US GM/NHTSA Cobalt TSBs must not be applied by model name alone."
+  }
+}

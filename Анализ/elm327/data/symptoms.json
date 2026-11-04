@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "check_engine",
+      "name": {
+        "ru": "Горит индикатор Check Engine",
+        "en": "Check Engine / MIL illuminated"
+      },
+      "evidence_status": "STRUCTURED"
+    },
+    {
+      "id": "rough_idle",
+      "name": {
+        "ru": "Неровный холостой ход",
+        "en": "Rough idle"
+      },
+      "evidence_status": "STRUCTURED"
+    },
+    {
+      "id": "loss_of_power",
+      "name": {
+        "ru": "Потеря мощности",
+        "en": "Loss of power"
+      },
+      "evidence_status": "STRUCTURED"
+    },
+    {
+      "id": "hard_start",
+      "name": {
+        "ru": "Затруднённый запуск",
+        "en": "Hard starting"
+      },
+      "evidence_status": "STRUCTURED"
+    },
+    {
+      "id": "engine_not_start",
+      "name": {
+        "ru": "Двигатель не запускается",
+        "en": "Engine does not start"
+      },
+      "evidence_status": "STRUCTURED"
+    },
+    {
+      "id": "engine_misfire",
+      "name": {
+        "ru": "Пропуски воспламенения / двигатель троит",
+        "en": "Engine misfire"
+      },
+      "evidence_status": "STRUCTURED"
+    },
+    {
+      "id": "high_fuel_consumption",
+      "name": {
+        "ru": "Повышенный расход топлива",
+        "en": "High fuel consumption"
+      },
+      "evidence_status": "STRUCTURED"
+    },
+    {
+      "id": "fuel_smell",
+      "name": {
+        "ru": "Запах топлива",
+        "en": "Fuel smell"
+      },
+      "evidence_status": "STRUCTURED"
+    },
+    {
+      "id": "unstable_rpm",
+      "name": {
+        "ru": "Нестабильные обороты",
+        "en": "Unstable engine speed"
+      },
+      "evidence_status": "STRUCTURED"
+    },
+    {
+      "id": "low_system_voltage",
+      "name": {
+        "ru": "Низкое напряжение бортовой сети",
+        "en": "Low system voltage"
+      },
+      "evidence_status": "STRUCTURED"
+    },
+    {
+      "id": "no_ecu_communication",
+      "name": {
+        "ru": "Нет связи с ЭБУ",
+        "en": "No communication with ECU"
+      },
+      "evidence_status": "STRUCTURED"
+    },
+    {
+      "id": "stalling",
+      "name": {
+        "ru": "Двигатель глохнет",
+        "en": "Engine stalls"
+      },
+      "evidence_status": "STRUCTURED"
+    }
+  ]
+}

@@ -118,22 +118,8 @@ html[data-user-role="client"] #k-page-outlet > :is(
   }
 }
 
-/* R188.5.5.6.84.182 — canonical UI system: page width, buttons, surfaces, toolbars. */
-:root{
-  --k-ui-page-max:1440px;
-  --k-ui-page-gutter:clamp(18px,2vw,32px);
-  --k-ui-control-h:44px;
-  --k-ui-control-radius:12px;
-  --k-ui-card-radius:18px;
-  --k-ui-panel-radius:20px;
-  --k-ui-line:#e5e7eb;
-  --k-ui-soft:#f7f8fa;
-  --k-ui-text:#171a1f;
-  --k-ui-muted:#747b84;
-  --k-ui-accent:#ff4b0a;
-  --k-ui-accent-hover:#e74308;
-  --k-ui-shadow:0 8px 24px rgba(15,23,42,.055);
-}
+/* R188.5.5.6.84.182 — shared UI values are owned by design_contract.css.
+   --k-ui-* references below are temporary compatibility aliases only. */
 
 /* One desktop canvas. Intentional wizards/onboarding remain independently sized. */
 @media(min-width:1100px){

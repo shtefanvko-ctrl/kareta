@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-05",
+  "status": "SEED_VALIDATION_PENDING_CI",
+  "coverage": {
+    "generic_dtc_seed": 45,
+    "target_generic_dtc_bulk_source": {
+      "name": "OBDex",
+      "available_claimed": 9533,
+      "imported": 22
+    },
+    "pid_seed": 13,
+    "target_pid_bulk_source": {
+      "name": "OBDex Mode 01/09",
+      "available_claimed": 132,
+      "imported": 13
+    },
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "repair_history_external_layers": [
+      "NHTSA complaints",
+      "NHTSA recalls",
+      "NHTSA manufacturer communications/TSB",
+      "real vehicle OBD sample reference"
+    ],
+    "verified_repair_outcomes": "NOT_IMPLEMENTED"
+  },
+  "known_gaps": [
+    "bulk importer not yet implemented",
+    "expert review not run",
+    "manufacturer-specific applicability not populated",
+    "runtime integration not run",
+    "full bulk RU translation pending",
+    "expert review of repair hypotheses pending"
+  ]
+}
