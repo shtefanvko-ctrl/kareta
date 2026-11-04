@@ -122,9 +122,9 @@
     dialog.addEventListener('click',async event=>{
       if(event.target.closest('[data-geo-map-close]')){close();return;}
       const zoom=event.target.closest('[data-geo-map-zoom]');
-      if(zoom&&state){state.zoom=clamp(state.zoom+Number(zoom.dataset.geoMapZoom||0),config.minZoom,config.maxZoom);render();return;}
+      if(zoom&&state){state.zoom=clamp(state.zoom+Number(zoom.dataset.geoMapZoom||0),config.minZoom,config.maxZoom);render();notifyViewport();return;}
       const cluster=event.target.closest('[data-geo-map-cluster]');
-      if(cluster&&state){const item=state.clusters?.get(cluster.dataset.geoMapCluster);if(item){state.center={lat:item.latitude,lng:item.longitude};state.zoom=clamp(state.zoom+2,config.minZoom,config.maxZoom);state.selected='';render();}return;}
+      if(cluster&&state){const item=state.clusters?.get(cluster.dataset.geoMapCluster);if(item){state.center={lat:item.latitude,lng:item.longitude};state.zoom=clamp(state.zoom+2,config.minZoom,config.maxZoom);state.selected='';render();notifyViewport();}return;}
       const marker=event.target.closest('[data-geo-map-point]');
       if(marker&&state){selectPoint(marker.dataset.geoMapPoint);return;}
       const action=event.target.closest('[data-geo-map-action]');
@@ -158,11 +158,17 @@
       if(!drag||event.pointerId!==drag.id||!state)return;
       const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
       state.center=fromWorld(drag.centerWorld.x-dx,drag.centerWorld.y-dy,state.zoom);
-      drag=null;viewport.classList.remove('is-dragging');render();
+      drag=null;viewport.classList.remove('is-dragging');render();notifyViewport();
     };
     viewport.addEventListener('pointerup',finishDrag);
     viewport.addEventListener('pointercancel',finishDrag);
     return dialog;
+  }
+
+  function notifyViewport(){
+    if(typeof state?.onViewportChange==='function'){
+      try{state.onViewportChange({lat:state.center.lat,lng:state.center.lng,zoom:state.zoom});}catch(_error){}
+    }
   }
 
   function selectPoint(id){
@@ -174,6 +180,7 @@
     const actions=point.actions.map(action=>`<a class="${action.primary?'is-primary':''}" data-geo-map-action href="${esc(action.href)}">${esc(action.label)}</a>`).join('');
     const route=point.route&&!point.user?`<button type="button" data-geo-map-route="${esc(point.id)}">Маршрут</button>`:'';
     detail.innerHTML=`<div class="k-geo-map-detail__copy"><small>${point.user?'ВАША ТОЧКА':esc(point.kind.toUpperCase())}</small><b>${esc(point.label)}</b><span>${esc([distance,where].filter(Boolean).join(' · ')||'Координаты подтверждены')}</span></div><div class="k-geo-map-detail__actions">${actions}${route}</div>`;
+    if(typeof state.onSelect==='function')try{state.onSelect(point);}catch(_error){}
   }
   async function openRoute(point){
     if(window.KaretaMobile?.openBestMap)return window.KaretaMobile.openBestMap(point.label,point.latitude,point.longitude);
@@ -214,17 +221,35 @@
     const points=(Array.isArray(options.points)?options.points:[]).filter(validPoint).slice(0,50).map(normalizePoint);
     if(!points.length&&!validPoint(options.center))throw new Error('GEO_MAP_POINTS_REQUIRED');
     const dlg=ensureDialog(),title=String(options.title||'Рядом'),center=validPoint(options.center)?normalizePoint(options.center,-1):centerOf(points);
-    state={points,center:{lat:center.latitude,lng:center.longitude},zoom:config.defaultZoom,selected:'',clusters:new Map()};
+    state={points,center:{lat:center.latitude,lng:center.longitude},zoom:config.defaultZoom,selected:'',clusters:new Map(),onViewportChange:options.onViewportChange,onSelect:options.onSelect};
     dlg.querySelector('[data-geo-map-title]').textContent=title;
     dlg.querySelector('[data-geo-map-count]').textContent=points.length+' точек'+(options.center?.source==='GeoNames'?' · City centers: GeoNames (CC BY 4.0)':'');
     const dataStatus=dlg.querySelector('[data-geo-map-data-status]');
     dataStatus.textContent=String(options.notice||'');dataStatus.hidden=!dataStatus.textContent;
     dlg.querySelector('[data-geo-map-detail]').innerHTML=points.length?'<b>Выберите точку на карте</b><span>Адрес и маршрут появятся здесь.</span>':'';
-    try{dlg.showModal();}catch(_error){dlg.setAttribute('open','');}
+    if(options.host && options.host.nodeType===1){
+      if(dlg.open)try{dlg.close();}catch(_error){dlg.removeAttribute('open');}
+      options.host.replaceChildren(dlg);
+      dlg.classList.add('is-inline');dlg.setAttribute('open','');
+    }else{
+      if(dlg.parentNode!==document.body)document.body.appendChild(dlg);
+      dlg.classList.remove('is-inline');
+      try{dlg.showModal();}catch(_error){dlg.setAttribute('open','');}
+    }
     requestAnimationFrame(()=>{if(!state||!dlg.open)return;const viewport=dlg.querySelector('[data-geo-map-viewport]');state.zoom=fitZoom(points,viewport.clientWidth||320,viewport.clientHeight||320);render();});
     return {ok:true,count:points.length};
   }
-  function close(){if(!dialog)return;try{dialog.close();}catch(_error){dialog.removeAttribute('open');}state=null;drag=null;}
+  function setPoints(points,notice=''){
+    if(!state||!dialog?.open)return {ok:false};
+    state.points=(Array.isArray(points)?points:[]).filter(validPoint).slice(0,50).map(normalizePoint);
+    if(state.selected&&!state.points.some(p=>p.id===state.selected))state.selected='';
+    dialog.querySelector('[data-geo-map-count]').textContent=state.points.length+' точек';
+    const status=dialog.querySelector('[data-geo-map-data-status]');
+    status.textContent=String(notice||'');status.hidden=!status.textContent;
+    if(!state.selected)dialog.querySelector('[data-geo-map-detail]').innerHTML='<b>Выберите точку на карте</b><span>Адрес и маршрут появятся здесь.</span>';
+    render();return {ok:true,count:state.points.length};
+  }
+  function close(){if(!dialog)return;try{dialog.close();}catch(_error){dialog.removeAttribute('open');}state=null;drag=null;if(dialog.classList.contains('is-inline'))dialog.remove();}
 
-  window.KaretaGeoMap=Object.freeze({open,close,config:()=>({...config}),audit:()=>({ok:true,lazy:true,loaded:true,tileUrl:config.tileUrl})});
+  window.KaretaGeoMap=Object.freeze({open,close,setPoints,select:selectPoint,config:()=>({...config}),audit:()=>({ok:true,lazy:true,loaded:true,tileUrl:config.tileUrl})});
 })();

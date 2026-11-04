@@ -39,6 +39,7 @@
     scannerQr:{global:'KaretaScannerPages',render:'render',mount:'mount'},
     scannerDocument:{global:'KaretaScannerPages',render:'render',mount:'mount'},
     home:{global:'KaretaCorePages',render:'renderHome',mount:'mountHome'},
+    map:{global:'KaretaMapPages',render:'renderMap',mount:'mountMap'},
     platform:{global:'KaretaPlatformPages',render:'renderPlatform',mount:'mountPlatform'},
     corePlatform:{global:'KaretaCorePlatformPages',render:'renderCorePlatform',mount:'mountCorePlatform'},
     calendarBooking:{global:'KaretaCalendarBookingPages',render:'renderCalendarBooking',mount:'mountCalendarBooking'},

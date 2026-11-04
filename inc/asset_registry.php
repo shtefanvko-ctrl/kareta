@@ -344,6 +344,12 @@ function kareta_route_asset_plan(): array
             'styles' => ['css/routes/client_guard_postlude.css'], 'scripts' => [], 'globals' => [],
         ],
 
+        'gisMap' => [
+            'lazy' => true, 'routeKeys' => ['map'], 'routes' => ['#/map'],
+            'styles' => ['css/next/map_page.css'],
+            'scripts' => ['js/next/pages/map.js'],
+            'globals' => ['KaretaMapPages'],
+        ],
         'community' => [
             'lazy' => true,
             'routeKeys' => ['community'],

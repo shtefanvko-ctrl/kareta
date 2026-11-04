@@ -3,6 +3,7 @@
 
   const ROUTES = Object.freeze({
     home:Object.freeze({ path:'#/home', label:'Главная', icon:'⌂' }),
+    map:Object.freeze({ path:'#/map', label:'Карта', icon:'location' }),
     masterQr:Object.freeze({ path:'#/master/qr', label:'Мой QR', icon:'grid', nav:false }),
     scanner:Object.freeze({ path:'#/scan', label:'Сканировать', icon:'camera', nav:false }),
     scannerQr:Object.freeze({ path:'#/scan/qr', label:'QR KARETA', icon:'camera', nav:false }),
@@ -78,7 +79,7 @@
 
   const UX_SURFACE_BY_KEY = Object.freeze({
     masterQr:'workspace', scanner:'workspace', scannerQr:'workspace', scannerDocument:'workspace',
-    home:'workspace', platform:'workspace', corePlatform:'workspace', calendarBooking:'workspace', finance:'workspace', market:'workspace', crm:'workspace',
+    home:'workspace', map:'workspace', platform:'workspace', corePlatform:'workspace', calendarBooking:'workspace', finance:'workspace', market:'workspace', crm:'workspace',
     identityMigration:'workspace', adminUsers:'workspace', adminOrganizations:'workspace', adminMonitoring:'workspace', adminManagement:'workspace',
     services:'workspace', news:'deep-link-fallback', masterNews:'workspace', masterNewsCreate:'work-dialog', masterNewsEdit:'work-dialog', works:'workspace', profile:'entity-window', following:'workspace', realWorks:'workspace',
     workDetail:'entity-window', serviceManagement:'workspace', masters:'workspace', masterOnboarding:'workspace', masterDashboard:'workspace', masterSchedule:'workspace', masterProfileOwner:'workspace', masterWallOwner:'workspace', masterWorks:'workspace', masterReviews:'workspace', masterExchange:'workspace', community:'workspace', stoDashboard:'workspace',

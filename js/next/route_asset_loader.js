@@ -27,7 +27,7 @@
     window.KaretaNext=Object.assign(window.KaretaNext||{}, {audit:()=>({ok:false,bootPending:true,release,source:'route_asset_loader'})});
   }
   const KNOWN_LAZY_ROUTE_KEYS=new Set([
-    'community',
+    'map','community',
     'parts','usedParts','productDetail',
     'masters','providerDetail','providerBooking','serviceDetail',
     'stoDashboard',
