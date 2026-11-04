@@ -25,6 +25,7 @@ if ($mode === null) {
     exit(2);
 }
 $root = dirname(__DIR__);
+require_once __DIR__ . '/data_core_audit_grants.php';
 $manifest = require $root . '/api/migration_manifest.php';
 $risks = json_decode((string)file_get_contents($root . '/docs/data_core_migration_risks.json'), true);
 $manifestRows = is_array($manifest['files'] ?? null) ? $manifest['files'] : [];
@@ -50,7 +51,8 @@ if ($mode === 'snapshot') {
     $dsn = getenv('KARETA_MIGRATION_AUDIT_DSN');
     $user = getenv('KARETA_MIGRATION_AUDIT_USER');
     $password = getenv('KARETA_MIGRATION_AUDIT_PASSWORD');
-    if (!is_string($dsn) || !str_starts_with($dsn, 'mysql:') || !is_string($user) || $user === '' || !is_string($password)) {
+    $schema = (is_string($dsn) && preg_match('/(?:^|;)dbname=([^;]+)/', $dsn, $found)) ? $found[1] : '';
+    if (!is_string($dsn) || !str_starts_with($dsn, 'mysql:') || $schema === '' || !is_string($user) || $user === '' || !is_string($password)) {
         $add('READ_ONLY_CONNECTION_NOT_CONFIGURED');
     } elseif (!extension_loaded('pdo_mysql')) {
         $add('PDO_MYSQL_NOT_AVAILABLE');
@@ -61,10 +63,16 @@ if ($mode === 'snapshot') {
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_TIMEOUT => 5,
             ]);
-            // Server-enforced read-only transaction; only SELECT statements below.
-            $pdo->exec('START TRANSACTION READ ONLY');
-            $rows = $pdo->query('SELECT version, checksum FROM db_migrations ORDER BY version')->fetchAll();
-            $pdo->rollBack();
+            // Refuse elevated and role-derived privileges before inspecting DB metadata.
+            $grants = $pdo->query('SHOW GRANTS')->fetchAll(PDO::FETCH_COLUMN);
+            if (!kareta_data_core_audit_grants_readonly($grants, $schema)) {
+                $add('AUDIT_USER_NOT_SELECT_ONLY');
+            } else {
+                // Server-enforced read-only transaction; only SELECT statements below.
+                $pdo->exec('START TRANSACTION READ ONLY');
+                $rows = $pdo->query('SELECT version, checksum FROM db_migrations ORDER BY version')->fetchAll();
+                $pdo->rollBack();
+            }
         } catch (Throwable $e) {
             $add('READ_ONLY_INVENTORY_FAILED'); // Never reveal DSN, DB errors or credentials.
         }

@@ -74,3 +74,25 @@ try {
 } finally {
     @unlink($tmp);
 }
+
+require_once __DIR__ . '/data_core_audit_grants.php';
+$checkGrants = static function (string $name, array $grants, bool $allowed): void {
+    if (kareta_data_core_audit_grants_readonly($grants, 'kareta_qa') !== $allowed) {
+        throw new RuntimeException('Grant check failed: ' . $name);
+    }
+    echo "PASS grants {$name}\n";
+};
+$quoteId = static fn(string $id): string => chr(96) . $id . chr(96);
+$account = " TO 'audit'@'localhost'";
+$usage = 'GRANT USAGE ON *.*' . $account;
+$table = $quoteId('kareta_qa') . '.' . $quoteId('db_migrations');
+$schema = $quoteId('kareta_qa') . '.*';
+$checkGrants('table scoped SELECT', [$usage, 'GRANT SELECT ON ' . $table . $account], true);
+$checkGrants('schema scoped SELECT', [$usage, 'GRANT SELECT ON ' . $schema . $account], true);
+$checkGrants('no SELECT blocked', [$usage], false);
+$checkGrants('global SELECT blocked', [$usage, 'GRANT SELECT ON *.*' . $account], false);
+$checkGrants('wrong schema blocked', [$usage, 'GRANT SELECT ON ' . $quoteId('other') . '.' . $quoteId('db_migrations') . $account], false);
+$checkGrants('write privileges blocked', [$usage, 'GRANT SELECT, INSERT ON ' . $schema . $account], false);
+$checkGrants('delegation blocked', [$usage, 'GRANT SELECT ON ' . $schema . $account . ' WITH GRANT OPTION'], false);
+$checkGrants('role grant blocked', [$usage, "GRANT 'audit_role'@'%' TO 'audit'@'localhost'"], false);
+$checkGrants('DDL privileges blocked', [$usage, 'GRANT ALL PRIVILEGES ON ' . $schema . $account], false);

@@ -32,3 +32,5 @@ A restricted, independently authorized and read-only schema inspection with no r
 - Test: php tools/test_data_core_db_history.php. Ten offline synthetic checks including missing/duplicate versions, mismatched/empty hashes, malformed input, unlisted 138 and unrecognized 145. Incorporated into the existing DB canon CI lane.
 - HistoryStatus PASS means only that inspected metadata matches registered checksums; releaseReady stays false even after PASS. Real schema inventory, migration 140 replay analysis, migration 142 non-idempotence, verified backup/restore rehearsal and staging E2E are independently required before 138-146 activation.
 - Actual MySQL, staging and production were NOT contacted during this QA increment. No changes to PHP release manifest, config.php, migrations, DB contents or autoheal behavior.
+
+- Hardening: audit rejects MySQL users whose SHOW GRANTS includes write/DDL privilege, global SELECT, role inheritance, or grant delegation. It accepts only direct SELECT grants restricted to db_migrations or its exact schema. Grant statements are never printed.
