@@ -32,7 +32,11 @@ if ($phpVersion < 1 || array_keys($phpEntries) !== range(1, max($phpVersion, 1))
 if ($jsonVersion < 1 || count($jsonEntries) !== $jsonVersion) $add('JSON_SEQUENCE_INVALID');
 $jsonByVersion = [];
 foreach ($jsonEntries as $entry) {
-    $version = (int)($entry['version'] ?? 0);
+    if (!is_array($entry) || !is_int($entry['version'] ?? null)) {
+        $add('JSON_BAD_VERSION_TYPE');
+        continue;
+    }
+    $version = $entry['version'];
     if ($version <= 0 || isset($jsonByVersion[$version])) $add('JSON_DUPLICATE_OR_INVALID_VERSION', ['version' => $version]);
     $jsonByVersion[$version] = $entry;
 }
