@@ -24,3 +24,11 @@ Live schema / production backup verification: NOT RUN. Do not mark cutover ready
 
 ## Follow-up gate
 A restricted, independently authorized and read-only schema inspection with no runtime bootstrap/autoheal, a verified backup/restore rehearsal, and source-to-deployed integrity comparison are required before activating missing migrations or splitting data ownership among client/work/works/shop applications.
+
+
+## Next stage: explicit read-only migration history audit (QA, no live DB yet)
+- Offline: php tools/check_data_core_db_history.php --snapshot=/path/metadata.json. Analyze an authorized metadata-only snapshot of db_migrations containing only migrations:[{version:int,checksum:string}]. Do not include account, order, phone or other private records.
+- MySQL: php tools/check_data_core_db_history.php --mysql. Connects only when KARETA_MIGRATION_AUDIT_DSN, KARETA_MIGRATION_AUDIT_USER and KARETA_MIGRATION_AUDIT_PASSWORD are explicitly supplied by an authorized operator. Use a restricted SELECT-only database identity. The script uses START TRANSACTION READ ONLY, selects only version and checksum, and rolls back. It never loads KARETA bootstrap or executes migrations. Do not store connection credentials in Git or QA artifacts.
+- Test: php tools/test_data_core_db_history.php. Ten offline synthetic checks including missing/duplicate versions, mismatched/empty hashes, malformed input, unlisted 138 and unrecognized 145. Incorporated into the existing DB canon CI lane.
+- HistoryStatus PASS means only that inspected metadata matches registered checksums; releaseReady stays false even after PASS. Real schema inventory, migration 140 replay analysis, migration 142 non-idempotence, verified backup/restore rehearsal and staging E2E are independently required before 138-146 activation.
+- Actual MySQL, staging and production were NOT contacted during this QA increment. No changes to PHP release manifest, config.php, migrations, DB contents or autoheal behavior.
