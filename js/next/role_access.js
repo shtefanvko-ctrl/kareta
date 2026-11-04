@@ -11,10 +11,10 @@
   if (!registry) throw new Error('KaretaRouteRegistry is required before role_access.js');
 
   const LEGACY = Object.freeze({
-    client:{ role:'client', label:'Клиент', defaultRoute:'home', desktop:['home','works','services','masters','parts','diagnostics','orders','chats','cabinet'], mobile:['home','services','works','masters','parts','__more__'] },
-    master:{ role:'master', label:'Мастер', defaultRoute:'masterDashboard', desktop:['masterDashboard','masterExchange','serviceManagement','diagnostics','parts','cabinet'], mobile:['masterDashboard','masterExchange','serviceManagement','parts','cabinet','__more__'] },
-    sto:{ role:'sto', label:'СТО', defaultRoute:'stoDashboard', desktop:['stoDashboard','orders','masters','workflow','serviceManagement','diagnostics','finance','parts','chats','cabinet'], mobile:['stoDashboard','orders','masters','chats','cabinet'] },
-    seller:{ role:'seller', label:'Продавец', defaultRoute:'seller', desktop:['seller','sellerProducts','sellerOrders','market','finance','parts','chats','cabinet'], mobile:['seller','sellerProducts','sellerOrders','parts','chats','cabinet'] },
+    client:{ role:'client', label:'Клиент', defaultRoute:'home', desktop:['home','works','services','masters','map','parts','diagnostics','orders','chats','cabinet'], mobile:['home','services','works','masters','parts','__more__'] },
+    master:{ role:'master', label:'Мастер', defaultRoute:'masterDashboard', desktop:['masterDashboard','masterExchange','serviceManagement','diagnostics','map','parts','cabinet'], mobile:['masterDashboard','masterExchange','serviceManagement','parts','cabinet','__more__'] },
+    sto:{ role:'sto', label:'СТО', defaultRoute:'stoDashboard', desktop:['stoDashboard','orders','masters','workflow','serviceManagement','diagnostics','map','finance','parts','chats','cabinet'], mobile:['stoDashboard','orders','masters','chats','cabinet'] },
+    seller:{ role:'seller', label:'Продавец', defaultRoute:'seller', desktop:['seller','sellerProducts','sellerOrders','market','finance','map','parts','chats','cabinet'], mobile:['seller','sellerProducts','sellerOrders','parts','chats','cabinet'] },
     admin:{ role:'admin', label:'Администратор', defaultRoute:'home', desktop:registry.desktopKeys, mobile:registry.mobileKeys },
     owner:{ role:'owner', label:'Владелец', defaultRoute:'home', desktop:registry.desktopKeys, mobile:registry.mobileKeys },
   });

@@ -33,6 +33,7 @@
     { key:'services', section:'main', desktop:30, menu:30, public:true },
     { key:'masters', section:'main', desktop:40, menu:40, public:true },
     { key:'parts', section:'main', desktop:50, menu:50, public:true },
+    { key:'map', section:'main', menu:45, public:true },
 
     { key:'orders', section:'work', desktop:60, menu:60, mobilePriority:30, any:['requests.read'], contextTypes:['personal','profile','organization'] },
     { key:'requestNew', section:'work', menu:61, any:['requests.create'], contextTypes:['personal','profile','organization'] },

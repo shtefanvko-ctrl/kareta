@@ -40,7 +40,7 @@
       id:String(row.id || ''), ownerType:String(row.ownerType), ownerId:String(row.ownerId || ''),
       label:String(row.label || 'Объект'), kind:String(row.kind || ''), city:String(row.city || ''),
       address:String(row.address || ''), latitude:Number(row.latitude), longitude:Number(row.longitude),
-      distanceKm:row.distanceKm === null ? null : Number(row.distanceKm),
+      distanceKm:row.distanceKm == null || !Number.isFinite(Number(row.distanceKm)) ? null : Number(row.distanceKm),
       verifiedAt:row.verifiedAt || null
     };
   }

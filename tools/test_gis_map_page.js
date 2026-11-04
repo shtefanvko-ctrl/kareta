@@ -41,4 +41,25 @@ const boot=read('js/next/route_asset_loader.js');
 assert.match(boot,/\x27map\x27,\x27community\x27/);
 const app=read('js/next/app_next.js');
 assert.match(app,/map:\{global:\x27KaretaMapPages\x27,render:\x27renderMap\x27,mount:\x27mountMap\x27\}/);
-console.log('PASS GIS map route, deep-link key, mobile-nav invariant, lazy UI, exact-only Geo API boundary');
+const dynamicWindow={
+  KaretaRouteRegistry:routes,addEventListener:()=>{},
+  KaretaIdentity:{snapshot:()=>({authenticated:true,mode:'identity',context:{type:'profile',profileType:'master'},capabilities:[],deniedCapabilities:[]}),has:()=>false}
+};
+vm.runInNewContext(read('js/next/dynamic_navigation.js'),{
+  window:dynamicWindow,document:{currentScript:null}
+});
+assert.equal(dynamicWindow.KaretaDynamicNavigation.canAccess('map'),true);
+assert.ok(dynamicWindow.KaretaDynamicNavigation.menuSections().some(section=>section.keys.includes('map')));
+const roleWindow={...dynamicWindow,addEventListener:()=>{}};
+vm.runInNewContext(read('js/next/role_access.js'),{
+  window:roleWindow,document:{currentScript:null,documentElement:{dataset:{identityMode:'identity'}}},
+  localStorage:{getItem:()=>null},sessionStorage:{getItem:()=>null}
+});
+for(const role of ['client','master','sto','seller','admin']) {
+  assert.equal(roleWindow.KaretaRoleAccess.canAccess('map',role),true,'Map role permission: '+role);
+}
+const navSource=read('js/next/navigation_core.js').split('const DESKTOP_TEMPLATES = Object.freeze({')[1];
+for(const kind of ['personal','master','seller','organization_service','organization_store','anonymous']){
+  assert.ok(navSource.split(kind+': Object.freeze([')[1]?.split('])')[0]?.includes("'map'"),'Map desktop context: '+kind);
+}
+console.log('PASS GIS map route, deep-link key, role access/menu, mobile-nav invariant, lazy UI, exact-only Geo API boundary');
