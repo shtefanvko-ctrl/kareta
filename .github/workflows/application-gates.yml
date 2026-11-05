@@ -61,6 +61,9 @@ jobs:
       - name: Boot bundle freshness
         run: node tools/build_boot_js_bundles.js --check
 
+      - name: Staging shell, single Back and ECU runtime CSS
+        run: node tools/test_guest_shell_back_ecu_20261013.js
+
       - name: Migration manifest integrity
         run: php tools/test_release_migration_manifest.php
 
