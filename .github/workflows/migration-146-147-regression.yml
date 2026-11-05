@@ -1,0 +1,27 @@
+name: Migration 146-147 collision regression
+on:
+  pull_request:
+    paths:
+      - 'api/migration_manifest.php'
+      - 'api/migration_manifest.json'
+      - 'api/migrations/146_parts_request_offers_readiness.php'
+      - 'api/migrations/147_order_workflow_updated_at.php'
+      - 'tools/test_migration_146_147_collision.php'
+      - '.github/workflows/migration-146-147-regression.yml'
+permissions:
+  contents: read
+jobs:
+  migration-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+      - run: |
+          php -l tools/test_migration_146_147_collision.php
+          php tools/test_migration_146_147_collision.php
+          php tools/test_release_migration_manifest.php
+          php tools/test_migration_contract.php
