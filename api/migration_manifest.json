@@ -35,7 +35,7 @@
     {
       "version": 7,
       "file": "007_unify_user_entities.php",
-      "sha256": "dfc104a2f8998b9ad871b476e3248b33be9b9fb11cdfe7a4804ca55c314e7cf2"
+      "sha256": "17535b037cfcf5a453c791d5b188fb6c3a93e61c5ef2cb32786fb3a70347a1ad"
     },
     {
       "version": 8,
@@ -100,7 +100,7 @@
     {
       "version": 20,
       "file": "020_master_content_seed.php",
-      "sha256": "f324dcf1c616bd180bcfd340dae6648b41bc76b82d584c46bfc2663a84a0d3a7"
+      "sha256": "5f9e00eb1e7ccb856ec52bb684353495da9955024af0690fd70aa4bdbbfcf585"
     },
     {
       "version": 21,
@@ -165,7 +165,7 @@
     {
       "version": 33,
       "file": "033_platform_catalog_shop.php",
-      "sha256": "f47a67f056622b494af3fe4313b456a89dca768315103985abd0cf2c18a5bc25"
+      "sha256": "b7d54c86e7bd338f6362eabf5c81fd16ee979995f9ef5ec72c8c9e408f38db0c"
     },
     {
       "version": 34,
@@ -240,7 +240,7 @@
     {
       "version": 48,
       "file": "048_work_posts_ecosystem.php",
-      "sha256": "3c9e5114215780e83f609599e6bc370e16b19500d36e05bcbcf2ebe4e7a5d4c2"
+      "sha256": "71c709c3d3f8283d3bf42231edf22e44be0b24e89a9fc2249110b06c3b439563"
     },
     {
       "version": 49,
