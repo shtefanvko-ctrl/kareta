@@ -3,7 +3,9 @@
   const api=window.KaretaApiClient;
   if(!api) throw new Error('Notifications dependencies are required');
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  const fmt=value=>{const d=new Date(String(value||''));return Number.isNaN(d.getTime())?'':d.toLocaleString('ru-RU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});};
+  const language=()=>{const code=String(document.documentElement?.lang||'ru').toLowerCase();return code.startsWith('kk')?'kk':code.startsWith('en')?'en':'ru';};
+  const tr=(ru,kk,en)=>({ru,kk,en})[language()];
+  const fmt=value=>{const d=new Date(String(value||''));return Number.isNaN(d.getTime())?'':d.toLocaleString(({ru:'ru-RU',kk:'kk-KZ',en:'en-US'})[language()],{day:'2-digit',month:'short',hour:'2-digit'});};
   const icon=kind=>({garage:'🚗',order:'✓',chat:'💬',system:'●',offer:'₸',default:'○'})[kind]||'○';
   const uiIcon=name=>window.KaretaUIIcons?.svg?.(name)||'';
   const identityAuthenticated=()=>window.KaretaIdentity?.snapshot?.()?.authenticated===true;
@@ -68,6 +70,7 @@
     }
     let disposed=false,pollTimer=0,requestSeq=0,rows=[],tab='all',query='';
     const publish=items=>window.dispatchEvent(new CustomEvent('kareta:notification-unread',{detail:{count:items.filter(n=>!(n.isRead??Number(n.is_read||0)===1)).length}}));
+    const showActionError=message=>{if(disposed)return;if(window.KaretaToast?.error)window.KaretaToast.error(message);else{const status=root.querySelector('[data-notifications-status]');if(status)status.textContent=message;}};
     const updateCounts=()=>{
       const unread=rows.filter(n=>!(n.isRead??Number(n.is_read||0)===1)).length;
       const a=root.querySelector('[data-notification-count-all]'),u=root.querySelector('[data-notification-count-unread]');if(a)a.textContent=String(rows.length);if(u)u.textContent=String(unread);
@@ -89,6 +92,7 @@
       try{
         const [r,vehicleReminder]=await Promise.all([api.request('api/domain.php?action=notifications.list',{cacheTtlMs:0,force:true,dedupe:false}),firstVehicleReminder()]);
         if(disposed||seq!==requestSeq)return;
+        if(!r?.ok){const failure=new Error('notifications.list failed');failure.status=Number(r?.status||r?.payload?.status||r?.payload?.error?.status||0);throw failure;}
         const serverRows=Array.isArray(r.payload?.notifications)?r.payload.notifications:[];rows=vehicleReminder?[vehicleReminder,...serverRows]:serverRows;publish(rows);paint();
       }catch(error){
         if(disposed||seq!==requestSeq)return;
@@ -107,8 +111,16 @@
     const click=async e=>{
       const t=e.target.closest('[data-notifications-tab]');if(t){tab=t.dataset.notificationsTab||'all';root.querySelectorAll('[data-notifications-tab]').forEach(x=>{const active=x===t;x.classList.toggle('is-active',active);x.setAttribute('aria-selected',active?'true':'false');});paint();return;}
       if(e.target.closest('[data-notifications-refresh]')){load(false);return;}
-      if(e.target.closest('[data-notifications-read-all]')){await api.request('api/domain.php?action=notification.readAll',{method:'POST',headers:{'Content-Type':'application/json','X-Idempotency-Key':'notifications-read-all-'+Date.now()},body:JSON.stringify({})});rows=rows.map(n=>n.virtual?n:{...n,isRead:true,is_read:1});publish(rows);paint();window.KaretaToast?.success?.('Все уведомления прочитаны');return;}
-      const one=e.target.closest('[data-notification-read]');if(one){const id=one.dataset.notificationRead;await api.request('api/domain.php?action=notification.read',{method:'POST',headers:{'Content-Type':'application/json','X-Idempotency-Key':'notification-read-'+id},body:JSON.stringify({id})});const row=rows.find(n=>String(n.id)===String(id));if(row){row.isRead=true;row.is_read=1;}publish(rows);paint();}
+      if(e.target.closest('[data-notifications-read-all]')){try{
+        const result=await api.request('api/domain.php?action=notification.readAll',{method:'POST',headers:{'Content-Type':'application/json','X-Idempotency-Key':'notifications-read-all-'+Date.now()},body:JSON.stringify({})});
+        if(!result?.ok){showActionError(tr('Не удалось прочитать уведомления','Хабарламаларды оқылған деп белгілеу мүмкін болмады','Could not mark notifications as read'));return;}
+        if(disposed)return;rows=rows.map(n=>n.virtual?n:{...n,isRead:true,is_read:1});publish(rows);paint();window.KaretaToast?.success?.(tr('Все уведомления прочитаны','Барлық хабарламалар оқылды','All notifications marked as read'));
+      }catch(_error){showActionError(tr('Не удалось прочитать уведомления','Хабарламаларды оқылған деп белгілеу мүмкін болмады','Could not mark notifications as read'));}return;}
+      const one=e.target.closest('[data-notification-read]');if(one){const id=one.dataset.notificationRead;try{
+        const result=await api.request('api/domain.php?action=notification.read',{method:'POST',headers:{'Content-Type':'application/json','X-Idempotency-Key':'notification-read-'+id},body:JSON.stringify({id})});
+        if(!result?.ok){showActionError(tr('Не удалось прочитать уведомление','Хабарламаны оқылған деп белгілеу мүмкін болмады','Could not mark notification as read'));return;}
+        if(disposed)return;const row=rows.find(n=>String(n.id)===String(id));if(row){row.isRead=true;row.is_read=1;}publish(rows);paint();
+      }catch(_error){showActionError(tr('Не удалось прочитать уведомление','Хабарламаны оқылған деп белгілеу мүмкін болмады','Could not mark notification as read'));}}
     };
     const search=root.querySelector('[data-notifications-search]');
     const onSearch=()=>{query=String(search?.value||'');paint();};

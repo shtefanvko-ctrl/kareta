@@ -84,13 +84,28 @@ async function networkFirst(request, cacheName) {
   }
 }
 
+// Route-loader cache: do not retain invalid or cross-release manifests.
+async function validRouteManifestResponse(response) {
+  if (!response || !response.ok) return false;
+  if (!/\bapplication\/json\b/i.test(response.headers.get('Content-Type') || '')) return false;
+  try {
+    const payload = await response.clone().json();
+    return !!(payload && payload.release === RELEASE &&
+      Array.isArray(payload.assets) && payload.routeBundles &&
+      typeof payload.routeBundles === 'object' && !Array.isArray(payload.routeBundles));
+  } catch (_error) {
+    return false;
+  }
+}
+
 async function cacheFirstVersioned(request, cacheName) {
   const cache = await caches.open(cacheName);
   const cached = await cache.match(request);
-  if (cached) return cached;
+  if (cached && await validRouteManifestResponse(cached)) return cached;
+  if (cached) await cache.delete(request);
   try {
     const response = await fetch(request, { cache: 'no-store', credentials: 'same-origin' });
-    if (response && response.ok) await cache.put(request, response.clone());
+    if (await validRouteManifestResponse(response)) await cache.put(request, response.clone());
     return response;
   } catch (_error) {
     return Response.error();
