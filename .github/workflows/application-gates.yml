@@ -101,6 +101,11 @@ jobs:
       - name: Browser support contract
         run: node tools/test_browser_support_matrix_84_109.js
 
+      - name: Booking context and client request regression
+        run: |
+          node tools/test_client_request_three_steps_84_23.js
+          node tools/test_booking_flow_recovery_20261010.js
+
       - name: Route binding contract
         run: node tools/test_route_binding_contract.js
 

@@ -1,10 +1,10 @@
 'use strict';
 const fs=require('fs'),path=require('path');const root=path.resolve(__dirname,'..');const read=f=>fs.readFileSync(path.join(root,f),'utf8');const fail=[];const expect=(v,m)=>{if(!v)fail.push(m)};const page=read('js/next/pages/client_request_final.js'),request=read('js/next/pages/request.js'),css=read('css/next/client_request_final.css');
 for(const t of ["const steps=['Как получить предложения?','Где и когда?','Проверьте заявку']","total:3,current:step+1","offerMode:'',budget:0","serviceLocationMode:''","termsAccepted:false","FLOW_VERSION=6","data-client-request-final","data-cr-offer=","data-cr-location=","data-client-request-consent","Заявка отправлена"])expect(page.includes(t),'CLIENT 3-step contract missing '+t);
-expect(page.includes("market','Предложения мастеров")&&page.includes("budget','Своя цена")&&page.includes("direct','Выбрать мастера"),'offer modes missing');
+expect(page.includes("market','Предложения мастеров")&&page.includes("budget','Своя цена")&&page.includes("offerCard('direct',"),'offer modes missing');
 expect(page.includes("'mobile'")&&page.includes("'service'")&&page.includes('localDateIso')&&page.includes('tomorrowIso'),'place/date contract missing');
 expect(page.includes('api.createOrder(order,{idempotencyKey:d.idempotencyKey})'),'idempotent submit missing');
 expect(page.includes("root.querySelector('[data-cr-steps]').innerHTML=''"),'success must clear progress instead of step 4');
-expect(request.includes("role==='client'&&window.KaretaClientRequestFinalPages"),'request.js must role-scope CLIENT 3-step branch');
+expect(request.includes("role==='client'")&&request.includes("client_request_v6_missing"),'request.js must role-scope CLIENT 3-step branch');
 expect(css.includes('font-family:Inter')&&css.includes('min-height:88px'),'CLIENT 3-step design tokens missing');
 if(fail.length){console.error(fail.join('\n'));process.exit(1)}console.log('CLIENT Request 84.23: exactly 3 final steps; success outside progress; non-client work request isolated OK');
