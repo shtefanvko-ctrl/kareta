@@ -4,7 +4,7 @@ declare(strict_types=1);
 // Generated release manifest. Only files listed here participate in runtime migration discovery.
 // Extra PHP files left in api/migrations by an overwrite deployment are treated as stale artifacts.
 return [
-    'version' => 146,
+    'version' => 147,
     'files' => [
         1 => ['file' => '001_initial_schema.php', 'checksum' => '15c3088fe6ce7aa6793007ef0efd96757c1880c1c9ddf35349f31c735b293b14'],
         2 => ['file' => '002_schema_columns_indexes.php', 'checksum' => '6a0444c00d5bb652e8ee25e5689064a96919f4a9df816d358e61532209f66a85'],
@@ -152,5 +152,6 @@ return [
         144 => ['file' => '144_vehicle_catalog_stable_ids.php', 'checksum' => '53929335a512fe143364d74dadf3e508c75a95b59373a14f2985a121b57a1216'],
         145 => ['file' => '145_order_assignments_readiness.php', 'checksum' => 'ce3a0a13646cf5d0d1eb15cbc1db16f8b29ec294d2c0993dc962c0a830f8538f'],
         146 => ['file' => '146_parts_request_offers_readiness.php', 'checksum' => '3b501130e9b67e7f5a9b3e9b520a7d36b7ae2f09d7c4a2bcd59c47b9e5559a97'],
+        147 => ['file' => '147_order_workflow_updated_at.php', 'checksum' => '0afca14877d8dc372c1e08cf42281e945a41ab4b6dad11790f3de300afb97aab'],
     ],
 ];
