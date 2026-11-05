@@ -13404,7 +13404,13 @@ html[data-user-role="client"] #k-page-outlet > :is(
   padding-left: var(--k-client-page-gutter) !important;
   padding-right: var(--k-client-page-gutter) !important;
   scroll-padding-inline: var(--k-client-page-gutter);
-  margin-bottom: 43px !important;
+  margin-bottom: var(--k-client-page-bottom-gap, 43px) !important;
+}
+
+/* The shared SPA outlet already reserves clearance for the fixed mobile nav.
+   Avoid a second 43px margin on CLIENT workspace pages. */
+@media (max-width: 767px) {
+  html[data-user-role="client"] { --k-client-page-bottom-gap: 0px; }
 }
 
 @media (max-width: 359px) {
