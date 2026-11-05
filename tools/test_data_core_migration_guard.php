@@ -65,6 +65,26 @@ try {
     $wrongType[0]['version'] = '1';
     $write($wrongType,2,$records,2,2);
     $assert('string json migration version rejected', 'FAIL', 'JSON_BAD_VERSION_TYPE');
+    // Negative cases: malformed package metadata must never produce PASS.
+    $write($records, 2, $records, 2, 2);
+    file_put_contents($root . '/api/migration_manifest.json', '{invalid json');
+    $assert('malformed JSON rejected', 'FAIL', 'JSON_MANIFEST_INVALID');
+    $write($records, 2, $records, 2, 2);
+    $bad = $records;
+    $bad[0]['file'] = '../001_test_migration.php';
+    $write($bad, 2, $records, 2, 2);
+    $assert('JSON path traversal rejected', 'FAIL', 'JSON_PHP_FILENAME_DRIFT');
+    $write($records, 2, $records, 2, 2);
+    $bad = $records;
+    unset($bad[1]);
+    $write(array_values($bad), 2, $records, 2, 2);
+    $assert('missing JSON migration rejected', 'FAIL', 'JSON_SEQUENCE_INVALID');
+    $write($records, 2, $records, 2, 2);
+    $bad = $records;
+    $bad[0]['sha256'] = '';
+    $write($bad, 2, $records, 2, 2);
+    $assert('empty JSON checksum rejected', 'FAIL', 'JSON_PHP_HASH_DRIFT');
+
 } finally {
     $cleanup($root);
 }
