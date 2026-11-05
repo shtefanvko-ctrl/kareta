@@ -13,6 +13,9 @@ This file is the small, vendor-neutral entry point for AI coding agents. Keep it
 
 For status semantics and release evidence, `MB_MONITORING.md` is authoritative.
 
+## Shared work ledger (all agents)
+Before starting a task, read the latest entries in the common work ledger: https://github.com/shtefanvko-ctrl/kareta/issues/187 . After **each verified work stage**, append a concise evidence-bound comment there (task, changed files/PR/SHA, PASS/FAIL/BLOCKED/NOT RUN, blockers, next step, production state). This is the shared cross-agent handoff, not a personal report. Never post secrets or PII. Existing PR owners and release gates remain authoritative.
+
 ## Mandatory operating loop
 1. ORIENT — identify the requested outcome and affected surface.
 2. ROUTE — read `ai/CONTEXT_ROUTER.md` and load only relevant rule modules.
