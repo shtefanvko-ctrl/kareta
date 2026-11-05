@@ -1,0 +1,25 @@
+name: Staging universal ELM UI contract
+on:
+  pull_request:
+    paths:
+      - 'js/mobile_native_bridge.js'
+      - 'js/next/pages/diagnostics.js'
+      - 'css/next/diagnostics.css'
+      - 'api/obd.php'
+      - 'tools/test_obd_universal_transport.js'
+      - '.github/workflows/elm-universal-contract.yml'
+permissions:
+  contents: read
+jobs:
+  stage-obd-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JS and Native bridge contracts
+        run: node tools/test_obd_universal_transport.js
+      - name: PHP syntax
+        run: php -l api/obd.php
