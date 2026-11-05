@@ -25,6 +25,19 @@ foreach ($expected as $number => [$filename, $operation]) {
         exit(1);
     }
 }
+$config = (string) file_get_contents($root . '/config.php');
+if (!preg_match("/define\\('KARETA_DB_VERSION',\\s*147\\)/", $config)) {
+    fwrite(STDERR, "FAIL config target must be 147\\n");
+    exit(1);
+}
+if (count($manifest['files'] ?? []) !== 147 || count($json['migrations'] ?? []) !== 147) {
+    fwrite(STDERR, "FAIL migration inventory count must be 147\\n");
+    exit(1);
+}
+if (($manifest['files'][146]['checksum'] ?? null) === ($manifest['files'][147]['checksum'] ?? null)) {
+    fwrite(STDERR, "FAIL distinct migration hashes must differ\\n");
+    exit(1);
+}
 if (($manifest['version'] ?? null) !== 147 || ($json['targetDbVersion'] ?? null) !== 147) {
     fwrite(STDERR, "FAIL target migration version\n");
     exit(1);
