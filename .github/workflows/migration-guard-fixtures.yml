@@ -1,0 +1,34 @@
+name: Migration guard fixture regression
+
+on:
+  pull_request:
+    paths:
+      - 'tools/check_data_core_migrations.php'
+      - 'tools/test_data_core_migration_guard.php'
+      - '.github/workflows/migration-guard-fixtures.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/check_data_core_migrations.php'
+      - 'tools/test_data_core_migration_guard.php'
+      - '.github/workflows/migration-guard-fixtures.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  offline-fixtures:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+      - name: PHP syntax
+        run: |
+          php -l tools/check_data_core_migrations.php
+          php -l tools/test_data_core_migration_guard.php
+      - name: Offline migration negative and positive cases
+        run: php tools/test_data_core_migration_guard.php
