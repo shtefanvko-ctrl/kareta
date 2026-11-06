@@ -1170,7 +1170,17 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_identity_bundle","js/boot/runt
     truck:'<path d="M3 6h11v11H3V6Zm11 4h4l3 3v4h-7v-7Z"></path><circle cx="7" cy="18" r="2"></circle><circle cx="18" cy="18" r="2"></circle>',
     refresh:'<path d="M20 7v5h-5"></path><path d="M18.2 16a8 8 0 1 1 .8-8l1 4"></path>',
     document:'<path d="M6 3h8l4 4v14H6V3Z"></path><path d="M14 3v5h5M9 12h6M9 16h6"></path>',
-    image:'<rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><path d="m4 18 5-5 4 4 2-2 5 5"></path>'
+    image:'<rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><path d="m4 18 5-5 4 4 2-2 5 5"></path>',
+    arrowRight:'<path d="M4 12h16M13 5l7 7-7 7"></path>',
+    externalLink:'<path d="M13 5h6v6M19 5l-9 9"></path><path d="M19 13v6H5V5h6"></path>',
+    eyeOff:'<path d="M3 3l18 18"></path><path d="M10.6 5.1A11 11 0 0 1 12 5c6 0 9.5 7 9.5 7a17 17 0 0 1-3.2 3.7"></path><path d="M6.2 6.2A17 17 0 0 0 2.5 12s3.5 7 9.5 7c1.9 0 3.6-.6 5-1.5"></path><path d="M10 10a2.8 2.8 0 0 0 4 4"></path>',
+    flag:'<path d="M5 3v18M5 4h14l-3 5 3 5H5"></path>',
+    undo:'<path d="M9 14 4 9l5-5"></path><path d="M4 9h11a5 5 0 0 1 0 10h-2"></path>',
+    x:'<path d="M5 5l14 14M19 5 5 19"></path>',
+    map:'<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6Z"></path><path d="M9 3v15M15 6v15"></path>',
+    elm327:'<rect x="4" y="7" width="16" height="11" rx="3"></rect><path d="M8 7V4h8v3M8 13h3l1-3 2 6 1-3h2"></path>',
+    arduino:'<path d="M9.2 9.6a3.7 3.7 0 1 0 0 4.8M14.8 9.6a3.7 3.7 0 1 1 0 4.8"></path><path d="M5 12h5M15 12h4M17 10v4"></path>',
+    obd:'<rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M7 13h2l2-4 2 6 2-3h2"></path>'
   });
 
   // Selected Tabler Icons v3.48.0 (MIT). The SVG sprite is requested only when used.

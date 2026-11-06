@@ -61,6 +61,9 @@ jobs:
       - name: Boot bundle freshness
         run: node tools/build_boot_js_bundles.js --check
 
+      - name: Canonical SVG icon registry
+        run: node tools/test_ui_icon_registry_contract_20261107.js
+
       - name: Migration manifest integrity
         run: php tools/test_release_migration_manifest.php
 
