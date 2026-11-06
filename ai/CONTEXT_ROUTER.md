@@ -16,6 +16,7 @@ Goal: maximize useful project context while minimizing context pollution. The ag
 | architecture, router, shared state, cross-module refactor, public contracts | `ai/rules/architecture.md` | unrelated historical patch notes |
 | auth, identity, permissions, capabilities, cookies, sessions, secrets, uploads, destructive actions | `ai/rules/security.md` | broad UI/product docs unless affected |
 | tests, regression, release, staging, deploy, DONE/PASS, baseline, evidence | `ai/rules/verification-release.md`, `MB_MONITORING.md` | assuming latest commit == verified release |
+| UI / visual / brand colors / icons / registration screens | `ai/rules/design-system.md`, `docs/design/LANDING_CANON_V2_SOURCE.md`, `docs/design/LANDING_CANON_V2_ADDENDUM.md` | parallel new brandbooks; replacing the original logo or styling without source review |
 | web SPA / routing / lazy assets / cache | `ai/rules/web-spa.md` | backend/catalog history unless required |
 | PHP/API/DB contract | `ai/rules/backend-api.md` | unrelated UI history |
 | seller/store/product catalog | `ai/rules/marketplace-catalog.md` | loading the full catalog into startup context |

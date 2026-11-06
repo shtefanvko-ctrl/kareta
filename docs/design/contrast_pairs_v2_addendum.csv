@@ -1,0 +1,7 @@
+<PARSED TEXT FOR SHEET: 1 / 1 TABS
+TAB NAME: contrast_pairs_v2_addendum.csv>index,role,original,on_white,contrast_on_white,on_soft,contrast_on_soft,on_dark,contrast_on_dark
+0,orange,#FC6606,#B84902,5.261,#F7F7F5,4.904,#FC6606,5.543
+1,success,#16A34A,#117C39,5.295,#F7F7F5,4.936,#17A84C,5.306
+2,danger,#DC2626,#D22222,5.26,#F7F7F5,4.904,#E76B6B,5.284
+3,warning,#F59E0B,#966006,5.286,#F7F7F5,4.928,#F59E0B,7.696
+4,geo,#06B6D4,#04768A,5.298,#F7F7F5,4.939,#06B6D4,6.808
