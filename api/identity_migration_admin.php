@@ -10,7 +10,10 @@ function body():array{$raw=file_get_contents('php://input');$v=json_decode($raw?
 try{
  $pdo=kareta_pdo(); if(!$pdo) out(['ok'=>false,'error'=>'database_unavailable'],503);
  $legacy=function_exists('kareta_current_user')?kareta_current_user():null;
- try{$decision=kareta_authorize($pdo,'*',[],is_array($legacy)?$legacy:null);}catch(Throwable $e){
+ try{
+  $decision=kareta_authorize($pdo,'*',[],is_array($legacy)?$legacy:null);
+  if (!kareta_is_global_admin_decision($pdo,$decision)) out(['ok'=>false,'error'=>'migration_admin_required'],403);
+ }catch(Throwable $e){
   $role=strtolower((string)($legacy['role']??'')); if(!in_array($role,['admin','owner'],true)) out(['ok'=>false,'error'=>'migration_admin_required'],403);
   $decision=null;
  }
