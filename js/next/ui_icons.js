@@ -2,6 +2,16 @@
   'use strict';
 
   const paths = Object.freeze({
+    arrowRight:'<path d="M4 12h16M13 5l7 7-7 7"></path>',
+    externalLink:'<path d="M13 5h6v6M19 5l-9 9"></path><path d="M19 13v6H5V5h6"></path>',
+    eyeOff:'<path d="M3 3l18 18"></path><path d="M10.6 5.1A11 11 0 0 1 12 5c6 0 9.5 7 9.5 7a17 17 0 0 1-3.2 3.7"></path><path d="M6.2 6.2A17 17 0 0 0 2.5 12s3.5 7 9.5 7c1.9 0 3.6-.6 5-1.5"></path><path d="M10 10a2.8 2.8 0 0 0 4 4"></path>',
+    flag:'<path d="M5 3v18M5 4h14l-3 5 3 5H5"></path>',
+    undo:'<path d="M9 14 4 9l5-5"></path><path d="M4 9h11a5 5 0 0 1 0 10h-2"></path>',
+    x:'<path d="M5 5l14 14M19 5 5 19"></path>',
+    map:'<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6Z"></path><path d="M9 3v15M15 6v15"></path>',
+    elm327:'<rect x="4" y="7" width="16" height="11" rx="3"></rect><path d="M8 7V4h8v3M8 13h3l1-3 2 6 1-3h2"></path>',
+    arduino:'<path d="M9.2 9.6a3.7 3.7 0 1 0 0 4.8M14.8 9.6a3.7 3.7 0 1 1 0 4.8"></path><path d="M5 12h5M15 12h4M17 10v4"></path>',
+    obd:'<rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M7 13h2l2-4 2 6 2-3h2"></path>',
     home:'<path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V21h13V10.5"></path><path d="M9.5 21v-6h5v6"></path>',
     menu:'<path d="M4 7h16M4 12h16M4 17h16"></path>',
     oil:'<path d="M4 10h10l3 3v4H7l-3-3v-4Z"></path><path d="M8 10V7h4"></path><path d="M19 11c0 1.5-2 2.5-2 4a2 2 0 0 0 4 0c0-1.5-2-2.5-2-4Z"></path>',
@@ -85,6 +95,7 @@
     : '';
 
   const routeIcons = Object.freeze({
+    map:'map',elm327:'elm327',arduino:'arduino',obd:'obd',
     home:'home',platform:'grid',corePlatform:'grid',calendarBooking:'calendar',finance:'finance',market:'warehouse',crm:'crm',identityMigration:'refresh',
     adminUsers:'community',adminOrganizations:'store',adminMonitoring:'view',adminManagement:'settings',services:'services',news:'news',masterNews:'news',masterNewsCreate:'plus',masterNewsEdit:'edit',
     works:'community',community:'community',masterExchange:'exchange',profile:'user',following:'following',realWorks:'work',workDetail:'work',serviceManagement:'services',masters:'masters',masterDashboard:'work',masterSchedule:'calendar',masterOnboarding:'user',masterProfileOwner:'user',masterWallOwner:'community',masterWorks:'work',masterReviews:'comment',stoDashboard:'store',
