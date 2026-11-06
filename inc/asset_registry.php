@@ -373,7 +373,7 @@ function kareta_route_asset_plan(): array
             'routeKeys' => ['masters'],
             'routes' => ['#/masters'],
             'styles' => [],
-            'scripts' => ['js/next/pages/masters.js'],
+            'scripts' => ['js/next/pages/masters.js','js/next/sto_claim_ui.js'],
             'globals' => ['KaretaMastersPages'],
         ],
         'details' => [
