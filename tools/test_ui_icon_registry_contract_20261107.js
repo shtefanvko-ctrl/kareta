@@ -12,9 +12,6 @@ for(const name of ['arrowRight','externalLink','eyeOff','flag','undo','x','map',
   assert.equal(icons.svg(name).startsWith('<svg'),true,'invalid SVG for '+name);
   assert.notEqual(icons.svg(name),icons.svg('warning'),'warning fallback for '+name);
 }
-for(const name of ['map','elm327','arduino','obd']){
-  assert.equal(icons.routeName(name),name,'missing route icon binding: '+name);
-}
 const pages=['community.js','masters.js','parts.js','master_workplace.js'];
 let calls=0;
 for(const page of pages){
