@@ -25,4 +25,5 @@ assert(src.includes('function referenceTabs()'),'navigation modified');
 assert(css.includes('.k-services-reference-layout .k-services-ref-grid--groups .k-services-ref-card__icon--illustrated'),'unscoped card styling');
 assert(css.includes('width:52px;height:52px'),'large icon sizing');
 assert(!css.includes('svg.k-services-ref-card__large-glyph{display:none'),'invisible artwork');
+assert(css.includes('@media (max-width:270px)')&&css.includes('grid-template-columns:minmax(0,1fr)'), 'zoom reflow rule missing');
 console.log('SERVICES_GROUP_120: PASS (7 mapping IDs, route contracts, CSS scope). Browser/CI: NOT RUN.');
