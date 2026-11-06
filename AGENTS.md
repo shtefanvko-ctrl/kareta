@@ -38,6 +38,7 @@ Before starting a task, read the latest entries in the common work ledger: https
 
 ## Context modules
 Load only what applies:
+- UI / design / branding / onboarding visuals / icons: `ai/rules/design-system.md` → `docs/design/KARETA_BRANDBOOK_V3.md` and WCAG tables (candidate until accepted in `main`).
 - architecture / routing / shared contracts: `ai/rules/architecture.md`
 - auth / secrets / sensitive data / destructive actions: `ai/rules/security.md`
 - verification / release / status / evidence: `ai/rules/verification-release.md`

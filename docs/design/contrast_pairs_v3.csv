@@ -1,0 +1,23 @@
+<PARSED TEXT FOR SHEET: 1 / 1 TABS
+TAB NAME: contrast_pairs_v3.csv>index,Назначение,Foreground,Background,Contrast,Обычный текст WCAG AA (>=4.5),Крупный текст/значимая иконка (>=3),Комментарий
+0,Логотип / белый,#FC6606,#FFFFFF,2.982,FAIL,FAIL,акцентный знак; не обычный текст
+1,Оранжевый / белый текст,#FFFFFF,#FC6606,2.982,FAIL,FAIL,запрет для обычного текста
+2,Оранжевый / графит,#474747,#FC6606,3.116,FAIL,PASS,только при крупном тексте; не основной
+3,Оранжевый / тёмный текст,#0B1220,#FC6606,6.279,PASS,PASS,AA обычный текст; рамка требуется на светлой поверхности
+4,CTA светлый / белый,#FFFFFF,#B84902,5.261,PASS,PASS,AA текст
+5,CTA светлый / soft,#B84902,#F7F7F5,4.904,PASS,PASS,AA граница компонента и текст на фоне
+6,CTA тёмный / тёмный текст,#0B1220,#FC6606,6.279,PASS,PASS,AA текст
+7,Основной текст / white,#0B1220,#FFFFFF,18.723,PASS,PASS,AAA
+8,Основной текст / soft,#0B1220,#F7F7F5,17.455,PASS,PASS,AAA
+9,Вторичный текст / white,#667085,#FFFFFF,4.975,PASS,PASS,AA
+10,Вторичный текст / soft,#667085,#F7F7F5,4.638,PASS,PASS,AA
+11,Тёмная тема основной / card,#FFFFFF,#1B1F26,16.528,PASS,PASS,AAA
+12,Тёмная тема вторичный / card,#D7DEE8,#1B1F26,12.202,PASS,PASS,AAA
+13,Success base / white,#16A34A,#FFFFFF,3.296,FAIL,PASS,не AA для обычного текста
+14,Success light text / white,#117C39,#FFFFFF,5.295,PASS,PASS,AA
+15,Danger base / white,#DC2626,#FFFFFF,4.829,PASS,PASS,AA
+16,Warning base / white,#F59E0B,#FFFFFF,2.148,FAIL,FAIL,не AA для обычного текста
+17,Warning light text / white,#966006,#FFFFFF,5.286,PASS,PASS,AA
+18,Geo base / white,#06B6D4,#FFFFFF,2.428,FAIL,FAIL,не AA для обычного текста
+19,Geo light text / white,#04768A,#FFFFFF,5.298,PASS,PASS,AA
+20,Danger dark text / card,#E76B6B,#1B1F26,5.284,PASS,PASS,AA
