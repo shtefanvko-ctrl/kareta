@@ -20,6 +20,13 @@ for(const e of entries){if(e.id<1||e.id>120||seen.has(e.id))fail('duplicate/out 
  if(!e.sprite_symbol || e.sprite_symbol!==`k120-${String(e.id).padStart(3,'0')}`)fail('sprite mapping '+e.id);
  if(e.outline_menu_compatible!==false)fail('illegal outline claim '+e.id);
 }
+for(const theme of ['light','dark']){
+ const themeSprite=read(`assets/icons/kareta-client-120/kareta-client-120-${theme}-sprite.svg`);
+ const count=[...themeSprite.matchAll(/<symbol\b/g)].length;
+ if(count!==120)fail('theme sprite '+theme+' count '+count);
+ if(!themeSprite.includes(j.themes[theme].fill)||!themeSprite.includes(j.themes[theme].accent))fail('theme sprite color '+theme);
+ for(const e of entries){if(e.theme_sprite?.[theme]?.file!==`kareta-client-120-${theme}-sprite.svg`)fail('mapping theme '+e.id)}
+}
 const sprite=read('assets/icons/kareta-client-120/kareta-client-120-mono-sprite.svg');
 const symbols=[...sprite.matchAll(/<symbol\b[^>]*\bid="(k120-\d{3})"/g)].map(x=>x[1]);
 if(symbols.length!==120 || new Set(symbols).size!==120)fail('sprite symbols not unique or missing');
