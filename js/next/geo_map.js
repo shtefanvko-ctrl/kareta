@@ -16,7 +16,12 @@
 
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
-  const coordinate=value=>value==null||(typeof value==='string'&&!value.trim())?NaN:Number(value);
+  const coordinate=value=>{
+    if(typeof value==='number')return Number.isFinite(value)?value:NaN;
+    if(typeof value!=='string'||!value.trim())return NaN;
+    const trimmed=value.trim();
+    return /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(trimmed)?Number(trimmed):NaN;
+  };
   const validPoint=point=>{
     const lat=coordinate(point?.latitude??point?.lat),lng=coordinate(point?.longitude??point?.lng);
     return Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=-90&&lat<=90&&lng>=-180&&lng<=180;
