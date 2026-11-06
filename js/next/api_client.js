@@ -29,6 +29,7 @@
 
   const memoryCache = new Map();
   const inFlight = new Map();
+  let cacheEpoch = 0;
   const PERSIST_PREFIX='kareta.api.cache.v2:';
 
   // Shared read gate for the monolithic DB endpoint. Some production hosts
@@ -107,10 +108,12 @@
     const legacyStatus=String(source.status||'').toLowerCase();
     const explicitOk=typeof source.ok==='boolean'?source.ok:null;
     const legacyOk=typeof source.success==='boolean'?source.success:(legacyStatus?['ok','success','done'].includes(legacyStatus):null);
-    const ok=Boolean(status>=200&&status<400&&(explicitOk??legacyOk??true));
+    const errors=Array.isArray(source.errors)?source.errors:[];
+    const hasError=Boolean((source.error !== undefined && source.error !== null && source.error !== false && source.error !== 0 && source.error !== '') || errors.length || ['error','fail','failed'].includes(legacyStatus));
+    const invalidBody=status!==204 && (payload==null || (Object.prototype.hasOwnProperty.call(source,'raw') && explicitOk!==true && legacyOk!==true));
+    const ok=Boolean(status>=200&&status<400&&!hasError&&!invalidBody&&(explicitOk??legacyOk??true));
     const code=normalizeCode(source.code||source.error||(ok?'OK':`HTTP_${status||0}`),ok?'OK':'UNKNOWN_ERROR');
     const message=String(source.message||source.msg||source.error_message||(ok?'Операция выполнена':'Не удалось выполнить операцию'));
-    const errors=Array.isArray(source.errors)?source.errors:[];
     const requestId=String(source.requestId||response?.headers?.get?.('x-kareta-request-id')||'');
     const data=Object.prototype.hasOwnProperty.call(source,'data')?source.data:source;
     return Object.freeze({...source,ok,code,message,errors,requestId,data,meta:Object.freeze({...((source.meta&&typeof source.meta==='object')?source.meta:{}),httpStatus:status})});
@@ -191,11 +194,15 @@
   async function request(url, options = {}){
     const requestUrl = normalizeRequestUrl(url);
     const method = String(options.method || 'GET').toUpperCase();
-    const cacheTtlMs = Math.max(0, Number(options.cacheTtlMs ?? (method === 'GET' ? 10000 : 0)) || 0);
+    // Identity and session state must never be served from a previous successful cache.
+    const identityScoped=/(?:^|\/)(?:identity(?:[_\/]|\.)|context(?:[_\/]|\.)|auth_session\.|session(?:[_\/]|\.)|auth(?:[_\/]|\.))/i.test(requestUrl);
+    const cacheTtlMs = identityScoped ? 0 : Math.max(0, Number(options.cacheTtlMs ?? (method === 'GET' ? 10000 : 0)) || 0);
     const dedupe = options.dedupe !== false && method === 'GET';
     const force = options.force === true;
+    const allowStale=dedupe&&!identityScoped&&!force;
     const dbSafeReplay = options.dbSafeReplay === true;
     const key = requestKey(requestUrl, method, String(options.cacheKey || ''));
+    const requestEpoch=cacheEpoch;
 
     const fetchOptions = { ...options };
     delete fetchOptions.cacheTtlMs;
@@ -213,7 +220,7 @@
       delete fetchOptions.signal;
       let cached = memoryCache.get(key);
       if(!cached){const stored=readPersistent(key);if(stored){cached=stored;memoryCache.set(key,stored);}}
-      if (!force && cached && (Date.now() - cached.at) < cacheTtlMs) {
+      if (!force && !identityScoped && cached && (Date.now() - cached.at) < cacheTtlMs) {
         return cloneResult(cached.result, { fromCache:true });
       }
       if (!force && inFlight.has(key)) return inFlight.get(key);
@@ -221,11 +228,25 @@
 
     const transport = (isDbRead(requestUrl, method) || dbSafeReplay) ? executeDbRead(requestUrl, fetchOptions) : execute(requestUrl, fetchOptions);
     const promise = transport.then(result => {
-      if (dedupe && result.ok && cacheTtlMs > 0) { const record={ at:Date.now(), result }; memoryCache.set(key,record); writePersistent(key,record); }
-      if(dedupe && !result.ok){const stale=memoryCache.get(key)||readPersistent(key);if(stale?.result)return cloneResult(stale.result,{fromCache:true,stale:true});}
+      // A permission failure must never masquerade as the previous authenticated result.
+      if ([401,403].includes(result.status)) invalidate();
+      if (dedupe && result.ok && cacheTtlMs > 0 && requestEpoch===cacheEpoch) {
+        const record={ at:Date.now(), result }; memoryCache.set(key,record); writePersistent(key,record);
+      }
+      if (allowStale && requestEpoch===cacheEpoch && !result.ok && (result.status===0 || result.status===408 || result.status===429 || result.status>=500)) {
+        const stale=memoryCache.get(key)||readPersistent(key);
+        if(stale?.result)return cloneResult(stale.result,{fromCache:true,stale:true});
+      }
       return result;
-    }).catch(error=>{const stale=dedupe?(memoryCache.get(key)||readPersistent(key)):null;if(stale?.result)return cloneResult(stale.result,{fromCache:true,stale:true,networkError:String(error?.message||error)});throw error;}).finally(() => {
-      if (dedupe) inFlight.delete(key);
+    }).catch(error=>{
+      const status=Number(error?.status||error?.httpStatus||0);
+      if (allowStale && requestEpoch===cacheEpoch && ![401,403].includes(status)) {
+        const stale=memoryCache.get(key)||readPersistent(key);
+        if(stale?.result)return cloneResult(stale.result,{fromCache:true,stale:true,networkError:String(error?.message||error)});
+      }
+      throw error;
+    }).finally(() => {
+      if (dedupe && inFlight.get(key)===promise) inFlight.delete(key);
     });
 
     if (dedupe) inFlight.set(key, promise);
@@ -378,8 +399,15 @@
   function updateReceivableDue(payload,options={}){return operationalFinanceRequest('operationalFinance.receivable.due',payload,options);}
 
   function invalidate(prefix = ''){
+    cacheEpoch++;
+    if(!prefix)inFlight.clear();
     Array.from(memoryCache.keys()).forEach(key => { if (!prefix || key.includes(prefix)) memoryCache.delete(key); });
     try{for(let i=sessionStorage.length-1;i>=0;i--){const k=sessionStorage.key(i);if(k&&k.startsWith(PERSIST_PREFIX)&&(!prefix||k.includes(prefix)))sessionStorage.removeItem(k);}}catch(_e){}
+  }
+
+  // Route/identity transitions invalidate both memory and persisted request snapshots.
+  for (const eventName of ['kareta:identity-anonymous','kareta:session-anonymous','kareta:session-expired','kareta:context-changed']) {
+    window.addEventListener?.(eventName,()=>invalidate());
   }
 
   window.KaretaApiClient = Object.freeze({
