@@ -1,6 +1,6 @@
 # KARETA.KZ — дополнение к утверждённому Landing Canon v2
 
-**Тип:** приложение к существующему брендбуку, а не новый самостоятельный брендбук. **Слайды:** 13–24 из `KARETA_KZ_brandbook_landing_canon_v2_EXTENDED.pptx`. **Дата дополнения:** 06.11.2026. **Внедрение в действующий сайт:** не выполнено. Этот документ не заменяет `landing/styles.css`, `css/next/design_contract.css` и другие runtime-файлы.
+**Тип:** приложение к существующему брендбуку, а не новый самостоятельный брендбук. **Слайды:** 13–27 из `KARETA_KZ_brandbook_landing_canon_v2_EXTENDED.pptx`. **Дата дополнения:** 06.11.2026. **Внедрение в действующий сайт:** не выполнено. Этот документ не заменяет `landing/styles.css`, `css/next/design_contract.css` и другие runtime-файлы.
 
 ## 1. Иерархия источников и неизменяемые положения
 
@@ -99,7 +99,31 @@ SVG-контракт: `viewBox 0 0 24 24`, `stroke=currentColor`, `fill=none`, `
 
 ## Источники
 
-- Утверждённый исходный `KARETA_KZ_brandbook_landing_canon_v2.pptx` (12 слайдов, исходный SHA-256 в JSON), продолженный PPTX (24 слайда, первые 12 XML-страниц неизменны).
+- Утверждённый исходный `KARETA_KZ_brandbook_landing_canon_v2.pptx` (12 слайдов, исходный SHA-256 в JSON), продолженный PPTX (27 слайдов, первые 24 страницы визуально неизменны, исходные 12 XML-страниц сохранены).
 - Продуктовый исторический `KARETA_KZ_brandbook_v1.pptx` (40 слайдов).
 - Фактические owner-файлы проекта: `landing/styles.css`, `css/next/design_contract.css`, `css/next/icon_standard.css`, `js/next/ui_icons.js`, `assets/icons/tabler/index.json`.
 - W3C: https://www.w3.org/TR/WCAG22/#contrast-minimum ; https://www.w3.org/TR/WCAG22/#non-text-contrast ; https://www.w3.org/TR/WCAG22/#target-size-minimum ; https://www.w3.org/TR/WCAG22/#use-of-color .
+
+
+## 10. Продолжение существующего самого большого пакета KARETA (120 SVG/PNG)
+
+**Источник:** оригинальный архив `KARETA_CLIENT_120_HQ_SVG_PNG.zip` из библиотеки проекта, SHA-256 `efecaa740ccbe9b1d48b9967fbb38a541dd97cf11009c432c984220ca43cd599`. Это **не новый комплект**, а дополнительный слой внутри того же каталога `KARETA_CLIENT_120/`. Все **258** оригинальных файлов сохранены побайтово (128 SVG с 8 листами, 128 PNG с 8 листами, README, manifest). ID `001–120`, названия и категории не менялись.
+
+### Устаревшая палитра исходного пакета (не перекрашивать историю)
+
+| Значение | В оригинале пакета | В дополнении для визуализации | Расчёт контраста |
+|---|---|---|---|
+| Orange | `#EC5E27` | Light accent `#B84902` | 5.261:1 к white `#FFFFFF` |
+| Graphite | `#242A30` | Light glyph `#474747` | 9.291:1 к white `#FFFFFF` |
+| Light | нет отдельного набора | Dark glyph `#F7F7F5` | 15.408:1 к dark card `#1B1F26` |
+| Dark accent | нет отдельного набора | `#FC6606` | 5.543:1 к dark card `#1B1F26` |
+
+**Что добавлено:** к исходным 120 SVG и 120 PNG добавлены 120 светлых SVG, 120 тёмных SVG, 120 светлых PNG 1024, 120 тёмных PNG 1024 (то есть 240 новых SVG и 240 PNG), 120 символов в монохромном спрайте, реестр и правила лицензирования. Исходные изображения и листы не заменяются.
+
+**Принципиальное отличие от контурного канона:** все 120 оригинальных значков основаны на **Font Awesome Free solid/brands** — это залитые силуэты. Их геометрия сохранена при расчётной перекраске. Они **не** стали `stroke-width=1.9` и не имеют право подменять существующие 16/18/22/28px outline-иконки меню/шапки. Рекомендованная область: большие карточки услуг и категорий, иллюстрации и пустые состояния с видимым размером **не менее 48px**, всегда с текстовой подписью. Для маленьких кнопок использовать текущие `KaretaUIIcons` или Tabler 3.48.0. Для новой компактной иконки — отдельно разработать и принять канонический 24×24 outline SVG.
+
+**Атрибуция:** исходные фигуры — Font Awesome Free, иконки CC BY 4.0, https://fontawesome.com/license/free. Производные по цвету не являются оригинальными работами KARETA; сохранять правообладателя и ссылку на лицензию. Шрифтовых файлов в архиве нет.
+
+**Материалы, доступные всем агентам после merge PR #192:** [`assets/icons/kareta-client-120/manifest_canon.json`](../../assets/icons/kareta-client-120/manifest_canon.json), [`assets/icons/kareta-client-120/kareta-client-120-mono-sprite.svg`](../../assets/icons/kareta-client-120/kareta-client-120-mono-sprite.svg), [`assets/icons/kareta-client-120/README.md`](../../assets/icons/kareta-client-120/README.md). Полный архив с 480 цветными вариантами, PDF/PPTX (27 страниц), PNG-предпросмотр — в проектной библиотеке `/kareta.kz/docs/design/`. Действующие ассеты, маршруты и UI не переподключены.
+
+**Проверки:** целостность всех оригинальных 258 архивных файлов по SHA-256 — PASS; 120 ID, 240 новых SVG и 240 PNG 1024, XML-разбор и 2 цветовые темы — PASS; независимая проверка контраста — PASS; браузерная интеграция, размер 16–28px, Android/WebView, CI на GitHub и production — NOT RUN.

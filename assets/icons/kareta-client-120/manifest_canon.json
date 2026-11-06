@@ -1,0 +1,2434 @@
+{
+  "schema_version": 2,
+  "app": "KARETA.KZ",
+  "source_package": "KARETA_CLIENT_120_HQ_SVG_PNG.zip",
+  "source_sha256": "efecaa740ccbe9b1d48b9967fbb38a541dd97cf11009c432c984220ca43cd599",
+  "count": 120,
+  "canon": "Landing Canon v2 + approved addendum (color source, candidate visual variants)",
+  "original_unchanged": true,
+  "source_palette": {
+    "orange": "#EC5E27",
+    "graphite": "#242A30",
+    "cream": "#FDFDF1",
+    "warm_gray": "#6F736E"
+  },
+  "themes": {
+    "light": {
+      "background": "#FFFFFF",
+      "fill": "#474747",
+      "accent": "#B84902"
+    },
+    "dark": {
+      "background": "#1B1F26",
+      "fill": "#F7F7F5",
+      "accent": "#FC6606"
+    }
+  },
+  "design_family_warning": "All 120 original glyphs are Font Awesome Free solid/brands, CC BY 4.0; two-tone adapted variants remain filled (NOT 1.9px outline). Do NOT use as drop-in replacement for 16-28px UI navigation icons; use KaretaUIIcons/Tabler outline.",
+  "license": {
+    "upstream": "Font Awesome Free",
+    "icon_license": "CC BY 4.0",
+    "url": "https://fontawesome.com/license/free",
+    "attribution_required": true
+  },
+  "icon_entries": [
+    {
+      "id": 1,
+      "name_ru": "Главная",
+      "category": "01_Навигация",
+      "icon_key": "house",
+      "source_svg": "01_Навигация/svg/001_house.svg",
+      "source_png_1024": "01_Навигация/png_1024/001_house.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/001_house.svg",
+        "dark": "canon_v2/dark/svg/001_house.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/001_house.png",
+        "dark": "canon_v2/dark/png_1024/001_house.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-001"
+    },
+    {
+      "id": 2,
+      "name_ru": "Поиск",
+      "category": "01_Навигация",
+      "icon_key": "magnifying-glass",
+      "source_svg": "01_Навигация/svg/002_magnifying-glass.svg",
+      "source_png_1024": "01_Навигация/png_1024/002_magnifying-glass.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/002_magnifying-glass.svg",
+        "dark": "canon_v2/dark/svg/002_magnifying-glass.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/002_magnifying-glass.png",
+        "dark": "canon_v2/dark/png_1024/002_magnifying-glass.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-002"
+    },
+    {
+      "id": 3,
+      "name_ru": "Категории",
+      "category": "01_Навигация",
+      "icon_key": "table-cells-large",
+      "source_svg": "01_Навигация/svg/003_table-cells-large.svg",
+      "source_png_1024": "01_Навигация/png_1024/003_table-cells-large.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/003_table-cells-large.svg",
+        "dark": "canon_v2/dark/svg/003_table-cells-large.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/003_table-cells-large.png",
+        "dark": "canon_v2/dark/png_1024/003_table-cells-large.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-003"
+    },
+    {
+      "id": 4,
+      "name_ru": "Услуги",
+      "category": "01_Навигация",
+      "icon_key": "screwdriver-wrench",
+      "source_svg": "01_Навигация/svg/004_screwdriver-wrench.svg",
+      "source_png_1024": "01_Навигация/png_1024/004_screwdriver-wrench.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/004_screwdriver-wrench.svg",
+        "dark": "canon_v2/dark/svg/004_screwdriver-wrench.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/004_screwdriver-wrench.png",
+        "dark": "canon_v2/dark/png_1024/004_screwdriver-wrench.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-004"
+    },
+    {
+      "id": 5,
+      "name_ru": "Карта",
+      "category": "01_Навигация",
+      "icon_key": "map-location-dot",
+      "source_svg": "01_Навигация/svg/005_map-location-dot.svg",
+      "source_png_1024": "01_Навигация/png_1024/005_map-location-dot.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/005_map-location-dot.svg",
+        "dark": "canon_v2/dark/svg/005_map-location-dot.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/005_map-location-dot.png",
+        "dark": "canon_v2/dark/png_1024/005_map-location-dot.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-005"
+    },
+    {
+      "id": 6,
+      "name_ru": "Рядом",
+      "category": "01_Навигация",
+      "icon_key": "location-crosshairs",
+      "source_svg": "01_Навигация/svg/006_location-crosshairs.svg",
+      "source_png_1024": "01_Навигация/png_1024/006_location-crosshairs.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/006_location-crosshairs.svg",
+        "dark": "canon_v2/dark/svg/006_location-crosshairs.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/006_location-crosshairs.png",
+        "dark": "canon_v2/dark/png_1024/006_location-crosshairs.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-006"
+    },
+    {
+      "id": 7,
+      "name_ru": "Мастера",
+      "category": "01_Навигация",
+      "icon_key": "user-gear",
+      "source_svg": "01_Навигация/svg/007_user-gear.svg",
+      "source_png_1024": "01_Навигация/png_1024/007_user-gear.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/007_user-gear.svg",
+        "dark": "canon_v2/dark/svg/007_user-gear.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/007_user-gear.png",
+        "dark": "canon_v2/dark/png_1024/007_user-gear.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-007"
+    },
+    {
+      "id": 8,
+      "name_ru": "СТО",
+      "category": "01_Навигация",
+      "icon_key": "warehouse",
+      "source_svg": "01_Навигация/svg/008_warehouse.svg",
+      "source_png_1024": "01_Навигация/png_1024/008_warehouse.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/008_warehouse.svg",
+        "dark": "canon_v2/dark/svg/008_warehouse.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/008_warehouse.png",
+        "dark": "canon_v2/dark/png_1024/008_warehouse.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-008"
+    },
+    {
+      "id": 9,
+      "name_ru": "Магазины",
+      "category": "01_Навигация",
+      "icon_key": "store",
+      "source_svg": "01_Навигация/svg/009_store.svg",
+      "source_png_1024": "01_Навигация/png_1024/009_store.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/009_store.svg",
+        "dark": "canon_v2/dark/svg/009_store.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/009_store.png",
+        "dark": "canon_v2/dark/png_1024/009_store.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-009"
+    },
+    {
+      "id": 10,
+      "name_ru": "Запчасти",
+      "category": "01_Навигация",
+      "icon_key": "gears",
+      "source_svg": "01_Навигация/svg/010_gears.svg",
+      "source_png_1024": "01_Навигация/png_1024/010_gears.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/010_gears.svg",
+        "dark": "canon_v2/dark/svg/010_gears.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/010_gears.png",
+        "dark": "canon_v2/dark/png_1024/010_gears.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-010"
+    },
+    {
+      "id": 11,
+      "name_ru": "Запись",
+      "category": "01_Навигация",
+      "icon_key": "calendar-days",
+      "source_svg": "01_Навигация/svg/011_calendar-days.svg",
+      "source_png_1024": "01_Навигация/png_1024/011_calendar-days.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/011_calendar-days.svg",
+        "dark": "canon_v2/dark/svg/011_calendar-days.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/011_calendar-days.png",
+        "dark": "canon_v2/dark/png_1024/011_calendar-days.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-011"
+    },
+    {
+      "id": 12,
+      "name_ru": "Заказы",
+      "category": "01_Навигация",
+      "icon_key": "clipboard-list",
+      "source_svg": "01_Навигация/svg/012_clipboard-list.svg",
+      "source_png_1024": "01_Навигация/png_1024/012_clipboard-list.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/012_clipboard-list.svg",
+        "dark": "canon_v2/dark/svg/012_clipboard-list.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/012_clipboard-list.png",
+        "dark": "canon_v2/dark/png_1024/012_clipboard-list.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-012"
+    },
+    {
+      "id": 13,
+      "name_ru": "Уведомления",
+      "category": "01_Навигация",
+      "icon_key": "bell",
+      "source_svg": "01_Навигация/svg/013_bell.svg",
+      "source_png_1024": "01_Навигация/png_1024/013_bell.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/013_bell.svg",
+        "dark": "canon_v2/dark/svg/013_bell.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/013_bell.png",
+        "dark": "canon_v2/dark/png_1024/013_bell.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-013"
+    },
+    {
+      "id": 14,
+      "name_ru": "Чат",
+      "category": "01_Навигация",
+      "icon_key": "comments",
+      "source_svg": "01_Навигация/svg/014_comments.svg",
+      "source_png_1024": "01_Навигация/png_1024/014_comments.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/014_comments.svg",
+        "dark": "canon_v2/dark/svg/014_comments.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/014_comments.png",
+        "dark": "canon_v2/dark/png_1024/014_comments.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-014"
+    },
+    {
+      "id": 15,
+      "name_ru": "Ещё",
+      "category": "01_Навигация",
+      "icon_key": "ellipsis",
+      "source_svg": "01_Навигация/svg/015_ellipsis.svg",
+      "source_png_1024": "01_Навигация/png_1024/015_ellipsis.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/015_ellipsis.svg",
+        "dark": "canon_v2/dark/svg/015_ellipsis.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/015_ellipsis.png",
+        "dark": "canon_v2/dark/png_1024/015_ellipsis.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-015"
+    },
+    {
+      "id": 16,
+      "name_ru": "Мой автомобиль",
+      "category": "02_Автомобиль",
+      "icon_key": "car",
+      "source_svg": "02_Автомобиль/svg/016_car.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/016_car.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/016_car.svg",
+        "dark": "canon_v2/dark/svg/016_car.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/016_car.png",
+        "dark": "canon_v2/dark/png_1024/016_car.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-016"
+    },
+    {
+      "id": 17,
+      "name_ru": "Техпаспорт",
+      "category": "02_Автомобиль",
+      "icon_key": "id-card",
+      "source_svg": "02_Автомобиль/svg/017_id-card.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/017_id-card.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/017_id-card.svg",
+        "dark": "canon_v2/dark/svg/017_id-card.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/017_id-card.png",
+        "dark": "canon_v2/dark/png_1024/017_id-card.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-017"
+    },
+    {
+      "id": 18,
+      "name_ru": "Страховка",
+      "category": "02_Автомобиль",
+      "icon_key": "shield-halved",
+      "source_svg": "02_Автомобиль/svg/018_shield-halved.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/018_shield-halved.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/018_shield-halved.svg",
+        "dark": "canon_v2/dark/svg/018_shield-halved.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/018_shield-halved.png",
+        "dark": "canon_v2/dark/png_1024/018_shield-halved.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-018"
+    },
+    {
+      "id": 19,
+      "name_ru": "Диагностика",
+      "category": "02_Автомобиль",
+      "icon_key": "car-burst",
+      "source_svg": "02_Автомобиль/svg/019_car-burst.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/019_car-burst.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/019_car-burst.svg",
+        "dark": "canon_v2/dark/svg/019_car-burst.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/019_car-burst.png",
+        "dark": "canon_v2/dark/png_1024/019_car-burst.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-019"
+    },
+    {
+      "id": 20,
+      "name_ru": "Ошибки DTC",
+      "category": "02_Автомобиль",
+      "icon_key": "triangle-exclamation",
+      "source_svg": "02_Автомобиль/svg/020_triangle-exclamation.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/020_triangle-exclamation.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/020_triangle-exclamation.svg",
+        "dark": "canon_v2/dark/svg/020_triangle-exclamation.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/020_triangle-exclamation.png",
+        "dark": "canon_v2/dark/png_1024/020_triangle-exclamation.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-020"
+    },
+    {
+      "id": 21,
+      "name_ru": "ELM327",
+      "category": "02_Автомобиль",
+      "icon_key": "ethernet",
+      "source_svg": "02_Автомобиль/svg/021_ethernet.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/021_ethernet.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/021_ethernet.svg",
+        "dark": "canon_v2/dark/svg/021_ethernet.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/021_ethernet.png",
+        "dark": "canon_v2/dark/png_1024/021_ethernet.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-021"
+    },
+    {
+      "id": 22,
+      "name_ru": "Состояние",
+      "category": "02_Автомобиль",
+      "icon_key": "heart-pulse",
+      "source_svg": "02_Автомобиль/svg/022_heart-pulse.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/022_heart-pulse.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/022_heart-pulse.svg",
+        "dark": "canon_v2/dark/svg/022_heart-pulse.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/022_heart-pulse.png",
+        "dark": "canon_v2/dark/png_1024/022_heart-pulse.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-022"
+    },
+    {
+      "id": 23,
+      "name_ru": "Замена масла",
+      "category": "02_Автомобиль",
+      "icon_key": "oil-can",
+      "source_svg": "02_Автомобиль/svg/023_oil-can.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/023_oil-can.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/023_oil-can.svg",
+        "dark": "canon_v2/dark/svg/023_oil-can.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/023_oil-can.png",
+        "dark": "canon_v2/dark/png_1024/023_oil-can.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-023"
+    },
+    {
+      "id": 24,
+      "name_ru": "Тормоза",
+      "category": "02_Автомобиль",
+      "icon_key": "compact-disc",
+      "source_svg": "02_Автомобиль/svg/024_compact-disc.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/024_compact-disc.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/024_compact-disc.svg",
+        "dark": "canon_v2/dark/svg/024_compact-disc.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/024_compact-disc.png",
+        "dark": "canon_v2/dark/png_1024/024_compact-disc.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-024"
+    },
+    {
+      "id": 25,
+      "name_ru": "Аккумулятор",
+      "category": "02_Автомобиль",
+      "icon_key": "car-battery",
+      "source_svg": "02_Автомобиль/svg/025_car-battery.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/025_car-battery.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/025_car-battery.svg",
+        "dark": "canon_v2/dark/svg/025_car-battery.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/025_car-battery.png",
+        "dark": "canon_v2/dark/png_1024/025_car-battery.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-025"
+    },
+    {
+      "id": 26,
+      "name_ru": "Шины",
+      "category": "02_Автомобиль",
+      "icon_key": "circle-notch",
+      "source_svg": "02_Автомобиль/svg/026_circle-notch.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/026_circle-notch.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/026_circle-notch.svg",
+        "dark": "canon_v2/dark/svg/026_circle-notch.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/026_circle-notch.png",
+        "dark": "canon_v2/dark/png_1024/026_circle-notch.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-026"
+    },
+    {
+      "id": 27,
+      "name_ru": "Кузов",
+      "category": "02_Автомобиль",
+      "icon_key": "car-side",
+      "source_svg": "02_Автомобиль/svg/027_car-side.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/027_car-side.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/027_car-side.svg",
+        "dark": "canon_v2/dark/svg/027_car-side.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/027_car-side.png",
+        "dark": "canon_v2/dark/png_1024/027_car-side.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-027"
+    },
+    {
+      "id": 28,
+      "name_ru": "Трансмиссия",
+      "category": "02_Автомобиль",
+      "icon_key": "gears",
+      "source_svg": "02_Автомобиль/svg/028_gears.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/028_gears.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/028_gears.svg",
+        "dark": "canon_v2/dark/svg/028_gears.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/028_gears.png",
+        "dark": "canon_v2/dark/png_1024/028_gears.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-028"
+    },
+    {
+      "id": 29,
+      "name_ru": "Климат",
+      "category": "02_Автомобиль",
+      "icon_key": "snowflake",
+      "source_svg": "02_Автомобиль/svg/029_snowflake.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/029_snowflake.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/029_snowflake.svg",
+        "dark": "canon_v2/dark/svg/029_snowflake.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/029_snowflake.png",
+        "dark": "canon_v2/dark/png_1024/029_snowflake.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-029"
+    },
+    {
+      "id": 30,
+      "name_ru": "Освещение",
+      "category": "02_Автомобиль",
+      "icon_key": "lightbulb",
+      "source_svg": "02_Автомобиль/svg/030_lightbulb.svg",
+      "source_png_1024": "02_Автомобиль/png_1024/030_lightbulb.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/030_lightbulb.svg",
+        "dark": "canon_v2/dark/svg/030_lightbulb.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/030_lightbulb.png",
+        "dark": "canon_v2/dark/png_1024/030_lightbulb.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-030"
+    },
+    {
+      "id": 31,
+      "name_ru": "Новая заявка",
+      "category": "03_Заявки",
+      "icon_key": "file-circle-plus",
+      "source_svg": "03_Заявки/svg/031_file-circle-plus.svg",
+      "source_png_1024": "03_Заявки/png_1024/031_file-circle-plus.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/031_file-circle-plus.svg",
+        "dark": "canon_v2/dark/svg/031_file-circle-plus.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/031_file-circle-plus.png",
+        "dark": "canon_v2/dark/png_1024/031_file-circle-plus.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-031"
+    },
+    {
+      "id": 32,
+      "name_ru": "Бронирование",
+      "category": "03_Заявки",
+      "icon_key": "calendar-check",
+      "source_svg": "03_Заявки/svg/032_calendar-check.svg",
+      "source_png_1024": "03_Заявки/png_1024/032_calendar-check.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/032_calendar-check.svg",
+        "dark": "canon_v2/dark/svg/032_calendar-check.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/032_calendar-check.png",
+        "dark": "canon_v2/dark/png_1024/032_calendar-check.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-032"
+    },
+    {
+      "id": 33,
+      "name_ru": "Эвакуатор",
+      "category": "03_Заявки",
+      "icon_key": "truck-pickup",
+      "source_svg": "03_Заявки/svg/033_truck-pickup.svg",
+      "source_png_1024": "03_Заявки/png_1024/033_truck-pickup.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/033_truck-pickup.svg",
+        "dark": "canon_v2/dark/svg/033_truck-pickup.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/033_truck-pickup.png",
+        "dark": "canon_v2/dark/png_1024/033_truck-pickup.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-033"
+    },
+    {
+      "id": 34,
+      "name_ru": "Вызов мастера",
+      "category": "03_Заявки",
+      "icon_key": "user-ninja",
+      "source_svg": "03_Заявки/svg/034_user-ninja.svg",
+      "source_png_1024": "03_Заявки/png_1024/034_user-ninja.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/034_user-ninja.svg",
+        "dark": "canon_v2/dark/svg/034_user-ninja.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/034_user-ninja.png",
+        "dark": "canon_v2/dark/png_1024/034_user-ninja.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-034"
+    },
+    {
+      "id": 35,
+      "name_ru": "Автоюрист",
+      "category": "03_Заявки",
+      "icon_key": "scale-balanced",
+      "source_svg": "03_Заявки/svg/035_scale-balanced.svg",
+      "source_png_1024": "03_Заявки/png_1024/035_scale-balanced.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/035_scale-balanced.svg",
+        "dark": "canon_v2/dark/svg/035_scale-balanced.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/035_scale-balanced.png",
+        "dark": "canon_v2/dark/png_1024/035_scale-balanced.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-035"
+    },
+    {
+      "id": 36,
+      "name_ru": "Консультация",
+      "category": "03_Заявки",
+      "icon_key": "headset",
+      "source_svg": "03_Заявки/svg/036_headset.svg",
+      "source_png_1024": "03_Заявки/png_1024/036_headset.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/036_headset.svg",
+        "dark": "canon_v2/dark/svg/036_headset.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/036_headset.png",
+        "dark": "canon_v2/dark/png_1024/036_headset.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-036"
+    },
+    {
+      "id": 37,
+      "name_ru": "Подбор авто",
+      "category": "03_Заявки",
+      "icon_key": "car-on",
+      "source_svg": "03_Заявки/svg/037_car-on.svg",
+      "source_png_1024": "03_Заявки/png_1024/037_car-on.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/037_car-on.svg",
+        "dark": "canon_v2/dark/svg/037_car-on.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/037_car-on.png",
+        "dark": "canon_v2/dark/png_1024/037_car-on.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-037"
+    },
+    {
+      "id": 38,
+      "name_ru": "Проверка авто",
+      "category": "03_Заявки",
+      "icon_key": "clipboard-check",
+      "source_svg": "03_Заявки/svg/038_clipboard-check.svg",
+      "source_png_1024": "03_Заявки/png_1024/038_clipboard-check.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/038_clipboard-check.svg",
+        "dark": "canon_v2/dark/svg/038_clipboard-check.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/038_clipboard-check.png",
+        "dark": "canon_v2/dark/png_1024/038_clipboard-check.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-038"
+    },
+    {
+      "id": 39,
+      "name_ru": "Trade-in",
+      "category": "03_Заявки",
+      "icon_key": "arrows-rotate",
+      "source_svg": "03_Заявки/svg/039_arrows-rotate.svg",
+      "source_png_1024": "03_Заявки/png_1024/039_arrows-rotate.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/039_arrows-rotate.svg",
+        "dark": "canon_v2/dark/svg/039_arrows-rotate.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/039_arrows-rotate.png",
+        "dark": "canon_v2/dark/png_1024/039_arrows-rotate.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-039"
+    },
+    {
+      "id": 40,
+      "name_ru": "Оценка авто",
+      "category": "03_Заявки",
+      "icon_key": "coins",
+      "source_svg": "03_Заявки/svg/040_coins.svg",
+      "source_png_1024": "03_Заявки/png_1024/040_coins.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/040_coins.svg",
+        "dark": "canon_v2/dark/svg/040_coins.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/040_coins.png",
+        "dark": "canon_v2/dark/png_1024/040_coins.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-040"
+    },
+    {
+      "id": 41,
+      "name_ru": "Автокредит",
+      "category": "03_Заявки",
+      "icon_key": "credit-card",
+      "source_svg": "03_Заявки/svg/041_credit-card.svg",
+      "source_png_1024": "03_Заявки/png_1024/041_credit-card.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/041_credit-card.svg",
+        "dark": "canon_v2/dark/svg/041_credit-card.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/041_credit-card.png",
+        "dark": "canon_v2/dark/png_1024/041_credit-card.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-041"
+    },
+    {
+      "id": 42,
+      "name_ru": "Калькулятор",
+      "category": "03_Заявки",
+      "icon_key": "calculator",
+      "source_svg": "03_Заявки/svg/042_calculator.svg",
+      "source_png_1024": "03_Заявки/png_1024/042_calculator.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/042_calculator.svg",
+        "dark": "canon_v2/dark/svg/042_calculator.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/042_calculator.png",
+        "dark": "canon_v2/dark/png_1024/042_calculator.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-042"
+    },
+    {
+      "id": 43,
+      "name_ru": "Мойка",
+      "category": "03_Заявки",
+      "icon_key": "soap",
+      "source_svg": "03_Заявки/svg/043_soap.svg",
+      "source_png_1024": "03_Заявки/png_1024/043_soap.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/043_soap.svg",
+        "dark": "canon_v2/dark/svg/043_soap.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/043_soap.png",
+        "dark": "canon_v2/dark/png_1024/043_soap.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-043"
+    },
+    {
+      "id": 44,
+      "name_ru": "Детейлинг",
+      "category": "03_Заявки",
+      "icon_key": "spray-can-sparkles",
+      "source_svg": "03_Заявки/svg/044_spray-can-sparkles.svg",
+      "source_png_1024": "03_Заявки/png_1024/044_spray-can-sparkles.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/044_spray-can-sparkles.svg",
+        "dark": "canon_v2/dark/svg/044_spray-can-sparkles.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/044_spray-can-sparkles.png",
+        "dark": "canon_v2/dark/png_1024/044_spray-can-sparkles.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-044"
+    },
+    {
+      "id": 45,
+      "name_ru": "Все услуги",
+      "category": "03_Заявки",
+      "icon_key": "circle-plus",
+      "source_svg": "03_Заявки/svg/045_circle-plus.svg",
+      "source_png_1024": "03_Заявки/png_1024/045_circle-plus.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/045_circle-plus.svg",
+        "dark": "canon_v2/dark/svg/045_circle-plus.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/045_circle-plus.png",
+        "dark": "canon_v2/dark/png_1024/045_circle-plus.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-045"
+    },
+    {
+      "id": 46,
+      "name_ru": "Сообщество",
+      "category": "04_Сообщество",
+      "icon_key": "users",
+      "source_svg": "04_Сообщество/svg/046_users.svg",
+      "source_png_1024": "04_Сообщество/png_1024/046_users.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/046_users.svg",
+        "dark": "canon_v2/dark/svg/046_users.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/046_users.png",
+        "dark": "canon_v2/dark/png_1024/046_users.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-046"
+    },
+    {
+      "id": 47,
+      "name_ru": "Группы",
+      "category": "04_Сообщество",
+      "icon_key": "user-group",
+      "source_svg": "04_Сообщество/svg/047_user-group.svg",
+      "source_png_1024": "04_Сообщество/png_1024/047_user-group.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/047_user-group.svg",
+        "dark": "canon_v2/dark/svg/047_user-group.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/047_user-group.png",
+        "dark": "canon_v2/dark/png_1024/047_user-group.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-047"
+    },
+    {
+      "id": 48,
+      "name_ru": "Обсуждения",
+      "category": "04_Сообщество",
+      "icon_key": "comment-dots",
+      "source_svg": "04_Сообщество/svg/048_comment-dots.svg",
+      "source_png_1024": "04_Сообщество/png_1024/048_comment-dots.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/048_comment-dots.svg",
+        "dark": "canon_v2/dark/svg/048_comment-dots.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/048_comment-dots.png",
+        "dark": "canon_v2/dark/png_1024/048_comment-dots.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-048"
+    },
+    {
+      "id": 49,
+      "name_ru": "Вопрос эксперту",
+      "category": "04_Сообщество",
+      "icon_key": "circle-question",
+      "source_svg": "04_Сообщество/svg/049_circle-question.svg",      "source_png_1024": "04_Сообщество/png_1024/049_circle-question.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/049_circle-question.svg",
+        "dark": "canon_v2/dark/svg/049_circle-question.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/049_circle-question.png",
+        "dark": "canon_v2/dark/png_1024/049_circle-question.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-049"
+    },
+    {
+      "id": 50,
+      "name_ru": "Советы",
+      "category": "04_Сообщество",
+      "icon_key": "lightbulb",
+      "source_svg": "04_Сообщество/svg/050_lightbulb.svg",
+      "source_png_1024": "04_Сообщество/png_1024/050_lightbulb.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/050_lightbulb.svg",
+        "dark": "canon_v2/dark/svg/050_lightbulb.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/050_lightbulb.png",
+        "dark": "canon_v2/dark/png_1024/050_lightbulb.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-050"
+    },
+    {
+      "id": 51,
+      "name_ru": "База знаний",
+      "category": "04_Сообщество",
+      "icon_key": "book-open",
+      "source_svg": "04_Сообщество/svg/051_book-open.svg",
+      "source_png_1024": "04_Сообщество/png_1024/051_book-open.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/051_book-open.svg",
+        "dark": "canon_v2/dark/svg/051_book-open.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/051_book-open.png",
+        "dark": "canon_v2/dark/png_1024/051_book-open.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-051"
+    },
+    {
+      "id": 52,
+      "name_ru": "Видео",
+      "category": "04_Сообщество",
+      "icon_key": "circle-play",
+      "source_svg": "04_Сообщество/svg/052_circle-play.svg",
+      "source_png_1024": "04_Сообщество/png_1024/052_circle-play.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/052_circle-play.svg",
+        "dark": "canon_v2/dark/svg/052_circle-play.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/052_circle-play.png",
+        "dark": "canon_v2/dark/png_1024/052_circle-play.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-052"
+    },
+    {
+      "id": 53,
+      "name_ru": "Обучение",
+      "category": "04_Сообщество",
+      "icon_key": "graduation-cap",
+      "source_svg": "04_Сообщество/svg/053_graduation-cap.svg",
+      "source_png_1024": "04_Сообщество/png_1024/053_graduation-cap.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/053_graduation-cap.svg",
+        "dark": "canon_v2/dark/svg/053_graduation-cap.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/053_graduation-cap.png",
+        "dark": "canon_v2/dark/png_1024/053_graduation-cap.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-053"
+    },
+    {
+      "id": 54,
+      "name_ru": "Новости",
+      "category": "04_Сообщество",
+      "icon_key": "newspaper",
+      "source_svg": "04_Сообщество/svg/054_newspaper.svg",
+      "source_png_1024": "04_Сообщество/png_1024/054_newspaper.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/054_newspaper.svg",
+        "dark": "canon_v2/dark/svg/054_newspaper.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/054_newspaper.png",
+        "dark": "canon_v2/dark/png_1024/054_newspaper.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-054"
+    },
+    {
+      "id": 55,
+      "name_ru": "Акции",
+      "category": "04_Сообщество",
+      "icon_key": "bullhorn",
+      "source_svg": "04_Сообщество/svg/055_bullhorn.svg",
+      "source_png_1024": "04_Сообщество/png_1024/055_bullhorn.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/055_bullhorn.svg",
+        "dark": "canon_v2/dark/svg/055_bullhorn.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/055_bullhorn.png",
+        "dark": "canon_v2/dark/png_1024/055_bullhorn.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-055"
+    },
+    {
+      "id": 56,
+      "name_ru": "Конкурсы",
+      "category": "04_Сообщество",
+      "icon_key": "trophy",
+      "source_svg": "04_Сообщество/svg/056_trophy.svg",
+      "source_png_1024": "04_Сообщество/png_1024/056_trophy.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/056_trophy.svg",
+        "dark": "canon_v2/dark/svg/056_trophy.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/056_trophy.png",
+        "dark": "canon_v2/dark/png_1024/056_trophy.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-056"
+    },
+    {
+      "id": 57,
+      "name_ru": "Рейтинги",
+      "category": "04_Сообщество",
+      "icon_key": "star",
+      "source_svg": "04_Сообщество/svg/057_star.svg",
+      "source_png_1024": "04_Сообщество/png_1024/057_star.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/057_star.svg",
+        "dark": "canon_v2/dark/svg/057_star.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/057_star.png",
+        "dark": "canon_v2/dark/png_1024/057_star.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-057"
+    },
+    {
+      "id": 58,
+      "name_ru": "Фотоотчёты",
+      "category": "04_Сообщество",
+      "icon_key": "image",
+      "source_svg": "04_Сообщество/svg/058_image.svg",
+      "source_png_1024": "04_Сообщество/png_1024/058_image.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/058_image.svg",
+        "dark": "canon_v2/dark/svg/058_image.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/058_image.png",
+        "dark": "canon_v2/dark/png_1024/058_image.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-058"
+    },
+    {
+      "id": 59,
+      "name_ru": "Отзывы",
+      "category": "04_Сообщество",
+      "icon_key": "comment",
+      "source_svg": "04_Сообщество/svg/059_comment.svg",
+      "source_png_1024": "04_Сообщество/png_1024/059_comment.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/059_comment.svg",
+        "dark": "canon_v2/dark/svg/059_comment.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/059_comment.png",
+        "dark": "canon_v2/dark/png_1024/059_comment.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-059"
+    },
+    {
+      "id": 60,
+      "name_ru": "Блог",
+      "category": "04_Сообщество",
+      "icon_key": "blog",
+      "source_svg": "04_Сообщество/svg/060_blog.svg",
+      "source_png_1024": "04_Сообщество/png_1024/060_blog.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/060_blog.svg",
+        "dark": "canon_v2/dark/svg/060_blog.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/060_blog.png",
+        "dark": "canon_v2/dark/png_1024/060_blog.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-060"
+    },
+    {
+      "id": 61,
+      "name_ru": "Маркетплейс",
+      "category": "05_Маркетплейс",
+      "icon_key": "cart-shopping",
+      "source_svg": "05_Маркетплейс/svg/061_cart-shopping.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/061_cart-shopping.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/061_cart-shopping.svg",
+        "dark": "canon_v2/dark/svg/061_cart-shopping.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/061_cart-shopping.png",
+        "dark": "canon_v2/dark/png_1024/061_cart-shopping.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-061"
+    },
+    {
+      "id": 62,
+      "name_ru": "Запчасти",
+      "category": "05_Маркетплейс",
+      "icon_key": "gear",
+      "source_svg": "05_Маркетплейс/svg/062_gear.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/062_gear.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/062_gear.svg",
+        "dark": "canon_v2/dark/svg/062_gear.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/062_gear.png",
+        "dark": "canon_v2/dark/png_1024/062_gear.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-062"
+    },
+    {
+      "id": 63,
+      "name_ru": "Расходники",
+      "category": "05_Маркетплейс",
+      "icon_key": "bottle-water",
+      "source_svg": "05_Маркетплейс/svg/063_bottle-water.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/063_bottle-water.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/063_bottle-water.svg",
+        "dark": "canon_v2/dark/svg/063_bottle-water.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/063_bottle-water.png",
+        "dark": "canon_v2/dark/png_1024/063_bottle-water.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-063"
+    },
+    {
+      "id": 64,
+      "name_ru": "Шины",
+      "category": "05_Маркетплейс",
+      "icon_key": "circle-notch",
+      "source_svg": "05_Маркетплейс/svg/064_circle-notch.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/064_circle-notch.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/064_circle-notch.svg",
+        "dark": "canon_v2/dark/svg/064_circle-notch.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/064_circle-notch.png",
+        "dark": "canon_v2/dark/png_1024/064_circle-notch.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-064"
+    },
+    {
+      "id": 65,
+      "name_ru": "Диски",
+      "category": "05_Маркетплейс",
+      "icon_key": "record-vinyl",
+      "source_svg": "05_Маркетплейс/svg/065_record-vinyl.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/065_record-vinyl.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/065_record-vinyl.svg",
+        "dark": "canon_v2/dark/svg/065_record-vinyl.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/065_record-vinyl.png",
+        "dark": "canon_v2/dark/png_1024/065_record-vinyl.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-065"
+    },
+    {
+      "id": 66,
+      "name_ru": "Аккумуляторы",
+      "category": "05_Маркетплейс",
+      "icon_key": "car-battery",
+      "source_svg": "05_Маркетплейс/svg/066_car-battery.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/066_car-battery.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/066_car-battery.svg",
+        "dark": "canon_v2/dark/svg/066_car-battery.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/066_car-battery.png",
+        "dark": "canon_v2/dark/png_1024/066_car-battery.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-066"
+    },
+    {
+      "id": 67,
+      "name_ru": "Масла",
+      "category": "05_Маркетплейс",
+      "icon_key": "droplet",
+      "source_svg": "05_Маркетплейс/svg/067_droplet.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/067_droplet.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/067_droplet.svg",
+        "dark": "canon_v2/dark/svg/067_droplet.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/067_droplet.png",
+        "dark": "canon_v2/dark/png_1024/067_droplet.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-067"
+    },
+    {
+      "id": 68,
+      "name_ru": "Фильтры",
+      "category": "05_Маркетплейс",
+      "icon_key": "filter",
+      "source_svg": "05_Маркетплейс/svg/068_filter.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/068_filter.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/068_filter.svg",
+        "dark": "canon_v2/dark/svg/068_filter.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/068_filter.png",
+        "dark": "canon_v2/dark/png_1024/068_filter.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-068"
+    },
+    {
+      "id": 69,
+      "name_ru": "Аксессуары",
+      "category": "05_Маркетплейс",
+      "icon_key": "chair",
+      "source_svg": "05_Маркетплейс/svg/069_chair.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/069_chair.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/069_chair.svg",
+        "dark": "canon_v2/dark/svg/069_chair.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/069_chair.png",
+        "dark": "canon_v2/dark/png_1024/069_chair.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-069"
+    },
+    {
+      "id": 70,
+      "name_ru": "Электроника",
+      "category": "05_Маркетплейс",
+      "icon_key": "microchip",
+      "source_svg": "05_Маркетплейс/svg/070_microchip.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/070_microchip.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/070_microchip.svg",
+        "dark": "canon_v2/dark/svg/070_microchip.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/070_microchip.png",
+        "dark": "canon_v2/dark/png_1024/070_microchip.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-070"
+    },
+    {
+      "id": 71,
+      "name_ru": "Автохимия",
+      "category": "05_Маркетплейс",
+      "icon_key": "spray-can-sparkles",
+      "source_svg": "05_Маркетплейс/svg/071_spray-can-sparkles.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/071_spray-can-sparkles.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/071_spray-can-sparkles.svg",
+        "dark": "canon_v2/dark/svg/071_spray-can-sparkles.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/071_spray-can-sparkles.png",
+        "dark": "canon_v2/dark/png_1024/071_spray-can-sparkles.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-071"
+    },
+    {
+      "id": 72,
+      "name_ru": "Инструменты",
+      "category": "05_Маркетплейс",
+      "icon_key": "screwdriver-wrench",
+      "source_svg": "05_Маркетплейс/svg/072_screwdriver-wrench.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/072_screwdriver-wrench.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/072_screwdriver-wrench.svg",
+        "dark": "canon_v2/dark/svg/072_screwdriver-wrench.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/072_screwdriver-wrench.png",
+        "dark": "canon_v2/dark/png_1024/072_screwdriver-wrench.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-072"
+    },
+    {
+      "id": 73,
+      "name_ru": "Каталог",
+      "category": "05_Маркетплейс",
+      "icon_key": "list",
+      "source_svg": "05_Маркетплейс/svg/073_list.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/073_list.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/073_list.svg",
+        "dark": "canon_v2/dark/svg/073_list.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/073_list.png",
+        "dark": "canon_v2/dark/png_1024/073_list.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-073"
+    },
+    {
+      "id": 74,
+      "name_ru": "Скидки",
+      "category": "05_Маркетплейс",
+      "icon_key": "tags",
+      "source_svg": "05_Маркетплейс/svg/074_tags.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/074_tags.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/074_tags.svg",
+        "dark": "canon_v2/dark/svg/074_tags.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/074_tags.png",
+        "dark": "canon_v2/dark/png_1024/074_tags.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-074"
+    },
+    {
+      "id": 75,
+      "name_ru": "Доставка",
+      "category": "05_Маркетплейс",
+      "icon_key": "truck-fast",
+      "source_svg": "05_Маркетплейс/svg/075_truck-fast.svg",
+      "source_png_1024": "05_Маркетплейс/png_1024/075_truck-fast.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/075_truck-fast.svg",
+        "dark": "canon_v2/dark/svg/075_truck-fast.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/075_truck-fast.png",
+        "dark": "canon_v2/dark/png_1024/075_truck-fast.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-075"
+    },
+    {
+      "id": 76,
+      "name_ru": "Дом",
+      "category": "06_Допуслуги",
+      "icon_key": "house-chimney",
+      "source_svg": "06_Допуслуги/svg/076_house-chimney.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/076_house-chimney.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/076_house-chimney.svg",
+        "dark": "canon_v2/dark/svg/076_house-chimney.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/076_house-chimney.png",
+        "dark": "canon_v2/dark/png_1024/076_house-chimney.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-076"
+    },
+    {
+      "id": 77,
+      "name_ru": "Сад",
+      "category": "06_Допуслуги",
+      "icon_key": "seedling",
+      "source_svg": "06_Допуслуги/svg/077_seedling.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/077_seedling.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/077_seedling.svg",
+        "dark": "canon_v2/dark/svg/077_seedling.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/077_seedling.png",
+        "dark": "canon_v2/dark/png_1024/077_seedling.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-077"
+    },
+    {
+      "id": 78,
+      "name_ru": "Ремонт",
+      "category": "06_Допуслуги",
+      "icon_key": "hammer",
+      "source_svg": "06_Допуслуги/svg/078_hammer.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/078_hammer.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/078_hammer.svg",
+        "dark": "canon_v2/dark/svg/078_hammer.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/078_hammer.png",
+        "dark": "canon_v2/dark/png_1024/078_hammer.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-078"
+    },
+    {
+      "id": 79,
+      "name_ru": "Красота",
+      "category": "06_Допуслуги",
+      "icon_key": "spa",
+      "source_svg": "06_Допуслуги/svg/079_spa.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/079_spa.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/079_spa.svg",
+        "dark": "canon_v2/dark/svg/079_spa.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/079_spa.png",
+        "dark": "canon_v2/dark/png_1024/079_spa.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-079"
+    },
+    {
+      "id": 80,
+      "name_ru": "Здоровье",
+      "category": "06_Допуслуги",
+      "icon_key": "heart-pulse",
+      "source_svg": "06_Допуслуги/svg/080_heart-pulse.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/080_heart-pulse.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/080_heart-pulse.svg",
+        "dark": "canon_v2/dark/svg/080_heart-pulse.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/080_heart-pulse.png",
+        "dark": "canon_v2/dark/png_1024/080_heart-pulse.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-080"
+    },
+    {
+      "id": 81,
+      "name_ru": "Бытовые услуги",
+      "category": "06_Допуслуги",
+      "icon_key": "broom",
+      "source_svg": "06_Допуслуги/svg/081_broom.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/081_broom.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/081_broom.svg",
+        "dark": "canon_v2/dark/svg/081_broom.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/081_broom.png",
+        "dark": "canon_v2/dark/png_1024/081_broom.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-081"
+    },
+    {
+      "id": 82,
+      "name_ru": "Электрик",
+      "category": "06_Допуслуги",
+      "icon_key": "plug",
+      "source_svg": "06_Допуслуги/svg/082_plug.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/082_plug.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/082_plug.svg",
+        "dark": "canon_v2/dark/svg/082_plug.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/082_plug.png",
+        "dark": "canon_v2/dark/png_1024/082_plug.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-082"
+    },
+    {
+      "id": 83,
+      "name_ru": "Сантехник",
+      "category": "06_Допуслуги",
+      "icon_key": "faucet",
+      "source_svg": "06_Допуслуги/svg/083_faucet.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/083_faucet.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/083_faucet.svg",
+        "dark": "canon_v2/dark/svg/083_faucet.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/083_faucet.png",
+        "dark": "canon_v2/dark/png_1024/083_faucet.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-083"
+    },
+    {
+      "id": 84,
+      "name_ru": "Клининг",
+      "category": "06_Допуслуги",
+      "icon_key": "bucket",
+      "source_svg": "06_Допуслуги/svg/084_bucket.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/084_bucket.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/084_bucket.svg",
+        "dark": "canon_v2/dark/svg/084_bucket.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/084_bucket.png",
+        "dark": "canon_v2/dark/png_1024/084_bucket.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-084"
+    },
+    {
+      "id": 85,
+      "name_ru": "Грузчики",
+      "category": "06_Допуслуги",
+      "icon_key": "dolly",
+      "source_svg": "06_Допуслуги/svg/085_dolly.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/085_dolly.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/085_dolly.svg",
+        "dark": "canon_v2/dark/svg/085_dolly.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/085_dolly.png",
+        "dark": "canon_v2/dark/png_1024/085_dolly.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-085"
+    },
+    {
+      "id": 86,
+      "name_ru": "Доставка",
+      "category": "06_Допуслуги",
+      "icon_key": "box",
+      "source_svg": "06_Допуслуги/svg/086_box.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/086_box.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/086_box.svg",
+        "dark": "canon_v2/dark/svg/086_box.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/086_box.png",
+        "dark": "canon_v2/dark/png_1024/086_box.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-086"
+    },
+    {
+      "id": 87,
+      "name_ru": "Питание",
+      "category": "06_Допуслуги",
+      "icon_key": "bell-concierge",
+      "source_svg": "06_Допуслуги/svg/087_bell-concierge.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/087_bell-concierge.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/087_bell-concierge.svg",
+        "dark": "canon_v2/dark/svg/087_bell-concierge.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/087_bell-concierge.png",
+        "dark": "canon_v2/dark/png_1024/087_bell-concierge.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-087"
+    },
+    {
+      "id": 88,
+      "name_ru": "Отдых",
+      "category": "06_Допуслуги",
+      "icon_key": "umbrella-beach",
+      "source_svg": "06_Допуслуги/svg/088_umbrella-beach.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/088_umbrella-beach.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/088_umbrella-beach.svg",
+        "dark": "canon_v2/dark/svg/088_umbrella-beach.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/088_umbrella-beach.png",
+        "dark": "canon_v2/dark/png_1024/088_umbrella-beach.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-088"
+    },
+    {
+      "id": 89,
+      "name_ru": "Туризм",
+      "category": "06_Допуслуги",
+      "icon_key": "mountain",
+      "source_svg": "06_Допуслуги/svg/089_mountain.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/089_mountain.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/089_mountain.svg",
+        "dark": "canon_v2/dark/svg/089_mountain.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/089_mountain.png",
+        "dark": "canon_v2/dark/png_1024/089_mountain.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-089"
+    },
+    {
+      "id": 90,
+      "name_ru": "Направления",
+      "category": "06_Допуслуги",
+      "icon_key": "table-cells",
+      "source_svg": "06_Допуслуги/svg/090_table-cells.svg",
+      "source_png_1024": "06_Допуслуги/png_1024/090_table-cells.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/090_table-cells.svg",
+        "dark": "canon_v2/dark/svg/090_table-cells.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/090_table-cells.png",
+        "dark": "canon_v2/dark/png_1024/090_table-cells.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-090"
+    },
+    {
+      "id": 91,
+      "name_ru": "ELM327",
+      "category": "07_Интеграции",
+      "icon_key": "ethernet",
+      "source_svg": "07_Интеграции/svg/091_ethernet.svg",
+      "source_png_1024": "07_Интеграции/png_1024/091_ethernet.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/091_ethernet.svg",
+        "dark": "canon_v2/dark/svg/091_ethernet.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/091_ethernet.png",
+        "dark": "canon_v2/dark/png_1024/091_ethernet.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-091"
+    },
+    {
+      "id": 92,
+      "name_ru": "Arduino",
+      "category": "07_Интеграции",
+      "icon_key": "infinity",
+      "source_svg": "07_Интеграции/svg/092_infinity.svg",
+      "source_png_1024": "07_Интеграции/png_1024/092_infinity.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/092_infinity.svg",
+        "dark": "canon_v2/dark/svg/092_infinity.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/092_infinity.png",
+        "dark": "canon_v2/dark/png_1024/092_infinity.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-092"
+    },
+    {
+      "id": 93,
+      "name_ru": "GPS",
+      "category": "07_Интеграции",
+      "icon_key": "location-dot",
+      "source_svg": "07_Интеграции/svg/093_location-dot.svg",
+      "source_png_1024": "07_Интеграции/png_1024/093_location-dot.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/093_location-dot.svg",
+        "dark": "canon_v2/dark/svg/093_location-dot.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/093_location-dot.png",
+        "dark": "canon_v2/dark/png_1024/093_location-dot.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-093"
+    },
+    {
+      "id": 94,
+      "name_ru": "Камера",
+      "category": "07_Интеграции",
+      "icon_key": "camera",
+      "source_svg": "07_Интеграции/svg/094_camera.svg",
+      "source_png_1024": "07_Интеграции/png_1024/094_camera.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/094_camera.svg",
+        "dark": "canon_v2/dark/svg/094_camera.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/094_camera.png",
+        "dark": "canon_v2/dark/png_1024/094_camera.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-094"
+    },
+    {
+      "id": 95,
+      "name_ru": "QR-сканер",
+      "category": "07_Интеграции",
+      "icon_key": "qrcode",
+      "source_svg": "07_Интеграции/svg/095_qrcode.svg",
+      "source_png_1024": "07_Интеграции/png_1024/095_qrcode.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/095_qrcode.svg",
+        "dark": "canon_v2/dark/svg/095_qrcode.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/095_qrcode.png",
+        "dark": "canon_v2/dark/png_1024/095_qrcode.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-095"
+    },
+    {
+      "id": 96,
+      "name_ru": "NFC",
+      "category": "07_Интеграции",
+      "icon_key": "wave-square",
+      "source_svg": "07_Интеграции/svg/096_wave-square.svg",
+      "source_png_1024": "07_Интеграции/png_1024/096_wave-square.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/096_wave-square.svg",
+        "dark": "canon_v2/dark/svg/096_wave-square.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/096_wave-square.png",
+        "dark": "canon_v2/dark/png_1024/096_wave-square.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-096"
+    },
+    {
+      "id": 97,
+      "name_ru": "Bluetooth",
+      "category": "07_Интеграции",
+      "icon_key": "bluetooth-b",
+      "source_svg": "07_Интеграции/svg/097_bluetooth-b.svg",
+      "source_png_1024": "07_Интеграции/png_1024/097_bluetooth-b.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/097_bluetooth-b.svg",
+        "dark": "canon_v2/dark/svg/097_bluetooth-b.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/097_bluetooth-b.png",
+        "dark": "canon_v2/dark/png_1024/097_bluetooth-b.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-097"
+    },
+    {
+      "id": 98,
+      "name_ru": "Wi-Fi",
+      "category": "07_Интеграции",
+      "icon_key": "wifi",
+      "source_svg": "07_Интеграции/svg/098_wifi.svg",
+      "source_png_1024": "07_Интеграции/png_1024/098_wifi.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/098_wifi.svg",
+        "dark": "canon_v2/dark/svg/098_wifi.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/098_wifi.png",
+        "dark": "canon_v2/dark/png_1024/098_wifi.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-098"
+    },
+    {
+      "id": 99,
+      "name_ru": "Синхронизация",
+      "category": "07_Интеграции",
+      "icon_key": "cloud-arrow-up",
+      "source_svg": "07_Интеграции/svg/099_cloud-arrow-up.svg",      "source_png_1024": "07_Интеграции/png_1024/099_cloud-arrow-up.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/099_cloud-arrow-up.svg",
+        "dark": "canon_v2/dark/svg/099_cloud-arrow-up.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/099_cloud-arrow-up.png",
+        "dark": "canon_v2/dark/png_1024/099_cloud-arrow-up.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-099"
+    },
+    {
+      "id": 100,
+      "name_ru": "Умный гараж",
+      "category": "07_Интеграции",
+      "icon_key": "warehouse",
+      "source_svg": "07_Интеграции/svg/100_warehouse.svg",
+      "source_png_1024": "07_Интеграции/png_1024/100_warehouse.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/100_warehouse.svg",
+        "dark": "canon_v2/dark/svg/100_warehouse.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/100_warehouse.png",
+        "dark": "canon_v2/dark/png_1024/100_warehouse.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-100"
+    },
+    {
+      "id": 101,
+      "name_ru": "IoT",
+      "category": "07_Интеграции",
+      "icon_key": "microchip",
+      "source_svg": "07_Интеграции/svg/101_microchip.svg",
+      "source_png_1024": "07_Интеграции/png_1024/101_microchip.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/101_microchip.svg",
+        "dark": "canon_v2/dark/svg/101_microchip.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/101_microchip.png",
+        "dark": "canon_v2/dark/png_1024/101_microchip.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-101"
+    },
+    {
+      "id": 102,
+      "name_ru": "Сканер документов",
+      "category": "07_Интеграции",
+      "icon_key": "expand",
+      "source_svg": "07_Интеграции/svg/102_expand.svg",
+      "source_png_1024": "07_Интеграции/png_1024/102_expand.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/102_expand.svg",
+        "dark": "canon_v2/dark/svg/102_expand.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/102_expand.png",
+        "dark": "canon_v2/dark/png_1024/102_expand.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-102"
+    },
+    {
+      "id": 103,
+      "name_ru": "Голосовой поиск",
+      "category": "07_Интеграции",
+      "icon_key": "microphone",
+      "source_svg": "07_Интеграции/svg/103_microphone.svg",
+      "source_png_1024": "07_Интеграции/png_1024/103_microphone.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/103_microphone.svg",
+        "dark": "canon_v2/dark/svg/103_microphone.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/103_microphone.png",
+        "dark": "canon_v2/dark/png_1024/103_microphone.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-103"
+    },
+    {
+      "id": 104,
+      "name_ru": "API",
+      "category": "07_Интеграции",
+      "icon_key": "code",
+      "source_svg": "07_Интеграции/svg/104_code.svg",
+      "source_png_1024": "07_Интеграции/png_1024/104_code.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/104_code.svg",
+        "dark": "canon_v2/dark/svg/104_code.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/104_code.png",
+        "dark": "canon_v2/dark/png_1024/104_code.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-104"
+    },
+    {
+      "id": 105,
+      "name_ru": "Подключения",
+      "category": "07_Интеграции",
+      "icon_key": "link",
+      "source_svg": "07_Интеграции/svg/105_link.svg",
+      "source_png_1024": "07_Интеграции/png_1024/105_link.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/105_link.svg",
+        "dark": "canon_v2/dark/svg/105_link.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/105_link.png",
+        "dark": "canon_v2/dark/png_1024/105_link.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-105"
+    },
+    {
+      "id": 106,
+      "name_ru": "О системе",
+      "category": "08_Аккаунт",
+      "icon_key": "circle-info",
+      "source_svg": "08_Аккаунт/svg/106_circle-info.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/106_circle-info.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/106_circle-info.svg",
+        "dark": "canon_v2/dark/svg/106_circle-info.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/106_circle-info.png",
+        "dark": "canon_v2/dark/png_1024/106_circle-info.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-106"
+    },
+    {
+      "id": 107,
+      "name_ru": "Правила",
+      "category": "08_Аккаунт",
+      "icon_key": "file-lines",
+      "source_svg": "08_Аккаунт/svg/107_file-lines.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/107_file-lines.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/107_file-lines.svg",
+        "dark": "canon_v2/dark/svg/107_file-lines.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/107_file-lines.png",
+        "dark": "canon_v2/dark/png_1024/107_file-lines.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-107"
+    },
+    {
+      "id": 108,
+      "name_ru": "Конфиденциальность",
+      "category": "08_Аккаунт",
+      "icon_key": "shield",
+      "source_svg": "08_Аккаунт/svg/108_shield.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/108_shield.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/108_shield.svg",
+        "dark": "canon_v2/dark/svg/108_shield.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/108_shield.png",
+        "dark": "canon_v2/dark/png_1024/108_shield.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-108"
+    },
+    {
+      "id": 109,
+      "name_ru": "Согласия",
+      "category": "08_Аккаунт",
+      "icon_key": "square-check",
+      "source_svg": "08_Аккаунт/svg/109_square-check.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/109_square-check.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/109_square-check.svg",
+        "dark": "canon_v2/dark/svg/109_square-check.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/109_square-check.png",
+        "dark": "canon_v2/dark/png_1024/109_square-check.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-109"
+    },
+    {
+      "id": 110,
+      "name_ru": "Поддержка",
+      "category": "08_Аккаунт",
+      "icon_key": "headset",
+      "source_svg": "08_Аккаунт/svg/110_headset.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/110_headset.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/110_headset.svg",
+        "dark": "canon_v2/dark/svg/110_headset.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/110_headset.png",
+        "dark": "canon_v2/dark/png_1024/110_headset.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-110"
+    },
+    {
+      "id": 111,
+      "name_ru": "Обратная связь",
+      "category": "08_Аккаунт",
+      "icon_key": "envelope",
+      "source_svg": "08_Аккаунт/svg/111_envelope.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/111_envelope.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/111_envelope.svg",
+        "dark": "canon_v2/dark/svg/111_envelope.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/111_envelope.png",
+        "dark": "canon_v2/dark/png_1024/111_envelope.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-111"
+    },
+    {
+      "id": 112,
+      "name_ru": "Обновления",
+      "category": "08_Аккаунт",
+      "icon_key": "rotate",
+      "source_svg": "08_Аккаунт/svg/112_rotate.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/112_rotate.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/112_rotate.svg",
+        "dark": "canon_v2/dark/svg/112_rotate.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/112_rotate.png",
+        "dark": "canon_v2/dark/png_1024/112_rotate.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-112"
+    },
+    {
+      "id": 113,
+      "name_ru": "Версия",
+      "category": "08_Аккаунт",
+      "icon_key": "layer-group",
+      "source_svg": "08_Аккаунт/svg/113_layer-group.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/113_layer-group.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/113_layer-group.svg",
+        "dark": "canon_v2/dark/svg/113_layer-group.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/113_layer-group.png",
+        "dark": "canon_v2/dark/png_1024/113_layer-group.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-113"
+    },
+    {
+      "id": 114,
+      "name_ru": "Разработчикам",
+      "category": "08_Аккаунт",
+      "icon_key": "code",
+      "source_svg": "08_Аккаунт/svg/114_code.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/114_code.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/114_code.svg",
+        "dark": "canon_v2/dark/svg/114_code.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/114_code.png",
+        "dark": "canon_v2/dark/png_1024/114_code.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-114"
+    },
+    {
+      "id": 115,
+      "name_ru": "Статус",
+      "category": "08_Аккаунт",
+      "icon_key": "circle-check",
+      "source_svg": "08_Аккаунт/svg/115_circle-check.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/115_circle-check.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/115_circle-check.svg",
+        "dark": "canon_v2/dark/svg/115_circle-check.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/115_circle-check.png",
+        "dark": "canon_v2/dark/png_1024/115_circle-check.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-115"
+    },
+    {
+      "id": 116,
+      "name_ru": "Профиль",
+      "category": "08_Аккаунт",
+      "icon_key": "user",
+      "source_svg": "08_Аккаунт/svg/116_user.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/116_user.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/116_user.svg",
+        "dark": "canon_v2/dark/svg/116_user.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/116_user.png",
+        "dark": "canon_v2/dark/png_1024/116_user.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-116"
+    },
+    {
+      "id": 117,
+      "name_ru": "Настройки",
+      "category": "08_Аккаунт",
+      "icon_key": "gear",
+      "source_svg": "08_Аккаунт/svg/117_gear.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/117_gear.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/117_gear.svg",
+        "dark": "canon_v2/dark/svg/117_gear.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/117_gear.png",
+        "dark": "canon_v2/dark/png_1024/117_gear.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-117"
+    },
+    {
+      "id": 118,
+      "name_ru": "Язык",
+      "category": "08_Аккаунт",
+      "icon_key": "language",
+      "source_svg": "08_Аккаунт/svg/118_language.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/118_language.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/118_language.svg",
+        "dark": "canon_v2/dark/svg/118_language.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/118_language.png",
+        "dark": "canon_v2/dark/png_1024/118_language.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-118"
+    },
+    {
+      "id": 119,
+      "name_ru": "Безопасность",
+      "category": "08_Аккаунт",
+      "icon_key": "user-shield",
+      "source_svg": "08_Аккаунт/svg/119_user-shield.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/119_user-shield.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/119_user-shield.svg",
+        "dark": "canon_v2/dark/svg/119_user-shield.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/119_user-shield.png",
+        "dark": "canon_v2/dark/png_1024/119_user-shield.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-119"
+    },
+    {
+      "id": 120,
+      "name_ru": "Выход",
+      "category": "08_Аккаунт",
+      "icon_key": "right-from-bracket",
+      "source_svg": "08_Аккаунт/svg/120_right-from-bracket.svg",
+      "source_png_1024": "08_Аккаунт/png_1024/120_right-from-bracket.png",
+      "variant_svg": {
+        "light": "canon_v2/light/svg/120_right-from-bracket.svg",
+        "dark": "canon_v2/dark/svg/120_right-from-bracket.svg"
+      },
+      "variant_png_1024": {
+        "light": "canon_v2/light/png_1024/120_right-from-bracket.png",
+        "dark": "canon_v2/dark/png_1024/120_right-from-bracket.png"
+      },
+      "design_family": "FA-solid-legacy-adapted",
+      "recommended_min_display_css_px": 48,
+      "outline_menu_compatible": false,
+      "sprite_symbol": "k120-120"
+    }
+  ]
+}

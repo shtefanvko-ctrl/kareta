@@ -9,7 +9,7 @@ For any visual/UI task (including auth, registration, CSS, icons, mobile, map, l
 
 ## Single canon, not a new brandbook
 - Landing Canon v2 is authoritative: the authentic KARETA logo, #FC6606 orange, #474747 graphite, #FFFFFF white and #F7F7F5 soft.
-- The source presentation's first 12 slides remain untouched; its 12-slide addition exists in the project Library at /kareta.kz/docs/design/KARETA_KZ_brandbook_landing_canon_v2_EXTENDED.pptx.
+- The source presentation's first 12 slides remain untouched; its 15-slide addition (slides 13-27) exists in the project Library at /kareta.kz/docs/design/KARETA_KZ_brandbook_landing_canon_v2_EXTENDED.pptx.
 - Historic v1 blue #2563EB is NOT a primary brand CTA.
 - Do not add another canonical deck, palette or CSS layer. The old parallel v3 draft was archived and replaced by this additive correction.
 
@@ -27,6 +27,7 @@ For any visual/UI task (including auth, registration, CSS, icons, mobile, map, l
 
 ## Icons and review
 - Reuse js/next/ui_icons.js and assets/icons/tabler/ Tabler v3.48.0 MIT. The four independent optional SVG under assets/icons/kareta/ are only category supplements, NOT connected to runtime.
-- SVG: 24x24 viewBox, currentColor stroke, fill none, stroke-width 1.9, round caps/joins; preserve icon IDs, license and real project logo.
-- Offline contract: node tools/test_kareta_brandbook_addendum.js; structural XML, browser visual, contrast against image backgrounds, CI and production remain separately verified.
+- New SMALL outline SVG: 24x24 viewBox, currentColor stroke, fill none, stroke-width 1.9, round caps/joins; preserve icon IDs, license and real project logo.
+- Existing KARETA_CLIENT_120_HQ_SVG_PNG.zip has 120 Font Awesome Free filled glyphs (CC BY 4.0). Its unchanged original + light/dark supplemental variants are documented at `assets/icons/kareta-client-120/README.md` with `manifest_canon.json` and monochrome sprite. **These solid glyphs are NOT canonical 1.9 outline**: large cards/illustrations >=48px only; NEVER drop-in replace small navigation/controls with them. Do not remove upstream attribution.
+- Offline contracts: node tools/test_kareta_brandbook_addendum.js and node tools/test_kareta_client_120_canon.js; structural XML, browser visual, contrast against image backgrounds, CI and production remain separately verified.
 - No merge/deploy claims without evidence. This rule becomes default-branch accessible only after the PR merges; until then it is visible on this branch and project Library.
