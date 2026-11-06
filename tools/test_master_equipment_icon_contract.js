@@ -19,7 +19,9 @@ const pack=JSON.parse(fs.readFileSync(path.join(root,'assets/icons/tabler/index.
 const sprite=fs.readFileSync(path.join(root,'assets/icons/tabler',pack.sprite),'utf8');
 assert.equal(pack.vendored_icons.length,39);
 assert.equal(new Set(api.names).size,api.names.length,'duplicate canonical IDs');
-assert.equal(api.names.length,expected.count+pack.vendored_icons.length);
+const addedNames=['arrowRight','externalLink','eyeOff','flag','undo','x','map','elm327','arduino','obd'];
+assert.equal(api.names.length,expected.count+pack.vendored_icons.length+addedNames.length);
+for(const name of addedNames)assert(api.has(name),'missing appended icon '+name);
 for(const item of pack.vendored_icons){
   assert.equal(api.has(item.id),true,'missing '+item.id);
   const name=item.id.slice(7);
