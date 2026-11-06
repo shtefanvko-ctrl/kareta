@@ -10,4 +10,4 @@ Original 24x24 outline icons supplement the existing `KaretaUIIcons` and Tabler 
 | Автотовары | `auto-goods.svg` | Parts, accessories, shop |
 
 No runtime wiring in this PR. Visual compatibility and route binding remain separate tasks.
-See `docs/design/KARETA_BRANDBOOK_V3.md` and `css/next/icon_standard.css`.
+See `docs/design/LANDING_CANON_V2_ADDENDUM.md` and `css/next/icon_standard.css`.
