@@ -26,6 +26,11 @@ Before starting a task, read the latest entries in the common work ledger: https
 7. EVIDENCE — record what was actually inspected/tested and the exact candidate/ref when relevant.
 8. DONE — only when the requested DoD is satisfied. Otherwise report the precise remaining blocker/next executable step.
 
+## Reuse-first rule (owner decision, 2026-11-08)
+Before proposing or implementing anything, inspect existing source code, current services, Git branches/worktrees and PRs, architecture, configs, tests and audit/evidence records for a working or incomplete equivalent. Confirm the component's real state and owner; prefer repairing, extending or integrating it. **Create a system from scratch only when introducing a genuinely new system** with no existing equivalent, and record the evidence for that conclusion, compatibility plan and constraints. Small files, tests and isolated worktrees needed to improve an existing system are not a new system. For agent execution, first inventory and reuse existing Scion/VFS/Docker/MicroCore/Node Fabric rather than adding a parallel sandbox platform. If existing sources are inaccessible, mark the assessment NOT RUN/BLOCKED and do not assume an implementation is absent.
+
+For each commit, select meaningful verification by changed surface, transitive dependencies and exact candidate SHA. Avoid repeating expensive checks of unchanged components with equivalent valid evidence; where impact is uncertain, verify more rather than silently skipping. SKIPPED/NOT RUN is never PASS. Never bypass mandatory authorization, privacy, migration, release/provenance, worker-admission or production approval gates.
+
 ## Global invariants
 - No unrelated rewrites or opportunistic architecture replacement.
 - No hidden fallback that masks a failure.
