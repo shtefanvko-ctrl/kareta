@@ -10,18 +10,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Select relevant QA (unknown means run)
+        id: selective
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: echo "run=$(python3 tools/ci_selective_gate.py scanner)" >> "$GITHUB_OUTPUT"
+      - name: Selected gate status
+        if: steps.selective.outputs.run == 'false'
+        run: echo 'Unrelated PR changes; gate intentionally skipped'
       - uses: actions/setup-node@v4
+        if: steps.selective.outputs.run != 'false'
         with:
           node-version: '22'
       - uses: shivammathur/setup-php@v2
+        if: steps.selective.outputs.run != 'false'
         with:
           php-version: '8.1'
       - run: php -l inc/asset_registry.php
+        if: steps.selective.outputs.run != 'false'
       - run: node tools/test_home_scanner_navigation.js
+        if: steps.selective.outputs.run != 'false'
       - run: node tools/test_master_personal_qr.js
+        if: steps.selective.outputs.run != 'false'
       - run: |
           node --check js/next/pages/scanner.js
           node --check js/next/app_next.js
           node --check js/next/route_registry.js
           node --check js/next/role_access.js
           node --check js/next/route_asset_loader.js
+        if: steps.selective.outputs.run != 'false'
