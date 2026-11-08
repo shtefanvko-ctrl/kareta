@@ -10,16 +10,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Select relevant QA (unknown means run)
+        id: selective
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: echo "run=$(python3 tools/ci_selective_gate.py geo)" >> "$GITHUB_OUTPUT"
+      - name: Selected gate status
+        if: steps.selective.outputs.run == 'false'
+        run: echo 'Unrelated PR changes; gate intentionally skipped'
       - uses: actions/setup-node@v4
+        if: steps.selective.outputs.run != 'false'
         with:
           node-version: '22'
       - uses: shivammathur/setup-php@v2
+        if: steps.selective.outputs.run != 'false'
         with:
           php-version: '8.1'
       - run: php -l config.php
+        if: steps.selective.outputs.run != 'false'
       - run: php -l index.php
+        if: steps.selective.outputs.run != 'false'
       - run: node --check js/mobile_native_bridge.js
+        if: steps.selective.outputs.run != 'false'
       - run: node --check js/next/geo_map.js
+        if: steps.selective.outputs.run != 'false'
       - run: node --check js/next/onboarding/onboarding_selection_catalog.js
+        if: steps.selective.outputs.run != 'false'
       - run: node --check js/next/pages/core.js
+        if: steps.selective.outputs.run != 'false'
       - run: node tools/test_geo_map_runtime.js
+        if: steps.selective.outputs.run != 'false'
