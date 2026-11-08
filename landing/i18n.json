@@ -58,7 +58,19 @@
     "openBrowser": "Открыть в браузере",
     "webVersion": "Веб-версия",
     "downloadBrandText": "Ваш автомобиль. Ваш город. Ваш сервис.",
-    "footerText": "Единая автомобильная платформа для Казахстана."
+    "footerText": "Единая автомобильная платформа для Казахстана.",
+    "navCabinets": "Кабинеты",
+    "roleKicker": "Экосистема KARETA",
+    "roleTitle": "Выберите своё пространство",
+    "roleLead": "Одна платформа для клиентов, специалистов, СТО и продавцов запчастей.",
+    "roleClientTitle": "Клиент",
+    "roleClientText": "Гараж, заявки, история обслуживания",
+    "roleMasterTitle": "Мастер",
+    "roleMasterText": "Биржа, запись, услуги и заказы",
+    "roleStoTitle": "СТО",
+    "roleStoText": "Мастера, заказ-наряды и управление",
+    "roleShopTitle": "Магазин",
+    "roleShopText": "Товары, склад, продажи и заказы"
   },
   "kk": {
     "_meta": {
@@ -119,7 +131,19 @@
     "openBrowser": "Браузерде ашу",
     "webVersion": "Веб-нұсқа",
     "downloadBrandText": "Сіздің көлігіңіз. Сіздің қалаңыз. Сіздің сервисіңіз.",
-    "footerText": "Қазақстанға арналған бірыңғай автомобиль платформасы."
+    "footerText": "Қазақстанға арналған бірыңғай автомобиль платформасы.",
+    "navCabinets": "Кабинеттер",
+    "roleKicker": "KARETA экожүйесі",
+    "roleTitle": "Өз кеңістігіңізді таңдаңыз",
+    "roleLead": "Клиенттерге, мамандарға, автосервистерге және қосалқы бөлшек сатушыларына арналған ортақ платформа.",
+    "roleClientTitle": "Клиент",
+    "roleClientText": "Гараж, өтінімдер, қызмет көрсету тарихы",
+    "roleMasterTitle": "Шебер",
+    "roleMasterText": "Тапсырыстар биржасы, жазылу, қызметтер",
+    "roleStoTitle": "Автосервис",
+    "roleStoText": "Мамандар, жөндеу тапсырыстары, басқару",
+    "roleShopTitle": "Дүкен",
+    "roleShopText": "Тауарлар, қойма, сату және тапсырыстар"
   },
   "en": {
     "_meta": {
@@ -180,6 +204,18 @@
     "openBrowser": "Open in browser",
     "webVersion": "Web version",
     "downloadBrandText": "Your vehicle. Your city. Your service.",
-    "footerText": "A unified automotive platform for Kazakhstan."
+    "footerText": "A unified automotive platform for Kazakhstan.",
+    "navCabinets": "Dashboards",
+    "roleKicker": "KARETA ecosystem",
+    "roleTitle": "Choose your workspace",
+    "roleLead": "One platform for drivers, specialists, repair shops and parts sellers.",
+    "roleClientTitle": "Client",
+    "roleClientText": "Garage, requests and service history",
+    "roleMasterTitle": "Specialist",
+    "roleMasterText": "Job exchange, appointments and services",
+    "roleStoTitle": "Repair shop",
+    "roleStoText": "Staff, work orders and operations",
+    "roleShopTitle": "Store",
+    "roleShopText": "Products, stock, sales and orders"
   }
 }

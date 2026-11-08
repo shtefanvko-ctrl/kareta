@@ -336,6 +336,8 @@
   }
 
   function renderRoute(routeKey, lifecycle = {}){
+    // Re-check on every SPA transition; host/UI affinity is never a replacement for backend ACLs.
+    if(window.KaretaDomainSurface?.enforce?.().blocked)return;
     const requested=ROUTES[routeKey]?routeKey:'';
     const key=resolveAppRoute(requested);
     const route=ROUTES[key];
@@ -735,6 +737,8 @@
       // flight. No protected data is fetched here; only release-scoped CSS/JS.
       startInitialRouteWarmup();
       await warmSession();
+      // Host affinity is UX routing only; authority remains with Identity/context API.
+      const domainDecision=window.KaretaDomainSurface?.enforce?.({initial:true}) || {blocked:false};
       bootProfiler?.markOnce?.('session-ready',{mode:String(document.documentElement.dataset.identityMode||'')});
       if (!(await profilePromise('version.verify',verifyRuntimeVersion(),{kind:'asset-sw-parity'}))) {
         bootProfiler?.end?.(bootToken,{ok:false,reason:'version-parity'});
@@ -743,19 +747,20 @@
       }
       await profilePromise('onboarding.gate',Promise.resolve(window.KaretaMasterOnboardingGate?.check?.({ redirect:false, source:'app-boot' })),{source:'app-boot'}).catch(()=>null);
       const targetRoute = routeKeyFromHash(location.hash);
-      if(routeAssetLoader.isKnownLazy?.(targetRoute) && !routeAssetLoader.isRouteReady?.(targetRoute)){
+      if(!domainDecision.blocked && routeAssetLoader.isKnownLazy?.(targetRoute) && !routeAssetLoader.isRouteReady?.(targetRoute)){
         preloader?.update?.(68, 'Загрузка интерфейса…', {step:3});
         await ensureInitialRouteReady(targetRoute);
       }
       bootProfiler?.markOnce?.('route-assets-ready',{route:targetRoute});
-      routeRuntime.transition(targetRoute, { source:'boot' });
+      // Never mount a mismatched role's page or fetch its aggregate on this host.
+      if(!domainDecision.blocked)routeRuntime.transition(targetRoute, { source:'boot' });
       if (state.user || state.identity?.authenticated) {
         window.KaretaShellNav?.refresh?.({ role:roleAccess.currentRole(), activeKey:targetRoute });
         window.KaretaShellMenu?.render?.(roleAccess.currentRole());
         updateActiveNav();
       }
       preloader?.update?.(82, 'Интерфейс подготовлен', { step:4 });
-      scheduleApiSnapshot();
+      if(!domainDecision.blocked)scheduleApiSnapshot();
       preloader?.update?.(90, 'Проверка обновлений…', { step:6 });
       // Service Worker reconciliation is intentionally detached from the visible
       // boot. Installing/claiming a worker must never restart or delay the 0→100 pass.
@@ -775,7 +780,7 @@
       bootProfiler?.end?.(bootToken,{ok:true,route:targetRoute,degraded:state.runtimeDegraded===true});
       preloader?.complete?.(state.runtimeDegraded ? 'Приложение запущено в ограниченном режиме' : 'Добро пожаловать!');
       bootProfiler?.scheduleReport?.({route:targetRoute});
-      window.setTimeout(()=>{registerCurrentServiceWorker().catch(()=>null);schedulePrimaryRoutePrefetch();window.KaretaProductionGuard?.check?.({force:true}).catch(()=>null);},0);
+      window.setTimeout(()=>{registerCurrentServiceWorker().catch(()=>null);if(!domainDecision.blocked)schedulePrimaryRoutePrefetch();window.KaretaProductionGuard?.check?.({force:true}).catch(()=>null);},0);
     } catch (error) {
       const bootError=String(error?.message||error||'boot_failed');
       bootProfiler?.end?.(bootToken,{ok:false,error:bootError});
