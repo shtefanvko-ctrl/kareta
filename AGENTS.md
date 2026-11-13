@@ -38,7 +38,7 @@ Before starting a task, read the latest entries in the common work ledger: https
 
 ## Context modules
 Load only what applies:
-- UI / design / branding / onboarding visuals / icons: `ai/rules/design-system.md` → `docs/design/LANDING_CANON_V2_SOURCE.md` + `docs/design/LANDING_CANON_V2_ADDENDUM.md` (original canon retained; appended calculation tables, available for agents after merge into `main`).
+- UI / design / branding / onboarding visuals / icons: `ai/rules/design-system.md` (includes the [KARETA.KZ Landing Canon v2 brandbook](https://chatgpt.com/library?file_id=libfile_fef69e33ad5c8191a8a0cebdb3cef2d0&account_id=personal)) → `docs/design/LANDING_CANON_V2_SOURCE.md` + `docs/design/LANDING_CANON_V2_ADDENDUM.md` (original canon retained; appended calculation tables, available for agents after merge into `main`).
 - architecture / routing / shared contracts: `ai/rules/architecture.md`
 - auth / secrets / sensitive data / destructive actions: `ai/rules/security.md`
 - verification / release / status / evidence: `ai/rules/verification-release.md`
