@@ -60,7 +60,11 @@
     document.querySelector('[data-setting="required"]').classList.toggle('is-on', Boolean(selected.required));
     document.querySelector('[data-setting="required"]').setAttribute('aria-checked', String(Boolean(selected.required)));
     passwordSetting.hidden = selectedBlock !== 'password';
-    document.querySelector('[data-setting="showPasswordToggle"]').classList.toggle('is-on', Boolean(selected.showPasswordToggle));
+    const showPasswordToggle = Boolean(selected.showPasswordToggle);
+    document.querySelector('[data-setting="showPasswordToggle"]').classList.toggle('is-on', showPasswordToggle);
+    document.querySelector('[data-setting="showPasswordToggle"]').setAttribute('aria-checked', String(showPasswordToggle));
+    const passwordEye = document.querySelector('[data-preview-block="password"] .password-input span:last-child');
+    if (passwordEye) passwordEye.hidden = !showPasswordToggle;
     document.querySelector('[data-setting="showPasswordToggle"]').setAttribute('aria-checked', String(Boolean(selected.showPasswordToggle)));
     visibilityToggle.classList.toggle('is-on', selected.visible[currentDevice]);
     visibilityToggle.setAttribute('aria-checked', String(selected.visible[currentDevice]));
@@ -111,7 +115,8 @@
     else if (selectedBlock === 'submit') node.textContent = block.label;
     else if (selectedBlock === 'promo' || selectedBlock === 'mobile-help') node.textContent = block.label;
     else node.querySelector('.form-field > span')?.replaceChildren(document.createTextNode(block.label));
-    selectedTitle.textContent = ['name', 'phone', 'password'].includes(selectedBlock) ? `Поле «${block.label}»` : block.title;
+    if (['name', 'phone', 'password'].includes(selectedBlock)) block.title = `Поле «${block.label}»`;
+    selectedTitle.textContent = block.title;
   });
 
   fieldType.addEventListener('change', () => {
