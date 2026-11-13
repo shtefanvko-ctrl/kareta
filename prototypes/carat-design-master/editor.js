@@ -37,6 +37,85 @@
     statusTimer = window.setTimeout(() => status.classList.remove('is-visible'), 3500);
   }
 
+  let customBlockSequence = 0;
+
+  function selectBlock(id) {
+    selectedBlock = id;
+    document.querySelectorAll('[data-preview-block]').forEach(node => node.classList.remove('is-selected'));
+    document.querySelector(`[data-preview-block="${selectedBlock}"]`)?.classList.add('is-selected');
+    render();
+  }
+
+  function addBlock(button) {
+    const label = button.textContent.replace(/^＋\\s*/, '').trim();
+    const isField = label === 'Поле' || label === 'Пароль';
+    const isPassword = label === 'Пароль';
+    const isButton = label === 'Кнопка';
+    const id = `custom-${++customBlockSequence}`;
+    const blockLabel = isField ? (isPassword ? 'Новый пароль' : 'Новое поле') : isButton ? 'Новая кнопка' : 'Новый текст';
+    blocks[id] = {
+      title: isField ? `Поле «${blockLabel.replace(/^Поле «|»$/g, '')}»` : blockLabel,
+      label: blockLabel,
+      kind: isField ? 'field' : isButton ? 'button' : 'text',
+      type: isPassword ? 'password' : 'text',
+      key: '',
+      required: false,
+      showPasswordToggle: isPassword,
+      visible: { desktop: true, tablet: true, phone: true }
+    };
+
+    const layer = document.createElement('button');
+    layer.type = 'button';
+    layer.className = 'layer-item';
+    layer.dataset.block = id;
+    layer.setAttribute('aria-pressed', 'false');
+    const glyph = document.createElement('span');
+    glyph.className = 'layer-glyph';
+    glyph.textContent = isField ? '▱' : isButton ? '▰' : 'T';
+    const title = document.createElement('span');
+    title.textContent = blockLabel;
+    const dots = document.createElement('span');
+    dots.className = 'visibility-dots';
+    dots.textContent = 'ПК · ПЛ · ТЕЛ';
+    layer.append(glyph, title, dots);
+    document.querySelector('.layer-list').append(layer);
+
+    let preview;
+    if (isField) {
+      preview = document.createElement('label');
+      preview.className = 'form-field';
+      const caption = document.createElement('span');
+      caption.textContent = blockLabel;
+      preview.append(caption);
+      if (isPassword) {
+        const mask = document.createElement('span');
+        mask.className = 'password-input';
+        mask.innerHTML = '<span aria-hidden="true">••••••••</span><span aria-hidden="true">◉</span>';
+        preview.append(mask);
+      } else {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = blockLabel;
+        input.readOnly = true;
+        preview.append(input);
+      }
+    } else if (isButton) {
+      preview = document.createElement('button');
+      preview.type = 'button';
+      preview.className = 'registration-submit';
+      preview.textContent = blockLabel;
+    } else {
+      preview = document.createElement('p');
+      preview.className = 'promo-block';
+      preview.textContent = blockLabel;
+    }
+    preview.dataset.previewBlock = id;
+    const submit = document.querySelector('[data-preview-block="submit"]');
+    document.querySelector('.registration-card').insertBefore(preview, submit);
+    selectBlock(id);
+    announce('Блок добавлен только в локальный макет; серверное сохранение не подключено.');
+  }
+
   function render() {
     frame.dataset.device = currentDevice;
     frame.style.width = `min(100%, ${widths[currentDevice]}px)`;
@@ -53,7 +132,7 @@
     fieldLabel.value = selected.label || selected.title;
     fieldType.value = selected.type || 'text';
     dataKey.value = selected.key || '';
-    const isField = ['name', 'phone', 'password'].includes(selectedBlock);
+    const isField = selected.kind === 'field' || ['name', 'phone', 'password'].includes(selectedBlock);
     fieldLabel.disabled = !isField && !['heading', 'progress', 'submit', 'promo', 'mobile-help'].includes(selectedBlock);
     fieldType.disabled = !isField;
     dataKey.disabled = !isField;
@@ -92,13 +171,9 @@
     });
   });
 
-  document.querySelectorAll('.layer-item[data-block]').forEach(button => {
-    button.addEventListener('click', () => {
-      selectedBlock = button.dataset.block;
-      document.querySelectorAll('[data-preview-block]').forEach(node => node.classList.remove('is-selected'));
-      document.querySelector(`[data-preview-block="${selectedBlock}"]`)?.classList.add('is-selected');
-      render();
-    });
+  document.querySelector('.layer-list').addEventListener('click', event => {
+    const button = event.target.closest('.layer-item[data-block]');
+    if (button) selectBlock(button.dataset.block);
   });
 
   visibilityToggle.addEventListener('click', () => {
@@ -112,8 +187,8 @@
     const node = document.querySelector(`[data-preview-block="${selectedBlock}"]`);
     if (selectedBlock === 'heading') node.querySelector('h1').textContent = block.label;
     else if (selectedBlock === 'progress') node.querySelector('small').textContent = block.label;
-    else if (selectedBlock === 'submit') node.textContent = block.label;
-    else if (selectedBlock === 'promo' || selectedBlock === 'mobile-help') node.textContent = block.label;
+    else if (selectedBlock === 'submit' || block.kind === 'button') node.textContent = block.label;
+    else if (selectedBlock === 'promo' || selectedBlock === 'mobile-help' || block.kind === 'text') node.textContent = block.label;
     else node.querySelector('.form-field > span')?.replaceChildren(document.createTextNode(block.label));
     if (['name', 'phone', 'password'].includes(selectedBlock)) block.title = `Поле «${block.label}»`;
     selectedTitle.textContent = block.title;
@@ -142,7 +217,8 @@
       if (action === 'save') announce('Демо: сохранение не подключено. Настройки остаются только в этой вкладке.');
       else if (action === 'publish') announce('Публикация отключена: сначала требуется подключить защищённый PHP API.');
       else if (action === 'preview') announce('Вы уже видите предпросмотр. Отправка формы отключена.');
-      else if (action === 'add-window' || action === 'add-block') announce('Добавление блока пока показано как элемент интерфейса прототипа.');
+      else if (action === 'add-block') addBlock(button);
+      else if (action === 'add-window') announce('Создание окна пока отключено: сначала нужно согласовать модель окна и связь с route registry.');
     });
   });
 
