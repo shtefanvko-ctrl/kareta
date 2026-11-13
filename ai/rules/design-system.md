@@ -9,11 +9,12 @@ For any visual/UI task (including auth, registration, CSS, icons, mobile, map, l
 
 ## Single canon, not a new brandbook
 - Landing Canon v2 is authoritative: the authentic KARETA logo, #FC6606 orange, #474747 graphite, #FFFFFF white and #F7F7F5 soft.
+- Agent-ready visual reference: [KARETA.KZ Landing Canon v2 — extended brandbook](https://chatgpt.com/library?file_id=libfile_fef69e33ad5c8191a8a0cebdb3cef2d0&account_id=personal). Open this when visual inspection is useful; its normative rules are mirrored in the source transcript and addendum below.
 - The source presentation's first 12 slides remain untouched; its 15-slide addition (slides 13-27) exists in the project Library at /kareta.kz/docs/design/KARETA_KZ_brandbook_landing_canon_v2_EXTENDED.pptx.
 - Historic v1 blue #2563EB is NOT a primary brand CTA.
 - Do not add another canonical deck, palette or CSS layer. The old parallel v3 draft was archived and replaced by this additive correction.
-
 ## Root regression problem
+
 - CSS color drift: landing/styles.css #ff6500, css/next/icon_standard.css #ff6b00 fallback, design_contract.css #111827 text / #f5f6f8 page vs brand references.
 - Geometry drift: multiple overrides of shell/header/bottom nav/z-index/fixed/overflow create repeat mobile overlaps, horizontal scroll and icon disappearance.
 - Correct the actual owner module, not the symptom with another global CSS override or new router; preserve active role headers/nav, Identity, API and existing verified behavior.
