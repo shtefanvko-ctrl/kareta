@@ -4,14 +4,14 @@
   const widths = { desktop: 1120, tablet: 768, phone: 390 };
   const labels = { desktop: 'ПК', tablet: 'Планшет', phone: 'Телефон' };
   const blocks = {
-    heading: { title: 'Заголовок', visible: { desktop: true, tablet: true, phone: true } },
-    progress: { title: 'Шаги регистрации', visible: { desktop: true, tablet: true, phone: true } },
-    name: { title: 'Поле «Имя»', visible: { desktop: true, tablet: true, phone: true } },
-    phone: { title: 'Поле «Телефон»', visible: { desktop: true, tablet: true, phone: true } },
-    password: { title: 'Поле «Пароль»', visible: { desktop: true, tablet: true, phone: true } },
-    submit: { title: 'Кнопка «Продолжить»', visible: { desktop: true, tablet: true, phone: true } },
-    promo: { title: 'Промо-блок', visible: { desktop: true, tablet: true, phone: false } },
-    'mobile-help': { title: 'Короткая подсказка', visible: { desktop: false, tablet: false, phone: true } }
+    heading: { title: 'Заголовок', label: 'Создать аккаунт', visible: { desktop: true, tablet: true, phone: true } },
+    progress: { title: 'Шаги регистрации', label: 'Шаг 2 из 3', visible: { desktop: true, tablet: true, phone: true } },
+    name: { title: 'Поле «Имя»', label: 'Имя', type: 'text', key: 'name', required: true, visible: { desktop: true, tablet: true, phone: true } },
+    phone: { title: 'Поле «Телефон»', label: 'Номер телефона', type: 'tel', key: 'phone', required: true, visible: { desktop: true, tablet: true, phone: true } },
+    password: { title: 'Поле «Пароль»', label: 'Пароль', type: 'password', key: 'password', required: true, showPasswordToggle: true, visible: { desktop: true, tablet: true, phone: true } },
+    submit: { title: 'Кнопка «Продолжить»', label: 'Продолжить', visible: { desktop: true, tablet: true, phone: true } },
+    promo: { title: 'Промо-блок', label: 'Управляйте настройками регистрации в одном месте.', visible: { desktop: true, tablet: true, phone: false } },
+    'mobile-help': { title: 'Короткая подсказка', label: 'Данные передаются защищённо.', visible: { desktop: false, tablet: false, phone: true } }
   };
 
   let currentDevice = 'phone';
@@ -24,6 +24,10 @@
   const visibilityToggle = document.querySelector('[data-visibility-toggle]');
   const visibilityLabel = document.querySelector('[data-visibility-label]');
   const selectedTitle = document.querySelector('[data-selected-title]');
+  const fieldLabel = document.querySelector('[data-field-label]');
+  const fieldType = document.querySelector('[data-field-type]');
+  const dataKey = document.querySelector('[data-data-key]');
+  const passwordSetting = document.querySelector('[data-password-setting]');
   const status = document.querySelector('[data-status-message]');
 
   function announce(message) {
@@ -46,6 +50,18 @@
 
     const selected = blocks[selectedBlock];
     selectedTitle.textContent = selected.title;
+    fieldLabel.value = selected.label || selected.title;
+    fieldType.value = selected.type || 'text';
+    dataKey.value = selected.key || '';
+    const isField = ['name', 'phone', 'password'].includes(selectedBlock);
+    fieldLabel.disabled = !isField && !['heading', 'progress', 'submit', 'promo', 'mobile-help'].includes(selectedBlock);
+    fieldType.disabled = !isField;
+    dataKey.disabled = !isField;
+    document.querySelector('[data-setting="required"]').classList.toggle('is-on', Boolean(selected.required));
+    document.querySelector('[data-setting="required"]').setAttribute('aria-checked', String(Boolean(selected.required)));
+    passwordSetting.hidden = selectedBlock !== 'password';
+    document.querySelector('[data-setting="showPasswordToggle"]').classList.toggle('is-on', Boolean(selected.showPasswordToggle));
+    document.querySelector('[data-setting="showPasswordToggle"]').setAttribute('aria-checked', String(Boolean(selected.showPasswordToggle)));
     visibilityToggle.classList.toggle('is-on', selected.visible[currentDevice]);
     visibilityToggle.setAttribute('aria-checked', String(selected.visible[currentDevice]));
     visibilityLabel.textContent = selected.visible[currentDevice] ? 'Показывается' : 'Скрыт';
@@ -84,6 +100,35 @@
   visibilityToggle.addEventListener('click', () => {
     blocks[selectedBlock].visible[currentDevice] = !blocks[selectedBlock].visible[currentDevice];
     render();
+  });
+
+  fieldLabel.addEventListener('input', () => {
+    const block = blocks[selectedBlock];
+    block.label = fieldLabel.value;
+    const node = document.querySelector(`[data-preview-block="${selectedBlock}"]`);
+    if (selectedBlock === 'heading') node.querySelector('h1').textContent = block.label;
+    else if (selectedBlock === 'progress') node.querySelector('small').textContent = block.label;
+    else if (selectedBlock === 'submit') node.textContent = block.label;
+    else if (selectedBlock === 'promo' || selectedBlock === 'mobile-help') node.textContent = block.label;
+    else node.querySelector('.form-field > span')?.replaceChildren(document.createTextNode(block.label));
+    selectedTitle.textContent = ['name', 'phone', 'password'].includes(selectedBlock) ? `Поле «${block.label}»` : block.title;
+  });
+
+  fieldType.addEventListener('change', () => {
+    blocks[selectedBlock].type = fieldType.value;
+    announce('Тип поля изменён в локальном макете; API не подключён.');
+  });
+
+  dataKey.addEventListener('input', () => {
+    blocks[selectedBlock].key = dataKey.value.trim();
+  });
+
+  document.querySelectorAll('[data-setting]').forEach(button => {
+    button.addEventListener('click', () => {
+      const key = button.dataset.setting;
+      blocks[selectedBlock][key] = !blocks[selectedBlock][key];
+      render();
+    });
   });
 
   document.querySelectorAll('[data-action]').forEach(button => {
