@@ -151,9 +151,20 @@
     return window.KaretaUIIcons?.categoryIcon?.(`${String(key||'')} ${categoryLabel(key)}`,'services')||'services';
   }
 
+  // Only the seven LARGE service-direction cards use the filled 120 pack.
+  // Compact menu, tabs, leaf cards and controls keep existing KaretaUIIcons.
+  const GROUP_ART_SYMBOLS = Object.freeze({
+    care:'k120-019', clean:'k120-043', powertrain:'k120-028',
+    control:'k120-024', electric:'k120-025', comfort:'k120-029', body:'k120-027'
+  });
+  function referenceGroupArt(groupKey){
+    const symbol=GROUP_ART_SYMBOLS[groupKey];
+    if(!symbol) return referenceServiceIcon(groupIconKind(groupKey));
+    return `<svg class="k-services-ref-card__large-glyph" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><use href="assets/icons/kareta-client-120/kareta-client-120-light-sprite.svg#${symbol}"></use></svg>`;
+  }
   function referenceGroupCard(group,snapshot){
     const count=groupCount(group,snapshot);
-    return `<a class="k-services-ref-card k-services-ref-card--category" href="${groupUrl(group.key)}" data-service-group="${ui.escHtml(group.key)}"><span class="k-services-ref-card__icon">${referenceServiceIcon(groupIconKind(group.key))}</span><b>${ui.escHtml(group.name)}</b><small>${ui.escHtml(group.text)}</small><span class="k-services-ref-card__count">${count} услуг</span></a>`;
+    return `<a class="k-services-ref-card k-services-ref-card--category" href="${groupUrl(group.key)}" data-service-group="${ui.escHtml(group.key)}"><span class="k-services-ref-card__icon k-services-ref-card__icon--illustrated" aria-hidden="true">${referenceGroupArt(group.key)}</span><b>${ui.escHtml(group.name)}</b><small>${ui.escHtml(group.text)}</small><span class="k-services-ref-card__count">${count} услуг</span></a>`;
   }
 
   function referenceCategoryCard(category){

@@ -371,3 +371,21 @@ html[data-user-role="client"] .k-home-ref-service-card__title>b{min-width:0}
     scroll-margin-top:calc(var(--k-shell-h,72px) + 18px)!important;
   }
 }
+
+/* KARETA Landing Canon v2: opt-in, large (>=48px) directional artwork only.
+   Scope to the 7 /services root group cards; do not affect leaf cards or nav. */
+.k-services-reference-layout .k-services-ref-grid--groups .k-services-ref-card__icon--illustrated{
+  width:52px;height:52px;flex:0 0 52px;min-width:0;margin-bottom:8px;
+  display:grid;place-items:center;
+}
+.k-services-reference-layout .k-services-ref-grid--groups .k-services-ref-card__icon--illustrated svg.k-services-ref-card__large-glyph{
+  display:block;width:52px;height:52px;fill:none;stroke:none;
+}
+
+/* PR195: reflow large service-direction cards at narrow effective CSS widths (e.g. zoom).
+   Ordinary 320px+ mobile and all leaf/service cards keep their existing layout. */
+@media (max-width:270px){
+  .k-services-reference-layout .k-services-ref-grid--groups{
+    grid-template-columns:minmax(0,1fr);
+  }
+}
