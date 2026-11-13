@@ -1,0 +1,65 @@
+{
+  "version": "landing-canon-v2-addendum-2026-11-06",
+  "status": "append_only_reference_not_runtime",
+  "base_original_sha256": "09dc838992adaeb16b612199b41843280cc560c9208d80e25ac3764173542a50",
+  "original_slides_preserved": 12,
+  "total_slides": 24,
+  "source_brand_colors": {
+    "orange": "#FC6606",
+    "graphite": "#474747",
+    "white": "#FFFFFF",
+    "soft": "#F7F7F5"
+  },
+  "historical_service_semantics": {
+    "dark": "#0B1220",
+    "dark_card": "#1B1F26",
+    "muted": "#667085",
+    "success": "#16A34A",
+    "danger": "#DC2626",
+    "warning": "#F59E0B",
+    "geo": "#06B6D4",
+    "legacy_blue": "#2563EB"
+  },
+  "calculated_accessible_variants": {
+    "orange": {
+      "original": "#FC6606",
+      "light_text": "#B84902",
+      "dark_text": "#FC6606"
+    },
+    "success": {
+      "original": "#16A34A",
+      "light_text": "#117C39",
+      "dark_text": "#17A84C"
+    },
+    "danger": {
+      "original": "#DC2626",
+      "light_text": "#D22222",
+      "dark_text": "#E76B6B"
+    },
+    "warning": {
+      "original": "#F59E0B",
+      "light_text": "#966006",
+      "dark_text": "#F59E0B"
+    },
+    "geo": {
+      "original": "#06B6D4",
+      "light_text": "#04768A",
+      "dark_text": "#06B6D4"
+    }
+  },
+  "production_changed": false,
+  "source_paths": [
+    "landing/styles.css",
+    "css/next/design_contract.css",
+    "css/next/icon_standard.css",
+    "js/next/ui_icons.js",
+    "assets/icons/tabler/index.json"
+  ],
+  "wcag_methods": {
+    "text_normal": "4.5:1",
+    "text_large": "3:1",
+    "meaningful_icon_or_control_boundary": "3:1",
+    "target_size_2_5_8": "24x24 CSS px with exceptions",
+    "preferred_product_touch": "44-48px"
+  }
+}

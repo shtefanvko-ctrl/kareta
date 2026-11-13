@@ -1,0 +1,8 @@
+<PARSED TEXT FOR SHEET: 1 / 1 TABS
+TAB NAME: hue_compatibility_v2_addendum.csv>index,role,color,hsl_hue_deg,hue_difference_to_brand_deg
+0,Бренд,#FC6606,23.415,0.0
+1,Предупреждение,#F59E0B,37.692,14.278
+2,Ошибка,#DC2626,0.0,23.415
+3,Успех,#16A34A,142.128,118.713
+4,Гео,#06B6D4,188.738,165.323
+5,Legacy Blue,#2563EB,221.212,162.203
