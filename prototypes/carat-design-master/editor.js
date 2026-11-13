@@ -47,7 +47,7 @@
   }
 
   function addBlock(button) {
-    const label = button.textContent.replace(/^＋\\s*/, '').trim();
+    const label = button.textContent.replace(/^＋\s*/, '').trim();
     const isField = label === 'Поле' || label === 'Пароль';
     const isPassword = label === 'Пароль';
     const isButton = label === 'Кнопка';
