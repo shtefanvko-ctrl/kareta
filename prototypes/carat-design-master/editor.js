@@ -28,6 +28,8 @@
   const fieldType = document.querySelector('[data-field-type]');
   const dataKey = document.querySelector('[data-data-key]');
   const passwordSetting = document.querySelector('[data-password-setting]');
+  const imageSetting = document.querySelector('[data-image-setting]');
+  const imageFile = document.querySelector('[data-image-file]');
   const status = document.querySelector('[data-status-message]');
 
   function announce(message) {
@@ -200,6 +202,7 @@
     document.querySelector('[data-setting="required"]').classList.toggle('is-on', Boolean(selected.required));
     document.querySelector('[data-setting="required"]').setAttribute('aria-checked', String(Boolean(selected.required)));
     passwordSetting.hidden = !isField || selected.type !== 'password';
+    imageSetting.hidden = selected.kind !== 'image';
     const showPasswordToggle = Boolean(selected.showPasswordToggle);
     document.querySelector('[data-setting="showPasswordToggle"]').classList.toggle('is-on', showPasswordToggle);
     document.querySelector('[data-setting="showPasswordToggle"]').setAttribute('aria-checked', String(showPasswordToggle));
@@ -255,7 +258,9 @@
     else if (selectedBlock === 'promo' || selectedBlock === 'mobile-help' || block.kind === 'text') node.textContent = block.label;
     else if (block.kind === 'image') {
       node.setAttribute('aria-label', block.label);
-      node.textContent = `▧  ${block.label}`;
+      const image = node.querySelector('img');
+      if (image) image.alt = block.label;
+      else node.textContent = `▧  ${block.label}`;
     }
     else node.querySelector('.form-field > span')?.replaceChildren(document.createTextNode(block.label));
     if (['name', 'phone', 'password'].includes(selectedBlock)) block.title = `Поле «${block.label}»`;
@@ -266,6 +271,24 @@
     blocks[selectedBlock].type = fieldType.value;
     render();
     announce('Тип поля изменён в локальном макете; API не подключён.');
+  });
+
+  imageFile.addEventListener('change', () => {
+    const file = imageFile.files?.[0];
+    if (!file || !file.type.startsWith('image/')) {
+      announce('Выберите файл изображения. Файл остаётся в этом браузере и не загружается.');
+      return;
+    }
+    const block = blocks[selectedBlock];
+    if (block.previewUrl) URL.revokeObjectURL(block.previewUrl);
+    block.previewUrl = URL.createObjectURL(file);
+    const node = document.querySelector(`[data-preview-block="${selectedBlock}"]`);
+    const image = document.createElement('img');
+    image.src = block.previewUrl;
+    image.alt = block.label;
+    node.replaceChildren(image);
+    node.setAttribute('aria-label', block.label);
+    announce('Изображение показано локально; передача на сервер не выполняется.');
   });
 
   dataKey.addEventListener('input', () => {
