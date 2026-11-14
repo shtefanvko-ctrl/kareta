@@ -212,6 +212,7 @@
     fieldLabel.disabled = !isField && selected.kind !== 'image' && !['heading', 'progress', 'submit', 'promo', 'mobile-help'].includes(selectedBlock);
     fieldType.disabled = !isField;
     dataKey.disabled = !isField;
+    document.querySelector('[data-required-setting]').hidden = !isField;
     document.querySelector('[data-setting="required"]').classList.toggle('is-on', Boolean(selected.required));
     document.querySelector('[data-setting="required"]').setAttribute('aria-checked', String(Boolean(selected.required)));
     passwordSetting.hidden = !isField || selected.type !== 'password';
