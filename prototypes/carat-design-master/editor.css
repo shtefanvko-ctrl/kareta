@@ -41,6 +41,7 @@ main { max-width: 1680px; margin: 0 auto; padding: 14px; }
 .section-heading h2, .selected-heading h2, .flow-topline h2, .integration-title h2 { margin: 0; font-size: 14px; }
 .icon-button { width: 29px; height: 29px; border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--carat-blue); font-size: 20px; line-height: 1; cursor: pointer; }
 .window-list, .layer-list { display: grid; gap: 3px; }
+.window-module-setting { margin-top: 10px; }
 .window-item, .layer-item { width: 100%; min-height: 35px; padding: 5px 8px; display: flex; align-items: center; gap: 8px; border: 0; border-radius: 8px; background: transparent; text-align: left; font-size: 12px; cursor: pointer; }
 .window-item.is-active, .layer-item.is-selected { background: var(--carat-blue-soft); color: #066db4; font-weight: 750; }
 .window-icon { width: 20px; text-align: center; color: #66758b; font-size: 16px; }

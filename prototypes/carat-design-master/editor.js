@@ -31,6 +31,7 @@
   const passwordSetting = document.querySelector('[data-password-setting]');
   const imageSetting = document.querySelector('[data-image-setting]');
   const imageFile = document.querySelector('[data-image-file]');
+  const windowModule = document.querySelector('[data-window-module]');
   const status = document.querySelector('[data-status-message]');
 
   function announce(message) {
@@ -41,6 +42,8 @@
   }
 
   let customBlockSequence = 0;
+  const windowModules = { home: '', community: '', request: '', registration: 'signup-form', profile: '' };
+  windowModule.value = windowModules[selectedWindow];
 
   function selectBlock(id) {
     selectedBlock = id;
@@ -258,6 +261,7 @@
     const button = event.target.closest('.window-item[data-window-id]');
     if (!button) return;
     selectedWindow = button.dataset.windowId;
+    windowModule.value = windowModules[selectedWindow] || '';
     document.querySelectorAll('.window-item[data-window-id]').forEach(item => {
       const active = item.dataset.windowId === selectedWindow;
       item.classList.toggle('is-active', active);
@@ -265,7 +269,14 @@
       else item.removeAttribute('aria-current');
     });
     const label = button.textContent.trim();
-    announce(`Выбрано окно «${label}». Сейчас редактируется модуль signup-form; связь окна с модулями в прототипе не сохраняется.`);
+    announce(`Выбрано окно «${label}». Связь с модулем хранится только в состоянии прототипа.`);
+  });
+
+  windowModule.addEventListener('change', () => {
+    windowModules[selectedWindow] = windowModule.value;
+    const assignedModule = windowModule.value || 'без модуля';
+    const previewNote = windowModule.value === 'signup-form' ? 'Предпросмотр уже открыт.' : 'Холст остаётся на signup-form.';
+    announce(`Для окна выбрано: ${assignedModule}. ${previewNote} Серверного сохранения нет.`);
   });
 
   document.querySelector('.layer-list').addEventListener('click', event => {
