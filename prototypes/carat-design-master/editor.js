@@ -103,12 +103,13 @@
     const isField = label === 'Поле' || label === 'Пароль';
     const isPassword = label === 'Пароль';
     const isButton = label === 'Кнопка';
+    const isImage = label === 'Изображение';
     const id = `custom-${++customBlockSequence}`;
-    const blockLabel = isField ? (isPassword ? 'Новый пароль' : 'Новое поле') : isButton ? 'Новая кнопка' : 'Новый текст';
+    const blockLabel = isField ? (isPassword ? 'Новый пароль' : 'Новое поле') : isButton ? 'Новая кнопка' : isImage ? 'Новое изображение' : 'Новый текст';
     blocks[id] = {
       title: isField ? `Поле «${blockLabel.replace(/^Поле «|»$/g, '')}»` : blockLabel,
       label: blockLabel,
-      kind: isField ? 'field' : isButton ? 'button' : 'text',
+      kind: isField ? 'field' : isButton ? 'button' : isImage ? 'image' : 'text',
       type: isPassword ? 'password' : 'text',
       key: '',
       required: false,
@@ -123,7 +124,7 @@
     layer.setAttribute('aria-pressed', 'false');
     const glyph = document.createElement('span');
     glyph.className = 'layer-glyph';
-    glyph.textContent = isField ? '▱' : isButton ? '▰' : 'T';
+    glyph.textContent = isField ? '▱' : isButton ? '▰' : isImage ? '▧' : 'T';
     const title = document.createElement('span');
     title.textContent = blockLabel;
     const dots = document.createElement('span');
@@ -157,6 +158,12 @@
       preview.type = 'button';
       preview.className = 'registration-submit';
       preview.textContent = blockLabel;
+    } else if (isImage) {
+      preview = document.createElement('div');
+      preview.className = 'image-placeholder';
+      preview.setAttribute('role', 'img');
+      preview.setAttribute('aria-label', blockLabel);
+      preview.textContent = `▧  ${blockLabel}`;
     } else {
       preview = document.createElement('p');
       preview.className = 'promo-block';
@@ -187,7 +194,7 @@
     fieldType.value = selected.type || 'text';
     dataKey.value = selected.key || '';
     const isField = selected.kind === 'field' || ['name', 'phone', 'password'].includes(selectedBlock);
-    fieldLabel.disabled = !isField && !['heading', 'progress', 'submit', 'promo', 'mobile-help'].includes(selectedBlock);
+    fieldLabel.disabled = !isField && selected.kind !== 'image' && !['heading', 'progress', 'submit', 'promo', 'mobile-help'].includes(selectedBlock);
     fieldType.disabled = !isField;
     dataKey.disabled = !isField;
     document.querySelector('[data-setting="required"]').classList.toggle('is-on', Boolean(selected.required));
@@ -246,6 +253,10 @@
     else if (selectedBlock === 'progress') node.querySelector('small').textContent = block.label;
     else if (selectedBlock === 'submit' || block.kind === 'button') node.textContent = block.label;
     else if (selectedBlock === 'promo' || selectedBlock === 'mobile-help' || block.kind === 'text') node.textContent = block.label;
+    else if (block.kind === 'image') {
+      node.setAttribute('aria-label', block.label);
+      node.textContent = `▧  ${block.label}`;
+    }
     else node.querySelector('.form-field > span')?.replaceChildren(document.createTextNode(block.label));
     if (['name', 'phone', 'password'].includes(selectedBlock)) block.title = `Поле «${block.label}»`;
     selectedTitle.textContent = block.title;
