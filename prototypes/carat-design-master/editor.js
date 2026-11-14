@@ -46,6 +46,23 @@
     render();
   }
 
+  function moveSelectedBlock(direction) {
+    const layer = document.querySelector(`.layer-item[data-block="${selectedBlock}"]`);
+    const preview = document.querySelector(`[data-preview-block="${selectedBlock}"]`);
+    const layers = [...document.querySelectorAll('.layer-item[data-block]')];
+    const index = layers.indexOf(layer);
+    const targetIndex = index + direction;
+    if (!layer || !preview || targetIndex < 0 || targetIndex >= layers.length) return;
+
+    const targetLayer = layers[targetIndex];
+    const targetPreview = document.querySelector(`[data-preview-block="${targetLayer.dataset.block}"]`);
+    if (!targetPreview) return;
+    layer.parentElement.insertBefore(layer, direction < 0 ? targetLayer : targetLayer.nextSibling);
+    preview.parentElement.insertBefore(preview, direction < 0 ? targetPreview : targetPreview.nextSibling);
+    render();
+    announce('Порядок блока изменён только в локальном макете.');
+  }
+
   function syncFieldPreview(id, block) {
     const node = document.querySelector(`[data-preview-block="${id}"]`);
     if (!node || !node.classList.contains('form-field')) return;
@@ -113,7 +130,8 @@
     dots.className = 'visibility-dots';
     dots.textContent = 'ПК · ПЛ · ТЕЛ';
     layer.append(glyph, title, dots);
-    document.querySelector('.layer-list').append(layer);
+    const layerList = document.querySelector('.layer-list');
+    layerList.insertBefore(layer, layerList.querySelector('[data-block="submit"]'));
 
     let preview;
     if (isField) {
@@ -189,6 +207,11 @@
       button.setAttribute('aria-pressed', String(active));
     });
 
+    const layerOrder = [...document.querySelectorAll('.layer-item[data-block]')].map(button => button.dataset.block);
+    const selectedIndex = layerOrder.indexOf(selectedBlock);
+    document.querySelector('[data-action="move-up"]').disabled = selectedIndex <= 0;
+    document.querySelector('[data-action="move-down"]').disabled = selectedIndex < 0 || selectedIndex === layerOrder.length - 1;
+
     document.querySelectorAll('[data-device]').forEach(button => {
       if (!button.matches('.preview-frame')) {
         const active = button.dataset.device === currentDevice;
@@ -253,6 +276,8 @@
       else if (action === 'publish') announce('Публикация отключена: сначала требуется подключить защищённый PHP API.');
       else if (action === 'preview') announce('Вы уже видите предпросмотр. Отправка формы отключена.');
       else if (action === 'add-block') addBlock(button);
+      else if (action === 'move-up') moveSelectedBlock(-1);
+      else if (action === 'move-down') moveSelectedBlock(1);
       else if (action === 'add-window') announce('Создание окна пока отключено: сначала нужно согласовать модель окна и связь с route registry.');
     });
   });
