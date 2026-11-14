@@ -65,6 +65,19 @@
     announce('Порядок блока изменён только в локальном макете.');
   }
 
+  function deleteSelectedBlock() {
+    if (!selectedBlock.startsWith('custom-')) return;
+    const block = blocks[selectedBlock];
+    if (block.previewUrl) URL.revokeObjectURL(block.previewUrl);
+    document.querySelector(`.layer-item[data-block="${selectedBlock}"]`)?.remove();
+    document.querySelector(`[data-preview-block="${selectedBlock}"]`)?.remove();
+    delete blocks[selectedBlock];
+    imageFile.value = '';
+    selectedBlock = 'password';
+    render();
+    announce('Созданный блок удалён из локального макета.');
+  }
+
   function syncFieldPreview(id, block) {
     const node = document.querySelector(`[data-preview-block="${id}"]`);
     if (!node || !node.classList.contains('form-field')) return;
@@ -221,6 +234,7 @@
     const selectedIndex = layerOrder.indexOf(selectedBlock);
     document.querySelector('[data-action="move-up"]').disabled = selectedIndex <= 0;
     document.querySelector('[data-action="move-down"]').disabled = selectedIndex < 0 || selectedIndex === layerOrder.length - 1;
+    document.querySelector('[data-action="delete-block"]').disabled = !selectedBlock.startsWith('custom-');
 
     document.querySelectorAll('[data-device]').forEach(button => {
       if (!button.matches('.preview-frame')) {
@@ -312,6 +326,7 @@
       else if (action === 'add-block') addBlock(button);
       else if (action === 'move-up') moveSelectedBlock(-1);
       else if (action === 'move-down') moveSelectedBlock(1);
+      else if (action === 'delete-block') deleteSelectedBlock();
       else if (action === 'add-window') announce('Создание окна пока отключено: сначала нужно согласовать модель окна и связь с route registry.');
     });
   });

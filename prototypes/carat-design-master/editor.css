@@ -96,6 +96,7 @@ main { max-width: 1680px; margin: 0 auto; padding: 14px; }
 .order-actions { display: flex; gap: 4px; margin-left: auto; }
 .order-actions button { width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 7px; background: #fff; color: #4b5565; cursor: pointer; }
 .order-actions button:disabled { opacity: .4; cursor: not-allowed; }
+.order-actions [data-action="delete-block"] { color: #b42318; }
 .selected-heading small, .flow-topline small, .integration-title small { display: block; margin-bottom: 3px; color: #8590a0; font-size: 9px; font-weight: 800; letter-spacing: .08em; }
 .selected-heading h2 { font-size: 15px; }
 .lock-icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: var(--carat-blue-soft); color: var(--carat-blue-dark); font-size: 16px; }
