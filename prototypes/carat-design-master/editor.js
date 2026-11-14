@@ -46,6 +46,41 @@
     render();
   }
 
+  function syncFieldPreview(id, block) {
+    const node = document.querySelector(`[data-preview-block="${id}"]`);
+    if (!node || !node.classList.contains('form-field')) return;
+
+    let control = node.querySelector('.password-input, input');
+    if (block.type === 'password') {
+      if (!control?.classList.contains('password-input')) {
+        control?.remove();
+        control = document.createElement('span');
+        control.className = 'password-input';
+        const mask = document.createElement('span');
+        mask.textContent = '••••••••';
+        mask.setAttribute('aria-hidden', 'true');
+        const eye = document.createElement('span');
+        eye.textContent = '◉';
+        eye.setAttribute('aria-hidden', 'true');
+        control.append(mask, eye);
+        node.append(control);
+      }
+      const eye = control.querySelector('span:last-child');
+      if (eye) eye.hidden = !block.showPasswordToggle;
+      return;
+    }
+
+    if (!control?.matches('input')) {
+      control?.remove();
+      control = document.createElement('input');
+      node.append(control);
+    }
+    control.type = ['text', 'tel', 'email', 'checkbox'].includes(block.type) ? block.type : 'text';
+    control.placeholder = block.type === 'checkbox' ? '' : (block.label || '');
+    control.readOnly = block.type !== 'checkbox';
+    control.disabled = block.type === 'checkbox';
+  }
+
   function addBlock(button) {
     const label = button.textContent.replace(/^＋\s*/, '').trim();
     const isField = label === 'Поле' || label === 'Пароль';
@@ -125,6 +160,7 @@
     Object.entries(blocks).forEach(([id, block]) => {
       const node = document.querySelector(`[data-preview-block="${id}"]`);
       if (node) node.classList.toggle('is-hidden', !block.visible[currentDevice]);
+      if (block.kind === 'field' || ['name', 'phone', 'password'].includes(id)) syncFieldPreview(id, block);
     });
 
     const selected = blocks[selectedBlock];
@@ -138,13 +174,11 @@
     dataKey.disabled = !isField;
     document.querySelector('[data-setting="required"]').classList.toggle('is-on', Boolean(selected.required));
     document.querySelector('[data-setting="required"]').setAttribute('aria-checked', String(Boolean(selected.required)));
-    passwordSetting.hidden = selectedBlock !== 'password';
+    passwordSetting.hidden = !isField || selected.type !== 'password';
     const showPasswordToggle = Boolean(selected.showPasswordToggle);
     document.querySelector('[data-setting="showPasswordToggle"]').classList.toggle('is-on', showPasswordToggle);
     document.querySelector('[data-setting="showPasswordToggle"]').setAttribute('aria-checked', String(showPasswordToggle));
-    const passwordEye = document.querySelector('[data-preview-block="password"] .password-input span:last-child');
-    if (passwordEye) passwordEye.hidden = !showPasswordToggle;
-    document.querySelector('[data-setting="showPasswordToggle"]').setAttribute('aria-checked', String(Boolean(selected.showPasswordToggle)));
+    document.querySelector('[data-setting="showPasswordToggle"]').setAttribute('aria-checked', String(showPasswordToggle));
     visibilityToggle.classList.toggle('is-on', selected.visible[currentDevice]);
     visibilityToggle.setAttribute('aria-checked', String(selected.visible[currentDevice]));
     visibilityLabel.textContent = selected.visible[currentDevice] ? 'Показывается' : 'Скрыт';
@@ -196,6 +230,7 @@
 
   fieldType.addEventListener('change', () => {
     blocks[selectedBlock].type = fieldType.value;
+    render();
     announce('Тип поля изменён в локальном макете; API не подключён.');
   });
 
