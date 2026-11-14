@@ -1,0 +1,362 @@
+(() => {
+  'use strict';
+
+  const widths = { desktop: 1120, tablet: 768, phone: 390 };
+  const labels = { desktop: 'ПК', tablet: 'Планшет', phone: 'Телефон' };
+  const blocks = {
+    heading: { title: 'Заголовок', label: 'Создать аккаунт', visible: { desktop: true, tablet: true, phone: true } },
+    progress: { title: 'Шаги регистрации', label: 'Шаг 2 из 3', visible: { desktop: true, tablet: true, phone: true } },
+    name: { title: 'Поле «Имя»', label: 'Имя', type: 'text', key: 'name', required: true, visible: { desktop: true, tablet: true, phone: true } },
+    phone: { title: 'Поле «Телефон»', label: 'Номер телефона', type: 'tel', key: 'phone', required: true, visible: { desktop: true, tablet: true, phone: true } },
+    password: { title: 'Поле «Пароль»', label: 'Пароль', type: 'password', key: 'password', required: true, showPasswordToggle: true, visible: { desktop: true, tablet: true, phone: true } },
+    submit: { title: 'Кнопка «Продолжить»', label: 'Продолжить', visible: { desktop: true, tablet: true, phone: true } },
+    promo: { title: 'Промо-блок', label: 'Управляйте настройками регистрации в одном месте.', visible: { desktop: true, tablet: true, phone: false } },
+    'mobile-help': { title: 'Короткая подсказка', label: 'Данные передаются защищённо.', visible: { desktop: false, tablet: false, phone: true } }
+  };
+
+  let currentDevice = 'phone';
+  let selectedBlock = 'password';
+  let selectedWindow = 'registration';
+  let statusTimer = 0;
+
+  const frame = document.querySelector('[data-preview-frame]');
+  const caption = document.querySelector('[data-device-caption]');
+  const deviceLabel = document.querySelector('[data-current-device]');
+  const visibilityToggle = document.querySelector('[data-visibility-toggle]');
+  const visibilityLabel = document.querySelector('[data-visibility-label]');
+  const selectedTitle = document.querySelector('[data-selected-title]');
+  const fieldLabel = document.querySelector('[data-field-label]');
+  const fieldType = document.querySelector('[data-field-type]');
+  const dataKey = document.querySelector('[data-data-key]');
+  const passwordSetting = document.querySelector('[data-password-setting]');
+  const imageSetting = document.querySelector('[data-image-setting]');
+  const imageFile = document.querySelector('[data-image-file]');
+  const windowModule = document.querySelector('[data-window-module]');
+  const status = document.querySelector('[data-status-message]');
+
+  function announce(message) {
+    status.textContent = message;
+    status.classList.add('is-visible');
+    window.clearTimeout(statusTimer);
+    statusTimer = window.setTimeout(() => status.classList.remove('is-visible'), 3500);
+  }
+
+  let customBlockSequence = 0;
+  const windowModules = { home: '', community: '', request: '', registration: 'signup-form', profile: '' };
+  windowModule.value = windowModules[selectedWindow];
+
+  function selectBlock(id) {
+    selectedBlock = id;
+    document.querySelectorAll('[data-preview-block]').forEach(node => node.classList.remove('is-selected'));
+    document.querySelector(`[data-preview-block="${selectedBlock}"]`)?.classList.add('is-selected');
+    render();
+  }
+
+  function moveSelectedBlock(direction) {
+    const layer = document.querySelector(`.layer-item[data-block="${selectedBlock}"]`);
+    const preview = document.querySelector(`[data-preview-block="${selectedBlock}"]`);
+    const layers = [...document.querySelectorAll('.layer-item[data-block]')];
+    const index = layers.indexOf(layer);
+    const targetIndex = index + direction;
+    if (!layer || !preview || targetIndex < 0 || targetIndex >= layers.length) return;
+
+    const targetLayer = layers[targetIndex];
+    const targetPreview = document.querySelector(`[data-preview-block="${targetLayer.dataset.block}"]`);
+    if (!targetPreview) return;
+    layer.parentElement.insertBefore(layer, direction < 0 ? targetLayer : targetLayer.nextSibling);
+    preview.parentElement.insertBefore(preview, direction < 0 ? targetPreview : targetPreview.nextSibling);
+    render();
+    announce('Порядок блока изменён только в локальном макете.');
+  }
+
+  function deleteSelectedBlock() {
+    if (!selectedBlock.startsWith('custom-')) return;
+    const block = blocks[selectedBlock];
+    if (block.previewUrl) URL.revokeObjectURL(block.previewUrl);
+    document.querySelector(`.layer-item[data-block="${selectedBlock}"]`)?.remove();
+    document.querySelector(`[data-preview-block="${selectedBlock}"]`)?.remove();
+    delete blocks[selectedBlock];
+    imageFile.value = '';
+    selectedBlock = 'password';
+    render();
+    announce('Созданный блок удалён из локального макета.');
+  }
+
+  function syncFieldPreview(id, block) {
+    const node = document.querySelector(`[data-preview-block="${id}"]`);
+    if (!node || !node.classList.contains('form-field')) return;
+
+    let control = node.querySelector('.password-input, input');
+    if (block.type === 'password') {
+      if (!control?.classList.contains('password-input')) {
+        control?.remove();
+        control = document.createElement('span');
+        control.className = 'password-input';
+        const mask = document.createElement('span');
+        mask.textContent = '••••••••';
+        mask.setAttribute('aria-hidden', 'true');
+        const eye = document.createElement('span');
+        eye.textContent = '◉';
+        eye.setAttribute('aria-hidden', 'true');
+        control.append(mask, eye);
+        node.append(control);
+      }
+      const eye = control.querySelector('span:last-child');
+      if (eye) eye.hidden = !block.showPasswordToggle;
+      return;
+    }
+
+    if (!control?.matches('input')) {
+      control?.remove();
+      control = document.createElement('input');
+      node.append(control);
+    }
+    control.type = ['text', 'tel', 'email', 'checkbox'].includes(block.type) ? block.type : 'text';
+    control.placeholder = block.type === 'checkbox' ? '' : (block.label || '');
+    control.readOnly = block.type !== 'checkbox';
+    control.disabled = block.type === 'checkbox';
+  }
+
+  function addBlock(button) {
+    const label = button.textContent.replace(/^＋\s*/, '').trim();
+    const isField = label === 'Поле' || label === 'Пароль';
+    const isPassword = label === 'Пароль';
+    const isButton = label === 'Кнопка';
+    const isImage = label === 'Изображение';
+    const id = `custom-${++customBlockSequence}`;
+    const blockLabel = isField ? (isPassword ? 'Новый пароль' : 'Новое поле') : isButton ? 'Новая кнопка' : isImage ? 'Новое изображение' : 'Новый текст';
+    blocks[id] = {
+      title: isField ? `Поле «${blockLabel.replace(/^Поле «|»$/g, '')}»` : blockLabel,
+      label: blockLabel,
+      kind: isField ? 'field' : isButton ? 'button' : isImage ? 'image' : 'text',
+      type: isPassword ? 'password' : 'text',
+      key: '',
+      required: false,
+      showPasswordToggle: isPassword,
+      visible: { desktop: true, tablet: true, phone: true }
+    };
+
+    const layer = document.createElement('button');
+    layer.type = 'button';
+    layer.className = 'layer-item';
+    layer.dataset.block = id;
+    layer.setAttribute('aria-pressed', 'false');
+    const glyph = document.createElement('span');
+    glyph.className = 'layer-glyph';
+    glyph.textContent = isField ? '▱' : isButton ? '▰' : isImage ? '▧' : 'T';
+    const title = document.createElement('span');
+    title.textContent = blockLabel;
+    const dots = document.createElement('span');
+    dots.className = 'visibility-dots';
+    dots.textContent = 'ПК · ПЛ · ТЕЛ';
+    layer.append(glyph, title, dots);
+    const layerList = document.querySelector('.layer-list');
+    layerList.insertBefore(layer, layerList.querySelector('[data-block="submit"]'));
+
+    let preview;
+    if (isField) {
+      preview = document.createElement('label');
+      preview.className = 'form-field';
+      const caption = document.createElement('span');
+      caption.textContent = blockLabel;
+      preview.append(caption);
+      if (isPassword) {
+        const mask = document.createElement('span');
+        mask.className = 'password-input';
+        mask.innerHTML = '<span aria-hidden="true">••••••••</span><span aria-hidden="true">◉</span>';
+        preview.append(mask);
+      } else {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = blockLabel;
+        input.readOnly = true;
+        preview.append(input);
+      }
+    } else if (isButton) {
+      preview = document.createElement('button');
+      preview.type = 'button';
+      preview.className = 'registration-submit';
+      preview.textContent = blockLabel;
+    } else if (isImage) {
+      preview = document.createElement('div');
+      preview.className = 'image-placeholder';
+      preview.setAttribute('role', 'img');
+      preview.setAttribute('aria-label', blockLabel);
+      preview.textContent = `▧  ${blockLabel}`;
+    } else {
+      preview = document.createElement('p');
+      preview.className = 'promo-block';
+      preview.textContent = blockLabel;
+    }
+    preview.dataset.previewBlock = id;
+    const submit = document.querySelector('[data-preview-block="submit"]');
+    document.querySelector('.registration-card').insertBefore(preview, submit);
+    selectBlock(id);
+    announce('Блок добавлен только в локальный макет; серверное сохранение не подключено.');
+  }
+
+  function render() {
+    frame.dataset.device = currentDevice;
+    frame.style.width = `min(100%, ${widths[currentDevice]}px)`;
+    caption.textContent = `${labels[currentDevice]} · ${widths[currentDevice]} px`;
+    deviceLabel.textContent = labels[currentDevice];
+
+    Object.entries(blocks).forEach(([id, block]) => {
+      const node = document.querySelector(`[data-preview-block="${id}"]`);
+      if (node) node.classList.toggle('is-hidden', !block.visible[currentDevice]);
+      if (block.kind === 'field' || ['name', 'phone', 'password'].includes(id)) syncFieldPreview(id, block);
+    });
+
+    const selected = blocks[selectedBlock];
+    selectedTitle.textContent = selected.title;
+    fieldLabel.value = selected.label || selected.title;
+    fieldType.value = selected.type || 'text';
+    dataKey.value = selected.key || '';
+    const isField = selected.kind === 'field' || ['name', 'phone', 'password'].includes(selectedBlock);
+    fieldLabel.disabled = !isField && selected.kind !== 'image' && !['heading', 'progress', 'submit', 'promo', 'mobile-help'].includes(selectedBlock);
+    fieldType.disabled = !isField;
+    dataKey.disabled = !isField;
+    document.querySelector('[data-required-setting]').hidden = !isField;
+    document.querySelector('[data-setting="required"]').classList.toggle('is-on', Boolean(selected.required));
+    document.querySelector('[data-setting="required"]').setAttribute('aria-checked', String(Boolean(selected.required)));
+    passwordSetting.hidden = !isField || selected.type !== 'password';
+    imageSetting.hidden = selected.kind !== 'image';
+    const showPasswordToggle = Boolean(selected.showPasswordToggle);
+    document.querySelector('[data-setting="showPasswordToggle"]').classList.toggle('is-on', showPasswordToggle);
+    document.querySelector('[data-setting="showPasswordToggle"]').setAttribute('aria-checked', String(showPasswordToggle));
+    document.querySelector('[data-setting="showPasswordToggle"]').setAttribute('aria-checked', String(showPasswordToggle));
+    visibilityToggle.classList.toggle('is-on', selected.visible[currentDevice]);
+    visibilityToggle.setAttribute('aria-checked', String(selected.visible[currentDevice]));
+    visibilityLabel.textContent = selected.visible[currentDevice] ? 'Показывается' : 'Скрыт';
+
+    document.querySelectorAll('.layer-item').forEach(button => {
+      const active = button.dataset.block === selectedBlock;
+      button.classList.toggle('is-selected', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+
+    const layerOrder = [...document.querySelectorAll('.layer-item[data-block]')].map(button => button.dataset.block);
+    const selectedIndex = layerOrder.indexOf(selectedBlock);
+    document.querySelector('[data-action="move-up"]').disabled = selectedIndex <= 0;
+    document.querySelector('[data-action="move-down"]').disabled = selectedIndex < 0 || selectedIndex === layerOrder.length - 1;
+    document.querySelector('[data-action="delete-block"]').disabled = !selectedBlock.startsWith('custom-');
+
+    document.querySelectorAll('[data-device]').forEach(button => {
+      if (!button.matches('.preview-frame')) {
+        const active = button.dataset.device === currentDevice;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', String(active));
+      }
+    });
+  }
+
+  document.querySelectorAll('.device-switch [data-device]').forEach(button => {
+    button.addEventListener('click', () => {
+      currentDevice = button.dataset.device;
+      render();
+    });
+  });
+
+  document.querySelector('.window-list').addEventListener('click', event => {
+    const button = event.target.closest('.window-item[data-window-id]');
+    if (!button) return;
+    selectedWindow = button.dataset.windowId;
+    windowModule.value = windowModules[selectedWindow] || '';
+    document.querySelectorAll('.window-item[data-window-id]').forEach(item => {
+      const active = item.dataset.windowId === selectedWindow;
+      item.classList.toggle('is-active', active);
+      if (active) item.setAttribute('aria-current', 'page');
+      else item.removeAttribute('aria-current');
+    });
+    const label = button.textContent.trim();
+    announce(`Выбрано окно «${label}». Связь с модулем хранится только в состоянии прототипа.`);
+  });
+
+  windowModule.addEventListener('change', () => {
+    windowModules[selectedWindow] = windowModule.value;
+    const assignedModule = windowModule.value || 'без модуля';
+    const previewNote = windowModule.value === 'signup-form' ? 'Предпросмотр уже открыт.' : 'Холст остаётся на signup-form.';
+    announce(`Для окна выбрано: ${assignedModule}. ${previewNote} Серверного сохранения нет.`);
+  });
+
+  document.querySelector('.layer-list').addEventListener('click', event => {
+    const button = event.target.closest('.layer-item[data-block]');
+    if (button) selectBlock(button.dataset.block);
+  });
+
+  visibilityToggle.addEventListener('click', () => {
+    blocks[selectedBlock].visible[currentDevice] = !blocks[selectedBlock].visible[currentDevice];
+    render();
+  });
+
+  fieldLabel.addEventListener('input', () => {
+    const block = blocks[selectedBlock];
+    block.label = fieldLabel.value;
+    const node = document.querySelector(`[data-preview-block="${selectedBlock}"]`);
+    if (selectedBlock === 'heading') node.querySelector('h1').textContent = block.label;
+    else if (selectedBlock === 'progress') node.querySelector('small').textContent = block.label;
+    else if (selectedBlock === 'submit' || block.kind === 'button') node.textContent = block.label;
+    else if (selectedBlock === 'promo' || selectedBlock === 'mobile-help' || block.kind === 'text') node.textContent = block.label;
+    else if (block.kind === 'image') {
+      node.setAttribute('aria-label', block.label);
+      const image = node.querySelector('img');
+      if (image) image.alt = block.label;
+      else node.textContent = `▧  ${block.label}`;
+    }
+    else node.querySelector('.form-field > span')?.replaceChildren(document.createTextNode(block.label));
+    if (['name', 'phone', 'password'].includes(selectedBlock)) block.title = `Поле «${block.label}»`;
+    selectedTitle.textContent = block.title;
+  });
+
+  fieldType.addEventListener('change', () => {
+    blocks[selectedBlock].type = fieldType.value;
+    render();
+    announce('Тип поля изменён в локальном макете; API не подключён.');
+  });
+
+  imageFile.addEventListener('change', () => {
+    const file = imageFile.files?.[0];
+    if (!file || !file.type.startsWith('image/')) {
+      announce('Выберите файл изображения. Файл остаётся в этом браузере и не загружается.');
+      return;
+    }
+    const block = blocks[selectedBlock];
+    if (block.previewUrl) URL.revokeObjectURL(block.previewUrl);
+    block.previewUrl = URL.createObjectURL(file);
+    const node = document.querySelector(`[data-preview-block="${selectedBlock}"]`);
+    const image = document.createElement('img');
+    image.src = block.previewUrl;
+    image.alt = block.label;
+    node.replaceChildren(image);
+    node.setAttribute('aria-label', block.label);
+    announce('Изображение показано локально; передача на сервер не выполняется.');
+  });
+
+  dataKey.addEventListener('input', () => {
+    blocks[selectedBlock].key = dataKey.value.trim();
+  });
+
+  document.querySelectorAll('[data-setting]').forEach(button => {
+    button.addEventListener('click', () => {
+      const key = button.dataset.setting;
+      blocks[selectedBlock][key] = !blocks[selectedBlock][key];
+      render();
+    });
+  });
+
+  document.querySelectorAll('[data-action]').forEach(button => {
+    button.addEventListener('click', () => {
+      const action = button.dataset.action;
+      if (action === 'save') announce('Демо: сохранение не подключено. Настройки остаются только в этой вкладке.');
+      else if (action === 'publish') announce('Публикация отключена: сначала требуется подключить защищённый PHP API.');
+      else if (action === 'preview') announce('Вы уже видите предпросмотр. Отправка формы отключена.');
+      else if (action === 'add-block') addBlock(button);
+      else if (action === 'move-up') moveSelectedBlock(-1);
+      else if (action === 'move-down') moveSelectedBlock(1);
+      else if (action === 'delete-block') deleteSelectedBlock();
+      else if (action === 'add-window') announce('Создание окна пока отключено: сначала нужно согласовать модель окна и связь с route registry.');
+    });
+  });
+
+  render();
+})();

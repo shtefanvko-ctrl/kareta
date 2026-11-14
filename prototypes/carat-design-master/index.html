@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0399f9">
+  <title>CARAT — Дизайн-мастер · прототип</title>
+  <link rel="stylesheet" href="./editor.css">
+</head>
+<body>
+  <div class="prototype">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="CARAT, прототип">
+        <span class="brand-mark" aria-hidden="true">C</span><span>CARAT</span>
+      </a>
+      <span class="divider" aria-hidden="true"></span>
+      <div class="product-name"><strong>Дизайн-мастер</strong><small>Интерактивный прототип</small></div>
+      <label class="project-picker"><span>Проект</span><select aria-label="Проект"><option>KARETA.KZ</option></select></label>
+      <div class="top-actions">
+        <span class="draft-badge"><i></i> Черновик</span>
+        <button class="button button-quiet" type="button" data-action="save">Сохранить</button>
+        <button class="button button-primary" type="button" data-action="publish">Опубликовать</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="editor-grid" aria-label="Редактор модуля">
+        <aside class="panel left-panel">
+          <div class="panel-section">
+            <div class="section-heading"><h2>Окна сайта</h2><button type="button" class="icon-button" aria-label="Добавить окно" data-action="add-window">+</button></div>
+            <nav class="window-list" aria-label="Окна">
+              <button type="button" class="window-item" data-window-id="home"><span class="window-icon">⌂</span>Главная</button>
+              <button type="button" class="window-item" data-window-id="community"><span class="window-icon">◎</span>Сообщество</button>
+              <button type="button" class="window-item" data-window-id="request"><span class="window-icon">▤</span>Заявка</button>
+              <button type="button" class="window-item is-active" data-window-id="registration" aria-current="page"><span class="window-icon">♙</span>Регистрация</button>
+              <button type="button" class="window-item" data-window-id="profile"><span class="window-icon">☻</span>Профиль</button>
+            </nav>
+            <label class="control-row window-module-setting"><span>Модуль выбранного окна</span><select data-window-module aria-label="Модуль выбранного окна"><option value="">Не назначен</option><option value="role-select">role-select</option><option value="signup-form">signup-form</option><option value="verify-code">verify-code</option></select></label>
+          </div>
+
+          <div class="panel-section">
+            <div class="section-heading"><h2>Слои модуля</h2><span class="module-tag">signup-form</span></div>
+            <div class="layer-list" role="list" aria-label="Слои модуля">
+              <button class="layer-item" type="button" data-block="heading"><span class="layer-glyph">T</span><span>Заголовок</span><span class="visibility-dots">ПК · ПЛ · ТЕЛ</span></button>
+              <button class="layer-item" type="button" data-block="progress"><span class="layer-glyph">◉</span><span>Шаги регистрации</span><span class="visibility-dots">ПК · ПЛ · ТЕЛ</span></button>
+              <button class="layer-item" type="button" data-block="name"><span class="layer-glyph">▱</span><span>Поле «Имя»</span><span class="visibility-dots">ПК · ПЛ · ТЕЛ</span></button>
+              <button class="layer-item" type="button" data-block="phone"><span class="layer-glyph">⌕</span><span>Поле «Телефон»</span><span class="visibility-dots">ПК · ПЛ · ТЕЛ</span></button>
+              <button class="layer-item is-selected" type="button" data-block="password" aria-pressed="true"><span class="layer-glyph">♙</span><span>Поле «Пароль»</span><span class="visibility-dots">ПК · ПЛ · ТЕЛ</span></button>
+              <button class="layer-item" type="button" data-block="submit"><span class="layer-glyph">▰</span><span>Кнопка «Продолжить»</span><span class="visibility-dots">ПК · ПЛ · ТЕЛ</span></button>
+              <button class="layer-item" type="button" data-block="promo"><span class="layer-glyph">▧</span><span>Промо-блок</span><span class="visibility-dots">ПК · ПЛ · ТЕЛ</span></button>
+              <button class="layer-item" type="button" data-block="mobile-help"><span class="layer-glyph">▭</span><span>Короткая подсказка</span><span class="visibility-dots">ПК · ПЛ · ТЕЛ</span></button>
+            </div>
+          </div>
+
+          <div class="panel-section block-library">
+            <div class="section-heading"><h2>Блоки</h2><span class="muted-label">перетаскивание — макет</span></div>
+            <div class="block-chips">
+              <button type="button" data-action="add-block">＋ Текст</button>
+              <button type="button" data-action="add-block">＋ Поле</button>
+              <button type="button" data-action="add-block">＋ Пароль</button>
+              <button type="button" data-action="add-block">＋ Кнопка</button>
+              <button type="button" data-action="add-block">＋ Изображение</button>
+            </div>
+          </div>
+        </aside>
+
+        <section class="canvas-panel" aria-label="Холст предпросмотра">
+          <div class="canvas-toolbar">
+            <div class="mode-tabs"><button type="button" class="is-active" aria-pressed="true">Дизайн</button><button type="button" data-action="preview">Предпросмотр</button></div>
+            <div class="device-switch" role="group" aria-label="Размер экрана">
+              <button type="button" data-device="desktop" aria-pressed="false">▣ <span>ПК</span></button>
+              <button type="button" data-device="tablet" aria-pressed="false">▯ <span>Планшет</span></button>
+              <button type="button" data-device="phone" class="is-active" aria-pressed="true">▯ <span>Телефон</span></button>
+            </div>
+          </div>
+
+          <div class="canvas-workspace">
+            <div class="ruler ruler-top" aria-hidden="true"><span>0</span><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span></div>
+            <div class="preview-frame" data-preview-frame data-device="phone">
+              <div class="registration-card">
+                <div class="kareta-brand"><span class="car-mark" aria-hidden="true">⌁</span><strong>KARETA.KZ</strong></div>
+                <h1 data-preview-block="heading">Создать аккаунт</h1>
+                <div class="progress-block" data-preview-block="progress"><div class="progress-line"><span></span></div><small>Шаг 2 из 3</small></div>
+                <label class="form-field" data-preview-block="name"><span>Имя</span><input type="text" placeholder="Как к вам обращаться" readonly></label>
+                <label class="form-field" data-preview-block="phone"><span>Номер телефона</span><input type="tel" placeholder="+7 (___) ___-__-__" readonly></label>
+                <label class="form-field is-selected" data-preview-block="password"><span>Пароль</span><span class="password-input"><span aria-hidden="true">••••••••</span><span aria-hidden="true">◉</span></span></label>
+                <button class="registration-submit" type="button" data-preview-block="submit">Продолжить</button>
+                <p class="promo-block" data-preview-block="promo">Управляйте настройками регистрации в одном месте.</p>
+                <p class="mobile-help" data-preview-block="mobile-help">Данные передаются защищённо.</p>
+              </div>
+            </div>
+            <div class="canvas-caption"><span class="live-dot"></span><span data-device-caption>Телефон · 390 px</span><span class="caption-divider"></span><span>Предпросмотр, без отправки данных</span></div>
+          </div>
+        </section>
+
+        <aside class="panel inspector-panel">
+          <div class="inspector-tabs"><button type="button" class="is-active" data-inspector-tab="style">Внешний вид</button><button type="button" data-inspector-tab="data">Данные и действия</button></div>
+          <div class="inspector-content">
+            <div class="selected-heading"><span class="lock-icon" aria-hidden="true">✎</span><div><small>ВЫБРАННЫЙ ЭЛЕМЕНТ</small><h2 data-selected-title>Поле «Пароль»</h2></div><div class="order-actions" role="group" aria-label="Действия со слоем"><button type="button" data-action="move-up" aria-label="Переместить слой выше" title="Выше">↑</button><button type="button" data-action="move-down" aria-label="Переместить слой ниже" title="Ниже">↓</button><button type="button" data-action="delete-block" aria-label="Удалить созданный блок" title="Удалить" disabled>×</button></div></div>
+            <label class="control-row"><span>Подпись / текст</span><input data-field-label value="Пароль" aria-label="Подпись элемента"></label>
+            <label class="control-row image-file-setting" data-image-setting hidden><span>Файл изображения</span><input type="file" accept="image/*" data-image-file aria-label="Выбрать изображение"></label>
+            <label class="control-row"><span>Тип поля</span><select data-field-type aria-label="Тип поля"><option value="text">Текст</option><option value="tel">Телефон</option><option value="email">Email</option><option value="password">Пароль</option><option value="checkbox">Флажок</option></select></label>
+            <label class="control-row"><span>Ключ данных</span><input data-data-key value="password" aria-label="Ключ данных"></label>
+            <div class="control-row" data-required-setting><span>Обязательное поле</span><button type="button" class="switch is-on" role="switch" aria-checked="true" data-setting="required" aria-label="Обязательное поле"></button></div>
+            <div class="control-row" data-password-setting><span>Кнопка показать пароль</span><button type="button" class="switch is-on" role="switch" aria-checked="true" data-setting="showPasswordToggle" aria-label="Показывать пароль"></button></div>
+
+            <div class="inspector-divider"></div>
+            <div class="subheading"><h3>Видимость блока</h3><small>для текущего экрана</small></div>
+            <div class="visibility-control">
+              <span class="visibility-device" data-current-device>Телефон</span>
+              <button type="button" class="switch is-on" role="switch" aria-checked="true" data-visibility-toggle aria-label="Показывать блок на выбранном экране"></button>
+              <span data-visibility-label>Показывается</span>
+            </div>
+            <div class="subheading"><h3>Связь с формой</h3><small>пример, не подключён</small></div>
+            <label class="control-row"><span>Действие</span><input value="Регистрация" readonly></label>
+            <label class="control-row"><span>API</span><input value="Не подключён" readonly></label>
+            <div class="notice"><strong>Демо-режим</strong><span>Эта форма не отправляет данные. Реальный API-маршрут нужно подтвердить по исходникам KARETA.</span></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="flow-panel" aria-labelledby="flow-heading">
+        <div class="flow-topline"><div><small>СЦЕНАРИЙ РЕГИСТРАЦИИ</small><h2 id="flow-heading">Окна подключают модули</h2></div><span class="flow-explanation">Модуль можно повторно использовать в другом окне</span></div>
+        <div class="flow-steps">
+          <article class="flow-step"><span class="step-number">01</span><div><strong>Выбор роли</strong><small>Окно 1 · role-select</small></div></article>
+          <span class="flow-arrow" aria-hidden="true">→</span>
+          <article class="flow-step is-current"><span class="step-number">02</span><div><strong>Данные аккаунта</strong><small>Окно 2 · signup-form</small></div></article>
+          <span class="flow-arrow" aria-hidden="true">→</span>
+          <article class="flow-step"><span class="step-number">03</span><div><strong>Подтверждение</strong><small>Окно 3 · verify-code</small></div></article>
+        </div>
+      </section>
+
+      <section class="integration-panel" aria-labelledby="integration-heading">
+        <div class="integration-title"><small>БУДУЩАЯ ИНТЕГРАЦИЯ</small><h2 id="integration-heading">Редактор и сайт работают через сервер</h2><span>В прототипе API и база не подключены</span></div>
+        <div class="integration-flow">
+          <div class="integration-lane"><strong>CARAT редактор</strong><span>→</span><div><b>Защищённый PHP API</b><small>черновики и версии модулей</small></div><span>→</span><div><b>MySQL</b><small>конфигурация и версии</small></div></div>
+          <div class="integration-lane"><strong>Посетитель сайта</strong><span>→</span><div><b>API KARETA</b><small>форма по существующему контракту</small></div><span>→</span><div><b>Бизнес-данные</b><small>сохраняет сервер</small></div></div>
+        </div>
+      </section>
+    </main>
+
+    <div class="status-message" role="status" aria-live="polite" data-status-message></div>
+  </div>
+  <script src="./editor.js" defer></script>
+</body>
+</html>
