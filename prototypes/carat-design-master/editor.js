@@ -16,6 +16,7 @@
 
   let currentDevice = 'phone';
   let selectedBlock = 'password';
+  let selectedWindow = 'registration';
   let statusTimer = 0;
 
   const frame = document.querySelector('[data-preview-frame]');
@@ -251,6 +252,20 @@
       currentDevice = button.dataset.device;
       render();
     });
+  });
+
+  document.querySelector('.window-list').addEventListener('click', event => {
+    const button = event.target.closest('.window-item[data-window-id]');
+    if (!button) return;
+    selectedWindow = button.dataset.windowId;
+    document.querySelectorAll('.window-item[data-window-id]').forEach(item => {
+      const active = item.dataset.windowId === selectedWindow;
+      item.classList.toggle('is-active', active);
+      if (active) item.setAttribute('aria-current', 'page');
+      else item.removeAttribute('aria-current');
+    });
+    const label = button.textContent.trim();
+    announce(`Выбрано окно «${label}». Сейчас редактируется модуль signup-form; связь окна с модулями в прототипе не сохраняется.`);
   });
 
   document.querySelector('.layer-list').addEventListener('click', event => {
