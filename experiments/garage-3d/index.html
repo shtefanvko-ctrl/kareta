@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FC6606">
+  <title>KARETA.KZ · 3D-гараж (прототип)</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./viewer.bundle.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <a class="brand" href="../../index.php#/home" aria-label="На главную KARETA">
+        <img src="../../assets/onboarding/kareta_logo_icon.png" alt="" width="44" height="44">
+        <span><strong>KARETA.KZ</strong><small>Автосервис · Запчасти</small></span>
+      </a>
+      <span class="prototype">3D · Прототип</span>
+    </header>
+    <section class="intro">
+      <p class="eyebrow">Мой автомобиль</p>
+      <h1>3D Авто-гараж</h1>
+      <p>Осмотрите машину, выберите узел и укажите проблему для будущей заявки.</p>
+    </section>
+    <nav class="modes" aria-label="Режим просмотра">
+      <button type="button" class="mode is-active" data-mode="body" aria-pressed="true">Кузов</button>
+      <button type="button" class="mode" data-mode="electric" aria-pressed="false">Электрика</button>
+      <button type="button" class="mode" data-mode="mechanic" aria-pressed="false">Механика</button>
+    </nav>
+    <section class="scene-card" aria-label="Трёхмерная модель автомобиля">
+      <div class="scene-toolbar">
+        <label for="modelSelect">Модель</label>
+        <select id="modelSelect">
+          <option value="sedan">Седан</option>
+          <option value="sedan-sports">Спортивный седан</option>
+          <option value="hatchback-sports">Хэтчбек</option>
+          <option value="suv">Внедорожник</option>
+          <option value="suv-luxury">Премиальный SUV</option>
+          <option value="van">Фургон</option>
+        </select>
+      </div>
+      <div class="canvas-box" id="canvasBox">
+        <canvas id="carCanvas" aria-label="Интерактивная 3D-модель, управление пальцем или мышью"></canvas>
+        <p id="sceneStatus" class="scene-status" role="status">Загрузка 3D-модели…</p>
+        <span class="gesture-hint">↻ 360° · жесты для вращения и приближения</span>
+      </div>
+      <div class="scene-controls">
+        <button type="button" id="resetView">Сбросить вид</button>
+        <span>Kenney · CC0 · демонстрационная модель</span>
+      </div>
+    </section>
+    <section class="details">
+      <div class="section-head"><h2>Выбор проблемы</h2><span id="partLabel">Узел не выбран</span></div>
+      <p id="modeHint" class="help">Нажмите на кузов или колесо 3D-модели, чтобы указать зону.</p>
+      <label for="problemSelect">Что необходимо сделать?</label>
+      <select id="problemSelect"></select>
+      <label for="problemNote">Комментарий</label>
+      <textarea id="problemNote" rows="3" maxlength="500" placeholder="Опишите симптомы, повреждение или требуемую работу"></textarea>
+      <button type="button" class="primary" id="saveDraft">Скачать черновик заявки</button>
+      <a class="outline" href="../../index.php#/orders/new">Перейти к записи в KARETA</a>
+      <p class="disclaimer">Этот прототип не отправляет заявки, не считывает ошибки автомобиля и не содержит точных схем агрегатов. Данные черновика не передаются в рабочую систему автоматически.</p>
+    </section>
+  </main>
+</body>
+</html>
