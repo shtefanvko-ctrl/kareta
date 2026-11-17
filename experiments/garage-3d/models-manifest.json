@@ -1,0 +1,133 @@
+{
+  "source": "Kenney Car Kit (converted by Hidencod/tge-assets)",
+  "license": "CC0-1.0",
+  "original": "https://kenney.nl/assets/car-kit",
+  "converted": "https://github.com/Hidencod/tge-assets",
+  "models": [
+    {
+      "name": "sedan",
+      "size_bytes": 184504,
+      "sha256": "36faef2dc604e12bac43dc15f39fe5d56d1c23bfe7a22ab03f43856de4a2db34",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/car-kit/sedan.glb",
+      "meshes": 5,
+      "nodes": 5,
+      "node_names": [
+        "wheel-front-right",
+        "body",
+        "wheel-back-left",
+        "wheel-back-right",
+        "wheel-front-left"
+      ]
+    },
+    {
+      "name": "sedan-sports",
+      "size_bytes": 189920,
+      "sha256": "aba8186e85d3aa828cb9af5c735f640c893315fb45662cf1eabf1ed9676fa99f",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/car-kit/sedan-sports.glb",
+      "meshes": 6,
+      "nodes": 6,
+      "node_names": [
+        "wheel-back-right",
+        "body",
+        "spoiler",
+        "wheel-back-left",
+        "wheel-front-left",
+        "wheel-front-right"
+      ]
+    },
+    {
+      "name": "hatchback-sports",
+      "size_bytes": 210092,
+      "sha256": "9fc0e0c1e216d8b5670905f02b4de09230d44baeed2879f32d39791a483fb508",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/car-kit/hatchback-sports.glb",
+      "meshes": 5,
+      "nodes": 5,
+      "node_names": [
+        "wheel-front-right",
+        "wheel-front-left",
+        "wheel-back-right",
+        "wheel-back-left",
+        "body"
+      ]
+    },
+    {
+      "name": "suv",
+      "size_bytes": 219840,
+      "sha256": "9b98b8626cf99728136e2413b618b68daa3f362981bfc911446a20f765cc82f5",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/car-kit/suv.glb",
+      "meshes": 6,
+      "nodes": 6,
+      "node_names": [
+        "body",
+        "wheel-back",
+        "wheel-back-left",
+        "wheel-back-right",
+        "wheel-front-left",
+        "wheel-front-right"
+      ]
+    },
+    {
+      "name": "suv-luxury",
+      "size_bytes": 188200,
+      "sha256": "f0ee60ea243a36efcd83354bc468bc5ab9e9f960c5f5b4b68755f595f1b25d41",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/car-kit/suv-luxury.glb",
+      "meshes": 5,
+      "nodes": 5,
+      "node_names": [
+        "wheel-back-right",
+        "wheel-front-right",
+        "wheel-front-left",
+        "body",
+        "wheel-back-left"
+      ]
+    },
+    {
+      "name": "van",
+      "size_bytes": 187952,
+      "sha256": "58ee6d0b068ed0f8f1b5d12b0377300ae81ded67c3053f5cd844f7885d96728d",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/car-kit/van.glb",
+      "meshes": 5,
+      "nodes": 5,
+      "node_names": [
+        "wheel-front-right",
+        "wheel-front-left",
+        "wheel-back-right",
+        "wheel-back-left",
+        "body"
+      ]
+    },
+    {
+      "name": "debris-door",
+      "size_bytes": 19444,
+      "sha256": "74987289f623453831717143e764a2f4b252b2329012873f6ded980cb8f22f0a",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/car-kit/debris-door.glb",
+      "meshes": 1,
+      "nodes": 1,
+      "node_names": [
+        "debris-door"
+      ]
+    },
+    {
+      "name": "debris-bumper",
+      "size_bytes": 23704,
+      "sha256": "76c88ce4544153e8814795656e0539d196cfeaeeff5ad366d0f2440ae958f831",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/car-kit/debris-bumper.glb",
+      "meshes": 1,
+      "nodes": 1,
+      "node_names": [
+        "debris-bumper"
+      ]
+    },
+    {
+      "name": "wheel-default",
+      "size_bytes": 39220,
+      "sha256": "4b6eb5df137de5897448850943a36643cc6f33c1660e322b332bafdc6d251daa",
+      "source": "https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/car-kit/wheel-default.glb",
+      "meshes": 1,
+      "nodes": 1,
+      "node_names": [
+        "wheel-default"
+      ]
+    }
+  ]
+}

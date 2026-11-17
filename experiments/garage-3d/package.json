@@ -1,0 +1,12 @@
+{
+  "name": "kareta-3d-garage-prototype",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild viewer.js --bundle --minify --format=esm --target=es2022 --outfile=viewer.bundle.js",
+    "check": "node --check viewer.js"
+  },
+  "dependencies": {"three":"0.180.0"},
+  "devDependencies": {"esbuild":"0.28.2"}
+}
