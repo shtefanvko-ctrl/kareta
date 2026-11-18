@@ -16,7 +16,7 @@
 
   let currentDevice = 'phone';
   let selectedBlock = 'password';
-  let selectedWindow = 'registration';
+  let selectedWindow = 'onboardingFlow';
   let statusTimer = 0;
 
   const frame = document.querySelector('[data-preview-frame]');
@@ -42,7 +42,7 @@
   }
 
   let customBlockSequence = 0;
-  const windowModules = { home: '', community: '', request: '', registration: 'signup-form', profile: '' };
+  const windowModules = { home: '', community: '', requestNew: '', onboardingFlow: 'signup-form', profile: '' };
   windowModule.value = windowModules[selectedWindow];
 
   function selectBlock(id) {
@@ -269,7 +269,8 @@
       else item.removeAttribute('aria-current');
     });
     const label = button.textContent.trim();
-    announce(`Выбрано окно «${label}». Связь с модулем хранится только в состоянии прототипа.`);
+    const destination = button.dataset.routePath || (button.dataset.routeKind === 'flow' ? 'шаг регистрации (flow overlay)' : 'route не указан');
+    announce(`Выбрано «${label}» · ${destination}. Связь с модулем хранится только в состоянии прототипа.`);
   });
 
   windowModule.addEventListener('change', () => {

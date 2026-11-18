@@ -4,7 +4,7 @@
 
 ## Product model
 
-- A **window** is a KARETA route or navigation destination (home, community, request, registration).
+- A **window** is a KARETA route or navigation destination. The sample catalog uses the current route keys `home`, `community`, `requestNew` (`#/orders/new`) and `profile`; registration is marked separately as an onboarding flow overlay because it is not a route in the SPA registry.
 - A **module** is reusable content rendered inside a window. The registration flow links three windows to three modules.
 - A module contains typed blocks (heading, text, text input, password, button, image). Selecting a block exposes its visual and data properties.
 - One module has responsive rules. For each block, the editor can set visibility for desktop, tablet, and phone. The selected viewport changes the canvas width.
