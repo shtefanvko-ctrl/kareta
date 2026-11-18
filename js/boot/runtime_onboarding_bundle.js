@@ -357,12 +357,32 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     try { window.dispatchEvent(new HashChangeEvent('hashchange')); } catch (_error) {}
     return target;
   }
+  const catalogEntryKey = 'kareta.onboarding.catalog-entry.v1';
+  const catalogRoutes = new Set(['#/masters', '#/masters?type=sto', '#/masters?type=master']);
+
+  function rememberCatalogEntry(hash){
+    if (!catalogRoutes.has(hash)) return false;
+    try { sessionStorage.setItem(catalogEntryKey, hash); } catch (_error) {}
+    return true;
+  }
+
+  function catalogEntry(){
+    try {
+      const hash = sessionStorage.getItem(catalogEntryKey);
+      return catalogRoutes.has(hash) ? hash : '';
+    } catch (_error) { return ''; }
+  }
+
+  function clearCatalogEntry(){
+    try { sessionStorage.removeItem(catalogEntryKey); } catch (_error) {}
+  }
+
   function resumeRoute(){
     const flow = state.read();
     const step = STEPS.includes(flow.stage) ? flow.stage : (flow.roleSetupDone ? 'profile' : 'welcome');
     return canonical(flow.role, step);
   }
-  window.KaretaOnboardingRouter = Object.freeze({ STEPS, parse, isOnboarding, canonical, navigate, resumeRoute });
+  window.KaretaOnboardingRouter = Object.freeze({ STEPS, parse, isOnboarding, canonical, navigate, resumeRoute, rememberCatalogEntry, catalogEntry, clearCatalogEntry });
 })();
 ;
 
@@ -932,12 +952,16 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
             snap=await window.KaretaIdentity.select(personal.id||personal.key);
           }
         }
-        target='#/home';
+        if (snap?.authenticated && identityContextRole({currentContext:snap.context}) === 'client') {
+          target = router.catalogEntry() || target;
+        }
       }catch(_clientContextError){
         console.warn('[KARETA onboarding] client context self-heal failed',_clientContextError);
       }
+      router.clearCatalogEntry();
       return target;
     }
+    router.clearCatalogEntry();
     const target=targetAfterAuth(result,flow,user);
     if(role!=='master')return target;
     const gate=window.KaretaMasterOnboardingGate;
@@ -2691,6 +2715,8 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
     const parsed = router.parse();
     if (parsed) return dispatch(parsed, { source:options.source || 'resume-route', replace:true });
 
+    if (!router.rememberCatalogEntry(location.hash)) router.clearCatalogEntry();
+
     // A fresh unauthenticated entry must always begin with the platform welcome screen.
     // Do not resurrect a stale role/profile/code stage from localStorage.
     clearTransientVerification();
@@ -2728,6 +2754,20 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_onboarding_bundle","js/boot/ru
   function bindListeners(){
     if (listenersBound) return;
     listenersBound = true;
+    // Route links can use pushState, which does not dispatch hashchange.
+    document.addEventListener('click', event => {
+      if (state.isDone() || !router.isOnboarding() || event.button !== 0 ||
+          event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = event.target.closest?.('a[href]');
+      if (!link) return;
+      const href = link.getAttribute('href');
+      if (!router.rememberCatalogEntry(href)) {
+        if (href.startsWith('#/')) router.clearCatalogEntry();
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+    }, true);
     window.addEventListener('hashchange', () => dispatch(location.hash, { source:'hashchange', replace:true }));
     window.addEventListener('popstate', () => dispatch(location.hash, { source:'popstate', replace:false }));
     window.addEventListener('pageshow', event => { if (event.persisted) reconcile('pageshow-bfcache', { force:true }); });

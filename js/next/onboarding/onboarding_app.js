@@ -58,12 +58,16 @@
             snap=await window.KaretaIdentity.select(personal.id||personal.key);
           }
         }
-        target='#/home';
+        if (snap?.authenticated && identityContextRole({currentContext:snap.context}) === 'client') {
+          target = router.catalogEntry() || target;
+        }
       }catch(_clientContextError){
         console.warn('[KARETA onboarding] client context self-heal failed',_clientContextError);
       }
+      router.clearCatalogEntry();
       return target;
     }
+    router.clearCatalogEntry();
     const target=targetAfterAuth(result,flow,user);
     if(role!=='master')return target;
     const gate=window.KaretaMasterOnboardingGate;
