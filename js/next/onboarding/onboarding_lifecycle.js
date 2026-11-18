@@ -148,6 +148,8 @@
     const parsed = router.parse();
     if (parsed) return dispatch(parsed, { source:options.source || 'resume-route', replace:true });
 
+    if (!router.rememberCatalogEntry(location.hash)) router.clearCatalogEntry();
+
     // A fresh unauthenticated entry must always begin with the platform welcome screen.
     // Do not resurrect a stale role/profile/code stage from localStorage.
     clearTransientVerification();
@@ -185,6 +187,20 @@
   function bindListeners(){
     if (listenersBound) return;
     listenersBound = true;
+    // Route links can use pushState, which does not dispatch hashchange.
+    document.addEventListener('click', event => {
+      if (state.isDone() || !router.isOnboarding() || event.button !== 0 ||
+          event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = event.target.closest?.('a[href]');
+      if (!link) return;
+      const href = link.getAttribute('href');
+      if (!router.rememberCatalogEntry(href)) {
+        if (href.startsWith('#/')) router.clearCatalogEntry();
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+    }, true);
     window.addEventListener('hashchange', () => dispatch(location.hash, { source:'hashchange', replace:true }));
     window.addEventListener('popstate', () => dispatch(location.hash, { source:'popstate', replace:false }));
     window.addEventListener('pageshow', event => { if (event.persisted) reconcile('pageshow-bfcache', { force:true }); });

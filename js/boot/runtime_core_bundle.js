@@ -663,6 +663,9 @@ window.KaretaBootProfiler?.bundleStart?.("runtime_core_bundle","js/boot/runtime_
     return currentRole(detail)==='client'&&String(snap.context?.type||'').toLowerCase()==='personal';
   }
   async function maybeScheduleFirstEntry(detail={}){
+    // A deliberate catalog entry takes priority over the optional garage prompt.
+    if(window.KaretaOnboardingRouter?.catalogEntry?.() ||
+       String(location.hash).split('?')[0] === '#/masters')return false;
     if(state.autoScheduled||!clientContextReady(detail))return false;
     state.autoScheduled=true;
     const server=await loadServerFirstEntry();

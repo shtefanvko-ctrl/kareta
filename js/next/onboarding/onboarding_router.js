@@ -38,10 +38,30 @@
     try { window.dispatchEvent(new HashChangeEvent('hashchange')); } catch (_error) {}
     return target;
   }
+  const catalogEntryKey = 'kareta.onboarding.catalog-entry.v1';
+  const catalogRoutes = new Set(['#/masters', '#/masters?type=sto', '#/masters?type=master']);
+
+  function rememberCatalogEntry(hash){
+    if (!catalogRoutes.has(hash)) return false;
+    try { sessionStorage.setItem(catalogEntryKey, hash); } catch (_error) {}
+    return true;
+  }
+
+  function catalogEntry(){
+    try {
+      const hash = sessionStorage.getItem(catalogEntryKey);
+      return catalogRoutes.has(hash) ? hash : '';
+    } catch (_error) { return ''; }
+  }
+
+  function clearCatalogEntry(){
+    try { sessionStorage.removeItem(catalogEntryKey); } catch (_error) {}
+  }
+
   function resumeRoute(){
     const flow = state.read();
     const step = STEPS.includes(flow.stage) ? flow.stage : (flow.roleSetupDone ? 'profile' : 'welcome');
     return canonical(flow.role, step);
   }
-  window.KaretaOnboardingRouter = Object.freeze({ STEPS, parse, isOnboarding, canonical, navigate, resumeRoute });
+  window.KaretaOnboardingRouter = Object.freeze({ STEPS, parse, isOnboarding, canonical, navigate, resumeRoute, rememberCatalogEntry, catalogEntry, clearCatalogEntry });
 })();
