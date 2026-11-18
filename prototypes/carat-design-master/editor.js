@@ -210,6 +210,15 @@
     document.querySelectorAll('[data-layer-editor]').forEach(node => { node.hidden = !canEditLayers; });
     document.querySelector('[data-module-inspector]').hidden = !canEditLayers;
     document.querySelector('.module-tag').textContent = selectedModule || 'нет модуля';
+    const usage = document.querySelector('[data-module-usage]');
+    const linkedWindows = selectedModule
+      ? [...document.querySelectorAll('.window-item[data-window-id]')]
+        .filter(item => windowModules[item.dataset.windowId] === selectedModule)
+        .map(item => item.querySelector('.window-label')?.textContent || item.dataset.windowId)
+      : [];
+    usage.textContent = selectedModule
+      ? `Модуль «${selectedModule}» назначен: ${linkedWindows.join(', ') || 'окно ещё не выбрано'}. Только локально.`
+      : 'Назначьте модуль выбранному окну. Связи доступны только в этой вкладке.';
 
     Object.entries(blocks).forEach(([id, block]) => {
       const node = document.querySelector(`[data-preview-block="${id}"]`);
@@ -279,7 +288,7 @@
       if (active) item.setAttribute('aria-current', 'page');
       else item.removeAttribute('aria-current');
     });
-    const label = button.textContent.trim();
+    const label = button.querySelector('.window-label')?.textContent || button.textContent.trim();
     const destination = button.dataset.routePath || (button.dataset.routeKind === 'flow' ? 'шаг регистрации (flow overlay)' : 'route не указан');
     render();
     announce(`Выбрано «${label}» · ${destination}. Связь с модулем хранится только в состоянии прототипа.`);

@@ -44,6 +44,7 @@ main { max-width: 1680px; margin: 0 auto; padding: 14px; }
 .window-module-setting { margin-top: 10px; }
 .window-item, .layer-item { width: 100%; min-height: 35px; padding: 5px 8px; display: flex; align-items: center; gap: 8px; border: 0; border-radius: 8px; background: transparent; text-align: left; font-size: 12px; cursor: pointer; }
 .window-item.is-active, .layer-item.is-selected { background: var(--carat-blue-soft); color: #066db4; font-weight: 750; }
+.module-usage { margin: 8px 0 0; padding: 8px 9px; border-radius: 8px; background: #f5f8fb; color: #687386; font-size: 10px; line-height: 1.4; }
 .window-icon { width: 20px; text-align: center; color: #66758b; font-size: 16px; }
 .module-tag { padding: 4px 7px; border-radius: 7px; background: #f2f4f7; color: #505968; font-size: 10px; font-family: ui-monospace, monospace; }
 .layer-item { min-height: 31px; }
