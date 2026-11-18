@@ -38,7 +38,7 @@
             <label class="control-row window-module-setting"><span>Модуль выбранного окна</span><select data-window-module aria-label="Модуль выбранного окна"><option value="">Не назначен</option><option value="role-select">role-select</option><option value="signup-form">signup-form</option><option value="verify-code">verify-code</option></select></label>
           </div>
 
-          <div class="panel-section">
+          <div class="panel-section" data-layer-editor>
             <div class="section-heading"><h2>Слои модуля</h2><span class="module-tag">signup-form</span></div>
             <div class="layer-list" role="list" aria-label="Слои модуля">
               <button class="layer-item" type="button" data-block="heading"><span class="layer-glyph">T</span><span>Заголовок</span><span class="visibility-dots">ПК · ПЛ · ТЕЛ</span></button>
@@ -52,7 +52,7 @@
             </div>
           </div>
 
-          <div class="panel-section block-library">
+          <div class="panel-section block-library" data-layer-editor>
             <div class="section-heading"><h2>Блоки</h2><span class="muted-label">перетаскивание — макет</span></div>
             <div class="block-chips">
               <button type="button" data-action="add-block">＋ Текст</button>
@@ -77,7 +77,7 @@
           <div class="canvas-workspace">
             <div class="ruler ruler-top" aria-hidden="true"><span>0</span><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span></div>
             <div class="preview-frame" data-preview-frame data-device="phone">
-              <div class="registration-card">
+              <div class="registration-card" data-preview-module="signup-form">
                 <div class="kareta-brand"><span class="car-mark" aria-hidden="true">⌁</span><strong>KARETA.KZ</strong></div>
                 <h1 data-preview-block="heading">Создать аккаунт</h1>
                 <div class="progress-block" data-preview-block="progress"><div class="progress-line"><span></span></div><small>Шаг 2 из 3</small></div>
@@ -88,6 +88,24 @@
                 <p class="promo-block" data-preview-block="promo">Управляйте настройками регистрации в одном месте.</p>
                 <p class="mobile-help" data-preview-block="mobile-help">Данные передаются защищённо.</p>
               </div>
+              <section class="registration-card module-step-preview" data-preview-module="role-select" hidden aria-label="Предпросмотр выбора роли">
+                <div class="kareta-brand"><span class="car-mark" aria-hidden="true">⌁</span><strong>KARETA.KZ</strong></div>
+                <h1>Кто вы?</h1><p>Выберите, как будете пользоваться приложением</p>
+                <div class="module-choice"><strong>Клиент</strong><span>Гараж, заявки и запись к мастеру</span></div>
+                <div class="module-choice"><strong>Мастер</strong><span>Заявки, график и услуги</span></div>
+                <button class="registration-submit" type="button" disabled>Выбрать роль · демо</button>
+              </section>
+              <section class="registration-card module-step-preview" data-preview-module="verify-code" hidden aria-label="Предпросмотр подтверждения номера">
+                <div class="kareta-brand"><span class="car-mark" aria-hidden="true">⌁</span><strong>KARETA.KZ</strong></div>
+                <h1>Подтвердите номер</h1><p>Введите код из сообщения</p>
+                <div class="module-code" aria-label="Пример кода подтверждения"><span>•</span><span>•</span><span>•</span><span>•</span></div>
+                <button class="registration-submit" type="button" disabled>Подтвердить · демо</button>
+                <p class="promo-block">Повторная отправка и проверка кода не подключены.</p>
+              </section>
+              <div class="registration-card module-empty-preview" data-preview-module="empty" hidden>
+                <div class="kareta-brand"><span class="car-mark" aria-hidden="true">⌁</span><strong>KARETA.KZ</strong></div>
+                <h1>Для окна не выбран модуль</h1><p>Назначьте модуль в панели слева. Это локальное состояние прототипа.</p>
+              </div>
             </div>
             <div class="canvas-caption"><span class="live-dot"></span><span data-device-caption>Телефон · 390 px</span><span class="caption-divider"></span><span>Предпросмотр, без отправки данных</span></div>
           </div>
@@ -95,7 +113,7 @@
 
         <aside class="panel inspector-panel">
           <div class="inspector-tabs"><button type="button" class="is-active" data-inspector-tab="style">Внешний вид</button><button type="button" data-inspector-tab="data">Данные и действия</button></div>
-          <div class="inspector-content">
+          <div class="inspector-content" data-module-inspector>
             <div class="selected-heading"><span class="lock-icon" aria-hidden="true">✎</span><div><small>ВЫБРАННЫЙ ЭЛЕМЕНТ</small><h2 data-selected-title>Поле «Пароль»</h2></div><div class="order-actions" role="group" aria-label="Действия со слоем"><button type="button" data-action="move-up" aria-label="Переместить слой выше" title="Выше">↑</button><button type="button" data-action="move-down" aria-label="Переместить слой ниже" title="Ниже">↓</button><button type="button" data-action="delete-block" aria-label="Удалить созданный блок" title="Удалить" disabled>×</button></div></div>
             <label class="control-row"><span>Подпись / текст</span><input data-field-label value="Пароль" aria-label="Подпись элемента"></label>
             <label class="control-row image-file-setting" data-image-setting hidden><span>Файл изображения</span><input type="file" accept="image/*" data-image-file aria-label="Выбрать изображение"></label>

@@ -43,6 +43,7 @@
 
   let customBlockSequence = 0;
   const windowModules = { home: '', community: '', requestNew: '', onboardingFlow: 'signup-form', profile: '' };
+  let selectedModule = windowModules[selectedWindow] || '';
   windowModule.value = windowModules[selectedWindow];
 
   function selectBlock(id) {
@@ -201,6 +202,15 @@
     caption.textContent = `${labels[currentDevice]} · ${widths[currentDevice]} px`;
     deviceLabel.textContent = labels[currentDevice];
 
+    const previewModule = selectedModule || 'empty';
+    frame.querySelectorAll('[data-preview-module]').forEach(node => {
+      node.hidden = node.dataset.previewModule !== previewModule;
+    });
+    const canEditLayers = selectedModule === 'signup-form';
+    document.querySelectorAll('[data-layer-editor]').forEach(node => { node.hidden = !canEditLayers; });
+    document.querySelector('[data-module-inspector]').hidden = !canEditLayers;
+    document.querySelector('.module-tag').textContent = selectedModule || 'нет модуля';
+
     Object.entries(blocks).forEach(([id, block]) => {
       const node = document.querySelector(`[data-preview-block="${id}"]`);
       if (node) node.classList.toggle('is-hidden', !block.visible[currentDevice]);
@@ -262,6 +272,7 @@
     if (!button) return;
     selectedWindow = button.dataset.windowId;
     windowModule.value = windowModules[selectedWindow] || '';
+    selectedModule = windowModule.value;
     document.querySelectorAll('.window-item[data-window-id]').forEach(item => {
       const active = item.dataset.windowId === selectedWindow;
       item.classList.toggle('is-active', active);
@@ -270,14 +281,16 @@
     });
     const label = button.textContent.trim();
     const destination = button.dataset.routePath || (button.dataset.routeKind === 'flow' ? 'шаг регистрации (flow overlay)' : 'route не указан');
+    render();
     announce(`Выбрано «${label}» · ${destination}. Связь с модулем хранится только в состоянии прототипа.`);
   });
 
   windowModule.addEventListener('change', () => {
     windowModules[selectedWindow] = windowModule.value;
+    selectedModule = windowModule.value;
+    render();
     const assignedModule = windowModule.value || 'без модуля';
-    const previewNote = windowModule.value === 'signup-form' ? 'Предпросмотр уже открыт.' : 'Холст остаётся на signup-form.';
-    announce(`Для окна выбрано: ${assignedModule}. ${previewNote} Серверного сохранения нет.`);
+    announce(`Предпросмотр модуля «${assignedModule}» переключён. Связь хранится только в памяти прототипа; серверного сохранения нет.`);
   });
 
   document.querySelector('.layer-list').addEventListener('click', event => {
